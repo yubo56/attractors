@@ -1,0 +1,139 @@
+    \documentclass[11pt,
+        usenames, % allows access to some tikz colors
+        dvipsnames % more colors: https://en.wikibooks.org/wiki/LaTeX/Colors
+    ]{article}
+    \usepackage{
+        amsmath,
+        amssymb,
+        fouriernc, % fourier font w/ new century book
+        fancyhdr, % page styling
+        lastpage, % footer fanciness
+        hyperref, % various links
+        setspace, % line spacing
+        amsthm, % newtheorem and proof environment
+        mathtools, % \Aboxed for boxing inside aligns, among others
+        float, % Allow [H] figure env alignment
+        enumerate, % Allow custom enumerate numbering
+        graphicx, % allow includegraphics with more filetypes
+        wasysym, % \smiley!
+        upgreek, % \upmu for \mum macro
+        listings, % writing TrueType fonts and including code prettily
+        tikz, % drawing things
+        booktabs, % \bottomrule instead of hline apparently
+        cancel % can cancel things out!
+    }
+    \usepackage[margin=1in]{geometry} % page geometry
+    \usepackage[
+        labelfont=bf, % caption names are labeled in bold
+        font=scriptsize % smaller font for captions
+    ]{caption}
+    \usepackage[font=scriptsize]{subcaption} % subfigures
+
+    \newcommand*{\scinot}[2]{#1\times10^{#2}}
+    \newcommand*{\dotp}[2]{\left<#1\,\middle|\,#2\right>}
+    \newcommand*{\rd}[2]{\frac{\mathrm{d}#1}{\mathrm{d}#2}}
+    \newcommand*{\pd}[2]{\frac{\partial#1}{\partial#2}}
+    \newcommand*{\rtd}[2]{\frac{\mathrm{d}^2#1}{\mathrm{d}#2^2}}
+    \newcommand*{\ptd}[2]{\frac{\partial^2 #1}{\partial#2^2}}
+    \newcommand*{\md}[2]{\frac{\mathrm{D}#1}{\mathrm{D}#2}}
+    \newcommand*{\pvec}[1]{\vec{#1}^{\,\prime}}
+    \newcommand*{\svec}[1]{\vec{#1}\;\!}
+    \newcommand*{\bm}[1]{\boldsymbol{\mathbf{#1}}}
+    \newcommand*{\ang}[0]{\;\text{\AA}}
+    \newcommand*{\mum}[0]{\;\upmu \mathrm{m}}
+    \newcommand*{\at}[1]{\left.#1\right|}
+
+    \newtheorem{theorem}{Theorem}[section]
+
+    \let\Re\undefined
+    \let\Im\undefined
+    \DeclareMathOperator{\Res}{Res}
+    \DeclareMathOperator{\Re}{Re}
+    \DeclareMathOperator{\Im}{Im}
+    \DeclareMathOperator{\Log}{Log}
+    \DeclareMathOperator{\Arg}{Arg}
+    \DeclareMathOperator{\Tr}{Tr}
+    \DeclareMathOperator{\E}{E}
+    \DeclareMathOperator{\Var}{Var}
+    \DeclareMathOperator*{\argmin}{argmin}
+    \DeclareMathOperator*{\argmax}{argmax}
+    \DeclareMathOperator{\sgn}{sgn}
+    \DeclareMathOperator{\diag}{diag\;}
+
+    \DeclarePairedDelimiter\bra{\langle}{\rvert}
+    \DeclarePairedDelimiter\ket{\lvert}{\rangle}
+    \DeclarePairedDelimiter\abs{\lvert}{\rvert}
+    \DeclarePairedDelimiter\ev{\langle}{\rangle}
+    \DeclarePairedDelimiter\p{\lparen}{\rparen}
+    \DeclarePairedDelimiter\s{\lbrack}{\rbrack}
+    \DeclarePairedDelimiter\z{\lbrace}{\rbrace}
+
+    % \everymath{\displaystyle} % biggify limits of inline sums and integrals
+    \tikzstyle{circ} % usage: \node[circ, placement] (label) {text};
+        = [draw, circle, fill=white, node distance=3cm, minimum height=2em]
+    \definecolor{commentgreen}{rgb}{0,0.6,0}
+    \lstset{
+        basicstyle=\ttfamily\footnotesize,
+        frame=single,
+        numbers=left,
+        showstringspaces=false,
+        keywordstyle=\color{blue},
+        stringstyle=\color{purple},
+        commentstyle=\color{commentgreen},
+        morecomment=[l][\color{magenta}]{\#}
+    }
+
+\begin{document}
+
+\def\Snospace~{\S{}} % hack to remove the space left after autorefs
+\renewcommand*{\sectionautorefname}{\Snospace}
+\renewcommand*{\appendixautorefname}{\Snospace}
+\renewcommand*{\figureautorefname}{Fig.}
+\renewcommand*{\equationautorefname}{Eq.}
+\renewcommand*{\tableautorefname}{Tab.}
+
+\section{Hamiltonians and EOM}
+
+\subsection{Toy Problem}
+
+Consider simplest spin Hamiltonian $H = -\vec{B} \cdot \vec{s}$. It's clear that
+if we set up initial conditions $\vec{s}$ misaligned from $\vec{B}$, it will
+simply spin around $\vec{B}$, which is fixed. Thus, let $\hat{B} \cdot \hat{s} =
+\cos \theta$ the angle between the two, and let $\phi$ measure the azimuthal
+angle.
+
+We claim that $\cos \theta, \phi$ are canonical variables. Since $\phi$ is
+ignorable, immediately $\rd{\theta}{t} = \rd{\cos \theta}{t} = -\pd{H}{\phi} =
+0$, while $\rd{\phi}{t} = \pd{H}{(\cos \theta)} = Bs$ tells us the rate at which
+the spin precesses around $\vec{B}$.
+
+\subsection{Cassini State Hamilttonian}
+
+This Hamiltonian is Kassandras Eq.\ 13, in the co-rotating frame with the
+perturber's angular momentum:
+\begin{equation}
+    \mathcal{H} = \frac{1}{2}\p*{\hat{s} \cdot \hat{l}}^2
+        - \eta \p*{\hat{s} \cdot \hat{l}_p}.
+\end{equation}
+In this frame, we can choose $\hat{l} \equiv \hat{z}$ fixed, and $\hat{l}_p =
+\cos I\hat{z} + \sin I\hat{x}$ fixed as well. Then
+\begin{equation*}
+    \hat{s} = \cos\theta \hat{z}
+        - \sin\theta\p*{\sin \phi \hat{y} + \cos \phi \hat{x}}.
+\end{equation*}
+We can choose the convention for $\phi = \phi$ azimuthal angle requiring $\phi =
+0, \pi$ mean coplanarity between $\hat{s}, \hat{l}, \hat{l}_p$ in the $\hat{x},
+\hat{z}$ plane such that $\hat{l}_p, \hat{s}$ lie on the same side of
+$\hat{l}$. Then we can evaluate in coordinates
+\begin{align*}
+    \hat{s} \cdot \hat{l} &= \cos \theta,\\
+    \hat{s} \cdot \hat{l}_p
+        &= \cos \theta \cos I - \sin I \sin \theta \cos \phi,\\
+    \mathcal{H} &= \frac{1}{2}\cos^2\theta
+        - \eta \p*{\cos \theta \cos I - \sin I \sin \theta \cos \phi}.
+\end{align*}
+Note that if we take $\cos\theta$ to be our canonical variable, $\sin\theta =
+\sqrt{1 - \cos^2\theta}$ can be used.
+
+\end{document}
+
