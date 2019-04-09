@@ -19,23 +19,20 @@ def solve_ic(eta, I, theta0, phi0, tide=0):
                 np.sin(theta) * np.cos(I) +
                 np.sin(I) * np.cos(theta) * np.cos(phi)) / np.sin(theta)
         ]
-    tf = 50
+    tf = 150
     ret = solve_ivp(dydt, [0, tf], [theta0, phi0])
     return ret.t, ret.y
-
 
 if __name__ == '__main__':
     eta = 0.1
     I = np.radians(20)
     thetas, phis = roots(eta, I)
 
-    for theta0, phi0, idx in zip(thetas, phis, range(len(thetas))):
+    f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True)
+
+    for theta0, phi0, ax in zip(thetas, phis, [ax1, ax2, ax3, ax4]):
         t, y = solve_ic(eta, I, theta0, phi0)
 
-        f, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
-        f.subplots_adjust(hspace=0)
-        ax1.plot(t, np.cos(y[0, :]))
-        ax2.plot(t, y[1, :])
-        ax2.set_xlabel('t')
-        f.suptitle('Init: (%.3f, %.3f)' % (np.cos(theta0), phi0))
-        plt.savefig('2testo_%d.png' % idx)
+        ax.plot(y[1, :] % (2 * np.pi), np.cos(y[0, :]), 'bo', markersize=4)
+        ax.set_title('Init: (%.3f, %.3f)' % (phi0, np.cos(theta0)), fontsize=8)
+    plt.savefig('2evolution.png', dpi=400)

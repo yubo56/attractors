@@ -3,10 +3,10 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('font', family='serif', size=14)
+plt.rc('font', family='serif')
 from utils import roots
 
-def plot_H_for_eta(eta, I=np.radians(20)):
+def plot_H_for_eta(ax, eta, I=np.radians(20)):
     '''
     Hamiltonian is H = 1/2 cos^2(theta) + eta * sin(phi)
     canonical variables are x = phi, y = cos(theta)
@@ -18,20 +18,27 @@ def plot_H_for_eta(eta, I=np.radians(20)):
     H = 0.5 * y**2 - eta * (
         y * np.cos(I) -
         np.sqrt(1 - y**2) * np.sin(I) * np.cos(x))
-    plt.contour(x, y, H, cmap='RdBu_r')
+    ax.contour(x, y, H, cmap='RdBu_r')
 
     thetas, phis = roots(eta, I)
     colors = ['b', 'g', 'r', 'y'] if len(thetas) == 4 else ['b', 'y']
     for color, theta, phi in zip(colors, thetas, phis):
         phi_arr = [phi] if theta > 0 else [phi, phi + 2 * np.pi]
         for phi in phi_arr:
-            plt.plot(phi, np.cos(theta), '%so' % color, markersize=16)
-    plt.xlabel(r'$\phi$')
-    plt.ylabel(r'$\cos \theta$')
-    plt.savefig('1contour%s.png' % (('%.2f' % eta).replace('.', '_')))
-    plt.clf()
+            ax.plot(phi, np.cos(theta), '%so' % color, markersize=10)
+    ax.set_title('(I, Eta)=($%d^\circ$, %.3f)' % (np.degrees(I), eta),
+                 fontsize=8)
+    ax.set_xticks([0, np.pi, 2 * np.pi])
 
 if __name__ == '__main__':
+    f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True)
     # Figures 3b-3e of Kassandra's paper
-    for eta in [0.1, 0.5, 0.561, 2]:
-        plot_H_for_eta(eta)
+    for ax, eta in zip([ax1, ax2, ax3, ax4], [0.1, 0.5, 0.561, 2]):
+        plot_H_for_eta(ax, eta)
+    ax1.set_ylabel(r'$\cos \theta$')
+    ax3.set_xlabel(r'$\phi$')
+    ax3.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
+    ax3.set_ylabel(r'$\cos \theta$')
+    ax4.set_xlabel(r'$\phi$')
+    plt.savefig('1contours.png', dpi=400)
+    plt.clf()
