@@ -28,11 +28,14 @@ if __name__ == '__main__':
     I = np.radians(20)
     thetas, phis = roots(eta, I)
 
+    pert = 0.01 # perturbation strength
+
     f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True)
 
     for theta0, phi0, ax in zip(thetas, phis, [ax1, ax2, ax3, ax4]):
-        t, y = solve_ic(eta, I, theta0, phi0)
+        t, y = solve_ic(eta, I, theta0 + pert, phi0 - pert)
 
+        ax.plot(phi0 % (2 * np.pi), np.cos(theta0), 'ro', markersize=4)
         ax.plot(y[1, :] % (2 * np.pi), np.cos(y[0, :]), 'bo', markersize=1)
         ax.set_title('Init: (%.3f, %.3f)' % (phi0, np.cos(theta0)), fontsize=8)
         ax.set_xticks([0, np.pi, 2 * np.pi])
