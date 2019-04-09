@@ -7,6 +7,7 @@ plt.rc('font', family='serif', size=14)
 from scipy.integrate import solve_ivp
 from utils import roots
 
+T_F = 150
 def solve_ic(eta, I, q0, phi0, tide=0):
     '''
     solves ivp at given (eta, I, tide) for IC (phi0, q0)
@@ -14,13 +15,12 @@ def solve_ic(eta, I, q0, phi0, tide=0):
     def dydt(t, y):
         q, phi = y
         return [
-            -eta * np.sin(I) * np.sin(q) * np.sin(phi),
+            -eta * np.sin(I) * np.sin(phi),
             np.cos(q) - eta * (
                 np.cos(I) +
                 np.sin(I) * np.cos(phi) / np.tan(q))
         ]
-    tf = 150
-    ret = solve_ivp(dydt, [0, tf], [q0, phi0])
+    ret = solve_ivp(dydt, [0, T_F], [q0, phi0])
     return ret.t, ret.y
 
 def solve_cart(eta, I, x0, y0, z0, tide=0):
@@ -32,7 +32,7 @@ def solve_cart(eta, I, x0, y0, z0, tide=0):
         r = np.sqrt(x**2 + y**2 + z**2)
         q = np.arccos(z / r)
         phi = -np.arctan(y / x) * np.sign(y)
-        return [
+        dvec = np.array([
             -np.sin(q) * np.sin(phi) * np.cos(q)
                 + eta * np.sin(q) * np.sin(phi) * np.cos(I),
             np.cos(q) * np.sin(q) * np.cos(phi)
@@ -40,9 +40,9 @@ def solve_cart(eta, I, x0, y0, z0, tide=0):
                     np.sin(q) * np.cos(phi) * np.cos(I)
                     + np.cos(q) * np.sin(I)),
             -eta * np.sin(q) * np.sin(phi) * np.sin(I),
-        ]
-    tf = 100
-    ret = solve_ivp(dydt, [0, tf], [x0, y0, z0])
+        ])
+        return dvec - np.dot(dvec, vec) * vec
+    ret = solve_ivp(dydt, [0, T_F], [x0, y0, z0])
     return ret.t, ret.y
 
 if __name__ == '__main__':
@@ -56,7 +56,8 @@ if __name__ == '__main__':
 
     for q0, phi0, ax in zip(qs, phis, [ax1, ax2, ax3, ax4]):
         q = q0 + pert
-        phi = phi0 + pert
+        phi = phi0 - pert
+
         x, y, z = [
             -np.sin(q) * np.cos(phi),
             -np.sin(q) * np.sin(phi),
@@ -66,6 +67,9 @@ if __name__ == '__main__':
         r = np.sqrt(x**2 + y**2 + z**2)
         q = np.arccos(z / r)
         phi = np.arctan(y / x)
+
+        # t, sol = solve_ic(eta, I, q, phi)
+        # q, phi = sol
 
         ax.plot(phi0 % (2 * np.pi), np.cos(q0), 'ro', markersize=4)
         ax.plot(phi % (2 * np.pi), np.cos(q), 'bo', markersize=1)
