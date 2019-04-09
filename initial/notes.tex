@@ -137,25 +137,38 @@ Note that if we take $\cos\theta$ to be our canonical variable, $\sin\theta =
 
 \subsection{Equation of Motion}
 
-Consider Hamilton's equations applied to the Hamiltonian (not sure this is right)
+The correct EOM comes from Kassandra's Eq.\ 12:
+\begin{align*}
+    \rd{\hat{s}}{t} ={}&
+        \p*{\hat{s} \cdot \hat{l}}\p*{\hat{s} \times \hat{l}}
+            -\eta\p*{\hat{s} \times \hat{l}_p},\\
+        ={}& \cos\theta \s*{
+            \hat{x}\p*{-\sin\theta \sin\phi}
+            - \hat{y}\p*{-\sin\theta \cos\phi}}\\
+            &- \eta \s*{
+                \hat{x}\p*{-\sin\theta \sin \phi \cos I}
+                - \hat{y}\p*{-\sin \theta \cos \phi \cos I
+                    - \cos \theta\sin I}
+                + \hat{z}\p*{+\sin\theta \sin \phi \sin I}},\\
+        ={}& \s*{-\sin\theta \sin\phi \cos\theta
+            + \eta \sin \theta \sin \phi \cos I}\hat{x}
+            + \s*{\cos\theta \sin\theta \cos\phi
+                - \eta\p*{\sin\theta \cos\phi \cos I
+                    + \cos\theta \sin I}}\hat{y}\\
+            &+ \s*{-\eta\sin\theta \sin\phi \sin I}\hat{z}.
+\end{align*}
+
+Alternatively, consider Hamilton's equations applied to the Hamiltonian:
 \begin{align}
     \pd{\phi}{t} = \pd{\mathcal{H}}{(\cos\theta)}
         &= \cos\theta - \eta\p*{\cos I + \sin I \cot \theta \cos \phi},\\
-    \pd{\theta}{t} = \pd{\mathcal{H}}{\phi}
-        &= -\eta \sin I \sin \theta \sin \phi.
+    \pd{(\cos \theta)}{t} = -\pd{\mathcal{H}}{\phi}
+        &= +\eta \sin I \sin \theta \sin \phi.
 \end{align}
-This can be compared to the original EOM given in Kassandra's Eq.\ 12,
-\begin{equation}
-    \rd{\hat{s}}{t} =
-        \p*{\hat{s} \cdot \hat{l}}\p*{\hat{s} \times \hat{l}}
-            -\eta\p*{\hat{s} \times \hat{l}_p}.
-\end{equation}
-Recalling that $\abs*{\hat{\phi}} = \sin\theta$ (the differential geometry
-result), we can verify the expressions are equivalent for $\phi = \pi$,
-alignment with $\hat{s}, \hat{l}_p$ on the same side of $\hat{l}$ as in her
-Fig.\ 2, checks our signs.
+This seems to produce the same trajectories as Kassandra's EOM\@!
 
-We can seek equilibria of these EOM
+We can check the stability of each of the equilibria of the EOM, there should be
+four corresponding to the four Cassini states:
 
 \end{document}
 
