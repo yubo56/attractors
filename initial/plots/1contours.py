@@ -26,7 +26,7 @@ def plot_H_for_eta(ax, eta, I=np.radians(20)):
         phi_arr = [phi] if theta > 0 else [phi, phi + 2 * np.pi]
         for phi in phi_arr:
             ax.plot(phi, np.cos(theta), '%so' % color, markersize=10)
-    ax.set_title('(I, Eta)=($%d^\circ$, %.3f)' % (np.degrees(I), eta),
+    ax.set_title(r'(I, $\eta$)=($%d^\circ$, %.3f)' % (np.degrees(I), eta),
                  fontsize=8)
     ax.set_xticks([0, np.pi, 2 * np.pi])
 

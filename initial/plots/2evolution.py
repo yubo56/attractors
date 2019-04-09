@@ -16,8 +16,8 @@ def solve_ic(eta, I, theta0, phi0, tide=0):
         return [
             -eta * np.sin(I) * np.sin(theta) * np.sin(phi),
             np.cos(theta) - eta * (
-                np.sin(theta) * np.cos(I) +
-                np.sin(I) * np.cos(theta) * np.cos(phi)) / np.sin(theta)
+                np.cos(I) +
+                np.sin(I) * np.cos(phi) / np.tan(theta))
         ]
     tf = 150
     ret = solve_ivp(dydt, [0, tf], [theta0, phi0])
@@ -33,6 +33,14 @@ if __name__ == '__main__':
     for theta0, phi0, ax in zip(thetas, phis, [ax1, ax2, ax3, ax4]):
         t, y = solve_ic(eta, I, theta0, phi0)
 
-        ax.plot(y[1, :] % (2 * np.pi), np.cos(y[0, :]), 'bo', markersize=4)
+        ax.plot(y[1, :] % (2 * np.pi), np.cos(y[0, :]), 'bo', markersize=1)
         ax.set_title('Init: (%.3f, %.3f)' % (phi0, np.cos(theta0)), fontsize=8)
+        ax.set_xticks([0, np.pi, 2 * np.pi])
+    plt.suptitle(r'(I, $\eta$)=($%d^\circ$, %.3f)' % (np.degrees(I), eta),
+                 fontsize=10)
+    ax1.set_ylabel(r'$\cos \theta$')
+    ax3.set_xlabel(r'$\phi$')
+    ax3.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
+    ax3.set_ylabel(r'$\cos \theta$')
+    ax4.set_xlabel(r'$\phi$')
     plt.savefig('2evolution.png', dpi=400)

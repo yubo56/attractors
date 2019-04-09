@@ -137,11 +137,11 @@ Note that if we take $\cos\theta$ to be our canonical variable, $\sin\theta =
 
 \subsection{Equation of Motion}
 
-Consider Hamilton's equations applied to the Hamiltonian
+Consider Hamilton's equations applied to the Hamiltonian (not sure this is right)
 \begin{align}
-    \pd{\phi}{t} = -\pd{\mathcal{H}}{(\cos\theta)}
-        &= -\cos\theta + \eta\p*{\cos I + \sin I \cot \theta \cos \phi},\\
-    \pd{\theta}{t} = +\pd{\mathcal{H}}{\phi}
+    \pd{\phi}{t} = \pd{\mathcal{H}}{(\cos\theta)}
+        &= \cos\theta - \eta\p*{\cos I + \sin I \cot \theta \cos \phi},\\
+    \pd{\theta}{t} = \pd{\mathcal{H}}{\phi}
         &= -\eta \sin I \sin \theta \sin \phi.
 \end{align}
 This can be compared to the original EOM given in Kassandra's Eq.\ 12,
@@ -154,6 +154,8 @@ Recalling that $\abs*{\hat{\phi}} = \sin\theta$ (the differential geometry
 result), we can verify the expressions are equivalent for $\phi = \pi$,
 alignment with $\hat{s}, \hat{l}_p$ on the same side of $\hat{l}$ as in her
 Fig.\ 2, checks our signs.
+
+We can seek equilibria of these EOM
 
 \end{document}
 
