@@ -3,7 +3,7 @@ PNGS = $(PYS:.py=.png)
 
 all: $(PNGS)
 
-%.png: %.py
+%.png: %.py utils.py
 	rm -f $@ && python $<
 
 clean:
