@@ -27,7 +27,7 @@ if __name__ == '__main__':
             -np.sin(q_i) * np.cos(phi_i),
             -np.sin(q_i) * np.sin(phi_i),
             np.cos(q_i)]
-        sim_time, t, sol = solve_ic(I, eta, tide, s0, T_F, method='LSODA')
+        sim_time, t, sol = solve_ic(I, eta, tide, s0, T_F, rtol=1e-6)
         print('Sim time:', sim_time)
 
         x, y, z = sol

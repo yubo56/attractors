@@ -50,7 +50,7 @@ def get_jac(I, eta, tide):
         ]
     return jac
 
-def solve_ic(I, eta, tide, y0, tf, method='RK45'):
+def solve_ic(I, eta, tide, y0, tf, method='RK45', **kwargs):
     '''
     wraps solve_ivp and returns sim time
     '''
@@ -58,7 +58,7 @@ def solve_ic(I, eta, tide, y0, tf, method='RK45'):
     dydt = get_dydt(I, eta, tide)
     jac = get_jac(I, eta, tide)
     if 'RK' in method:
-        ret = solve_ivp(dydt, [0, tf], y0, method=method)
+        ret = solve_ivp(dydt, [0, tf], y0, method=method, **kwargs)
     else:
-        ret = solve_ivp(dydt, [0, tf], y0, method=method, jac=jac)
+        ret = solve_ivp(dydt, [0, tf], y0, method=method, jac=jac, **kwargs)
     return time.time() - time_i, ret.t, ret.y
