@@ -165,10 +165,19 @@ Alternatively, consider Hamilton's equations applied to the Hamiltonian:
     \pd{(\cos \theta)}{t} = -\pd{\mathcal{H}}{\phi}
         &= +\eta \sin I \sin \theta \sin \phi.
 \end{align}
-This seems to produce the same trajectories as Kassandra's EOM\@!
+This produces the same trajectories as the Cartesian EOM, so this is correct.
+However, since $\pd{\phi}{t} \propto 1/\sin\theta$, this is not a desirable
+system of equations to use, as they are very stiff near $\theta \approx 0$.
 
 We can check the stability of each of the equilibria of the EOM, there should be
 four corresponding to the four Cassini states:
+
+\subsection{Tidal Dissipation}
+
+We can add a tidal dissipation term; we write it in form
+$\p*{\rd{\hat{s}}{t}}_{tide} = \epsilon \hat{s} \times \p*{\hat{l} \times
+\hat{s}}$. Expanding, $\p*{\rd{\hat{s}}{t}}_{tide} = \epsilon \p*{\hat{z} -
+s_z\hat{s}}$.
 
 \end{document}
 
