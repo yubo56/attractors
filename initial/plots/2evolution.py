@@ -50,7 +50,7 @@ def solve_ic(eta, I, dydt, jac, y0, tide=0, method='RK45'):
     wraps solve_ivp and returns sim time
     '''
     time_i = time.time()
-    ret = solve_ivp(dydt, [0, T_F], y0, method=method)
+    ret = solve_ivp(dydt, [0, T_F], y0, method=method, jac=jac)
     return time.time() - time_i, ret.t, ret.y
 
 if __name__ == '__main__':
