@@ -4,46 +4,38 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
-from utils import roots, solve_ic
+from utils import roots, solve_ic, to_cart, to_ang, get_four_subplots,\
+    plot_point, get_phi
 
 if __name__ == '__main__':
     eta = 0.1
-    tide = 0.01
+    tide = 0.001
     I = np.radians(20)
     T_F = 10000
 
-    qs, phis = roots(eta, I)
+    qs, phis = roots(I, eta)
 
     pert = 0.08 # perturbation strength
 
-    f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True)
-    f.subplots_adjust(wspace=0)
+    f, axs = get_four_subplots()
 
-    for q0, phi0, ax in zip(qs, phis, [ax1, ax2, ax3, ax4]):
+    for q0, phi0, ax in zip(qs, phis, axs):
         q_i = q0 + pert
         phi_i = phi0 - pert
 
-        s0 = [
-            -np.sin(q_i) * np.cos(phi_i),
-            -np.sin(q_i) * np.sin(phi_i),
-            np.cos(q_i)]
-        sim_time, t, sol = solve_ic(I, eta, tide, s0, T_F, rtol=1e-6)
+        s0 = to_cart(q_i, phi_i)
+        sim_time, t, sol = solve_ic(I, eta, tide, s0, T_F)
         print('Sim time:', sim_time)
 
         x, y, z = sol
-        r = np.sqrt(x**2 + y**2 + z**2)
-        q = np.arccos(z / r) * np.sign(q_i)
-        phi = (np.arctan2(-y / np.sin(q), -x / np.sin(q)) + 2 * np.pi)\
-            % (2 * np.pi)
+        q, phi = to_ang(x, y, z)
+        phi = np.array([get_phi(th, phi=f) for th, f in zip(q, phi)])
 
         ax.plot(phi % (2 * np.pi),
                 np.cos(q),
                 'bo',
                 markersize=0.3)
-        ax.plot(phi0 % (2 * np.pi),
-                np.cos(q0),
-                'ro',
-                markersize=4)
+        plot_point(ax, q0, 'ro', markersize=4)
 
         ax.set_title(r'Init: $(\phi_0, \theta_0) = (%.3f, %.3f)$'
                      % (phi0, q0), fontsize=8)
@@ -51,9 +43,4 @@ if __name__ == '__main__':
 
     plt.suptitle(r'(I, $\eta$)=($%d^\circ$, %.3f)' % (np.degrees(I), eta),
                  fontsize=10)
-    ax1.set_ylabel(r'$\cos \theta$')
-    ax3.set_xlabel(r'$\phi$')
-    ax3.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
-    ax3.set_ylabel(r'$\cos \theta$')
-    ax4.set_xlabel(r'$\phi$')
     plt.savefig('2evolution.png', dpi=400)
