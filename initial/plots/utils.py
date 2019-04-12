@@ -19,7 +19,10 @@ def to_ang(x, y, z):
     return q, phi
 
 def get_phi(q, phi=0):
-    return phi + np.pi if q > 0 else phi
+    return ((phi + np.pi if q > 0 else phi) + 2 * np.pi) % (2 * np.pi)
+
+def get_phis(qs, phis):
+    return np.array([get_phi(th, phi=f) for th, f in zip(qs, phis)])
 
 def roots(I, eta):
     ''' returns theta roots from EOM '''

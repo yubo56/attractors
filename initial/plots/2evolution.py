@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
 from utils import roots, solve_ic, to_cart, to_ang, get_four_subplots,\
-    plot_point, get_phi
+    plot_point, get_phis
 
 if __name__ == '__main__':
     eta = 0.1
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
         x, y, z = sol
         q, phi = to_ang(x, y, z)
-        phi = np.array([get_phi(th, phi=f) for th, f in zip(q, phi)])
+        phi = get_phis(q, phi)
 
         ax.plot(phi % (2 * np.pi),
                 np.cos(q),

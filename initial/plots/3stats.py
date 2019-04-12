@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
 from utils import roots, to_cart, to_ang, solve_ic, get_four_subplots,\
-    plot_point, H, get_grids
+    plot_point, H, get_grids, get_phi, get_phis
 
 DAT_FN_TEMP = '%s3data.pkl'
 TAIL_LEN = 20 # number of points on the tail of the traj to determine sink
@@ -52,9 +52,9 @@ def get_sinks(I, eta, trajs, inits):
         sink_idxs, dists = get_dists(I, eta, tail)
 
         if len(sink_idxs) == 0:
-            zero_sinks.append(tail[ :, -1])
+            zero_sinks.append((init, tail[ :, -1]))
         elif len(sink_idxs) > 1:
-            mult_sinks.append(tail[ :, -1])
+            mult_sinks.append((init, tail[ :, -1]))
         else:
             inits_by_cass[sink_idxs[0]].append(init)
 
@@ -80,11 +80,9 @@ def run_for_tide(tide=1e-3,
                  eta=0.1,
                  I=np.radians(20),
                  T_F=2000,
-                 NUM_RUNS=5000):
+                 NUM_RUNS=10000):
 
     prefix = str(np.round(-np.log10(tide), 1)).replace('.', '_')
-    if prefix == '3_0':
-        prefix = ''
     DAT_FN = DAT_FN_TEMP % prefix
 
     if not os.path.exists(DAT_FN):
@@ -112,7 +110,8 @@ def run_for_tide(tide=1e-3,
                      % (phi, q), fontsize=8)
         if conv_pts:
             q_plot, phi_plot = np.array(conv_pts).T
-            ax.plot((phi_plot + 2 * np.pi) % (2 * np.pi),
+            phis_plot = get_phis(q_plot, phi_plot)
+            ax.plot(phis_plot,
                     np.cos(q_plot),
                     'ko',
                     markersize=0.5)
@@ -126,18 +125,24 @@ def run_for_tide(tide=1e-3,
                    levels=[H(I, eta, np.cos(qs[3]), phis[3])],
                    colors=['k'],
                    linewidths=1.6)
-    for arr, marker in zip([zeros, mults], ['go', 'co']):
-        for x, y, z in arr:
-            q, phi = to_ang(x, y, z)
-            axs[3].plot((phi + 2 * np.pi) % (2 * np.pi),
-                     np.cos(q),
-                     marker,
-                     markersize=0.5)
+    for (q0, _phi0), (x, y, z) in zeros:
+        phi0 = get_phi(q0, _phi0)
+        axs[3].plot(phi0,
+                    np.cos(q0),
+                    'bo',
+                    markersize=0.5)
+        q, _phi = to_ang(x, y, z)
+        phi = get_phi(q, _phi)
+        axs[3].plot(phi,
+                    np.cos(q),
+                   'mo',
+                    markersize=4)
 
     plt.savefig('%s3stats.png' % prefix, dpi=400)
 
 if __name__ == '__main__':
-    run_for_tide()
-    run_for_tide(tide=1e-2)
     run_for_tide(tide=3e-2)
+    run_for_tide(tide=1e-2)
     run_for_tide(tide=3e-3)
+    run_for_tide(tide=1e-3)
+    run_for_tide(tide=3e-4)
