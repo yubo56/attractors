@@ -80,7 +80,7 @@ def run_for_tide(tide=1e-3,
                  eta=0.1,
                  I=np.radians(20),
                  T_F=2000,
-                 NUM_RUNS=10000):
+                 NUM_RUNS=20000):
 
     prefix = str(np.round(-np.log10(tide), 1)).replace('.', '_')
     DAT_FN = DAT_FN_TEMP % prefix
@@ -145,4 +145,6 @@ if __name__ == '__main__':
     run_for_tide(tide=1e-2)
     run_for_tide(tide=3e-3)
     run_for_tide(tide=1e-3)
-    run_for_tide(tide=3e-4)
+    run_for_tide(tide=3e-4, NUM_RUNS=10000)
+    run_for_tide(tide=1e-4, NUM_RUNS=10000)
+    run_for_tide(tide=3e-5, NUM_RUNS=10000)

@@ -139,23 +139,12 @@ Note that if we take $\cos\theta$ to be our canonical variable, $\sin\theta =
 
 The correct EOM comes from Kassandra's Eq.\ 12:
 \begin{align*}
-    \rd{\hat{s}}{t} ={}&
+    \rd{\hat{s}}{t} &=
         \p*{\hat{s} \cdot \hat{l}}\p*{\hat{s} \times \hat{l}}
             -\eta\p*{\hat{s} \times \hat{l}_p},\\
-        ={}& \cos\theta \s*{
-            \hat{x}\p*{-\sin\theta \sin\phi}
-            - \hat{y}\p*{-\sin\theta \cos\phi}}\\
-            &- \eta \s*{
-                \hat{x}\p*{-\sin\theta \sin \phi \cos I}
-                - \hat{y}\p*{-\sin \theta \cos \phi \cos I
-                    - \cos \theta\sin I}
-                + \hat{z}\p*{+\sin\theta \sin \phi \sin I}},\\
-        ={}& \s*{-\sin\theta \sin\phi \cos\theta
-            + \eta \sin \theta \sin \phi \cos I}\hat{x}
-            + \s*{\cos\theta \sin\theta \cos\phi
-                - \eta\p*{\sin\theta \cos\phi \cos I
-                    + \cos\theta \sin I}}\hat{y}\\
-            &+ \s*{-\eta\sin\theta \sin\phi \sin I}\hat{z}.
+        &= \p*{s_ys_z - \eta s_y\cos(I)}\hat{x}
+            - \p*{s_xs_z + \eta \p*{s_x\cos I - s_z\sin I}}\hat{y}
+            + \eta s_y \sin(I)\hat{z}.
 \end{align*}
 
 Alternatively, consider Hamilton's equations applied to the Hamiltonian:
@@ -169,15 +158,42 @@ This produces the same trajectories as the Cartesian EOM, so this is correct.
 However, since $\pd{\phi}{t} \propto 1/\sin\theta$, this is not a desirable
 system of equations to use, as they are very stiff near $\theta \approx 0$.
 
-We can check the stability of each of the equilibria of the EOM, there should be
-four corresponding to the four Cassini states:
-
 \subsection{Tidal Dissipation}
 
 We can add a tidal dissipation term; we write it in form
 $\p*{\rd{\hat{s}}{t}}_{tide} = \epsilon \hat{s} \times \p*{\hat{l} \times
-\hat{s}}$. Expanding, $\p*{\rd{\hat{s}}{t}}_{tide} = \epsilon \p*{\hat{z} -
-s_z\hat{s}}$.
+\hat{s}}$. Expanding,
+\begin{align}
+    \p*{\rd{\hat{s}}{t}}_{tide} &= \epsilon \p*{\hat{z} - s_z\hat{s}}
+        ,\nonumber\\
+        &= \epsilon \p*{-s_z s_x\hat{x} - s_zs_y\hat{y} + \p*{1 - s_z^2}
+            \hat{z}}.
+\end{align}
+We run numerical simulations for weaker $\epsilon \ll \eta \ll 1$ and stronger
+$\epsilon \lesssim \eta \ll 1$.
+
+We can seek equilibria of the the system including tides, which requires
+\begin{align*}
+    0 &= s_ys_z - \eta s_y\cos I - \epsilon s_zs_x,\\
+    0 &= -s_xs_z - \eta\p*{s_x \cos I - s_z \sin I} - \epsilon s_zs_y,\\
+    0 &= \eta s_y\sin(I) + \epsilon \p*{1 - s_z^2}.
+\end{align*}
+We expect at least two equilibria, based on the simulations: one near $s_z
+\approx 1$ and one $s_z \approx 0$.
+
+For near alignment/near Cassini state $1$, $1 - s_z \sim 1 - s_{\perp}^2$, so we
+can set $s_z = 1$ to first order: $s_y - \epsilon s_x - \eta s_y \cos I = -s_x -
+\eta\p*{s_x \cos I - \sin I} - \epsilon s_y = \eta s_y \sin I = 0$. This can be
+satisfied if we set $s_x = \tan(I) \ll 1, s_y = \mathcal{O}\p*{\epsilon s_x}$;
+this coarsely corresponds to Cassini state $1$.
+
+The other solution should be near Cassini state $2$, where $s_x \approx 1$;
+dropping second order terms forces $\eta s_y + \epsilon s_z = -s_z -
+\eta\p*{\cos I - s_z\sin I} = \eta s_y \sin(I) + \epsilon = 0$. This can thus be
+satisfied for $s_y \approx -\frac{\epsilon}{\eta \sin(I)}$. Thus, this explains
+why as $\epsilon$ is increased, we first start to get points that don't converge
+to Cassini state $2$ in the absence of tides, before starting to see points that
+fail to converge to Cassini state $1$.
 
 \end{document}
 
