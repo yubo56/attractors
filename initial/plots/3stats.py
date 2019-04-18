@@ -13,6 +13,7 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
 from utils import roots, to_cart, to_ang, solve_ic, get_four_subplots,\
     plot_point, H, get_grids, get_phi, get_phis, is_below
+import matplotlib.lines as mlines
 
 DAT_FN_TEMP = '%s3data.pkl'
 TAIL_LEN = 20 # number of points on the tail of the traj to determine sink
@@ -162,6 +163,11 @@ def run_for_tide(tide=1e-3,
             % (get_phi(qs[3]), qs[3],
                belows_zero / tot_belows, len(zeros) / tot_pts),
             fontsize=8)
+        ln1 = mlines.Line2D([], [], color='b', marker='o', markersize=0.5,
+                            linewidth=0, label='Init')
+        ln2 = mlines.Line2D([], [], color='m', marker='o', markersize=4,
+                            linewidth=0, label=r'Final')
+        axs[3].legend(handles=[ln1, ln2], fontsize=6, loc='upper left')
 
     plt.suptitle(r'(I, $\eta$, $\epsilon$, N)=($%d^\circ$, %.1f, %.1e, %d)'
                  % (np.degrees(I), eta, tide, NUM_RUNS), fontsize=10)

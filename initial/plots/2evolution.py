@@ -15,12 +15,12 @@ if __name__ == '__main__':
 
     qs, phis = roots(I, eta)
 
-    pert = 0.08 # perturbation strength
+    pert = 0.2 # perturbation strength
 
     f, axs = get_four_subplots()
 
     for q0, phi0, ax in zip(qs, phis, axs):
-        q_i = q0 + pert
+        q_i = q0
         phi_i = phi0 - pert
 
         s0 = to_cart(q_i, phi_i)
@@ -34,13 +34,20 @@ if __name__ == '__main__':
         ax.plot(phi % (2 * np.pi),
                 np.cos(q),
                 'bo',
-                markersize=0.3)
-        plot_point(ax, q0, 'ro', markersize=4)
+                markersize=0.3,
+                label='Traj')
+        ax.plot(phi[0] % (2 * np.pi),
+                np.cos(q[0]),
+                'co',
+                markersize=2,
+                label='Init')
+        plot_point(ax, q0, 'ro', markersize=4, label='Cassini')
 
         ax.set_title(r'Init: $(\phi_0, \theta_0) = (%.3f, %.3f)$'
                      % (phi_i, q_i), fontsize=8)
         ax.set_xticks([0, np.pi, 2 * np.pi])
 
+    axs[1].legend(fontsize=6)
     plt.suptitle(r'(I, $\eta$, $\epsilon$)=($%d^\circ$, %.1f, %.1e)'
                  % (np.degrees(I), eta, tide), fontsize=10)
     plt.savefig('2evolution.png', dpi=400)
