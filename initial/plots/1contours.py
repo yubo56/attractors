@@ -4,7 +4,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
-from utils import roots, get_four_subplots, plot_point, H, get_grids
+from utils import roots, get_four_subplots, plot_point, H, get_grids, get_etac
 
 def plot_H_for_eta(ax, eta, I=np.radians(20)):
     '''
@@ -30,6 +30,8 @@ def plot_H_for_eta(ax, eta, I=np.radians(20)):
                    levels=[H(I, eta, np.cos(thetas[3]), phis[3])],
                    colors=['k'],
                    linewidths=1.6)
+
+    plt.suptitle(r'$\eta_c = %.3f$' % get_etac(I))
 
 if __name__ == '__main__':
     f, axs = get_four_subplots()

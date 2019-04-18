@@ -24,9 +24,12 @@ def get_phi(q, phi=0):
 def get_phis(qs, phis):
     return np.array([get_phi(th, phi=f) for th, f in zip(qs, phis)])
 
+def get_etac(I):
+    return (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
+
 def roots(I, eta):
     ''' returns theta roots from EOM '''
-    eta_c = (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
+    eta_c = get_etac(I)
 
     # function to minimize and derivatives
     f = lambda q: -eta * np.sin(q - I) + np.sin(q) * np.cos(q)
