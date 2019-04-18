@@ -131,4 +131,16 @@ def is_below(I, eta, q, phi):
     x3, phi3 = np.cos(qs[3]), phis[3]
     x = np.cos(q)
 
-    return np.logical_and(x < x3 , H(I, eta, x, phi) > H(I, eta, x3, phi3))
+    return np.logical_and(x < x3 ,
+                          H(I, eta, x, get_phis(q, phi)) > H(I, eta, x3, phi3))
+
+def get_sep_area(eta, I):
+    ''' numerically approximate the separatrix area '''
+    x_grid, phi_grid = get_grids()
+    H_grid = H(I, eta, x_grid, phi_grid)
+    thetas, phis = roots(I, eta)
+    H_sep = H(I, eta, np.cos(thetas[3]), phis[3])
+
+    num_inside = np.size(
+            np.where(H_grid < H(I, eta, np.cos(thetas[3]), phis[3]))[0])
+    return num_inside / np.size(H_grid)

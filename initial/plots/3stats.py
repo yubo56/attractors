@@ -1,5 +1,9 @@
 '''
 randomly generates a bunch of points and sees which fixed point they evolve to
+
+Results:
+38.7% phase space below/above sep, 22.6% inside
+26% go to 2, 74% go to 1. Below, 8% go to 2, 92% go to 1
 '''
 import os
 import pickle
@@ -12,7 +16,7 @@ import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
 from utils import roots, to_cart, to_ang, solve_ic, get_four_subplots,\
-    plot_point, H, get_grids, get_phi, get_phis, is_below
+    plot_point, H, get_grids, get_phi, get_phis, is_below, get_sep_area
 import matplotlib.lines as mlines
 
 DAT_FN_TEMP = '%s3data.pkl'
@@ -143,7 +147,7 @@ def run_for_tide(tide=1e-3,
             zip(qs, phis, below_convs, conv_data, axs):
         ax.set_title(
             r'$(\phi_0, \theta_0, P_T, P_<) = (%.2f, %.2f) (%.3f, %.3f)$'
-            % (get_phi(q), q, belows / tot_belows, len(conv_pts) / tot_pts),
+            % (get_phi(q), q, len(conv_pts) / tot_pts, belows / tot_belows),
             fontsize=8)
 
     for (q0, _phi0), (x, y, z) in zeros:
@@ -161,7 +165,7 @@ def run_for_tide(tide=1e-3,
         axs[3].set_title(
             r'$(\phi_0, \theta_0, P_T, P_<) = (%.2f, %.2f) (%.3f, %.3f)$'
             % (get_phi(qs[3]), qs[3],
-               belows_zero / tot_belows, len(zeros) / tot_pts),
+               len(zeros) / tot_pts, belows_zero / tot_belows),
             fontsize=8)
         ln1 = mlines.Line2D([], [], color='b', marker='o', markersize=0.5,
                             linewidth=0, label='Init')
@@ -169,8 +173,10 @@ def run_for_tide(tide=1e-3,
                             linewidth=0, label=r'Final')
         axs[3].legend(handles=[ln1, ln2], fontsize=6, loc='upper left')
 
-    plt.suptitle(r'(I, $\eta$, $\epsilon$, N)=($%d^\circ$, %.1f, %.1e, %d)'
-                 % (np.degrees(I), eta, tide, NUM_RUNS), fontsize=10)
+    plt.suptitle((r'(I, $\eta$, $\epsilon$, N)=($%d^\circ$, %.1f, %.1e, %d)' +
+                 r', A = %.3f')
+                 % (np.degrees(I), eta, tide, NUM_RUNS, get_sep_area(eta, I)),
+                 fontsize=10)
     plt.savefig('%s3stats.png' % prefix, dpi=400)
 
 if __name__ == '__main__':
