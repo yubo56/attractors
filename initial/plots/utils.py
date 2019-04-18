@@ -118,3 +118,14 @@ def get_grids(N=50):
     phi_grid = np.outer(_phi, np.ones_like(_x))
     x_grid = np.outer(np.ones_like(_phi), _x)
     return x_grid, phi_grid
+
+def is_below(I, eta, q, phi):
+    '''
+    'below separatrix' defined here as x < x[3] (Cassini state 4) &
+    H(q, phi) > H[3] (energy of Cassini state 4)
+    '''
+    qs, phis = roots(I, eta)
+    x3, phi3 = np.cos(qs[3]), phis[3]
+    x = np.cos(q)
+
+    return np.logical_and(x < x3 , H(I, eta, x, phi) > H(I, eta, x3, phi3))

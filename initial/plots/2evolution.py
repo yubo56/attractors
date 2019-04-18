@@ -38,9 +38,9 @@ if __name__ == '__main__':
         plot_point(ax, q0, 'ro', markersize=4)
 
         ax.set_title(r'Init: $(\phi_0, \theta_0) = (%.3f, %.3f)$'
-                     % (phi0, q0), fontsize=8)
+                     % (phi_i, q_i), fontsize=8)
         ax.set_xticks([0, np.pi, 2 * np.pi])
 
-    plt.suptitle(r'(I, $\eta$)=($%d^\circ$, %.3f)' % (np.degrees(I), eta),
-                 fontsize=10)
+    plt.suptitle(r'(I, $\eta$, $\epsilon$)=($%d^\circ$, %.1f, %.1e)'
+                 % (np.degrees(I), eta, tide), fontsize=10)
     plt.savefig('2evolution.png', dpi=400)

@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
 from utils import roots, to_cart, to_ang, solve_ic, get_four_subplots,\
-    plot_point, H, get_grids, get_phi, get_phis
+    plot_point, H, get_grids, get_phi, get_phis, is_below
 
 DAT_FN_TEMP = '%s3data.pkl'
 TAIL_LEN = 20 # number of points on the tail of the traj to determine sink
@@ -105,16 +105,20 @@ def run_for_tide(tide=1e-3,
 
     f, axs = get_four_subplots()
     qs, phis = roots(I, eta)
+
+    # points below the separatrix, where do they converge to?
+    below_convs = []
     for q, phi, ax, conv_pts in zip(qs, phis, axs, conv_data):
-        ax.set_title(r'$(\phi_0, \theta_0) = (%.3f, %.3f)$'
-                     % (phi, q), fontsize=8)
         if conv_pts:
             q_plot, phi_plot = np.array(conv_pts).T
+            below_convs.append(sum(is_below(I, eta, q_plot, phi_plot)))
             phis_plot = get_phis(q_plot, phi_plot)
             ax.plot(phis_plot,
                     np.cos(q_plot),
                     'ko',
                     markersize=0.5)
+        else:
+            below_convs.append(0)
         plot_point(ax, q, 'ro', markersize=8)
 
         x_grid, phi_grid = get_grids()
@@ -125,6 +129,22 @@ def run_for_tide(tide=1e-3,
                    levels=[H(I, eta, np.cos(qs[3]), phis[3])],
                    colors=['k'],
                    linewidths=1.6)
+
+    if len(zeros):
+        q_zeros, phi_zeros = np.array([tup[0] for tup in zeros]).T
+        belows_zero = sum(is_below(I, eta, q_zeros, phi_zeros))
+    else:
+        belows_zero = 0
+
+    tot_pts = sum([len(pts) for pts in conv_data]) + len(zeros)
+    tot_belows = sum(below_convs) + belows_zero
+    for q, phi, belows, conv_pts, ax in\
+            zip(qs, phis, below_convs, conv_data, axs):
+        ax.set_title(
+            r'$(\phi_0, \theta_0, P_T, P_<) = (%.2f, %.2f) (%.3f, %.3f)$'
+            % (get_phi(q), q, belows / tot_belows, len(conv_pts) / tot_pts),
+            fontsize=8)
+
     for (q0, _phi0), (x, y, z) in zeros:
         phi0 = get_phi(q0, _phi0)
         axs[3].plot(phi0,
@@ -137,7 +157,14 @@ def run_for_tide(tide=1e-3,
                     np.cos(q),
                    'mo',
                     markersize=4)
+        axs[3].set_title(
+            r'$(\phi_0, \theta_0, P_T, P_<) = (%.2f, %.2f) (%.3f, %.3f)$'
+            % (get_phi(qs[3]), qs[3],
+               belows_zero / tot_belows, len(zeros) / tot_pts),
+            fontsize=8)
 
+    plt.suptitle(r'(I, $\eta$, $\epsilon$, N)=($%d^\circ$, %.1f, %.1e, %d)'
+                 % (np.degrees(I), eta, tide, NUM_RUNS), fontsize=10)
     plt.savefig('%s3stats.png' % prefix, dpi=400)
 
 if __name__ == '__main__':
