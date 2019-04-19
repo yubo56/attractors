@@ -19,7 +19,7 @@ from utils import roots, to_cart, to_ang, solve_ic, get_four_subplots,\
     plot_point, H, get_grids, get_phi, get_phis, is_below, get_sep_area
 import matplotlib.lines as mlines
 
-DAT_FN_TEMP = '%s3data.pkl'
+DAT_FN_TEMP = '3stats%s.pkl'
 TAIL_LEN = 20 # number of points on the tail of the traj to determine sink
 RETRIES = 50 # number of times to retry for convergence
 
@@ -87,7 +87,8 @@ def run_for_tide(tide=1e-3,
                  T_F=2000,
                  NUM_RUNS=20000):
 
-    prefix = str(np.round(-np.log10(tide), 1)).replace('.', '_')
+    prefix = (str(np.round(-np.log10(tide), 1)) + '_' + str(eta))\
+     .replace('.', '_')
     dat_fn = DAT_FN_TEMP % prefix
 
     if not os.path.exists(dat_fn):
@@ -180,10 +181,13 @@ def run_for_tide(tide=1e-3,
     plt.savefig('3stats%s.png' % prefix, dpi=400)
 
 if __name__ == '__main__':
-    run_for_tide(tide=3e-2)
-    run_for_tide(tide=1e-2)
-    run_for_tide(tide=3e-3)
-    run_for_tide(tide=1e-3)
-    run_for_tide(tide=3e-4, NUM_RUNS=10000)
-    run_for_tide(tide=1e-4, NUM_RUNS=10000)
-    run_for_tide(tide=3e-5, NUM_RUNS=10000)
+    # run_for_tide(tide=3e-2)
+    # run_for_tide(tide=1e-2)
+    # run_for_tide(tide=3e-3)
+    # run_for_tide(tide=1e-3)
+    # run_for_tide(tide=3e-4, NUM_RUNS=10000)
+    # run_for_tide(tide=1e-4, NUM_RUNS=10000)
+    # run_for_tide(tide=3e-5, NUM_RUNS=10000)
+    run_for_tide(tide=3e-4, eta=0.2, NUM_RUNS=10000)
+    run_for_tide(tide=3e-4, eta=0.05, NUM_RUNS=10000)
+    run_for_tide(tide=3e-4, eta=0.025, NUM_RUNS=10000)

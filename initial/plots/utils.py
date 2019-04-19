@@ -115,7 +115,7 @@ def H(I, eta, x, phi):
         x * np.cos(I) -
         np.sqrt(1 - x**2) * np.sin(I) * np.cos(phi))
 
-def get_grids(N=50):
+def get_grids(N=100):
     _phi = np.linspace(0, 2 * np.pi, N)
     _x = np.linspace(-1, 1, N)
     phi_grid = np.outer(_phi, np.ones_like(_x))

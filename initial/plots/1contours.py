@@ -14,7 +14,8 @@ def plot_H_for_eta(ax, eta, I):
     '''
     x_grid, phi_grid = get_grids()
     H_grid = H(I, eta, x_grid, phi_grid)
-    ax.contour(phi_grid, x_grid, H_grid, cmap='RdBu_r', linewidths=0.8)
+    ax.contour(phi_grid, x_grid, H_grid,
+               cmap='RdBu_r', linewidths=0.8, levels=20)
 
     thetas, phis = roots(I, eta)
     colors = ['r', 'm', 'g', 'c'] if len(thetas) == 4 else ['m', 'g']
@@ -33,7 +34,7 @@ def plot_H_for_eta(ax, eta, I):
     else:
         title_str = ''
 
-    ax.set_title(r'(I, $\eta$)=($%d^\circ$, %.3f)%s'
+    ax.set_title(r'$(I, \eta)=(%d^\circ, %.3f)$%s'
                  % (np.degrees(I), eta, title_str), fontsize=8)
 
 if __name__ == '__main__':
@@ -45,3 +46,4 @@ if __name__ == '__main__':
 
     plt.suptitle(r'$\eta_c = %.3f$' % get_etac(I))
     plt.savefig('1contours.png', dpi=400)
+    plt.clf()
