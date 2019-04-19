@@ -88,10 +88,10 @@ def run_for_tide(tide=1e-3,
                  NUM_RUNS=20000):
 
     prefix = str(np.round(-np.log10(tide), 1)).replace('.', '_')
-    DAT_FN = DAT_FN_TEMP % prefix
+    dat_fn = DAT_FN_TEMP % prefix
 
-    if not os.path.exists(DAT_FN):
-        print('%s not found, running' % DAT_FN)
+    if not os.path.exists(dat_fn):
+        print('%s not found, running' % dat_fn)
         inits = get_rand_init(NUM_RUNS)
 
         p = Pool(4)
@@ -101,11 +101,11 @@ def run_for_tide(tide=1e-3,
 
         conv_data, zeros, mults = get_sinks(I, eta, trajs, inits[ :, 0:2])
 
-        with open(DAT_FN, 'wb') as dat_file:
+        with open(dat_fn, 'wb') as dat_file:
             pickle.dump((conv_data, zeros, mults), dat_file)
     else:
-        print('%s found, loading' % DAT_FN)
-        with open(DAT_FN, 'rb') as dat_file:
+        print('%s found, loading' % dat_fn)
+        with open(dat_fn, 'rb') as dat_file:
             conv_data, zeros, mults = pickle.load(dat_file)
 
     f, axs = get_four_subplots()
@@ -177,7 +177,7 @@ def run_for_tide(tide=1e-3,
                  r', A = %.3f')
                  % (np.degrees(I), eta, tide, NUM_RUNS, get_sep_area(eta, I)),
                  fontsize=10)
-    plt.savefig('%s3stats.png' % prefix, dpi=400)
+    plt.savefig('3stats%s.png' % prefix, dpi=400)
 
 if __name__ == '__main__':
     run_for_tide(tide=3e-2)
