@@ -195,5 +195,49 @@ why as $\epsilon$ is increased, we first start to get points that don't converge
 to Cassini state $2$ in the absence of tides, before starting to see points that
 fail to converge to Cassini state $1$.
 
+\section{Separatrix Hopping}
+
+Inspired by G\&H, heteroclinic orbits are topologically unstable for any nonzero
+perturbation, but opened width $\sim$ perturbation parameter.
+
+We zoom in on Cassini State $4$, which has $\cos \theta \approx 0, \phi = 0$. In
+particular, by using equations of motion
+\begin{align}
+    \pd{\phi}{t} &= \cos \theta - \eta\p*{\cos I + \sin I \cot \theta \cos \phi}
+        ,\\
+    \pd{\theta}{t} &= -\eta \sin I \sin \phi - \s*{\epsilon \sin \theta},
+\end{align}
+we can compute $\theta_4 \approx -\frac{\pi}{2} +\frac{\eta \sin I}{1 + \eta
+\cos I}, \phi_4 = 0$ in the $\epsilon = 0$ limit (the other solution is
+$\theta_2 \approx +\frac{\pi}{2} - (\dots)$). Indeed the signs are correct:
+near $\theta \approx \frac{\pi}{2}, \phi \approx 0$ we have EOM
+$\dot{\delta\phi}_4 \approx -\delta \theta_4$ while $\dot{\delta \theta_4}
+\approx -\eta \sin I \delta \phi_4$ which is unstable.
+
+Substituting in perturbatively for nonzero $\epsilon$ in $\pd{\theta}{t}$ gives
+$\delta \phi_4 = +\frac{\epsilon}{\eta \sin I}, \delta \theta_4 = 0$. This is in
+agreement with Dong's result. Note that $\delta \theta_2 = -\frac{\epsilon}{\eta
+\sin I}$, which I saw in my simulations.
+
+This implies that the stable manifolds of the two saddle points, which once
+overlapped with each other's unstable manifolds (creating a heteroclinic orbit)
+now are offset from one another by distance $D \sim \frac{\epsilon}{\eta \sin
+I}$. The question is how likely it is to thread the needle.
+
+Consider that, very near CS4, the angle of incidence on the desired gap is
+roughly $\tan \psi \approx \psi = \frac{\Delta \theta}{\Delta \phi}$. Over the
+course of one orbit, $\Delta \phi$ changes by $2\pi$, while $\Delta \theta \sim
+\epsilon \sin \theta T$ where $T$ is the period of an orbit. Examining the data,
+$T \sim 50$, and so $\frac{\Delta \theta}{\Delta \phi} \sim \frac{2\pi}{\epsilon
+(50)}$.
+
+The effective probability of threading the opened gap between the
+stable/unstable manifolds is then just $P \propto D\sin \psi \sim
+\frac{2\pi}{T\p*{\eta \sin I}}$. Plugging in some observational values $T \sim
+50, \eta = 0.1, I = 20^\circ$ gives $P \propto 0.13$. In reality, I find it
+asymptotes to $\sim 0.08$, so the constant of proportionality is of order unity.
+Not bad given the really crappy $\psi \sim
+\frac{\ev*{\dot{\theta}}}{\dot{\phi}}$ argument.
+
 \end{document}
 
