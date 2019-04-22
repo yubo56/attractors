@@ -134,6 +134,16 @@ def is_below(I, eta, q, phi):
     return np.logical_and(x < x3 ,
                           H(I, eta, x, get_phis(q, phi)) > H(I, eta, x3, phi3))
 
+def is_inside(I, eta, q, phi):
+    '''
+    'inside' separatrix is simply H < H[3]
+    '''
+    qs, phis = roots(I, eta)
+    x3, phi3 = np.cos(qs[3]), phis[3]
+    x = np.cos(q)
+
+    return H(I, eta, x, get_phis(q, phi)) < H(I, eta, x3, phi3)
+
 def get_sep_area(eta, I):
     ''' numerically approximate the separatrix area '''
     x_grid, phi_grid = get_grids()

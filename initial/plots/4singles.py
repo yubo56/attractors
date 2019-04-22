@@ -29,6 +29,11 @@ def plot_circs(t, ax, phi, q, color, num):
         if idx_top - idx == 1 or all(phi_grad_s == phi_grad_s[0]):
             idx = idx_top + 1
             continue
+        sign_changes = 0
+        for i in range(len(phi_grad_s) - 1):
+            if np.sign(phi_grad_s[i]) != np.sign(phi_grad_s[i + 1]):
+                sign_changes += 1
+        print(sign_changes, (t[idx_top] - t[idx]) / sign_changes)
         ax.plot(phi[idx: idx_top] % (2 * np.pi),
                 np.cos(q[idx: idx_top]),
                 color,
@@ -39,7 +44,7 @@ def plot_circs(t, ax, phi, q, color, num):
         break
 
 def plot_trajs():
-    filename = '3_53data.pkl'
+    filename = '3stats3_5_0_1.pkl'
     I = np.radians(20)
     eta = 0.1
     tide = 3e-4
@@ -48,17 +53,22 @@ def plot_trajs():
     f, axs = plt.subplots(1, 2, sharey=True)
     f.subplots_adjust(wspace=0)
     with open(filename, 'rb') as dat_file:
-        conv_data, _, mults = pickle.load(dat_file)
+        conv_data, zeros, _ = pickle.load(dat_file)
 
     # just for first two Cassini states
-    for conv_pts, color, ax, idx in zip(conv_data[0: 2], COLORS, axs, range(2)):
+    if len(zeros):
+        pts_arr = [conv_data[0], [tup[0] for tup in zeros]]
+    else:
+        pts_arr = [conv_data[0], conv_data[1]]
+    for conv_pts, color, ax, idx in zip(pts_arr, COLORS, axs, range(2)):
         q_pts, phi_pts = np.array(conv_pts).T
         # pick out a point that starts at x in [-0.2, -0.1] and phi < 0.2, so
         # close to the separatrix
-        first_idx = np.where(np.logical_and.reduce([
-            np.cos(q_pts) < -0.1,
-            np.cos(q_pts) > -0.2,
-            get_phis(q_pts, phi_pts) < 0.2]))[0][3]
+        first_idxs = np.where(np.logical_and.reduce([
+            np.cos(q_pts) < 0,
+            np.cos(q_pts) > -0.3,
+            get_phis(q_pts, phi_pts) < 0.5]))
+        first_idx = first_idxs[0][0]
         s = to_cart(q_pts[first_idx], phi_pts[first_idx])
         _, t, sol = solve_ic(I, eta, tide, s, tf)
 

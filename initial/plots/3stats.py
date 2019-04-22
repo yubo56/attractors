@@ -147,8 +147,8 @@ def run_for_tide(tide=1e-3,
     for q, phi, belows, conv_pts, ax in\
             zip(qs, phis, below_convs, conv_data, axs):
         ax.set_title(
-            r'$(P_T, P_<) = (%.3f, %.3f)$'
-            % (len(conv_pts) / tot_pts, belows / tot_belows),
+            r'$(\phi_0, \theta_0, P_T, P_<) = (%.2f, %.2f) (%.3f, %.3f)$'
+            % (get_phi(q), q, len(conv_pts) / tot_pts, belows / tot_belows),
             fontsize=8)
 
     for (q0, _phi0), (x, y, z) in zeros:
@@ -164,8 +164,9 @@ def run_for_tide(tide=1e-3,
                    'mo',
                     markersize=4)
         axs[3].set_title(
-            r'$(P_T, P_<) = (%.3f, %.3f)$'
-            % (len(zeros) / tot_pts, belows_zero / tot_belows),
+            r'$(\phi_0, \theta_0, P_T, P_<) = (%.2f, %.2f) (%.3f, %.3f)$'
+            % (get_phi(qs[3]), qs[3],
+               len(zeros) / tot_pts, belows_zero / tot_belows),
             fontsize=8)
         ln1 = mlines.Line2D([], [], color='b', marker='o', markersize=0.5,
                             linewidth=0, label='Init')
