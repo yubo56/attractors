@@ -158,6 +158,42 @@ This produces the same trajectories as the Cartesian EOM, so this is correct.
 However, since $\pd{\phi}{t} \propto 1/\sin\theta$, this is not a desirable
 system of equations to use, as they are very stiff near $\theta \approx 0$.
 
+\subsection{Separatrix Area}
+
+We can estimate the area enclosed by the separatrix, as shown in
+\autoref{fig:1contours}. Note that the separatrix joins Cassini State 4 to its
+$+ 2\pi$ image.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.6\textwidth]{plots/1contours.png}
+    \caption{Separatrix for various values of $\eta$.}\label{fig:1contours}
+\end{figure}
+
+We notate $\mu = \cos\theta$; note that CS4 is $\mu_4 \approx \frac{\eta \cos
+I}{1 + \eta \sin I} \approx \eta \cos I$. Setting the Hamiltonian equal to its
+value at CS4 gives
+\begin{align*}
+    H_4 &\equiv H\p*{\mu_4, \phi_4}
+        \approx \frac{\mu_4^2}{2} - \eta \mu_4 \cos I + \eta \sin I,\\
+        &= -\eta^2\cos^2 I + \eta \sin I,\\
+    H(\mu_{sep}, \phi_{sep})
+        &= H_4 = \eta \sin I \cos \phi + \frac{\mu^2}{2} - \eta \mu \cos I
+            + \mathcal{O}(\eta^3),\\
+    0 &\approx \frac{\mu_{sep}^2}{2} - \eta \mu_{sep} \cos I
+        - \eta \sin I\p*{1 - \cos \phi_{sep}} + \eta^2\cos^2I,\\
+    \mu_{sep}\p*{\phi} &\approx \sqrt{2\eta \sin I\p*{1 - \cos \phi}}
+        + \mathcal{O}(\eta).
+\end{align*}
+
+We can then easily compute the area enclosed by the separatrix
+\begin{align}
+    A_{sep} &= \int\limits_0^{2\pi}2\mu_{sep}\;\mathrm{d}\phi,\nonumber\\
+        &\approx 16\sqrt{\eta \sin I}.
+\end{align}
+For $\eta = 0.1, I = 20^\circ$, this predicts $\frac{A_{sep}}{A_{T}} \approx
+0.235$, which is pretty close to my numerically calculated $\frac{A_{sep}}{A_T}
+= 0.229$.
+
 \subsection{Tidal Dissipation}
 
 We can add a tidal dissipation term; we write it in form
@@ -207,8 +243,8 @@ particular, by using equations of motion
         ,\\
     \pd{\theta}{t} &= -\eta \sin I \sin \phi - \s*{\epsilon \sin \theta},
 \end{align}
-we can compute $\theta_4 \approx -\frac{\pi}{2} +\frac{\eta \sin I}{1 + \eta
-\cos I}, \phi_4 = 0$ in the $\epsilon = 0$ limit (the other solution is
+we can compute $\theta_4 \approx -\frac{\pi}{2} +\frac{\eta \cos I}{1 + \eta
+\sin I}, \phi_4 = 0$ in the $\epsilon = 0$ limit (the other solution is
 $\theta_2 \approx +\frac{\pi}{2} - (\dots)$). Indeed the signs are correct:
 near $\theta \approx \frac{\pi}{2}, \phi \approx 0$ we have EOM
 $\dot{\delta\phi}_4 \approx -\delta \theta_4$ while $\dot{\delta \theta_4}
@@ -238,6 +274,45 @@ stable/unstable manifolds is then just $P \propto D\sin \psi \sim
 asymptotes to $\sim 0.08$, so the constant of proportionality is of order unity.
 Not bad given the really crappy $\psi \sim
 \frac{\ev*{\dot{\theta}}}{\dot{\phi}}$ argument.
+
+\subsection{Melnikov Distance}
+
+We notice that the separatrix is a heteroclinic orbit, or a saddle connection,
+in the dissipation free problem. Introducing dissipation breaks the saddle
+connection by a distance that can be estimated with the Melnikov distance. This
+is G\&H Equation 4.5.11 or something:
+\begin{align}
+    d(t_0) &= \frac{\epsilon M(t_0)}{\abs*{f(q^0(0))}} + \mathcal{O}(\epsilon^2)
+        ,\\
+    M(t_0) &= \int\limits_{-\infty}^\infty
+        \s*{f \times g}_{hetero}\;\mathrm{d}t.
+\end{align}
+We evaluate the Melnikov integral $M(t_0)$ on the heteroclinic orbit. Note that
+since in our problem our perturbation $g$ is time-independent, so too is the
+Melnikov integral $M(t_0) = M$.
+
+Let's apply this to the Cassini state Hamiltonian w/ dissipation. We first write
+down our EOM in Melnikov form (we use canonical variables $\mu, \phi$):
+\begin{align}
+    \rd{\hat{s}}{t}
+        &= \underbrace{
+            \pd{\mathcal{H}}{\mu}\hat{\phi} - \pd{\mathcal{H}}{\phi}\hat{\mu}}_f
+            + \epsilon \underbrace{\p*{1 - \mu^2}\hat{\mu}}_g.
+\end{align}
+Then $f \times g = f_\phi g_\mu = \pd{\mathcal{H}}{\mu}\p*{1 - \mu^2}$. We then
+want to integrate this along the heteroclinic orbit. We can make change of
+variables
+\begin{equation}
+    M = \int\limits_0^{2\pi}\pd{\mathcal{H}}{\mu}
+        \p*{1 - \mu^2}\p*{\pd{\phi}{t}}^{-1}\;\mathrm{d}\phi.
+\end{equation}
+But thankfully, $\pd{\mathcal{H}}{\mu} = \pd{\phi}{t}$ in the absence of
+dissipation, and so $M = 2\pi\p*{1 - \mu^2} \approx 2\pi\p*{1 - 2\eta \sin I}$.
+Thus, the Melnikov distance at point $q^0$, a point on the heteroclinic
+orbit of the unperturbed Hamiltonian, is just
+\begin{equation}
+    d(q^0) = \frac{2\pi \epsilon\p*{1 - 2\eta \sin I}}{\abs*{f(q^0)}}.
+\end{equation}
 
 \end{document}
 
