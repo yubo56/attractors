@@ -269,11 +269,11 @@ $T \sim 50$, and so $\frac{\Delta \theta}{\Delta \phi} \sim \frac{2\pi}{\epsilon
 
 The effective probability of threading the opened gap between the
 stable/unstable manifolds is then just $P \propto D\sin \psi \sim
-\frac{2\pi}{T\p*{\eta \sin I}}$. Plugging in some observational values $T \sim
-50, \eta = 0.1, I = 20^\circ$ gives $P \propto 0.13$. In reality, I find it
-asymptotes to $\sim 0.08$, so the constant of proportionality is of order unity.
-Not bad given the really crappy $\psi \sim
-\frac{\ev*{\dot{\theta}}}{\dot{\phi}}$ argument.
+\frac{2\pi}{T\p*{\eta \sin I}}$. According to later analysis, this should really
+be $\frac{2\pi}{T}$. Plugging in some observational values $T \sim 50$ for $\eta
+= 0.1$gives $P \propto 0.13$. In reality, I find it asymptotes to $\sim 0.08$,
+so the constant of proportionality is of order unity. Not bad given the really
+crappy $\psi \sim \frac{\ev*{\dot{\theta}}}{\dot{\phi}}$ argument.
 
 \subsection{Melnikov Distance}
 
@@ -313,6 +313,9 @@ orbit of the unperturbed Hamiltonian, is just
 \begin{equation}
     d(q^0) = \frac{2\pi \epsilon\p*{1 - 2\eta \sin I}}{\abs*{f(q^0)}}.
 \end{equation}
+
+We compute the maximum $\abs*{f(q^0)}$, which occurs at $\phi = \pi$, and we
+find the expected $f \approx \sqrt{4\eta \sin I}$.
 
 \end{document}
 
