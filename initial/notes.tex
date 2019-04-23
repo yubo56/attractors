@@ -129,8 +129,8 @@ $\hat{l}$. Then we can evaluate in coordinates
     \hat{s} \cdot \hat{l} &= \cos \theta,\\
     \hat{s} \cdot \hat{l}_p
         &= \cos \theta \cos I - \sin I \sin \theta \cos \phi,\\
-    \mathcal{H} &= \frac{1}{2}\cos^2\theta
-        - \eta \p*{\cos \theta \cos I - \sin I \sin \theta \cos \phi}.
+    \mathcal{H} &= -\frac{1}{2}\cos^2\theta
+        + \eta \p*{\cos \theta \cos I - \sin I \sin \theta \cos \phi}.
 \end{align*}
 Note that if we take $\cos\theta$ to be our canonical variable, $\sin\theta =
 \sqrt{1 - \cos^2\theta}$ can be used.
@@ -150,13 +150,47 @@ The correct EOM comes from Kassandra's Eq.\ 12:
 Alternatively, consider Hamilton's equations applied to the Hamiltonian:
 \begin{align}
     \pd{\phi}{t} = \pd{\mathcal{H}}{(\cos\theta)}
-        &= \cos\theta - \eta\p*{\cos I + \sin I \cot \theta \cos \phi},\\
+        &= -\cos\theta + \eta\p*{\cos I + \sin I \cot \theta \cos \phi},\\
     \pd{(\cos \theta)}{t} = -\pd{\mathcal{H}}{\phi}
-        &= +\eta \sin I \sin \theta \sin \phi.
+        &= -\eta \sin I \sin \theta \sin \phi.\label{eq:H_eom}
 \end{align}
 This produces the same trajectories as the Cartesian EOM, so this is correct.
 However, since $\pd{\phi}{t} \propto 1/\sin\theta$, this is not a desirable
 system of equations to use, as they are very stiff near $\theta \approx 0$.
+
+\subsection{Cassini States}
+
+The zeros to \autoref{eq:H_eom} are the Cassini states; we will go to canonical
+variables $\mu = \cos\theta$. We can immediately see that $\sin\phi = 0$ is
+necessary, so $\cos \phi = \pm 1$ and we need only solve for $\pd{\phi}{t} = 0$.
+We can furthermore separate the problem into two regimes, $\eta \ll 1$ and $\eta
+\gg 1$.
+
+For $\eta \ll 1$, it is clear that there will be two solutions near $\mu^2 = 1$
+and two solutions near $\mu = 0$:
+\begin{itemize}
+    \item For $\mu = 1 - \frac{\theta^2}{2}$, the dominant terms are
+        $\pd{\phi}{t} \approx -1 + \eta \sin I \frac{1}{\theta} = 0$,
+        where we've taken $\cos \phi = +1$ and $\phi = 0$. This forces $\theta
+        = \eta \sin I$.
+
+    \item Similarly, for $\mu = -1 + \frac{\epsilon^2}{2}$, $\phi = 0$ and
+        $\epsilon = \eta \sin I$ again. This actually corresponds to $\theta =
+        \pi - \eta \sin I$.
+
+    \item For $\mu \approx 0$, we have instead $\pd{\phi}{t} = -\mu\p*{1 - \eta
+        \sin I \cos \phi} + \eta \cos I = 0$. This forces $\mu_\pm = \frac{\eta
+        \cos I}{1 \pm \eta \sin I}$, where $\phi_{\pm} = \pi, 0$ respectively.
+
+        Note that $\phi = 0, \mu \approx 0$ is conventionally CS4. The
+        linearization locally has form $\pd{\delta \phi}{t} = -\delta \mu\p*{1 -
+        \eta \sin I}$ and $\pd{\mu}{t} = -\eta \sin I$, so the eigenvalues are
+        $\approx \mp \sqrt{\eta \sin I}$, and the two eigenvectors are $\p*{1,
+        \pm \sqrt{\eta \sin I}}$.
+\end{itemize}
+
+For $\eta \gg 1$, the solutions obviously just come from $\cos I \pm \sin I \cot
+\theta = 0$, which are just $\sin (I \pm \theta) = 0$
 
 \subsection{Separatrix Area}
 
@@ -170,15 +204,15 @@ $+ 2\pi$ image.
 \end{figure}
 
 We notate $\mu = \cos\theta$; note that CS4 is $\mu_4 \approx \frac{\eta \cos
-I}{1 + \eta \sin I} \approx \eta \cos I$. Setting the Hamiltonian equal to its
+I}{1 - \eta \sin I} \approx \eta \cos I$. Setting the Hamiltonian equal to its
 value at CS4 gives
 \begin{align*}
     H_4 &\equiv H\p*{\mu_4, \phi_4}
-        \approx \frac{\mu_4^2}{2} - \eta \mu_4 \cos I + \eta \sin I,\\
-        &= -\eta^2\cos^2 I + \eta \sin I,\\
+        \approx -\frac{\mu_4^2}{2} + \eta \mu_4 \cos I - \eta \sin I,\\
+        &= +\eta^2\cos^2 I - \eta \sin I,\\
     H(\mu_{sep}, \phi_{sep})
-        &= H_4 = \eta \sin I \cos \phi + \frac{\mu^2}{2} - \eta \mu \cos I
-            + \mathcal{O}(\eta^3),\\
+        &= H_4 = -\eta \sin I \cos \phi_{sep} - \frac{\mu_{sep}^2}{2} + \eta
+            \mu_{sep} \cos I + \mathcal{O}(\eta^3),\\
     0 &\approx \frac{\mu_{sep}^2}{2} - \eta \mu_{sep} \cos I
         - \eta \sin I\p*{1 - \cos \phi_{sep}} + \eta^2\cos^2I,\\
     \mu_{sep}\p*{\phi} &\approx \sqrt{2\eta \sin I\p*{1 - \cos \phi}}
@@ -236,24 +270,22 @@ fail to converge to Cassini state $1$.
 Inspired by G\&H, heteroclinic orbits are topologically unstable for any nonzero
 perturbation, but opened width $\sim$ perturbation parameter.
 
-We zoom in on Cassini State $4$, which has $\cos \theta \approx 0, \phi = 0$. In
-particular, by using equations of motion
-\begin{align}
-    \pd{\phi}{t} &= \cos \theta - \eta\p*{\cos I + \sin I \cot \theta \cos \phi}
-        ,\\
-    \pd{\theta}{t} &= -\eta \sin I \sin \phi - \s*{\epsilon \sin \theta},
-\end{align}
-we can compute $\theta_4 \approx -\frac{\pi}{2} +\frac{\eta \cos I}{1 + \eta
-\sin I}, \phi_4 = 0$ in the $\epsilon = 0$ limit (the other solution is
-$\theta_2 \approx +\frac{\pi}{2} - (\dots)$). Indeed the signs are correct:
-near $\theta \approx \frac{\pi}{2}, \phi \approx 0$ we have EOM
-$\dot{\delta\phi}_4 \approx -\delta \theta_4$ while $\dot{\delta \theta_4}
-\approx -\eta \sin I \delta \phi_4$ which is unstable.
+\subsection{Try 1: Qualitative}
 
-Substituting in perturbatively for nonzero $\epsilon$ in $\pd{\theta}{t}$ gives
-$\delta \phi_4 = +\frac{\epsilon}{\eta \sin I}, \delta \theta_4 = 0$. This is in
-agreement with Dong's result. Note that $\delta \theta_2 = -\frac{\epsilon}{\eta
-\sin I}$, which I saw in my simulations.
+We zoom in on Cassini State $4$, which has $\theta_4 =
+-\frac{\pi}{2} + \frac{\eta \cos I}{1 - \eta \sin I}, \mu_4 = \frac{\eta \cos
+I}{1 - \eta \sin I}, \phi_4 = 0$. Then, using
+equations of motion
+\begin{align}
+    \pd{\phi}{t} &= \mu - \eta\p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}}
+        \cos \phi} ,\\
+    \pd{\mu}{t} &= -\eta \sin I \sin \phi + \s*{\epsilon \p*{1 - \mu^2}},
+\end{align}
+we can perturbatively require $\pd{\theta}{t} = 0$ for $\epsilon \neq 0$. This
+corresponds to $\eta \sin I \sin \p*{\phi_4 + \delta \phi} \approx \epsilon$, or
+$\delta \phi_4 = +\frac{\epsilon}{\eta \sin I}$. This is in agreement with
+Dong's result. Note that $\delta \theta_2 = -\frac{\epsilon}{\eta \sin I}$,
+which I saw in my simulations.
 
 This implies that the stable manifolds of the two saddle points, which once
 overlapped with each other's unstable manifolds (creating a heteroclinic orbit)
@@ -275,7 +307,7 @@ be $\frac{2\pi}{T}$. Plugging in some observational values $T \sim 50$ for $\eta
 so the constant of proportionality is of order unity. Not bad given the really
 crappy $\psi \sim \frac{\ev*{\dot{\theta}}}{\dot{\phi}}$ argument.
 
-\subsection{Melnikov Distance}
+\subsection{Try 2: Melnikov Distance}
 
 We notice that the separatrix is a heteroclinic orbit, or a saddle connection,
 in the dissipation free problem. Introducing dissipation breaks the saddle
@@ -287,6 +319,12 @@ is G\&H Equation 4.5.11 or something:
     M(t_0) &= \int\limits_{-\infty}^\infty
         \s*{f \times g}_{hetero}\;\mathrm{d}t.
 \end{align}
+
+This is not a hard formula to understand; along the separatrix, motion is
+dominated by $f$, but the perpendicular component adds up to contribute to a
+total ``perpendicular distance away from the original separatrix'' necessary to
+hit the saddle point, at least intuitively.
+
 We evaluate the Melnikov integral $M(t_0)$ on the heteroclinic orbit. Note that
 since in our problem our perturbation $g$ is time-independent, so too is the
 Melnikov integral $M(t_0) = M$.
@@ -313,9 +351,23 @@ orbit of the unperturbed Hamiltonian, is just
 \begin{equation}
     d(q^0) = \frac{2\pi \epsilon\p*{1 - 2\eta \sin I}}{\abs*{f(q^0)}}.
 \end{equation}
+Note that the maximum value $\abs*{f(q^0)}$, which occurs at $\phi = \pi$, is
+just $f \approx \sqrt{4\eta \sin I}$.
 
-We compute the maximum $\abs*{f(q^0)}$, which occurs at $\phi = \pi$, and we
-find the expected $f \approx \sqrt{4\eta \sin I}$.
+It proves to be a bit difficult to make quantitative predictions though, since
+the phase diagram is very smushed where $f$ is large, and $d$ is rather
+inaccurate where $f$ is small. Let's think about a Poincar\'e map instead.
+
+\subsection{Try 3: Poincar\'e Section}
+
+Let's consider the Poincar\'e section every time $\phi = \phi_4$ as the
+trajectory subject to tidal dissipation is moving $\theta < \theta_4 \to
+\theta_4$. To provide an estimate of $\Delta \theta(\theta) = \theta_{n - 1} -
+\theta_n$, this is just $\epsilon T$ where $T$ is the time elapsed between
+$\theta_n, \theta_{n + 1}$, the period of the orbit. $T$ is dominated by when
+$\pd{\phi}{t} \ll 1$ though, or where the orbit is close to the saddle point.
+
+Consider when $\mu = \mu_4 - \delta \mu$
 
 \end{document}
 

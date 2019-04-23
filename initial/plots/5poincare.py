@@ -17,17 +17,18 @@ from utils import to_cart, get_dydt, to_ang, is_below, get_phis, get_phi,\
 from scipy.integrate import solve_ivp
 from scipy.optimize import brentq
 
-def get_poincare(t, sol, interp):
+def get_poincare(I, eta, tide, t, sol, interp):
     '''
-    cos(theta, phi = 0) is equivalent to z(y = 0), x = -1
+    cos(theta, phi = phi_cross) is equivalent to z(y = y_cross), x = -1
     '''
     x, y, z = sol
+    y_cross = np.sin(tide / (eta * np.sin(I)))
 
     cross_zs = []
     for idx in range(len(y) - 1):
-        if y[idx] > 0 and y[idx + 1] < 0 and x[idx] < 0:
-            y_interp = lambda t: interp(t)[1]
-            t0 = brentq(y_interp, t[idx], t[idx + 1])
+        if y[idx] > -y_cross and y[idx + 1] < -y_cross and x[idx] < 0:
+            zero_interp = lambda t: interp(t)[1] + y_cross
+            t0 = brentq(zero_interp, t[idx], t[idx + 1])
             z_exact = interp(t0)[2]
             cross_zs.append(z_exact)
     return cross_zs
@@ -77,7 +78,8 @@ def plot_map(eta, nbins, n_thresh=10):
                   (sim_num, len(hop_idxs) + len(q_zeros)))
 
             if s[2] > q[3]:
-                q_poincare.append(get_poincare(ret.t, ret.y, ret.sol))
+                q_poincare.append(
+                    get_poincare(I, eta, tide, ret.t, ret.y, ret.sol))
             else:
                 print('(%.5f, %.5f, %.5f) did not converge' %
                       (s[0], s[1], s[2]))
@@ -97,14 +99,17 @@ def plot_map(eta, nbins, n_thresh=10):
                        if len(l) >= 2 and l[-1] > lf])
 
     # compute the smallest element in the first bin w/ a reasonable number
-    def plot_and_get_minmax(q_arr, label):
-        n, bins, _ = plt.hist(q_arr.flatten(), bins=nbins, label=label)
+    def plot_and_get_minmax(q_arr, label, **kwargs):
+        n, bins, _ = plt.hist(q_arr.flatten(), bins=nbins, label=label,
+                              **kwargs)
         first_idx = np.where(n > n_thresh)[0][0]
         return min([val for val in q_arr if val > bins[first_idx]]),\
             q_arr.max(), max(n), sum(n[first_idx: ])
 
-    min2, max2, max_ct2, n_tot2 = plot_and_get_minmax(q2_arr, 'Penult.')
-    min1, max1, max_ct1, n_tot1 = plot_and_get_minmax(q_arr, 'Last')
+    min1, max1, max_ct1, n_tot1 = plot_and_get_minmax(
+        q_arr, 'Last', color='r')
+    min2, max2, max_ct2, n_tot2 = plot_and_get_minmax(
+        q2_arr, 'Penult.', color='b')
     xmin = min(min1, min2)
     plt.xlim([xmin - 0.2 * abs(xmin), 1.1 * (np.cos(q[3]) - xmin) + xmin])
     plt.ylim([0, 1.2 * max([max_ct1, max_ct2])])
@@ -116,7 +121,7 @@ def plot_map(eta, nbins, n_thresh=10):
              fontsize=12)
     plt.title(r'$(\eta, \epsilon, N) = (%s, %s, %d/%d/%d)$' %
               (str(eta), r'3 \times 10^{-4}', n_tot2, n_tot1, len(q_poincare)))
-    plt.xlabel(r'$z$')
+    plt.xlabel(r'$z(y = y_4)$')
     plt.ylabel(r'$N$')
     plt.axvline(x=np.cos(q[3]), color='r', linewidth=4)
     plt.legend(fontsize=10, loc='upper right')
