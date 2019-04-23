@@ -25,7 +25,7 @@ def get_poincare(t, sol, interp):
 
     cross_zs = []
     for idx in range(len(y) - 1):
-        if y[idx] > 0 and y[idx + 1] < 0 and x[idx] < 0:
+        if y[idx] < 0 and y[idx + 1] > 0 and x[idx] > 0:
             y_interp = lambda t: interp(t)[1]
             t0 = brentq(y_interp, t[idx], t[idx + 1])
             z_exact = interp(t0)[2]
@@ -89,6 +89,7 @@ def plot_map(eta, nbins, n_thresh=10):
         with open(out_file, mode='rb') as in_file:
             q_poincare = pickle.load(in_file)
 
+    # lf = -1
     lf = np.cos(q[3]) - 4 * 50 * tide
     q_arr = np.array([l[-1: ] for l in q_poincare
                       if l and l[-1] > lf])
@@ -102,8 +103,8 @@ def plot_map(eta, nbins, n_thresh=10):
         return min([val for val in q_arr if val > bins[first_idx]]),\
             q_arr.max(), max(n), sum(n[first_idx: ])
 
-    min1, max1, max_ct1, n_tot1 = plot_and_get_minmax(q_arr, 'Last')
     min2, max2, max_ct2, n_tot2 = plot_and_get_minmax(q2_arr, 'Penult.')
+    min1, max1, max_ct1, n_tot1 = plot_and_get_minmax(q_arr, 'Last')
     xmin = min(min1, min2)
     plt.xlim([xmin - 0.2 * abs(xmin), 1.1 * (np.cos(q[3]) - xmin) + xmin])
     plt.ylim([0, 1.2 * max([max_ct1, max_ct2])])
@@ -125,5 +126,5 @@ def plot_map(eta, nbins, n_thresh=10):
 if __name__ == '__main__':
     plot_map(eta=0.2, nbins=40)
     plot_map(eta=0.1, nbins=25, n_thresh=5)
-    plot_map(eta=0.05, nbins=15, n_thresh=3)
-    plot_map(eta=0.025, nbins=5, n_thresh=3)
+    plot_map(eta=0.05, nbins=25, n_thresh=3)
+    plot_map(eta=0.025, nbins=10, n_thresh=3)
