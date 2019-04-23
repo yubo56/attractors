@@ -111,7 +111,7 @@ def plot_point(ax, q, *args, **kwargs):
         ax.plot(phi_plot, np.cos(q), *args, **kwargs)
 
 def H(I, eta, x, phi):
-    return 0.5 * x**2 - eta * (
+    return -0.5 * x**2 + eta * (
         x * np.cos(I) -
         np.sqrt(1 - x**2) * np.sin(I) * np.cos(phi))
 
@@ -152,5 +152,5 @@ def get_sep_area(eta, I):
     H_sep = H(I, eta, np.cos(thetas[3]), phis[3])
 
     num_inside = np.size(
-            np.where(H_grid < H(I, eta, np.cos(thetas[3]), phis[3]))[0])
+            np.where(H_grid > H(I, eta, np.cos(thetas[3]), phis[3]))[0])
     return num_inside / np.size(H_grid)

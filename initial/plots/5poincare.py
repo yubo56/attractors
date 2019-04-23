@@ -25,7 +25,7 @@ def get_poincare(t, sol, interp):
 
     cross_zs = []
     for idx in range(len(y) - 1):
-        if y[idx] < 0 and y[idx + 1] > 0 and x[idx] > 0:
+        if y[idx] > 0 and y[idx + 1] < 0 and x[idx] < 0:
             y_interp = lambda t: interp(t)[1]
             t0 = brentq(y_interp, t[idx], t[idx + 1])
             z_exact = interp(t0)[2]
@@ -69,7 +69,7 @@ def plot_map(eta, nbins, n_thresh=10):
         for sim_num, angs in enumerate(inits):
             s = to_cart(*angs)
             for i in range(max_sim):
-                ret = solve_ivp(dydt, [0, tf], s, rtol=1e-6, dense_output=True)
+                ret = solve_ivp(dydt, [0, tf], s, max_step=0.1, dense_output=True)
                 s = ret.y[:, -1]
                 if s[2] > q[3]: # if z coord > CS4's z coord
                     break
@@ -124,7 +124,7 @@ def plot_map(eta, nbins, n_thresh=10):
     plt.clf()
 
 if __name__ == '__main__':
-    plot_map(eta=0.2, nbins=40)
-    plot_map(eta=0.1, nbins=25, n_thresh=5)
+    plot_map(eta=0.025, nbins=15, n_thresh=3)
     plot_map(eta=0.05, nbins=25, n_thresh=3)
-    plot_map(eta=0.025, nbins=10, n_thresh=3)
+    plot_map(eta=0.1, nbins=25, n_thresh=5)
+    plot_map(eta=0.2, nbins=40)
