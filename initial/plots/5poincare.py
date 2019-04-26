@@ -33,14 +33,12 @@ def get_poincare(I, eta, tide, t, sol, interp):
             cross_zs.append(z_exact)
     return cross_zs
 
-def plot_map(eta, nbins, n_thresh=10):
+def plot_map(eta, nbins, n_thresh=10, tf=5000, max_sim=20):
     suffix = str(eta).replace('.', '_')
     filename = '3stats3_5_%s.pkl' % suffix
     out_file = '5poincare_%s.pkl' % suffix
     I = np.radians(20)
     tide = 3e-4
-    tf = 5000
-    max_sim = 20
     q, _ = roots(I, eta)
 
     if not os.path.exists(out_file):
@@ -69,15 +67,17 @@ def plot_map(eta, nbins, n_thresh=10):
         dydt = get_dydt(I, eta, tide)
         for sim_num, angs in enumerate(inits):
             s = to_cart(*angs)
+            qsol, phisol = to_ang(*s)
             for i in range(max_sim):
-                ret = solve_ivp(dydt, [0, tf], s, max_step=0.1, dense_output=True)
+                ret = solve_ivp(dydt, [0, tf], s, rtol=1e-6, dense_output=True)
                 s = ret.y[:, -1]
-                if s[2] > q[3]: # if z coord > CS4's z coord
+                qsol, phisol = to_ang(*s)
+                if is_inside(I, eta, [qsol], [phisol]):
                     break
             print('Finishing sim num %d/%d' %
                   (sim_num, len(hop_idxs) + len(q_zeros)))
 
-            if s[2] > q[3]:
+            if is_inside(I, eta, [qsol], [phisol]):
                 q_poincare.append(
                     get_poincare(I, eta, tide, ret.t, ret.y, ret.sol))
             else:
@@ -107,9 +107,9 @@ def plot_map(eta, nbins, n_thresh=10):
             q_arr.max(), max(n), sum(n[first_idx: ])
 
     min1, max1, max_ct1, n_tot1 = plot_and_get_minmax(
-        q_arr, 'Last', color='r')
+        q_arr, 'Last', color='tab:blue')
     min2, max2, max_ct2, n_tot2 = plot_and_get_minmax(
-        q2_arr, 'Penult.', color='b')
+        q2_arr, 'Penult.', color='tab:orange')
     xmin = min(min1, min2)
     plt.xlim([xmin - 0.2 * abs(xmin), 1.1 * (np.cos(q[3]) - xmin) + xmin])
     plt.ylim([0, 1.2 * max([max_ct1, max_ct2])])
@@ -129,7 +129,8 @@ def plot_map(eta, nbins, n_thresh=10):
     plt.clf()
 
 if __name__ == '__main__':
-    plot_map(eta=0.025, nbins=15, n_thresh=3)
-    plot_map(eta=0.05, nbins=25, n_thresh=3)
     plot_map(eta=0.1, nbins=25, n_thresh=5)
     plot_map(eta=0.2, nbins=40)
+    # these don't converge and ruin statistics
+    # plot_map(eta=0.025, nbins=10, n_thresh=3, max_sim=500)
+    # plot_map(eta=0.05, nbins=20, n_thresh=3, max_sim=200)

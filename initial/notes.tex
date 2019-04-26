@@ -184,9 +184,9 @@ and two solutions near $\mu = 0$:
 
         Note that $\phi = 0, \mu \approx 0$ is conventionally CS4. The
         linearization locally has form $\pd{\delta \phi}{t} = -\delta \mu\p*{1 -
-        \eta \sin I}$ and $\pd{\mu}{t} = -\eta \sin I$, so the eigenvalues are
-        $\approx \mp \sqrt{\eta \sin I}$, and the two eigenvectors are $\p*{1,
-        \pm \sqrt{\eta \sin I}}$.
+        \eta \sin I}$ and $\pd{\delta \mu}{t} = -\eta \sin I \delta \phi$, so
+        the eigenvalues are $\approx \mp \sqrt{\eta \sin I}$, and the two
+        eigenvectors are $\p*{1, \pm \sqrt{\eta \sin I}}$.
 \end{itemize}
 
 For $\eta \gg 1$, the solutions obviously just come from $\cos I \pm \sin I \cot
@@ -367,7 +367,46 @@ trajectory subject to tidal dissipation is moving $\theta < \theta_4 \to
 $\theta_n, \theta_{n + 1}$, the period of the orbit. $T$ is dominated by when
 $\pd{\phi}{t} \ll 1$ though, or where the orbit is close to the saddle point.
 
-Consider when $\mu = \mu_4 - \delta \mu$
+Note that $T$ is dominated by the time it spends near the saddle point. We
+showed earlier that near CS4, $\pd{\phi}{t} \approx \delta \mu$ where $\delta
+\mu = \mu - \mu_4$. Thus, we might surmise $\Delta \theta(\theta) \propto
+\theta^{-1}$ for sufficiently small $\theta - \theta_4$. Far away, $T$ is
+roughly constant and $\Delta \theta(\theta)$ is roughly constant.
+
+What is ``far away''? Well, it probably depends on how affected our trajectory
+is by the separatrix; far away from the saddle point, we go along contours of
+roughly constant $\theta$, while close by we follow the separatrix pretty well.
+We computed earlier that $\mu_{sep} \sim \sqrt{4\eta \sin I}$, so we might
+expect $\mu > \mu_{sep}, \Delta \mu \sim C$, while $\mu < \mu_{sep}, \Delta
+\mu \sim \delta \mu^{-1}$.
+
+My $\mu > \mu_{sep}$ simulations don't seem to work very well, so I'll focus on
+the $\delta \mu^{-1}$ case. In this case, define $\delta \mu_c: \Delta
+\mu\p*{\delta \mu_c} = -\delta \mu_c$, i.e.\ the point that jumps immediately to
+the saddle point. Furthermore, assume the inbound distribution is flat between
+$\delta \mu_c, f^{-1}\p*{\delta \mu_c}$. TODO\@: empirically, $\mu_c \sim
+\epsilon T$ is \emph{flat} with $\eta$, probably just because we're not getting
+sufficiently close to the saddle point for the $\propto \sqrt{\eta}$ to kick in.
+
+Then, we can compare the empirical Poincar\'e section of the points that cross
+the separatrix versus the total predicted interval width $\delta \mu_c,
+f^{-1}\p*{\delta \mu_c}$; this would predict $7.2\%, 18\%$. This does alright!
+
+Now, one final way to think about this, and I think this is the important one:
+consider if we are some $\delta \mu_0$ at $\phi = 0$ such that we barely hop the
+separatrix; this corresponds to $P_{hop} = \frac{\delta \mu_0}{\mu_c}$. In order
+for $\delta \mu_0$ to be hopping, $\delta \mu_\phi$ must be within $d_\phi
+\approx \frac{2\pi \epsilon}{\mu}$ of the separatrix. We can compute the ratio
+between $\delta \mu_0, \delta \mu_\phi$ by setting their Hamiltonian variations
+equal:
+\begin{align*}
+    \delta H_0 &\approx -\mu_4 \delta \mu_0 + \eta \cos I \delta \mu_0
+        \approx \eta^2 \cos I \sin I \delta \mu_0,\\
+    \delta H_\phi &\approx -\sqrt{4\eta \sin I} \delta \mu_\phi,\\
+    \frac{\delta \mu_\phi}{\delta \mu_0} &\propto
+        \eta^{3/2}\cos I \sqrt{\sin I}.
+\end{align*}
+We can assemble
 
 \end{document}
 
