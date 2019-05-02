@@ -232,7 +232,7 @@ For $\eta = 0.1, I = 20^\circ$, this predicts $\frac{A_{sep}}{A_{T}} \approx
 
 We can add a tidal dissipation term; we write it in form
 $\p*{\rd{\hat{s}}{t}}_{tide} = \epsilon \hat{s} \times \p*{\hat{l} \times
-\hat{s}}$. Expanding,
+\hat{s}} = \epsilon\p*{\vec{l} - \p*{\vec{s} \cdot \vec{l}}\vec{s}}$. Expanding,
 \begin{align}
     \p*{\rd{\hat{s}}{t}}_{tide} &= \epsilon \p*{\hat{z} - s_z\hat{s}}
         ,\nonumber\\
@@ -392,21 +392,142 @@ Then, we can compare the empirical Poincar\'e section of the points that cross
 the separatrix versus the total predicted interval width $\delta \mu_c,
 f^{-1}\p*{\delta \mu_c}$; this would predict $7.2\%, 18\%$. This does alright!
 
-Now, one final way to think about this, and I think this is the important one:
-consider if we are some $\delta \mu_0$ at $\phi = 0$ such that we barely hop the
-separatrix; this corresponds to $P_{hop} = \frac{\delta \mu_0}{\mu_c}$. In order
-for $\delta \mu_0$ to be hopping, $\delta \mu_\phi$ must be within $d_\phi
-\approx \frac{2\pi \epsilon}{\mu}$ of the separatrix. We can compute the ratio
-between $\delta \mu_0, \delta \mu_\phi$ by setting their Hamiltonian variations
-equal:
-\begin{align*}
-    \delta H_0 &\approx -\mu_4 \delta \mu_0 + \eta \cos I \delta \mu_0
-        \approx \eta^2 \cos I \sin I \delta \mu_0,\\
-    \delta H_\phi &\approx -\sqrt{4\eta \sin I} \delta \mu_\phi,\\
-    \frac{\delta \mu_\phi}{\delta \mu_0} &\propto
-        \eta^{3/2}\cos I \sqrt{\sin I}.
-\end{align*}
-We can assemble
+Abandoning the rest of this for the time being.
+
+\section{Weak Tidal Friction, changing $\eta$}
+
+Previously, we took the effect of tides to simply be $\rd{\hat{s}}{t} = \epsilon
+\hat{s} \times \p*{\hat{l} \times \hat{s}}$, but in reality, tides will spin
+down the body (in our case, planet) at the same rate as aligning $\hat{s}$ to
+$\hat{l}$. We must treat more carefully.
+
+\subsection{Equations of Motion}
+
+We first write out the full forms of the EOM without tidal friction. These are
+taken from Kassandra's Equations 1--3 except I replace subscript $\star$ with
+subscript $s$ since we are interested in the case where the spin of planet $1$
+evolves with its coupling to its orbital angular momentum and perturber. We
+obtain (maybe?)
+\begin{align}
+    \rd{\hat{s}}{t}
+        &= \omega_{s1}\p*{\hat{s} \cdot \hat{l}_1}\p*{\hat{s} \times \hat{l}_1}
+            - \omega_{1p}\cos(I)\p*{\hat{s} \times \hat{l}_p},\\
+    \omega_{s1} &= \frac{3k_q}{2k} \p*{\frac{R_1}{a_1}}^3 s,\\
+    \omega_{1p} &= \frac{3m_p}{4m_1}\p*{\frac{a_1}{a_p\p*{1 - e_p^2}}} \Omega_1.
+\end{align}
+Note here that $s$ is the spin frequency and $\Omega_1 =
+\sqrt{GM_1/a_1^3}$ is the Keplerian orbital frequency.
+
+In the presence of tides, and further assuming $s \ll l_1$, we may write (Lai
+2012, Equations 43--44, also Ward 1975 Equation 9 \& 13)
+\begin{align}
+    \frac{1}{s}\rd{s}{t}
+        = \frac{1}{s}\rd{s}{t}
+        &= \frac{1}{t_s}\frac{L}{2S}\s*{\cos\theta
+            - \frac{s}{2\Omega_1}\p*{1 + \cos^2\theta}},\\
+    \rd{\theta}{t} &= -\frac{1}{t_s}\frac{L}{2S}
+        \sin\theta\p*{1 - \frac{s}{2\Omega_1}\cos\theta}.
+\end{align}
+
+It is perhaps easiest to define $\frac{s}{s_c} =
+\frac{\omega_{s1}}{\omega_{1p}\cos I}$ and $\epsilon = \frac{L}{2St_s
+\omega_{1p}\cos I}$ while rescaling time $\tau = \omega_{1p}\cos(I) t$, so that
+we obtain equations of motion
+\begin{align}
+    \rd{\hat{s}}{\tau}
+        &= \frac{s}{s_c}\p*{\hat{s} \cdot \hat{l}_1}\p*{\hat{s} \times \hat{l}_1}
+            - \hat{s} \times \hat{l}_p
+            + \epsilon \p*{1 - \frac{s}{2\Omega_1}\p*{\hat{l}_1 \cdot \hat{s}}}
+                \hat{s} \times \p*{\hat{l}_1 \times \hat{s}},\\
+    \rd{s}{\tau}
+        &= \epsilon s \p*{\hat{s} \cdot \hat{l}_1 - \frac{s}{2\Omega_1}\p*{1
+            + \p*{\hat{s} \cdot \hat{l}_1}^2}}.
+\end{align}
+$s_c$ has the interpretation of being the critical spin such that the $s1$
+coupling is roughly equal strength to the $1p$ coupling. There then seem to be a
+few outcomes that we might expect:
+\begin{itemize}
+    \item Fast evolution towards CS1, then tides will slowly change $s$ without
+        changing $\hat{s}$.
+
+    \item Fast evolution towards CS2, then tides are strong while state lives
+        inside separatrix maybe? Then will spin down rapidly near CS2 until
+        spin-orbit coupling is weak.
+
+    \item Slow evolution that trails behind separatrix, expect state to converge
+        somewhere below separatrix? Would probably stay on level curve of
+        high-$\eta$ $H$ from earlier? Includes anything that doesn't make it to
+        separatrix, including almost fully anti-aligned.
+\end{itemize}
+
+\subsection{Crude Analytic Estimate}
+
+To make the equations more anemable to analytic analysis (not simulation), let's
+write down the EOM in $(\mu, \phi)$ coordinates again. The $\phi$ EOM does not
+change from the tide-free case, so we can reuse earlier equation:
+\begin{align}
+    \pd{\phi}{\tau} &= \frac{s}{s_c}\mu
+        - \p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}} \cos \phi} ,\\
+    \pd{\mu}{\tau} &= -\sin I \sin \phi +
+        \epsilon \p*{1 - \mu^2}
+            \p*{1 - \frac{s}{2\Omega_1}\mu},\\
+    \rd{s}{\tau}
+        &= \epsilon s \p*{\mu - \frac{s}{2\Omega_1}\p*{1 + \mu^2}}.
+\end{align}
+Assuming $s \gg s_c$ the strong spin-orbit coupling regime, let's first try
+assuming $\mu$ is roughly constant over the course of a precession period, then
+we can average out the $\phi$ dependencies. Then $\phi$ drops out of the EOM,
+and we have approximate averaged equations
+\begin{align}
+    \pd{\mu}{(\epsilon\tau)} &\approx \p*{1 - \mu^2}
+            \p*{1 - \frac{s}{2\Omega_1}\mu},\nonumber\\
+        &\approx \p*{1 - \mu^2}
+            \p*{- \frac{s}{2\Omega_1}\mu},\\
+    \frac{1}{s}\rd{s}{(\epsilon\tau)}
+        &\approx \mu - \frac{s}{2\Omega_1}\p*{1 + \mu^2},\nonumber\\
+        &\approx - \frac{s}{2\Omega_1}.
+\end{align}
+In the last term, we note $s \gtrsim 2\Omega_1$ initially, while $\mu \leq 1$,
+so we drop both the linear contribution from $\mu$ and approximate $\p*{1 +
+\mu^2} \approx 1$.
+
+Making all these approximations, we identify approximate analytic solution
+$s(\epsilon \tau) \approx \frac{2\Omega_1}{\epsilon \tau + C}$ with constant of
+integration $C$ set by initial conditions, or more precisely
+\begin{equation}
+    s(\epsilon \tau) \approx \frac{2\Omega_1}{\epsilon \tau +
+        \frac{2\Omega_1}{s(0)}}.
+\end{equation}
+The critical timescale is clearly $\epsilon \tau \sim 1$ (since $2\Omega_1/s(0)
+\ll 1$) at which $\frac{s}{2\Omega_1} \sim 1$ and synchronization sets in.
+
+The other timescale of interest is how long it takes $\hat{s}$ to reach a
+Cassini State. We may present crude estimates in the $s \gg s_c$ strong
+spin-orbit coupling limit; consider starting $\mu = -1 + \delta$, then to
+leading order
+\begin{align}
+    \pd{\delta}{(\epsilon\tau)} &\approx 2\delta \frac{s}{2\Omega_1},\nonumber\\
+    \delta(\epsilon\tau) &\approx
+        \delta_0\exp\s*{\frac{\epsilon \tau}{s/\Omega_1}}.
+\end{align}
+Setting $\delta \sim 1$ gives $\p*{\epsilon\tau}_{CS} \sim
+-\frac{\Omega_1}{s}\ln \delta_0$ the timescale it takes to reach $\mu = 0$ which
+is of order the timescale to reach the CS\@. This tells us that at displacements
+of $\delta_0 \gtrsim e^{-s/\Omega_1}$ is where states will be able to reach
+Cassini States. So for any respectable $s/\Omega_1$, the CS timescale will be
+short compared to the synchronization timescale, so we should expect the
+adiabatic evolution near CS1, CS2 as $\frac{s}{s_c}$ changes governs the
+long-term observed states. Specifically, states that end up near CS1 should
+(slowly!) hit the resonant obliquity excitation that Kassandra studied, while
+states near CS2 should stay on CS2 as $\eta$ grows past $\eta_{crit}$, since it
+is far from bifurcation.
+
+Under this assumption, it would appear that points that start inside the
+separatrix (rare) stay inside the separatrix, points that start above the
+separatrix stay above and undergo resonant obliquity excitation ($\sim 50\%$),
+and finally points that start outside the separatrix probably end up at either
+CS1 or CS2 probabilistically depending on $\eta(\Delta T(\mu_0))$ where $\Delta
+T(\mu_0)$ is the arrival time for a state starting at $\mu_0$.
 
 \end{document}
 
