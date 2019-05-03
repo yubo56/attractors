@@ -428,19 +428,22 @@ In the presence of tides, and further assuming $s \ll l_1$, we may write (Lai
     \rd{\theta}{t} &= -\frac{1}{t_s}\frac{L}{2S}
         \sin\theta\p*{1 - \frac{s}{2\Omega_1}\cos\theta}.
 \end{align}
+Note that $L = \mu a^2\Omega_1, S = Is$ are the orbital and spin angular momenta
+espectively.
 
 It is perhaps easiest to define $\frac{s}{s_c} =
-\frac{\omega_{s1}}{\omega_{1p}\cos I}$ and $\epsilon = \frac{L}{2St_s
-\omega_{1p}\cos I}$ while rescaling time $\tau = \omega_{1p}\cos(I) t$, so that
-we obtain equations of motion
+\frac{\omega_{s1}}{\omega_{1p}\cos I}$ and $\epsilon\frac{\Omega_1}{s} =
+\frac{L}{2St_s \omega_{1p}\cos I}$ while rescaling time $\tau =
+\omega_{1p}\cos(I) t$, so that we obtain equations of motion
 \begin{align}
     \rd{\hat{s}}{\tau}
         &= \frac{s}{s_c}\p*{\hat{s} \cdot \hat{l}_1}\p*{\hat{s} \times \hat{l}_1}
             - \hat{s} \times \hat{l}_p
-            + \epsilon \p*{1 - \frac{s}{2\Omega_1}\p*{\hat{l}_1 \cdot \hat{s}}}
-                \hat{s} \times \p*{\hat{l}_1 \times \hat{s}},\\
+            + \frac{\epsilon \Omega_1}{s}
+                \p*{1 - \frac{s}{2\Omega_1}\p*{\hat{l}_1 \cdot \hat{s}}}
+                    \hat{s} \times \p*{\hat{l}_1 \times \hat{s}},\\
     \rd{s}{\tau}
-        &= \epsilon s \p*{\hat{s} \cdot \hat{l}_1 - \frac{s}{2\Omega_1}\p*{1
+        &= \epsilon \Omega_1 \p*{\hat{s} \cdot \hat{l}_1 - \frac{s}{2\Omega_1}\p*{1
             + \p*{\hat{s} \cdot \hat{l}_1}^2}}.
 \end{align}
 $s_c$ has the interpretation of being the critical spin such that the $s1$
@@ -469,21 +472,21 @@ change from the tide-free case, so we can reuse earlier equation:
     \pd{\phi}{\tau} &= \frac{s}{s_c}\mu
         - \p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}} \cos \phi} ,\\
     \pd{\mu}{\tau} &= -\sin I \sin \phi +
-        \epsilon \p*{1 - \mu^2}
+        \epsilon \frac{\Omega_1}{s}\p*{1 - \mu^2}
             \p*{1 - \frac{s}{2\Omega_1}\mu},\\
     \rd{s}{\tau}
-        &= \epsilon s \p*{\mu - \frac{s}{2\Omega_1}\p*{1 + \mu^2}}.
+        &= \epsilon \Omega_1 \p*{\mu - \frac{s}{2\Omega_1}\p*{1 + \mu^2}}.
 \end{align}
 Assuming $s \gg s_c$ the strong spin-orbit coupling regime, let's first try
 assuming $\mu$ is roughly constant over the course of a precession period, then
 we can average out the $\phi$ dependencies. Then $\phi$ drops out of the EOM,
 and we have approximate averaged equations
 \begin{align}
-    \pd{\mu}{(\epsilon\tau)} &\approx \p*{1 - \mu^2}
+    \pd{\mu}{(\epsilon\tau)} &\approx \frac{\Omega_1}{s}\p*{1 - \mu^2}
             \p*{1 - \frac{s}{2\Omega_1}\mu},\nonumber\\
         &\approx \p*{1 - \mu^2}
-            \p*{- \frac{s}{2\Omega_1}\mu},\\
-    \frac{1}{s}\rd{s}{(\epsilon\tau)}
+            \p*{\frac{\Omega_1}{s} - \frac{1}{2}\mu},\\
+    \frac{1}{\Omega_1}\rd{s}{(\epsilon\tau)}
         &\approx \mu - \frac{s}{2\Omega_1}\p*{1 + \mu^2},\nonumber\\
         &\approx - \frac{s}{2\Omega_1}.
 \end{align}
@@ -491,36 +494,26 @@ In the last term, we note $s \gtrsim 2\Omega_1$ initially, while $\mu \leq 1$,
 so we drop both the linear contribution from $\mu$ and approximate $\p*{1 +
 \mu^2} \approx 1$.
 
-Making all these approximations, we identify approximate analytic solution
-$s(\epsilon \tau) \approx \frac{2\Omega_1}{\epsilon \tau + C}$ with constant of
-integration $C$ set by initial conditions, or more precisely
-\begin{equation}
-    s(\epsilon \tau) \approx \frac{2\Omega_1}{\epsilon \tau +
-        \frac{2\Omega_1}{s(0)}}.
-\end{equation}
-The critical timescale is clearly $\epsilon \tau \sim 1$ (since $2\Omega_1/s(0)
-\ll 1$) at which $\frac{s}{2\Omega_1} \sim 1$ and synchronization sets in.
+With all these approximations, we clearly obtain $s(\tau) \approx
+s(0)e^{-\frac{\epsilon}{2}\tau}$, so the critical synchronization
+timescale is $\tau_{sync} \sim \frac{2}{\epsilon}$.
 
 The other timescale of interest is how long it takes $\hat{s}$ to reach a
 Cassini State. We may present crude estimates in the $s \gg s_c$ strong
 spin-orbit coupling limit; consider starting $\mu = -1 + \delta$, then to
 leading order
 \begin{align}
-    \pd{\delta}{(\epsilon\tau)} &\approx 2\delta \frac{s}{2\Omega_1},\nonumber\\
-    \delta(\epsilon\tau) &\approx
-        \delta_0\exp\s*{\frac{\epsilon \tau}{s/\Omega_1}}.
+    \pd{\delta}{\tau} &\approx +\epsilon \delta,\nonumber\\
+    \delta(\epsilon\tau) &\approx \delta_0e^{\epsilon \tau}
 \end{align}
-Setting $\delta \sim 1$ gives $\p*{\epsilon\tau}_{CS} \sim
--\frac{\Omega_1}{s}\ln \delta_0$ the timescale it takes to reach $\mu = 0$ which
-is of order the timescale to reach the CS\@. This tells us that at displacements
-of $\delta_0 \gtrsim e^{-s/\Omega_1}$ is where states will be able to reach
-Cassini States. So for any respectable $s/\Omega_1$, the CS timescale will be
-short compared to the synchronization timescale, so we should expect the
-adiabatic evolution near CS1, CS2 as $\frac{s}{s_c}$ changes governs the
-long-term observed states. Specifically, states that end up near CS1 should
-(slowly!) hit the resonant obliquity excitation that Kassandra studied, while
-states near CS2 should stay on CS2 as $\eta$ grows past $\eta_{crit}$, since it
-is far from bifurcation.
+Setting $\delta \sim 1$ gives $\tau_{CS} = -\frac{1}{\epsilon}\ln \delta_0$ the
+timescale it takes to reach $\mu = 0$ which is of order the timescale to reach
+the CS\@. This tells us that at displacements of $\delta_0 \gtrsim
+e^{-2}$ is where states will be able to reach Cassini States before
+synchronization happens. This reinforces our expectation that synchronization is
+probably no faster than reaching the Cassini state, but that a significant
+fraction of initial conditions below the separatrix should be able to reach a
+Cassini State before tides synchronize.
 
 Under this assumption, it would appear that points that start inside the
 separatrix (rare) stay inside the separatrix, points that start above the
