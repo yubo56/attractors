@@ -92,7 +92,7 @@
 \renewcommand*{\equationautorefname}{Eq.}
 \renewcommand*{\tableautorefname}{Tab.}
 
-\section{Hamiltonians and EOM}
+\section{Constant $\eta$}
 
 \subsection{Toy Problem}
 
@@ -270,7 +270,7 @@ fail to converge to Cassini state $1$.
 Inspired by G\&H, heteroclinic orbits are topologically unstable for any nonzero
 perturbation, but opened width $\sim$ perturbation parameter.
 
-\subsection{Try 1: Qualitative}
+\subsection{Consideration 1: Qualitative}
 
 We zoom in on Cassini State $4$, which has $\theta_4 =
 -\frac{\pi}{2} + \frac{\eta \cos I}{1 - \eta \sin I}, \mu_4 = \frac{\eta \cos
@@ -284,30 +284,19 @@ equations of motion
 we can perturbatively require $\pd{\theta}{t} = 0$ for $\epsilon \neq 0$. This
 corresponds to $\eta \sin I \sin \p*{\phi_4 + \delta \phi} \approx \epsilon$, or
 $\delta \phi_4 = +\frac{\epsilon}{\eta \sin I}$. This is in agreement with
-Dong's result. Note that $\delta \theta_2 = -\frac{\epsilon}{\eta \sin I}$,
-which I saw in my simulations.
+Dong's result.
 
 This implies that the stable manifolds of the two saddle points, which once
 overlapped with each other's unstable manifolds (creating a heteroclinic orbit)
 now are offset from one another by distance $D \sim \frac{\epsilon}{\eta \sin
-I}$. The question is how likely it is to thread the needle.
+I}$. But since $\epsilon$ also sets $\dot{\mu}$ in a precession orbit-averaged
+sense, the effective cross section is constant in some sense: there will be one
+orbit where $\mu$ goes from below CS4 to above CS4, during which it will make
+jump of size $\epsilon$, and if it hits a particular interval of size $\epsilon$
+then it will enter the separatrix. Thus, separatrix hopping should $\propto
+\epsilon^0$.
 
-Consider that, very near CS4, the angle of incidence on the desired gap is
-roughly $\tan \psi \approx \psi = \frac{\Delta \theta}{\Delta \phi}$. Over the
-course of one orbit, $\Delta \phi$ changes by $2\pi$, while $\Delta \theta \sim
-\epsilon \sin \theta T$ where $T$ is the period of an orbit. Examining the data,
-$T \sim 50$, and so $\frac{\Delta \theta}{\Delta \phi} \sim \frac{2\pi}{\epsilon
-(50)}$.
-
-The effective probability of threading the opened gap between the
-stable/unstable manifolds is then just $P \propto D\sin \psi \sim
-\frac{2\pi}{T\p*{\eta \sin I}}$. According to later analysis, this should really
-be $\frac{2\pi}{T}$. Plugging in some observational values $T \sim 50$ for $\eta
-= 0.1$gives $P \propto 0.13$. In reality, I find it asymptotes to $\sim 0.08$,
-so the constant of proportionality is of order unity. Not bad given the really
-crappy $\psi \sim \frac{\ev*{\dot{\theta}}}{\dot{\phi}}$ argument.
-
-\subsection{Try 2: Melnikov Distance}
+\subsection{Consideration 2: Melnikov Distance}
 
 We notice that the separatrix is a heteroclinic orbit, or a saddle connection,
 in the dissipation free problem. Introducing dissipation breaks the saddle
@@ -345,20 +334,20 @@ variables
         \p*{1 - \mu^2}\p*{\pd{\phi}{t}}^{-1}\;\mathrm{d}\phi.
 \end{equation}
 But thankfully, $\pd{\mathcal{H}}{\mu} = \pd{\phi}{t}$ in the absence of
-dissipation, and so $M = 2\pi\p*{1 - \mu^2} \approx 2\pi\p*{1 - 2\eta \sin I}$.
+dissipation, and so $M = 2\pi\p*{1 - \mu^2} \approx 2\pi$.
 Thus, the Melnikov distance at point $q^0$, a point on the heteroclinic
 orbit of the unperturbed Hamiltonian, is just
 \begin{equation}
-    d(q^0) = \frac{2\pi \epsilon\p*{1 - 2\eta \sin I}}{\abs*{f(q^0)}}.
+    d(q^0) = \frac{2\pi \epsilon}{\abs*{f(q^0)}}.
 \end{equation}
 Note that the maximum value $\abs*{f(q^0)}$, which occurs at $\phi = \pi$, is
-just $f \approx \sqrt{4\eta \sin I}$.
+just $f_{\max} \approx \sqrt{4\eta \sin I}$.
 
 It proves to be a bit difficult to make quantitative predictions though, since
 the phase diagram is very smushed where $f$ is large, and $d$ is rather
 inaccurate where $f$ is small. Let's think about a Poincar\'e map instead.
 
-\subsection{Try 3: Poincar\'e Section}
+\subsection{Consideration 3: Poincar\'e Section}
 
 Let's consider the Poincar\'e section every time $\phi = \phi_4$ as the
 trajectory subject to tidal dissipation is moving $\theta < \theta_4 \to
@@ -392,7 +381,64 @@ Then, we can compare the empirical Poincar\'e section of the points that cross
 the separatrix versus the total predicted interval width $\delta \mu_c,
 f^{-1}\p*{\delta \mu_c}$; this would predict $7.2\%, 18\%$. This does alright!
 
-Abandoning the rest of this for the time being.
+\subsection{Consideration 4: Plotting Stable/Unstable manifolds}
+
+We can plot the stable/unstable manifolds of two Cassini States as in
+\autoref{fig:CS4s}. Then, since phase space is roughly flat near $\phi = \pi$
+(near $\phi = 0$, $\dot{\phi}$ varies drastically and so phase space is
+``squished'' a bit via Liouville's Theorem), we just need to compare the
+distance between $\mathcal{W}^{(0)}_S$ and $W_U^{(0)}$, the capture gap, to the
+distance between $\mathcal{W}^{(1)}_S$ and $W_U^{(0)}$ the Melnikov gap, to
+estimate the capture probability.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.6\textwidth]{0_eta/6manifolds0_10.png}
+    \caption{Stable/Unstable manifolds of the two Cassini State
+    4s.}\label{fig:CS4s}
+\end{figure}
+
+The Melnikov gap is predicted above as $d(q^0)$ or approximately
+\begin{equation}
+    \Delta_{M} \approx \frac{2\pi \epsilon}{\sqrt{4\eta\sin I}}.
+\end{equation}
+
+The capture gap is much trickier to predict, since it depends on the separation
+between $\mathcal{W}^{(0)}_S$ \emph{after passing through} CS$_4^{(1)}$.
+Instead, let's consider the closed orbit in the absence of dissipation that
+starts at CS4', the modified CS\@. This orbit has a finite period set by
+equating $\int\limits_0^T \pd{\phi}{t}\;\mathrm{d}t =
+\int\limits_0^{2\pi}\;\mathrm{d}\phi + \int\limits_{2\pi}^0\;\mathrm{d}\phi$.
+
+Now, let's reconsider the Melnikov integral when perturbing this finite
+(non-homoclinic orbit); this may no longer be an exact result but should give
+the correct scaling:
+\begin{equation}
+    M_c = \int\limits_0^T \pd{\phi}{t}\epsilon \p*{1 - \mu^2}\;\mathrm{d}t.
+\end{equation}
+Naively, we might claim that, since $\pd{\phi}{t}$ changes signs halfway through
+the interval of integration, that the only surviving component is $2\epsilon
+\bar{\mu}\mu'$, where $\bar{\mu} = \mu_4$ is the average value of $\mu$ and
+$\mu'$ is the fluctuation. This gives
+\begin{equation}
+    M_c = 2\int\limits_0^{2\pi}2\epsilon \frac{\eta \cos I}{1 + \eta \sin I}
+        \sqrt{2\eta \sin I \p*{1 - \cos \phi}}\;\mathrm{d}\phi.
+\end{equation}
+Note that $M_c \propto \eta^{3/2}$, and since the gap opened $\Delta_c =
+\frac{M_c}{\pd{\phi}{t}} \propto \eta$, it seems like we're on the right track.
+Specifically:
+\begin{align}
+    M_c &\approx \epsilon 2\eta \cos I A_{sep},\\
+    \Delta_c &\approx 2\epsilon \eta \cos I \p*{16 \sqrt{\eta \sin I}}
+        \frac{1}{\sqrt{4\eta \sin I}},\\
+        &\approx 8\epsilon \eta \cos I.
+\end{align}
+This also agrees exceedingly well with our simulations This then gives us
+hopping probability
+\begin{equation}
+    P_{hop} = \frac{\Delta_c}{\Delta_M} \approx
+        \frac{16\eta^{3/2}\cos I \sqrt{\sin I}}{\pi}.
+\end{equation}
+This agrees perfectly with the cases we've run.
 
 \section{Weak Tidal Friction, changing $\eta$}
 
