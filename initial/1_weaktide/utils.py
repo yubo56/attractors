@@ -11,7 +11,7 @@ def to_cart(q, phi):
 def to_ang(x, y, z):
     r = np.sqrt(x**2 + y**2 + z**2)
     q = np.arccos(z / r)
-    phi = (np.arctan2(y / np.sin(q), x / np.sin(q)) + 2 * np.pi)\
+    phi = (np.arctan2(y / np.sin(q), x / np.sin(q)) + np.pi)\
         % (2 * np.pi)
     return q, phi
 

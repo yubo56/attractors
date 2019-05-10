@@ -576,26 +576,17 @@ s(0)e^{-\epsilon \tau}$, so the critical synchronization
 timescale is $\tau_{sync} \sim \frac{1}{\epsilon}$.
 
 The other timescale of interest is how long it takes $\hat{s}$ to reach a
-Cassini State. We may present crude estimates in the $s \gg s_c$ strong
-spin-orbit coupling limit; consider starting $\mu = -1 + \delta$, then to
-leading order
-\begin{align}
-    \pd{\delta}{\tau} &\approx +\epsilon \delta,\nonumber\\
-    \delta(\epsilon\tau) &\approx \delta_0e^{\epsilon \tau}
-\end{align}
-Setting $\delta \sim 1$ gives $\tau_{CS} = -\frac{1}{\epsilon}\ln \delta_0$ the
-timescale it takes to reach $\mu = 0$ which is of order the timescale to reach
-the CS\@. This reinforces our expectation that synchronization is probably no
-faster than reaching the Cassini state, but that a significant fraction of
-initial conditions below the separatrix should be able to reach a Cassini State
-before tides synchronize.
-
-Under this assumption, it would appear that points that start inside the
-separatrix (small) stay inside the separatrix, points that start above the
-separatrix stay above and undergo resonant obliquity excitation ($\sim 50\%$),
-and finally points that start outside the separatrix probably end up at either
-CS1 or CS2 probabilistically depending on $\eta(\Delta T(\mu_0))$ where $\Delta
-T(\mu_0)$ is the arrival time for a state starting at $\mu_0$.
+Cassini State. We may present some crude estimates; note that the Cassini state
+is located at $\mu_4 = \frac{\eta \cos I}{1 + \eta \sin I} \approx
+\frac{s_c}{s}\cos I$. Thus,
+\begin{align*}
+    \rd{\mu_4}{(\epsilon \tau)} &= -\frac{s_c}{s^2}\cos I
+            \rd{s}{(\epsilon\tau)},\\
+        &\approx \frac{s_c}{s}\cos I.
+\end{align*}
+At the same time, $\rd{\mu}{\p*{\epsilon\sigma}} < \frac{2\Omega_1}{s}$, so in
+order for $\mu < \mu_4$ to approach the Cassini state, we need $\Omega_1 \gtrsim
+s_c$ by a reasonable margin.
 
 \end{document}
 
