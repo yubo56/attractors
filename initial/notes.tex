@@ -430,7 +430,7 @@ Specifically:
     M_c &\approx \epsilon 2\eta \cos I A_{sep},\\
     \Delta_c &\approx 2\epsilon \eta \cos I \p*{16 \sqrt{\eta \sin I}}
         \frac{1}{\sqrt{4\eta \sin I}},\\
-        &\approx 8\epsilon \eta \cos I.
+        &\approx 16\epsilon \eta \cos I.
 \end{align}
 This also agrees exceedingly well with our simulations This then gives us
 hopping probability
@@ -532,13 +532,44 @@ and we have approximate averaged equations
             \p*{1 - \frac{s}{2\Omega_1}\mu},\nonumber\\
         &\approx \p*{1 - \mu^2}
             \p*{\frac{2\Omega_1}{s} - \mu},\\
-    \frac{1}{2\Omega_1}\rd{s}{(\epsilon\tau)}
-        &\approx \mu - \frac{s}{2\Omega_1}\p*{1 + \mu^2},\nonumber\\
-        &\approx - \frac{s}{2\Omega_1}.
+    \frac{1}{\Omega_1}\rd{s}{(\epsilon\tau)}
+        &\approx 2\mu - \frac{s}{\Omega_1}\p*{1 + \mu^2}.
 \end{align}
+These EOM produce roughly the phase portrait \autoref{fig:phi_avg}.
+\begin{figure}[t]
+    \centering
+    \begin{tikzpicture}
+        \draw[<->] (0, 0) -- (8, 0);
+        \draw[<->] (0, 0) -- (0, 5);
+        \node[below right] at (8, 0) {$s$};
+        \node[above left] at (0, 5) {$\mu$};
+        \draw (0, 4) -- (2, 4) -- (4, 4);
+        \draw[dashed] (4, 4) -- (8, 4);
+        \draw (0, 4) -- (2, 4);
+        \draw[domain=0:2] plot({\x}, {\x * \x / 2 + 2});
+        \node[left] at (0, 4) {$1$};
+        \node[left] at (0, 2) {$0$};
+        \node[left] at (0, 0) {$-1$};
+        \node[below] at (0, 0) {$0$};
+        \node[below] at (2, 0) {$\Omega_1$};
+        \node[below] at (4, 0) {$2\Omega_1$};
+        \draw[domain=4:8] plot({\x}, {8 / (\x - 2)});
+        \draw[->] (2, 2) -- (1.5, 2.5);
+        \draw[->] (4, 2) -- (3.5, 2.5);
+        \draw[->] (6, 0.5) -- (5.5, 1);
+        \draw[->] (7, 3.5) -- (6.5, 3);
+        \draw[->] (0.5, 3) -- (1, 3.5);
+    \end{tikzpicture}
+    \caption{Rough phase portrait of $\phi$-averaged equations. Dashed lines
+    indicate unstable zeros of at least one of the EOM, while solid lines
+    indicate stable zeros of at least one of the EOM\@. The zeros are $\mu = 1$,
+    which becomes unstable at $s = 2\Omega_1$, $s = 2\Omega_1/\mu$ and $s' = 0$.
+    The only fixed point is $\mu = 1, s = \Omega_1$.}\label{fig:phi_avg}
+\end{figure}
 In the last term, we note $s \gtrsim 2\Omega_1$ initially, while $\mu \leq 1$,
 so we drop both the linear contribution from $\mu$ and approximate $\p*{1 +
-\mu^2} \approx 1$.
+\mu^2} \approx 1$ so that $\rd{(s/\Omega_1)}{(\epsilon\tau)} \approx
+-s/\Omega_1$.
 
 With all these approximations, we clearly obtain $s(\tau) \approx
 s(0)e^{-\epsilon \tau}$, so the critical synchronization
