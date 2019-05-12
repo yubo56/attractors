@@ -199,7 +199,7 @@ We can estimate the area enclosed by the separatrix, as shown in
 $+ 2\pi$ image.
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.6\textwidth]{0_eta/1contours.png}
+    \includegraphics[width=0.8\textwidth]{0_eta/1contours.png}
     \caption{Separatrix for various values of $\eta$.}\label{fig:1contours}
 \end{figure}
 
@@ -227,6 +227,13 @@ We can then easily compute the area enclosed by the separatrix
 For $\eta = 0.1, I = 20^\circ$, this predicts $\frac{A_{sep}}{A_{T}} \approx
 0.235$, which is pretty close to my numerically calculated $\frac{A_{sep}}{A_T}
 = 0.229$.
+
+\section{Separatrix Hopping}
+
+Inspired by G\&H, heteroclinic orbits are topologically unstable for any nonzero
+perturbation, but opened width $\sim$ perturbation parameter. Thus, if we
+introduce a small and constant tidal dissipation, we should get a
+\emph{asymptotically constant} probability of hopping the separatrix.
 
 \subsection{Tidal Dissipation}
 
@@ -264,11 +271,6 @@ satisfied for $s_y \approx -\frac{\epsilon}{\eta \sin(I)}$. Thus, this explains
 why as $\epsilon$ is increased, we first start to get points that don't converge
 to Cassini state $2$ in the absence of tides, before starting to see points that
 fail to converge to Cassini state $1$.
-
-\section{Separatrix Hopping}
-
-Inspired by G\&H, heteroclinic orbits are topologically unstable for any nonzero
-perturbation, but opened width $\sim$ perturbation parameter.
 
 \subsection{Consideration 1: Qualitative}
 
@@ -527,14 +529,16 @@ Assuming $s \gg s_c$ the strong spin-orbit coupling regime, let's first try
 assuming $\mu$ is roughly constant over the course of a precession period, then
 we can average out the $\phi$ dependencies. Then $\phi$ drops out of the EOM,
 and we have approximate averaged equations
-\begin{align}
-    \pd{\mu}{(\epsilon\tau)} &\approx \frac{2\Omega_1}{s}\p*{1 - \mu^2}
-            \p*{1 - \frac{s}{2\Omega_1}\mu},\nonumber\\
-        &\approx \p*{1 - \mu^2}
-            \p*{\frac{2\Omega_1}{s} - \mu},\\
-    \frac{1}{\Omega_1}\rd{s}{(\epsilon\tau)}
-        &\approx 2\mu - \frac{s}{\Omega_1}\p*{1 + \mu^2}.
-\end{align}
+\begin{subequations}\label{se:prec_avg}
+    \begin{align}
+        \pd{\mu}{(\epsilon\tau)} &\approx \frac{2\Omega_1}{s}\p*{1 - \mu^2}
+                \p*{1 - \frac{s}{2\Omega_1}\mu},\nonumber\\
+            &\approx \p*{1 - \mu^2}
+                \p*{\frac{2\Omega_1}{s} - \mu},\\
+        \frac{1}{\Omega_1}\rd{s}{(\epsilon\tau)}
+            &\approx 2\mu - \frac{s}{\Omega_1}\p*{1 + \mu^2}.
+    \end{align}
+\end{subequations}
 These EOM produce roughly the phase portrait \autoref{fig:phi_avg}.
 \begin{figure}[t]
     \centering
@@ -553,7 +557,7 @@ These EOM produce roughly the phase portrait \autoref{fig:phi_avg}.
         \node[below] at (0, 0) {$0$};
         \node[below] at (2, 0) {$\Omega_1$};
         \node[below] at (4, 0) {$2\Omega_1$};
-        \draw[domain=4:8] plot({\x}, {8 / (\x - 2)});
+        \draw[domain=4:8] plot({\x}, {16 / \x});
         \draw[->] (2, 2) -- (1.5, 2.5);
         \draw[->] (4, 2) -- (3.5, 2.5);
         \draw[->] (6, 0.5) -- (5.5, 1);
@@ -575,18 +579,49 @@ With all these approximations, we clearly obtain $s(\tau) \approx
 s(0)e^{-\epsilon \tau}$, so the critical synchronization
 timescale is $\tau_{sync} \sim \frac{1}{\epsilon}$.
 
-The other timescale of interest is how long it takes $\hat{s}$ to reach a
-Cassini State. We may present some crude estimates; note that the Cassini state
-is located at $\mu_4 = \frac{\eta \cos I}{1 + \eta \sin I} \approx
-\frac{s_c}{s}\cos I$. Thus,
+\subsection{Reaching a Cassini State}
+
+As already stated above, the hypothesis is that starting above the separatrix
+results in obliquity excitation at secular resonance/bifurcation when $\eta =
+\eta_{crit}$, while starting inside the separatrix probably means the point will
+stay on CS2 past (saddle-node) bifurcation. We will eventually run numerical
+simulations to confirm this; we should probably derive modified Cassini states
+under weak tides to determine exactly where CS1, CS2 lie in this regime.
+
+Finally, if the IC starts below the separatrix, it will evolve to either CS1 or
+CS2 if it can \emph{catch up} to CS4, else it will stay below the separatrix up
+until bifurcation and slowly tidally align in the small $\eta$ limit. Note that
+CS4 is located at $\mu_4 = \frac{\eta \cos I}{1 + \eta \sin I} \approx
+\frac{s_c}{s}\cos I$, so we can compute $\rd{\mu_4}{(\epsilon\tau)}$ and compare
+to $\rd{\mu}{(\epsilon\tau)}$ in the precession-averaged equations. Thus,
 \begin{align*}
     \rd{\mu_4}{(\epsilon \tau)} &= -\frac{s_c}{s^2}\cos I
             \rd{s}{(\epsilon\tau)},\\
         &\approx \frac{s_c}{s}\cos I.
 \end{align*}
-At the same time, $\rd{\mu}{\p*{\epsilon\sigma}} < \frac{2\Omega_1}{s}$, so in
-order for $\mu < \mu_4$ to approach the Cassini state, we need $\Omega_1 \gtrsim
-s_c$ by a reasonable margin.
+The precession averaged equations bound $\rd{\mu}{\p*{\epsilon\sigma}} <
+\frac{2\Omega_1}{s}$, so in order for $\mu < \mu_4$ to approach the Cassini
+state, we need $\Omega_1 \gtrsim s_c$ by a reasonable margin.
+
+To be more precise, $\mu_4$ disappears at
+\begin{equation}
+    \eta = \eta_c \equiv \p*{\sin^{2/3}I + \cos^{2/3}I}^{-3/2}.
+\end{equation}
+Thus, we can set $s = \frac{s_c}{\eta_c}$ and $\mu = \mu_4$ and integrate
+backwards \autoref{se:prec_avg} backwards in time to determine $\mu, s$ that are
+exactly sufficient for separatrix crossing. Physically, we never expect $s <
+\Omega_1$ though, so the minimum $s_c$ we can use and still expect to see a
+strong spin-orbit coupling regime appear is $s_c \geq \Omega_1 \eta_c$.
+
+At the same time though, looking at the phase portrait \autoref{fig:phi_avg}, we
+can expect that running backwards in time will easily take us towards the upper
+right quadrant, where $\mu \to 1$ backwards in time. To start from a misaligned
+state, the final $s_f$ has a maximum $s_{f, \max}$, and therefore $s_c$ cannot
+be so large that $s_{f, \max} \eta_c < s_c$, otherwise the bifurcation will
+arrive before $\rd{\mu}{t}$ can catch up.
+
+This implies that $s_c$ is bound from both directions in order to get separatrix
+hopping before the bifurcation disappears.
 
 \end{document}
 

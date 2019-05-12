@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.integrate import solve_ivp
+import scipy.optimize as opt
 
 def to_cart(q, phi):
     return [
@@ -38,3 +39,39 @@ def solve_ic(I, s_c, eps, y0, tf, method='RK45', rtol=1e-6, **kwargs):
     dydt = get_dydt(I, s_c, eps)
     ret = solve_ivp(dydt, [0, tf], y0, rtol=rtol, method=method, **kwargs)
     return ret.t, ret.y[0:3, :], ret.y[3, :]
+
+def find_cs(I, eta, q0):
+    f = lambda q: -eta * np.sin(q - I) + np.sin(q) * np.cos(q)
+    fp = lambda q: -eta * np.cos(q - I) + np.cos(2 * q)
+    return np.cos(opt.newton(f, q0, fprime=fp))
+
+def get_etac(I):
+    return (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
+
+def get_crit(I):
+    eta_c = get_etac(I)
+
+    eta = eta_c - 0.01
+
+    # search for CS4
+    mu_4 = find_cs(I, eta, -np.pi / 2)
+    return eta_c, mu_4
+
+def get_mu4(I, s_c, s):
+    eta = s_c / s
+    return [find_cs(I, eta_i, -np.pi / 2) for eta_i in eta]
+
+def get_crits(I, s_c):
+    def dydt(t, y):
+        '''
+        evolves dmu/dt, ds/dt backwards in time, precession-averaged
+        '''
+        mu, s = y
+        return [
+            -(1 - mu**2) * (2 / s - mu),
+            -2 * mu + s * (1 + mu**2),
+        ]
+    eta_c, mu_4 = get_crit(I)
+    ret = solve_ivp(dydt, [0, 2], [mu_4, s_c/eta_c], max_step=0.01)
+    mu, s = ret.y
+    return mu, s, get_mu4(I, s_c, s)
