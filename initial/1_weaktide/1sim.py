@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
-from utils import solve_ic, to_ang, get_crits, get_etac
+from utils import solve_ic, to_ang, get_crits, get_etac, get_upper_sc
 
 def get_name(s_c, eps, mu0):
     epspow = -np.log10(eps)
@@ -40,7 +40,10 @@ if __name__ == '__main__':
     eps = 1e-3
     s0 = 10
 
-    s_c0 = get_etac(I) + 0.01
+    upper = get_upper_sc(I)
+    lower = get_etac(I)
+
+    s_c0 = upper - 0.01
     mu, s, mu4 = get_crits(I, s_c0)
     plt.plot(s, mu, label=r'$\mu$')
     plt.plot(s, mu4, label=r'$\mu_4$')

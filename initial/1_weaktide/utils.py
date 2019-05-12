@@ -51,7 +51,7 @@ def get_etac(I):
 def get_crit(I):
     eta_c = get_etac(I)
 
-    eta = eta_c - 0.01
+    eta = eta_c - 1e-3 # small displacement since no CS4 at eta_c
 
     # search for CS4
     mu_4 = find_cs(I, eta, -np.pi / 2)
@@ -61,17 +61,31 @@ def get_mu4(I, s_c, s):
     eta = s_c / s
     return [find_cs(I, eta_i, -np.pi / 2) for eta_i in eta]
 
+def dydt_avg(t, y):
+    '''
+    evolves dmu/dt, ds/dt forwards in time, precession-averaged
+    '''
+    mu, s = y
+    return [
+        (1 - mu**2) * (2 / s - mu),
+        2 * mu - s * (1 + mu**2),
+    ]
+
 def get_crits(I, s_c):
-    def dydt(t, y):
-        '''
-        evolves dmu/dt, ds/dt backwards in time, precession-averaged
-        '''
-        mu, s = y
-        return [
-            -(1 - mu**2) * (2 / s - mu),
-            -2 * mu + s * (1 + mu**2),
-        ]
     eta_c, mu_4 = get_crit(I)
-    ret = solve_ivp(dydt, [0, 2], [mu_4, s_c/eta_c], max_step=0.01)
+    ret = solve_ivp(dydt_avg, [0, -2], [mu_4, s_c/eta_c], max_step=0.01)
     mu, s = ret.y
     return mu, s, get_mu4(I, s_c, s)
+
+def get_upper_sc(I):
+    eta_c, mu_4 = get_crit(I)
+    ret = solve_ivp(dydt_avg, [0, 10], [0, 20], max_step=0.01,
+                    dense_output=True)
+
+    t, (mu, s), interp_sol = ret.t, ret.y, ret.sol
+    # find s(t) where mu(t) = mu_4 at separatrix crossing
+    idx_4 = np.where(mu > mu_4)[0][0]
+
+    root_func = lambda t: interp_sol(t)[0] - mu_4
+    t_exact = opt.brentq(root_func, t[idx_4 - 1], t[idx_4])
+    return interp_sol(t_exact)[1] * eta_c
