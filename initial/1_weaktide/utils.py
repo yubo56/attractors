@@ -32,6 +32,16 @@ def get_dydt(I, s_c, eps):
         ]
     return dydt
 
+def dydt_avg(t, y):
+    '''
+    evolves dmu/dt, ds/dt forwards in time, precession-averaged
+    '''
+    mu, s = y
+    return [
+        (1 - mu**2) * (2 / s - mu),
+        2 * mu - s * (1 + mu**2),
+    ]
+
 def solve_ic(I, s_c, eps, y0, tf, method='RK45', rtol=1e-6, **kwargs):
     '''
     wraps solve_ivp and returns sim time
@@ -39,6 +49,11 @@ def solve_ic(I, s_c, eps, y0, tf, method='RK45', rtol=1e-6, **kwargs):
     dydt = get_dydt(I, s_c, eps)
     ret = solve_ivp(dydt, [0, tf], y0, rtol=rtol, method=method, **kwargs)
     return ret.t, ret.y[0:3, :], ret.y[3, :]
+
+def solve_ic_avg(I, s_c, eps, y0, tf, method='RK45', rtol=1e-6, **kwargs):
+    ret = solve_ivp(dydt_avg, [0, eps * tf], y0,
+                    rtol=rtol, method=method, max_step=0.1 * eps, **kwargs)
+    return ret.t / eps, ret.y[0], ret.y[1]
 
 def find_cs(I, eta, q0):
     f = lambda q: -eta * np.sin(q - I) + np.sin(q) * np.cos(q)
@@ -58,28 +73,31 @@ def get_crit(I):
     return eta_c, mu_4
 
 def get_mu4(I, s_c, s):
+    '''
+    gets mu4 for a list of spins s, returning -1 if no CS4 for given s
+    '''
     eta = s_c / s
-    return [find_cs(I, eta_i, -np.pi / 2) for eta_i in eta]
+    eta_c = get_etac(I)
+    mu4 = []
+    for eta_i in eta:
+        if eta_i > eta_c:
+            mu4.append(-1)
+        else:
+            mu4.append(find_cs(I, eta_i, -np.pi / 2))
+    return np.array(mu4)
 
-def dydt_avg(t, y):
+def backwards_solve(I, s_c):
     '''
-    evolves dmu/dt, ds/dt forwards in time, precession-averaged
+    solve EOM backwards to find where separatrix hopping occurs
     '''
-    mu, s = y
-    return [
-        (1 - mu**2) * (2 / s - mu),
-        2 * mu - s * (1 + mu**2),
-    ]
-
-def get_crits(I, s_c):
     eta_c, mu_4 = get_crit(I)
-    ret = solve_ivp(dydt_avg, [0, -2], [mu_4, s_c/eta_c], max_step=0.01)
+    ret = solve_ivp(dydt_avg, [0, -2], [mu_4, s_c/eta_c], max_step=0.03)
     mu, s = ret.y
     return mu, s, get_mu4(I, s_c, s)
 
 def get_upper_sc(I):
     eta_c, mu_4 = get_crit(I)
-    ret = solve_ivp(dydt_avg, [0, 10], [0, 20], max_step=0.01,
+    ret = solve_ivp(dydt_avg, [0, 10], [0, 20], max_step=0.03,
                     dense_output=True)
 
     t, (mu, s), interp_sol = ret.t, ret.y, ret.sol

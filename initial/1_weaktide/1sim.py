@@ -5,34 +5,48 @@ import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
-from utils import solve_ic, to_ang, get_crits, get_etac, get_upper_sc
+from utils import solve_ic, solve_ic_avg, to_ang, backwards_solve,\
+    get_etac, get_upper_sc, get_mu4
 
 def get_name(s_c, eps, mu0):
     epspow = -np.log10(eps)
     return ('%.1fx%.1fx%.1f' % (s_c, epspow, -mu0)).replace('.', '_')
 
 def traj_for_sc(I, s_c, eps, mu0, s0, tf=2500):
+    fig, (ax1, ax2) = plt.subplots(2, 1)
     init = [-np.sqrt(1 - mu0**2), 0, mu0, s0]
 
     t, svec, s = solve_ic(I, s_c, eps, init, tf)
-    q, phi = to_ang(*svec)
-    plt.plot(phi, np.cos(q), 'bo', markersize=0.3)
-    plt.plot(phi[-1], np.cos(q)[-1], 'ro', markersize=1.5)
-    plt.xlabel(r'$\phi$')
-    plt.ylabel(r'$\cos\theta$')
-    plt.title(r'$(s_c, s_0, \cos \theta_0) = (%.2f, %d, %.2f)$' %
-              (s_c, s0, mu0))
-    plt.savefig('1traj_%s.png' % get_name(s_c, eps, mu0))
-    plt.clf()
+    t_avg, mu_avg, s_avg = solve_ic_avg(I, s_c, eps, [mu0, s0], tf)
+    # mu, s, mu4 = backwards_solve(I, s_f)
 
-    eta = s_c / s
-    plt.plot(t, eta * np.cos(I) / (1 + eta * np.sin(I)), 'b', label=r'$\mu_4$')
-    plt.plot(t, svec[2, :], 'go', label=r'$\mu$', markersize=0.3)
-    plt.xlabel(r'$t$')
-    plt.ylabel(r'$\mu$')
-    plt.title(r'$\mu(t), \mu_4(t)$')
-    plt.legend()
-    plt.savefig('1eta_%s.png' % get_name(s_c, eps, mu0))
+    q, phi = to_ang(*svec)
+
+    ax1.plot(t, svec[2, :], 'go', label=r'$\mu$', markersize=0.3)
+    ax1.plot(t_avg, mu_avg, 'ro', label=r'$\mu_{avg}$', markersize=0.3)
+    # plot mu4's up until CS disappears
+    mu4 = get_mu4(I, s_c, s)
+    mu4_avg = get_mu4(I, s_c, s_avg)
+    base_slice = np.where(mu4 > 0)[0]
+    avg_slice = np.where(mu4_avg > 0)[0]
+    ax1.plot(t[base_slice], mu4[base_slice], 'g', label=r'$\mu_4$',
+             linewidth=0.7)
+    ax1.plot(t_avg[avg_slice], mu4_avg[avg_slice], 'r', label=r'$\mu_{4,avg}$',
+             linewidth=0.7)
+
+    ax1.set_xlabel(r'$t$')
+    ax1.set_ylabel(r'$\mu$')
+    ax1.legend()
+
+    ax2.plot(phi, np.cos(q), 'bo', markersize=0.3)
+    ax2.plot(phi[-1], np.cos(q)[-1], 'ro', markersize=1.5)
+    ax2.set_xlabel(r'$\phi$')
+    ax2.set_ylabel(r'$\cos\theta$')
+
+    plt.suptitle(r'$(s_c, s_0, \cos \theta_0) = (%.2f, %d, %.2f)$' %
+                  (s_c, s0, mu0))
+
+    plt.savefig('1sim_%s.png' % get_name(s_c, eps, mu0), dpi=400)
     plt.clf()
 
 if __name__ == '__main__':
@@ -43,17 +57,8 @@ if __name__ == '__main__':
     upper = get_upper_sc(I)
     lower = get_etac(I)
 
-    s_c0 = upper - 0.01
-    mu, s, mu4 = get_crits(I, s_c0)
-    plt.plot(s, mu, label=r'$\mu$')
-    plt.plot(s, mu4, label=r'$\mu_4$')
-    plt.xlabel('s')
-    plt.xlim([0, 4])
-    plt.ylabel(r'$\mu$')
-    plt.legend()
-    plt.savefig('1mu_c.png')
-
-    # traj_for_sc(I, 2, eps, -0.9, s0)
-    # traj_for_sc(I, 0.2, eps, -0.9, s0, tf=5000)
-    # traj_for_sc(I, 0.03, eps, -0.5, s0, tf=3000)
-    # traj_for_sc(I, 2, eps, -0.3, s0, tf=2000)
+    traj_for_sc(I, 2, eps, -0.9, s0)
+    traj_for_sc(I, 1, eps, 0.2, s0)
+    traj_for_sc(I, 0.9 * upper + 0.1 * lower, eps, -0.7, s0)
+    traj_for_sc(I, 0.9 * upper + 0.1 * lower, eps, -0.1, s0)
+    traj_for_sc(I, 1, eps, 0.7, s0)
