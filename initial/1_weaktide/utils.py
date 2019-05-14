@@ -2,6 +2,9 @@ import numpy as np
 from scipy.integrate import solve_ivp
 import scipy.optimize as opt
 
+def stringify(*args):
+    return 'x'.join(['%.1f' % arg for arg in args]).replace('.', '_')
+
 def to_cart(q, phi):
     return [
         np.sin(q) * np.cos(phi),
@@ -32,15 +35,12 @@ def get_dydt(I, s_c, eps):
         ]
     return dydt
 
-def dydt_avg(t, y):
+def dmu_ds(s, y):
     '''
-    evolves dmu/dt, ds/dt forwards in time, precession-averaged
+    solves for mu(s) without ever introducing t
     '''
-    mu, s = y
-    return [
-        (1 - mu**2) * (2 / s - mu),
-        2 * mu - s * (1 + mu**2),
-    ]
+    mu = y[0]
+    return [((1 - mu**2) * (2 / s - mu)) / (2 * mu - s * (1 + mu**2))]
 
 def solve_ic(I, s_c, eps, y0, tf, method='RK45', rtol=1e-6, **kwargs):
     '''
@@ -49,11 +49,6 @@ def solve_ic(I, s_c, eps, y0, tf, method='RK45', rtol=1e-6, **kwargs):
     dydt = get_dydt(I, s_c, eps)
     ret = solve_ivp(dydt, [0, tf], y0, rtol=rtol, method=method, **kwargs)
     return ret.t, ret.y[0:3, :], ret.y[3, :]
-
-def solve_ic_avg(I, s_c, eps, y0, tf, method='RK45', rtol=1e-6, **kwargs):
-    ret = solve_ivp(dydt_avg, [0, eps * tf], y0,
-                    rtol=rtol, method=method, max_step=0.1 * eps, **kwargs)
-    return ret.t / eps, ret.y[0], ret.y[1]
 
 def find_cs(I, eta, q0):
     f = lambda q: -eta * np.sin(q - I) + np.sin(q) * np.cos(q)
@@ -86,24 +81,10 @@ def get_mu4(I, s_c, s):
             mu4.append(find_cs(I, eta_i, -np.pi / 2))
     return np.array(mu4)
 
-def backwards_solve(I, s_c):
+def get_inf_avg_sol(smax=10):
     '''
-    solve EOM backwards to find where separatrix hopping occurs
+    solve averaged equations for IC mu = 0, s >> 1
     '''
-    eta_c, mu_4 = get_crit(I)
-    ret = solve_ivp(dydt_avg, [0, -2], [mu_4, s_c/eta_c], max_step=0.03)
-    mu, s = ret.y
-    return mu, s, get_mu4(I, s_c, s)
-
-def get_upper_sc(I):
-    eta_c, mu_4 = get_crit(I)
-    ret = solve_ivp(dydt_avg, [0, 10], [0, 20], max_step=0.03,
-                    dense_output=True)
-
-    t, (mu, s), interp_sol = ret.t, ret.y, ret.sol
-    # find s(t) where mu(t) = mu_4 at separatrix crossing
-    idx_4 = np.where(mu > mu_4)[0][0]
-
-    root_func = lambda t: interp_sol(t)[0] - mu_4
-    t_exact = opt.brentq(root_func, t[idx_4 - 1], t[idx_4])
-    return interp_sol(t_exact)[1] * eta_c
+    ret = solve_ivp(dmu_ds, [smax, 1.001], [0], max_step=0.1, dense_output=True)
+    s, [mu], interp_sol = ret.t, ret.y, ret.sol
+    return mu, s, interp_sol
