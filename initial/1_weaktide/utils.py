@@ -19,34 +19,11 @@ def to_ang(x, y, z):
         % (2 * np.pi)
     return q, phi
 
-def get_dydt(I, s_c, eps):
-    '''
-    in units where Omega_1 = 1
-    '''
-    def dydt(t, v):
-        x, y, z, s = v
-        tide = eps * 2 / s * (1 - s * z / 2)
-        rat = s / s_c
-        return [
-            rat * y * z - y * np.cos(I) - tide * z * x,
-            -rat * x * z + (x * np.cos(I) - z * np.sin(I)) - tide * z * y,
-            y * np.sin(I) + tide * (1 - z**2),
-            2 * eps * (z - s * (1 + z**2) / 2),
-        ]
-    return dydt
-
-def dmu_ds(s, y):
-    '''
-    solves for mu(s) without ever introducing t
-    '''
-    mu = y[0]
-    return [((1 - mu**2) * (2 / s - mu)) / (2 * mu - s * (1 + mu**2))]
-
 def solve_ic(I, s_c, eps, y0, tf, method='RK45', rtol=1e-6, **kwargs):
     '''
     wraps solve_ivp and returns sim time
     '''
-    dydt = get_dydt(I, s_c, eps)
+    dydt = get_dydt_0(I, s_c, eps)
     ret = solve_ivp(dydt, [0, tf], y0, rtol=rtol, method=method, **kwargs)
     return ret.t, ret.y[0:3, :], ret.y[3, :]
 
@@ -74,17 +51,95 @@ def get_mu4(I, s_c, s):
     eta = s_c / s
     eta_c = get_etac(I)
     mu4 = []
-    for eta_i in eta:
-        if eta_i > eta_c:
-            mu4.append(-1)
-        else:
-            mu4.append(find_cs(I, eta_i, -np.pi / 2))
-    return np.array(mu4)
+    mu4 = np.full(np.shape(eta), -1.0)
+
+    valid_idxs = np.where(eta < eta_c)
+
+    for idx in zip(*valid_idxs):
+        mu4[idx] = find_cs(I, eta[idx], -np.pi/2)
+
+    return mu4
 
 def get_inf_avg_sol(smax=10):
     '''
     solve averaged equations for IC mu = 0, s >> 1
     '''
-    ret = solve_ivp(dmu_ds, [smax, 1.001], [0], max_step=0.1, dense_output=True)
+    ret = solve_ivp(dmu_ds_nocs, [smax, 1.001], [0],
+                    max_step=0.1, dense_output=True)
     s, [mu], interp_sol = ret.t, ret.y, ret.sol
     return mu, s, interp_sol
+
+def get_dydt_0(I, s_c, eps):
+    '''
+    Full CS equations, no phi treatment. in units where Omega_1 = 1
+    '''
+    def dydt(t, v):
+        '''
+        ds/dt, dmu/dt
+        '''
+        x, y, z, s = v
+        tide = eps * 2 / s * (1 - s * z / 2)
+        rat = s / s_c
+        return [
+            rat * y * z - y * np.cos(I) - tide * z * x,
+            -rat * x * z + (x * np.cos(I) - z * np.sin(I)) - tide * z * y,
+            y * np.sin(I) + tide * (1 - z**2),
+            2 * eps * (z - s * (1 + z**2) / 2),
+        ]
+    return dydt
+
+def dydt_nocs(s, mu):
+    '''
+    ds/dt, dmu/dt in precession-ignored limit
+    '''
+    return 2 * mu - s * (1 + mu**2), (1 - mu**2) * (2 / s - mu)
+
+def dmu_ds_nocs(s, y):
+    '''
+    dmu/ds
+    '''
+    mu = y[0]
+    ds, dmu = dydt_nocs(s, mu)
+    return dmu/ds
+
+def get_dydt_num_avg(I, s_c, eps):
+    '''
+    return dmu/ds, but instead do it via a 2pi phi integral of dydt_0
+    returned function can be used for solve_ivp or for plotting!
+    '''
+    dydt_0 = get_dydt_0(I, s_c, eps)
+    def dydt(s, y):
+        # coerce some args into np.arrays
+        s = np.array(s)
+        z = np.array(y[0]) # = mu
+        mu4 = get_mu4(I, s_c, s)
+        x = -np.sqrt(1 - z**2)
+        sign = np.sign(mu4 - z) # mu < mu4, dphi > 0
+
+        # a non-terminal event for a negative->positive y-crossing (2pi)
+        # (can't exclude the initial condition w/ a terminal event)
+        event = lambda t, y: y[1] # set sign in loop
+
+        ds = np.zeros_like(s, dtype=np.float)
+        dmu = np.zeros_like(s, dtype=np.float)
+        for idx in zip(*np.where(s)): # iterate through s
+            event.direction = -sign[idx]
+            t_f = 1
+            t_events = []
+            while len(t_events) == 0:
+                # t_f start/end are arbitrary, keep doubling until find event
+                ret = solve_ivp(dydt_0, [t_f, 2 * t_f],
+                                # start y != 0 so first event is important
+                                [x[idx], -1e-5 * sign[idx], z[idx], s[idx]],
+                                events=event, dense_output=True)
+                t_events = ret.t_events[0]
+                t_f *= 2
+            # fetch from first occurrence
+            _, _, z_f, s_f = ret.sol(t_events[0])
+
+            # dydt is in epsilon * tau time
+            ds[idx] = (s_f - s[idx]) / eps
+            dmu[idx] = (z_f - z[idx]) / eps
+        return ds, dmu
+
+    return dydt

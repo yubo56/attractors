@@ -51,3 +51,13 @@ if __name__ == '__main__':
     plt.suptitle(r'$\eta_c = %.3f$' % get_etac(I))
     plt.savefig('1contours.png', dpi=400)
     plt.clf()
+
+    f, ax = plt.subplots(1, 1)
+    ax.set_ylabel(r'$\cos \theta$')
+    ax.set_xlabel(r'$\phi$')
+    ax.set_xticks([0, np.pi, 2 * np.pi])
+    ax.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
+    ax.set_ylabel(r'$\cos \theta$')
+    ax.set_xlabel(r'$\phi$')
+    plot_H_for_eta(f, ax, 0.1, I)
+    plt.savefig('1contours_02.png', dpi=400)

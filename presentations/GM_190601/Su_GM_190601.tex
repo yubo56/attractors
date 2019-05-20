@@ -1,0 +1,302 @@
+    \documentclass[dvipsnames, 11pt]{beamer}
+    \usetheme{Madrid}
+    \usefonttheme{professionalfonts}
+    \usepackage{
+        amsmath,
+        amssymb,
+        fouriernc, % fourier font w/ new century book
+        fancyhdr, % page styling
+        lastpage, % footer fanciness
+        hyperref, % various links
+        setspace, % line spacing
+        amsthm, % newtheorem and proof environment
+        mathtools, % \Aboxed for boxing inside aligns, among others
+        float, % Allow [H] figure env alignment
+        enumerate, % Allow custom enumerate numbering
+        graphicx, % allow includegraphics with more filetypes
+        wasysym, % \smiley!
+        upgreek, % \upmu for \mum macro
+        listings, % writing TrueType fonts and including code prettily
+        tikz, % drawing things
+        booktabs, % \bottomrule instead of hline apparently
+        cancel % can cancel things out!
+    }
+    \usepackage[
+        labelfont=bf, % caption names are labeled in bold
+        font=scriptsize % smaller font for captions
+    ]{caption}
+    \usepackage[font=scriptsize]{subcaption} % subfigures
+
+    \newcommand*{\scinot}[2]{#1\times10^{#2}}
+    \newcommand*{\dotp}[2]{\left<#1\,\middle|\,#2\right>}
+    \newcommand*{\rd}[2]{\frac{\mathrm{d}#1}{\mathrm{d}#2}}
+    \newcommand*{\pd}[2]{\frac{\partial#1}{\partial#2}}
+    \newcommand*{\rtd}[2]{\frac{\mathrm{d}^2#1}{\mathrm{d}#2^2}}
+    \newcommand*{\ptd}[2]{\frac{\partial^2 #1}{\partial#2^2}}
+    \newcommand*{\md}[2]{\frac{\mathrm{D}#1}{\mathrm{D}#2}}
+    \newcommand*{\pvec}[1]{\vec{#1}^{\,\prime}}
+    \newcommand*{\svec}[1]{\vec{#1}\;\!}
+    \newcommand*{\bm}[1]{\boldsymbol{\mathbf{#1}}}
+    \newcommand*{\ang}[0]{\;\text{\AA}}
+    \newcommand*{\mum}[0]{\;\upmu \mathrm{m}}
+    \newcommand*{\at}[1]{\left.#1\right|}
+
+    \let\Re\undefined
+    \let\Im\undefined
+    \DeclareMathOperator{\Res}{Res}
+    \DeclareMathOperator{\Re}{Re}
+    \DeclareMathOperator{\Im}{Im}
+    \DeclareMathOperator{\Log}{Log}
+    \DeclareMathOperator{\Arg}{Arg}
+    \DeclareMathOperator{\Tr}{Tr}
+    \DeclareMathOperator{\E}{E}
+    \DeclareMathOperator{\Var}{Var}
+    \DeclareMathOperator*{\argmin}{argmin}
+    \DeclareMathOperator*{\argmax}{argmax}
+    \DeclareMathOperator{\sgn}{sgn}
+    \DeclareMathOperator{\diag}{diag\;}
+
+    \DeclarePairedDelimiter\bra{\langle}{\rvert}
+    \DeclarePairedDelimiter\ket{\lvert}{\rangle}
+    \DeclarePairedDelimiter\abs{\lvert}{\rvert}
+    \DeclarePairedDelimiter\ev{\langle}{\rangle}
+    \DeclarePairedDelimiter\p{\lparen}{\rparen}
+    \DeclarePairedDelimiter\s{\lbrack}{\rbrack}
+    \DeclarePairedDelimiter\z{\lbrace}{\rbrace}
+
+    % \everymath{\displaystyle} % biggify limits of inline sums and integrals
+    \tikzstyle{circ} % usage: \node[circ, placement] (label) {text};
+        = [draw, circle, fill=white, node distance=3cm, minimum height=2em]
+    \definecolor{commentgreen}{rgb}{0,0.6,0}
+    \lstset{
+        basicstyle=\ttfamily\footnotesize,
+        frame=single,
+        numbers=left,
+        showstringspaces=false,
+        keywordstyle=\color{blue},
+        stringstyle=\color{purple},
+        commentstyle=\color{commentgreen},
+        morecomment=[l][\color{magenta}]{\#}
+    }
+
+\begin{document}
+
+\title[Cassini S-O Misalignment]{High Spin-Orbit Misalignment as an Attractor in
+Cassini State Systems with Weak Tidal Friction}
+\subtitle{Group Meeting XX/XX/XXXX}
+\author{Yubo Su}
+\date{Some day}
+
+\maketitle
+
+\begin{frame}
+    \frametitle{Problem 1}
+    \framesubtitle{Introduction}
+
+    \begin{itemize}
+        \item Close-in planet to a star w/ $\vec{l}$ gstarts with random spin
+            $\hat{s}$ (e.g.\ collision). Evolves under tides + precession around
+            perturber $\hat{l}_p$.
+
+        \item \textbf{Toy Problem:} Assume constant tidal dissipation, fate?
+
+        \item Cassini States: $H^{(0)} = \frac{\p*{\hat{s} \cdot \hat{l}}^2}{2}
+            + \eta \hat{s} \cdot \hat{l}_p$. CS4 is saddle point,
+            \emph{separatrix}.
+
+        \begin{figure}[t]
+            \centering
+            \includegraphics[width=0.5\textwidth]{../../initial/0_eta/1contours.png}
+        \end{figure}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 1}
+    \framesubtitle{Constant Tides}
+
+    \begin{itemize}
+        \item Constant tides $\rd{\theta}{t} = \epsilon \sin\theta$,
+            EOM ($\mu = \cos \theta$):
+            \begin{align*}
+                \rd{\hat{s}}{\tau}
+                    &= \p*{\hat{s} \cdot \hat{l}}\p*{\hat{s} \times \hat{l}}
+                        - \eta\hat{s} \times \hat{l}_p +
+                        \epsilon \hat{s} \times \p*{\hat{l} \times \hat{s}}
+                        ,\\
+                \pd{\phi}{t} &= \mu - \eta
+                    \p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}}
+                        \cos \phi},\\
+                \pd{\mu}{t} &= -\eta \sin I \sin \phi
+                    + \epsilon \p*{1 - \mu^2},
+            \end{align*}
+
+        \item \emph{Review:} Last meeting, found probability that initial state
+            $\cos\theta < 0$ jumps into separatrix $\propto
+            \eta^{3/2}\epsilon^0$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 1}
+    \framesubtitle{Flow Boundaries}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=0.9\columnwidth]{../../initial/0_eta/6manifolds0_20.png}
+            \end{figure}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Notation: subscripts \emph{stable, unstable} manifolds,
+                    superscripts are left/right copy of CS4.
+
+                    \begin{itemize}
+                        \item Below black, continues orbit $\mu < \mu_4$.
+
+                        \item Black/green, escapes.
+
+                        \item Green/red, captures.
+                    \end{itemize}
+
+                \item Evaluate $\Delta \mu$ at $\phi = \pi$ reproduces
+                    probability (numerical was $P_{hop}(\eta = 0.2) = 0.251$).
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 1}
+    \framesubtitle{Melnikov's Method (coarsely)}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item \textbf{Goal:} Under weak perturbation, how much does
+                    trajectory deviate from level curve of $H$?
+
+                \item Procedure:
+
+                    \begin{itemize}
+                        \item Compute $\Delta H^{(0)}$ unperturbed  over
+                            trajectory.
+
+                        \item Locate new level curve to find $\Delta q$ along
+                            coordinate: $\Delta H^{(0)} =
+                            \pd{H^{(0)}}{q}\Delta q$.
+                    \end{itemize}
+                \item So looks something like:
+                    {\tiny
+                    \begin{equation*}
+                        \rd{H^{(0)}}{t} =
+                            \underbrace{
+                            \cancel{\pd{H^{(0)}}{\mu}\rd{\mu^{(0)}}{t}
+                                + \pd{H^{(0)}}{\phi}\rd{\phi^{(0)}}{t}}}
+                                _{\dot{\phi}^{(0)}\dot{\mu}^{(0)}
+                                    - \dot{\mu}^{(0)}\dot{\phi}^{(0)}}
+                            + \pd{H^{(0)}}{\mu} \rd{\mu^{(1)}}{t}.
+                    \end{equation*}}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=0.6\columnwidth]{../../initial/0_eta/6manifolds0_20.png}
+            \end{figure}
+            \begin{itemize}
+                \item Gives rise to Melnikov distance:
+
+                \begin{itemize}
+                    \item $\Delta \mu(\phi) = \frac{1}{\dot{\phi}(\phi)}
+                            \oint \dot{\phi}^{(0)} \epsilon\p*{1 - \mu^2}
+                                \;\mathrm{d}t.$
+                    \item $\mu(\phi) \approx
+                        \eta \cos I \pm \mathcal{O}\p*{\sqrt{\eta}}$.
+
+                    \item $W_s^{(1)}, W_u^{(0)}$: dominated by $1$.
+
+                    \item $W_s^{(0)}, W_u^{(0)}$: dominated by $\eta^{3/2}$!
+                \end{itemize}
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{Realistic Tides}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item In realistic tides, $\eta$ can evolve as $s$ spins down.
+
+                \item $\eta = \frac{s_c}{s}$, full expression below.
+
+                \item First, consider tides alone, phase portrait at right:
+
+                \begin{itemize}
+                    \item Like ignoring $\rd{\mu}{\phi}$ over precession orbit.
+
+                    \item Breaks down near $\mu_4$!
+                \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/2quiver0_7.png}
+            \end{figure}
+        \end{column}
+    \end{columns}
+
+    \begin{align}
+        \rd{\hat{s}}{\tau}
+            &= \frac{s}{s_c}\p*{\hat{s} \cdot \hat{l}}
+                \p*{\hat{s} \times \hat{l}}
+                - \hat{s} \times \hat{l}_p
+                + \frac{\epsilon 2\Omega}{s}
+                    \p*{1 - \frac{s}{2\Omega}\p*{\hat{l} \cdot \hat{s}}}
+                        \hat{s} \times \p*{\hat{l} \times \hat{s}},\\
+        \rd{s}{\tau}
+            &= \epsilon 2\Omega \p*{\hat{s} \cdot \hat{l} - \frac{s}{2\Omega}\p*{1
+                + \p*{\hat{s} \cdot \hat{l}}^2}}.
+    \end{align}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{Near CS4}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=0.75\columnwidth]{../../initial/0_eta/1contours_02.png}
+            \end{figure}
+
+            \begin{itemize}
+                \item Actually, $\mu_0 \equiv \mu(\phi = 0)$ sets when
+                    encounters CS4.
+
+                \begin{itemize}
+                    \item $\abs*{\mu_0 - \mu_4} \gtrsim \sqrt{\eta \sin I}$,
+                        then $\mu(\phi) \approx \mu_0$.
+
+                    \item
+                \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Reason 2
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\end{document}
+
