@@ -104,7 +104,9 @@ def dmu_ds_nocs(s, y):
 
 def get_dydt_num_avg(I, s_c, eps):
     '''
-    return dmu/ds, but instead do it via a 2pi phi integral of dydt_0
+    return ds/dt, dmu/dt getter, but instead do it via a 2pi phi integral of
+    dydt_0
+
     returned function can be used for solve_ivp or for plotting!
     '''
     dydt_0 = get_dydt_0(I, s_c, eps)
@@ -128,7 +130,7 @@ def get_dydt_num_avg(I, s_c, eps):
             t_events = []
             while len(t_events) == 0:
                 # t_f start/end are arbitrary, keep doubling until find event
-                ret = solve_ivp(dydt_0, [t_f, 2 * t_f],
+                ret = solve_ivp(dydt_0, [0, 2 * t_f],
                                 # start y != 0 so first event is important
                                 [x[idx], -1e-5 * sign[idx], z[idx], s[idx]],
                                 events=event, dense_output=True)
@@ -138,8 +140,29 @@ def get_dydt_num_avg(I, s_c, eps):
             _, _, z_f, s_f = ret.sol(t_events[0])
 
             # dydt is in epsilon * tau time
-            ds[idx] = (s_f - s[idx]) / eps
-            dmu[idx] = (z_f - z[idx]) / eps
+            ds[idx] = (s_f - s[idx]) / (eps * t_events[0])
+            dmu[idx] = (z_f - z[idx]) / (eps * t_events[0])
         return ds, dmu
 
+    return dydt
+
+def get_dydt_piecewise(I, s_c):
+    '''
+    returns ds/dt, dmu/dt under piecewise approximation definition
+    '''
+    def dydt(s, y):
+        s = np.array(s)
+        mu = np.array(y[0])
+        mu4 = get_mu4(I, s_c, s)
+        eta = s_c / s
+        dist = np.sqrt(eta * np.cos(I))
+
+        ds = 2 * mu - s * (1 + mu**2)
+
+        # compute piecewise dmu/dt as multiplier of dydt_nocs
+        dmu = dydt_nocs(s, mu)[1]
+        close_idx = np.where(np.abs(mu - mu4) < dist)
+
+        dmu[close_idx] *= (dist / (mu4 - mu))[close_idx]
+        return ds, dmu
     return dydt
