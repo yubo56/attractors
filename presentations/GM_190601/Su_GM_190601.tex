@@ -83,7 +83,7 @@
 
 \title[Cassini S-O Misalignment]{High Spin-Orbit Misalignment as an Attractor in
 Cassini State Systems with Weak Tidal Friction}
-\subtitle{Group Meeting XX/XX/XXXX}
+\subtitle{Meeting XX/XX/XXXX}
 \author{Yubo Su}
 \date{Some day}
 
@@ -269,30 +269,156 @@ Cassini State Systems with Weak Tidal Friction}
 
 \begin{frame}
     \frametitle{Problem 2}
+    \framesubtitle{Intuitive Guess}
+
+    \begin{itemize}
+        \item Ignore perturber for now ($\eta \ll 1$). Maybe: \emph{points
+            incident on CS4} have $P_{hop}$ probability of entering separatrix?
+
+        \item For instance, shaded green = capture region:
+    \end{itemize}
+
+    \begin{figure}[t]
+        \centering
+        \includegraphics[width=0.6\textwidth]{../../initial/1_weaktide/2phase_portrait0_7.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
     \framesubtitle{Near CS4}
 
     \begin{columns}
         \begin{column}{0.5\textwidth}
             \begin{figure}[t]
                 \centering
-                \includegraphics[width=0.75\columnwidth]{../../initial/0_eta/1contours_02.png}
+                \includegraphics[width=0.7\columnwidth]{../../initial/0_eta/1contours_02.png}
             \end{figure}
 
             \begin{itemize}
-                \item Actually, $\mu_0 \equiv \mu(\phi = 0)$ sets when
-                    encounters CS4.
+                \item When $\eta$ non-negligible, full phase space $(\mu, \phi,
+                    s)$.
 
-                \begin{itemize}
-                    \item $\abs*{\mu_0 - \mu_4} \gtrsim \sqrt{\eta \sin I}$,
-                        then $\mu(\phi) \approx \mu_0$.
-
-                    \item
-                \end{itemize}
+                \item Study $(\mu_0, s)$ where $\mu_0 \equiv \mu(\phi = 0)$.
+                    \begin{itemize}
+                        \item $\mu_0 \approx \mu_4$ = $P_{hop}$ candidate.
+                    \end{itemize}
             \end{itemize}
         \end{column}
         \begin{column}{0.5\textwidth}
             \begin{itemize}
-                \item Reason 2
+                \item Update model:
+                    \begin{itemize}
+                        \item $\abs*{\mu_0 - \mu_4} \gtrsim \sqrt{\eta \sin I}$,
+                            then $\mu(\phi) \approx \mu_0$.
+
+                        \item $\abs*{\mu_0 - \mu_4} \lesssim
+                            \sqrt{\eta \sin I}$, turns out
+
+                            \begin{equation}
+                                \Delta \mu \sim
+                                    \frac{\epsilon}{\mu_4 - \mu_0}
+                                        \dot{\mu}^{T}\p*{\mu_{eff}}.
+                            \end{equation}
+
+                        \item $\dot{\mu}^{T}$ is just the tidal component.
+
+                        \item $\mu_{eff}$ such that $\dot{\mu}^{T}(\mu_{eff})
+                            \equiv \ev*{\dot{\mu}^{T}(\mu(t))}$.
+                    \end{itemize}
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{Effective Model}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{equation*}
+                \Delta \mu \sim \frac{\epsilon}{\mu_4 - \mu_0}
+                        \dot{\mu}^{T}\p*{\mu_{eff}}.
+            \end{equation*}
+            \begin{itemize}
+                \item Two key properties:
+                    \begin{itemize}
+                        \item $\Delta \mu$'s sign is set at $\mu_{eff}$, which
+                            changes steeply $\mu_0 \approx \mu_4$.
+
+                        \item $\mu_0 \approx \mu_4$ means large $\Delta \mu$.
+                    \end{itemize}
+
+                \item Trajectories will cross CS4 \emph{multiple times}!
+
+                \item Effective ``phase portrait''.
+                    \begin{itemize}
+                        \item Shade $\abs*{\mu_4 - \mu_0} < \sqrt{\eta\sin I}$.
+                            \emph{Attracting}!
+                    \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=0.7\columnwidth]{../../initial/1_weaktide/2quiver_int0_7.png}
+            \end{figure}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=0.7\columnwidth]{../../initial/1_weaktide/2quiver_pw0_7.png}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{Capture Region}
+
+    \begin{itemize}
+        \item Effective CS4 cross section attracts onto CS4, trajectories cross
+            CS4 multiple times, $P_{hop} \approx 1$ to CS2.
+
+        \item Capture region of cross section? Almost all!
+
+        \begin{figure}[t]
+            \centering
+            \includegraphics[width=0.6\textwidth]{../../initial/1_weaktide/2phase_portrait_pw0_7.png}
+        \end{figure}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{Summary}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=0.8\columnwidth]{../../initial/1_weaktide/1sim_0_7xn0_9.png}
+            \end{figure}
+            \begin{itemize}
+                \item Slightly outside of capture region in previous slide,
+                    barely intersects $\mu_4$ before $\mu_4$ disappears. Near
+                    capture boundary.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Capture region
+                    \begin{itemize}
+                        \item Flow CS4 effective cross section backwards in
+                            time.
+
+                        \item 100\% goes to CS2.
+                    \end{itemize}
+
+                \item Above: stays near CS1, tides stay weak.
+
+                \item Below: cannot catch up to CS4, go on level curves of
+                    large-$\eta$ Hamiltonian.
             \end{itemize}
         \end{column}
     \end{columns}

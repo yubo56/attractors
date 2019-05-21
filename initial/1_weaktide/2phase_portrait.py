@@ -56,13 +56,14 @@ def plot_portrait(I=np.radians(20), s_c=1.5):
         plt.title(r'$s_c=%.1f$ ($\mu(\phi) = \mu(0)$)' % s_c)
         mu4, idx4 = plot_shareds()
         cass_width = np.sqrt(s_c / _s[idx4] * np.cos(I))
-        plt.fill_between(_s[idx4],
-                         mu4[idx4] + cass_width, mu4[idx4] - cass_width,
-                         color='m', alpha=0.3)
         plt.xlim(0, smax)
         plt.ylim(-1.1, 1.1)
         plt.legend(loc='lower left')
         plt.savefig('2quiver%s.png' % stringify(s_c), dpi=400)
+        plt.fill_between(_s[idx4],
+                         mu4[idx4] + cass_width, mu4[idx4] - cass_width,
+                         color='m', alpha=0.3)
+        plt.savefig('2quiver_nocs%s.png' % stringify(s_c), dpi=400)
         plt.clf()
 
     # flow mu_4 back in time to find cross section in no_cs approx
