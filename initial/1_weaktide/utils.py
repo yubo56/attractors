@@ -155,14 +155,25 @@ def get_dydt_piecewise(I, s_c):
         mu = np.array(y[0])
         mu4 = get_mu4(I, s_c, s)
         eta = s_c / s
-        dist = np.sqrt(eta * np.cos(I))
+        dist = np.sqrt(1.5 * eta * np.cos(I))
 
         ds = 2 * mu - s * (1 + mu**2)
 
         # compute piecewise dmu/dt as multiplier of dydt_nocs
-        dmu = dydt_nocs(s, mu)[1]
-        close_idx = np.where(np.abs(mu - mu4) < dist)
+        _, dmu = dydt_nocs(s, mu)
+        close_above_idx = np.where(np.logical_and(
+            mu - mu4 < dist,
+            mu - mu4 > 0))
+        close_below_idx = np.where(np.logical_and(
+            mu4 - mu < dist,
+            mu4 - mu > 0))
 
-        dmu[close_idx] *= (dist / (mu4 - mu))[close_idx]
+        _, [dmu_eff_above] = dydt_nocs(s, np.array([mu4 + dist]))
+        _, [dmu_eff_below] = dydt_nocs(s, np.array([mu4 - dist]))
+
+        dmu[close_above_idx] = (dmu_eff_above * (dist / (mu - mu4))
+                                )[close_above_idx]
+        dmu[close_below_idx] = (dmu_eff_below * (dist / (mu4 - mu))
+                                )[close_below_idx]
         return ds, dmu
     return dydt
