@@ -2,8 +2,8 @@ import numpy as np
 from scipy.integrate import solve_ivp
 import scipy.optimize as opt
 
-def stringify(*args):
-    return 'x'.join(['%.1f' % arg for arg in args]).replace('.', '_')
+def stringify(*args, strf='%.1f'):
+    return 'x'.join([strf % arg for arg in args]).replace('.', '_')
 
 def to_cart(q, phi):
     return [

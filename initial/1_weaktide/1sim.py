@@ -1,4 +1,5 @@
 import os
+import sys
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -11,7 +12,7 @@ PLOT_DIR = '1plots'
 NUM_CASES = 4 # number of return values from traj_for_sc
 
 def get_name(s_c, eps, mu0):
-    return stringify(s_c, mu0).replace('-', 'n')
+    return stringify(s_c, mu0, strf='%.3f').replace('-', 'n')
 
 def traj_for_sc(I, s_c, eps, mu0, s0, tf=2500):
     '''
@@ -70,8 +71,12 @@ def traj_for_sc(I, s_c, eps, mu0, s0, tf=2500):
     return 2
 
 if __name__ == '__main__':
+    # resume_file = '1log_cum.log' # if this is None, run sims
+    resume_file = None
+
     if not os.path.exists(PLOT_DIR):
         os.mkdir(PLOT_DIR)
+    s_c_arr = [0.1, 0.2, 0.3, 0.5, 0.7, 1.0, 1.5, 2.0]
     I = np.radians(20)
     eps = 1e-3
     s0 = 10
@@ -85,19 +90,32 @@ if __name__ == '__main__':
         r'$\eta > \eta_c$',
     ]
 
-    for s_c in [
-            0.1, 0.2,
-            0.3, 0.5,
-            0.7, 1.0, 1.5, 2.0
-    ]:
+    if sys.argv[-1] != '1sim.py':
+        idx = int(sys.argv[-1])
+        s_c_arr = [s_c_arr[idx]]
+    # try to resume from log if available
+    data_dict = {}
+    if resume_file is not None:
+        loglines = open(resume_file).readlines()
+        for line in loglines:
+            line = line.split()
+            s_c = float(line[0])
+            mu0 = float(line[1])
+            outcome_idx = int(line[2])
+            if s_c not in data_dict:
+                data_dict[s_c] = [[] for i in range(NUM_CASES)]
+            data_dict[s_c][outcome_idx].append(mu0)
+    for s_c in s_c_arr:
         mu_arrs = [[] for i in range(NUM_CASES)]
         fig, ax = plt.subplots(1, 1)
-        for mu0 in mus:
-            ret = traj_for_sc(I, s_c, eps, mu0, s0)
-            print(s_c, mu0, ret)
-            mu_arrs[ret].append(mu0)
-        for label, mus in zip(labels, mu_arrs):
-            ax.hist(mus, bins=20, label=label)
+        if resume_file is None:
+            for mu0 in mus:
+                ret = traj_for_sc(I, s_c, eps, mu0, s0)
+                print(s_c, mu0, ret)
+                mu_arrs[ret].append(mu0)
+        else:
+            mu_arrs = data_dict[s_c]
+        ax.hist(mu_arrs, bins=20, label=labels, stacked=True)
         ax.legend(loc='upper left')
         ax.set_xlabel(r'$\mu_0$')
         ax.set_ylabel('Counts')
