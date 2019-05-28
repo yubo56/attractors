@@ -766,6 +766,46 @@ I did a bunch of work w/o writing it up, so this is the basic gist.
         Since $S_0$ is some function of $s$, it is clear that for intermediate
         values of $s_C$, we will see single separatrix hopping at early times
         while separatrix attraction at late times.
+
+    \item Finally, we may compare histograms of outcomes when $s_c > S_0, s_c <
+        S_0$. For $s_c > S_0$, all points get attracted into CS2, which then
+        synchronizes quickly; this is illustrated poorly in
+        \autoref{fig:1hist07}.
+
+        On the other hand, when $s_c < S_0$, points below CS4 only get one
+        chance at hopping. We can perform similar Melnikov calculation to above
+        by integrating the true tidal term $\pd{\mu^{(1)}}{t} = \epsilon\p*{1 -
+        \mu^2}\p*{2\Omega_1/s - \mu}$ and find that the hopping probability
+        $P_{hop} \propto \frac{\mu}{2\Omega_1/s} \propto \sqrt{s}$ or in fact
+        scaling with $\eta^{-1/2}$; the difference comes in the $1/s$ dependence
+        in the single-leg integral and the $-\mu$ factor in the double-leg
+        integral. Thus, points closer to the initial separatrix actually should
+        experience higher entry probability, also observed in
+        \autoref{fig:1hist02}.
+
+        Finally, we can somewhat see what the transition regime looks like in
+        \autoref{fig:1hist03}. Points close to the separatrix experience
+        attracting dynamics and all hop, while points far away from the
+        separatrix experience the $\sqrt{s}$ hopping probability.
+        \begin{figure}[t]
+            \centering
+            \begin{subfigure}{0.32\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{1_weaktide/1hist_0_7.png}
+                \caption{Outcomes when $s_c = 0.7 > S_0$.}\label{fig:1hist07}
+            \end{subfigure}
+            \begin{subfigure}{0.32\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{1_weaktide/1hist_0_2.png}
+                \caption{Outcomes when $s_c = 0.2 > S_0$.}\label{fig:1hist02}
+            \end{subfigure}
+            \begin{subfigure}{0.32\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{1_weaktide/1hist_0_3.png}
+                \caption{Outcomes when $s_c = 0.3 \sim S_0$.}\label{fig:1hist03}
+            \end{subfigure}
+            \caption{Outcome hists.}
+        \end{figure}
 \end{itemize}
 
 \end{document}

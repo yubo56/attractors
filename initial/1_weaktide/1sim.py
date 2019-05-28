@@ -1,5 +1,4 @@
 import os
-import sys
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -71,8 +70,8 @@ def traj_for_sc(I, s_c, eps, mu0, s0, tf=2500):
     return 2
 
 if __name__ == '__main__':
-    # resume_file = '1log_cum.log' # if this is None, run sims
-    resume_file = None
+    resume_file = '1log_cum.log' # if this is None, run sims
+    # resume_file = None
 
     if not os.path.exists(PLOT_DIR):
         os.mkdir(PLOT_DIR)
@@ -90,9 +89,6 @@ if __name__ == '__main__':
         r'$\eta > \eta_c$',
     ]
 
-    if sys.argv[-1] != '1sim.py':
-        idx = int(sys.argv[-1])
-        s_c_arr = [s_c_arr[idx]]
     # try to resume from log if available
     data_dict = {}
     if resume_file is not None:
@@ -115,7 +111,7 @@ if __name__ == '__main__':
                 mu_arrs[ret].append(mu0)
         else:
             mu_arrs = data_dict[s_c]
-        ax.hist(mu_arrs, bins=20, label=labels, stacked=True)
+        ax.hist(mu_arrs, bins=40, label=labels, stacked=True)
         ax.legend(loc='upper left')
         ax.set_xlabel(r'$\mu_0$')
         ax.set_ylabel('Counts')
