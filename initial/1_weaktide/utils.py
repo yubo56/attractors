@@ -19,6 +19,12 @@ def to_ang(x, y, z):
         % (2 * np.pi)
     return q, phi
 
+def H(I, s_c, s, mu, phi):
+    eta = s_c / s
+    return -0.5 * mu**2 + eta * (
+        mu * np.cos(I) -
+        np.sqrt(1 - mu**2) * np.sin(I) * np.cos(phi))
+
 def solve_ic(I, s_c, eps, y0, tf, method='RK45', rtol=1e-6, **kwargs):
     '''
     wraps solve_ivp and returns sim time
@@ -112,8 +118,8 @@ def get_dydt_num_avg(I, s_c, eps):
     dydt_0 = get_dydt_0(I, s_c, eps)
     def dydt(s, y):
         # coerce some args into np.arrays
-        s = np.array(s)
-        z = np.array(y[0]) # = mu
+        s = np.reshape(s, np.array(s).size)
+        z = np.reshape(y[0], np.array(y[0]).size) # = mu
         mu4 = get_mu4(I, s_c, s)
         x = -np.sqrt(1 - z**2)
         sign = np.sign(mu4 - z) # mu < mu4, dphi > 0
@@ -155,7 +161,7 @@ def get_dydt_piecewise(I, s_c):
         mu = np.array(y[0])
         mu4 = get_mu4(I, s_c, s)
         eta = s_c / s
-        dist = np.sqrt(1.5 * eta * np.cos(I))
+        dist = 2 * np.sqrt(eta * np.sin(I))
 
         ds = 2 * mu - s * (1 + mu**2)
 

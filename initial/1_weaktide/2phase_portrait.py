@@ -164,12 +164,63 @@ def plot_portrait(I=np.radians(20), s_c=1.5):
         plt.savefig('2quiver_int%s.png' % stringify(s_c), dpi=400)
         plt.clf()
 
+    # cross section by integrating mu4 backwards
+    def cross_int():
+        dydt_num_avg = get_dydt_num_avg(I, s_c, eps)
+        def dmu_ds(s, y):
+            print(s, y)
+            mu = y[0]
+            if abs(y[0]) > 1: # stop growing mu if numerically sick
+                return np.array([0])
+            ds, dmu = dydt_num_avg(s, y)
+            return dmu/ds
+        mu4, idx4 = plot_shareds(_s) # just plot CS4 for clarity
+        cass_width = np.sqrt(s_c / _s * np.cos(I))
+
+        sols_top = []
+        sols_bot = []
+        bounds = []
+        for num_idx, idx in enumerate(idx4):
+            s_curr = _s[idx]
+            if num_idx < 5: # only integrate first 5, too expensive
+                ret_top = solve_ivp(dmu_ds,
+                                    [s_curr, smax],
+                                    [mu4[idx] + 0.1],
+                                    dense_output=True,
+                                    method='BDF') # stiff near CS4
+                sols_top.append(ret_top.sol)
+                ret_bot = solve_ivp(dmu_ds,
+                                    [s_curr, smax],
+                                    [mu4[idx] - 0.1],
+                                    dense_output=True,
+                                    method='BDF')
+                sols_bot.append(ret_bot.sol)
+            sols_top_curr = [sol(s_curr) for sol in sols_top]
+            sols_bot_curr = [sol(s_curr) for sol in sols_bot]
+
+            bounds.append([np.max(sols_top_curr), np.min(sols_bot_curr)])
+        mu4_min, mu4_max = np.array(bounds).T
+        plt.fill_between(_s[idx4], mu4_min, mu4_max, color='g', alpha=0.3)
+
+        plt.xlabel(r'$s$')
+        plt.ylabel(r'$\cos\theta$')
+        plt.xlim(0, smax)
+        plt.ylim(-1.1, 1.1)
+        plt.legend(loc='lower right')
+        plt.title(r'$s_c=%.1f$ (Piecewise)' % s_c)
+        plt.savefig('2phase_portrait_int%s.png' % stringify(s_c), dpi=400)
+        plt.clf()
+
     phase_nocs()
     cross_nocs()
     phase_pw()
     cross_pw()
     phase_int()
+    # cross_int doesn't seem to produce sensible results
+    # cross_int()
 
 if __name__ == '__main__':
-    # plot_portrait()
+    plot_portrait(s_c=1.0)
     plot_portrait(s_c=0.7)
+    plot_portrait(s_c=0.3)
+    plot_portrait(s_c=0.1)
