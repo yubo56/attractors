@@ -107,7 +107,7 @@ ignorable, immediately $\rd{\theta}{t} = \rd{\cos \theta}{t} = -\pd{H}{\phi} =
 0$, while $\rd{\phi}{t} = \pd{H}{(\cos \theta)} = Bs$ tells us the rate at which
 the spin precesses around $\vec{B}$.
 
-\subsection{Cassini State Hamilttonian}
+\subsection{Cassini State Hamiltonian}
 
 This Hamiltonian is Kassandras Eq.\ 13, in the co-rotating frame with the
 perturber's angular momentum:
@@ -622,6 +622,151 @@ arrive before $\rd{\mu}{t}$ can catch up.
 
 This implies that $s_c$ is bound from both directions in order to get separatrix
 hopping before the bifurcation disappears.
+
+\section{Weak Tidal Friction, Take 2}
+
+I did a bunch of work w/o writing it up, so this is the basic gist.
+
+\begin{itemize}
+    \item We can still reuse the same equations as earlier, and the key point to
+        notice is that for a given trajectory, only times $\phi = 0$ are
+        important for determining the final fate of the system. Call these
+        $\mu_0$, then the dynamics of the system can be described by a map
+        $\mu_{0, i + 1}\p*{\mu_{0, i}, s}$. The reason $\mu_0$ is important is
+        that only when $\mu_0 = \mu_4(s)$ CS4 can separatrix hopping occur.
+        Thus, whenever $\mu_0$ crosses $\mu_4(s)$, there is some probability of
+        entering the separatrix and some probability of hopping over it.
+
+    \item The dynamics of the system are then governed by the dynamics of the
+        map near $\mu_4$. In the limit where $\phi$ is approximately constant
+        over a precession ($\mu_0$ is far from $\mu_4$ compared to $\sqrt{\eta
+        \sin I}$ the separatrix width), then the map obeys nearly the same
+        dynamics as the continuous flow in $(\mu, s)$ space for tidal friction.
+
+    \item However, when we are sufficiently close to $\mu_4$, we enter the
+        $\mu_0 - \mu_4 \lesssim \sqrt{2\eta \sin I}$ regime. Here, let's note
+        that the map takes on dynamics:
+        \begin{align}
+            \rd{\mu_0}{t} &= \pd{\mu_0}{H}\rd{H}{t},\nonumber\\
+                &= \frac{\dot{\phi}}{\dot{\phi}(\phi = 0)}
+                    \p*{\epsilon\p*{1 - \mu^2}\p*{\frac{2\Omega_1}{s}
+                        - \mu}},\nonumber\\
+            \ev*{\rd{\mu_0}{t}} &=
+                \frac{1}{T}\int\limits_0^T
+                    \frac{\dot{\phi}}{\dot{\phi}_0}
+                        \epsilon\p*{1 - \mu^2}\p*{\frac{2\Omega_1}{s} - \mu}
+                            \;\mathrm{d}t,\nonumber\\
+                &= \frac{1}{T}\int\limits_0^{2\pi}
+                    \frac{1}{\dot{\phi}_0}
+                        \epsilon\p*{1 - \mu^2}\p*{\frac{2\Omega_1}{s} - \mu}
+                            \;\mathrm{d}\phi,\nonumber\\
+                &\sim \frac{\sqrt{\eta \cos I}}{2\pi}
+                    \frac{1}{\dot{\phi}(\phi = 0)}
+                    \int\limits_0^{2\pi}
+                        \epsilon\p*{1 - \mu^2}\p*{\frac{2\Omega_1}{s} - \mu}
+                        \;\mathrm{d}\phi.\label{eq:final_approx}
+        \end{align}
+        We have substituted $\cos I/2\pi \sim 1/T$ a rough estimate
+        for the period. But now, $\frac{1}{\dot{\phi}(\phi = 0)}$ near $\mu_4$
+        obeys the linearization about the saddle point, and importantly it is
+        small. Near $\mu_4$, the linearization we computed above tells us that
+        $\dot{\phi} \approx - \sin I \Delta \mu$, and so we can imagine the
+        true map dynamics by a flow with $\rd{\mu_0}{t}$ of form
+        \begin{equation}
+            \rd{\mu_0}{t} =
+                \begin{cases}
+                    \rd{\mu_0}{t} & \abs*{\Delta \mu} \gtrsim
+                        2\sqrt{\eta \sin I},\\
+                    -\frac{\cot I}{2\pi \Delta \mu}
+                        \epsilon\p*{1 - \mu_{eff}^2}
+                            \p*{\frac{2\Omega_1}{s} - \mu_{eff}}
+                            & \text{otherwise}.
+                \end{cases}
+        \end{equation}
+        We've defined $\Delta \mu = \mu_0 - \mu_4$ for convenience. $\mu_{eff}$
+        reflects the fact that the $\epsilon$ integral in
+        \autoref{eq:final_approx} is taken over a curve of very non-constant
+        $\mu$, roughly following the separatrix boundary. In fact, $\mu_{eff}
+        \sim \sqrt{2\eta \sin I}$ the separatrix width, likely.
+
+        Our approximation near $\mu_4$ is probably only accurate up to scaling,
+        we should ensure this piecewise definition is smooth. Thus, we choose
+        $\mu_{eff} \equiv \mu_0 + 2\sqrt{\eta \sin I}$ and change the close-in
+        term to be $\frac{\Delta \mu_{eff}}{\Delta
+        \mu}\at{\rd{\mu_0}{t}}_{\mu_{eff}}$.
+
+        We can compare these predictions qualitatively to the actual integrated
+        map. By integrating the true $(\mu, \phi, s)$ system over a period, we
+        can derive an effective $\frac{\Delta \mu}{\Delta t}$ and compare to the
+        scaling we obtain above. The coefficients are not perfect, but the
+        $1/\Delta \mu$ scaling is correct: \autoref{fig:pw}.
+        \begin{figure}[t]
+            \centering
+            \begin{subfigure}{0.45\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{1_weaktide/3diags0_7.png}
+                \caption{$\frac{\Delta \mu}{\Delta t}$ computed using the pure
+                weak tide prescription (ignoring $\mu(\phi)$ variations),
+                computed using an integral of the full system and computed using
+                the piecewise definition above.}
+            \end{subfigure}
+            \begin{subfigure}{0.45\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{1_weaktide/3diags_loglog0_7.png}
+                \caption{Loglog plot of $\Delta \mu/\Delta t$ above $\mu_4$ for
+                the integrated and piecewise solutions.}
+            \end{subfigure}
+            \caption{Agreement of piecewise with integrated,
+            qualitatively.}\label{fig:pw}
+        \end{figure}
+
+    \item The thing that is interesting now is that $\mu_{eff}$ is evaluated
+        relatively farther away from $\mu_4$, and since $\rd{\mu}{t}$ in the
+        weak tidal limit for $s > 2$ can be negative, it is possible for a point
+        above $\mu_4$ to be \emph{sucked in} to CS4 \emph{from both above and
+        below}. This is an extremely important feature, and indeed in
+        \autoref{fig:pw} we see such behavior. If we are in this regime, then
+        any nonzero separatrix hopping probability will drive 100\% of points
+        incident on CS4 to enter the separatrix, since repeated hoppings must be
+        observed!
+
+        Qualitatively, we can use our piecewise definition to see the behavior
+        of this transition; it occurs when $\rd{\mu}{t}$ evaulated at the
+        $\mu_{eff}$ above $\mu_4$ is negative, i.e.\ above
+        $\frac{2\Omega_1}{s}$. Thus, this boils down to $\mu_4 + 2\sqrt{\eta
+        \sin I} \gtrsim \frac{2\Omega_1}{s}$. Since $\mu_4 \approx \eta \cos I
+        = \frac{s_c\cos I}{s}$, we see that for smaller $s_c$ than some critical
+        threshold, $\mu_4$ is no longer attracting on both sides. We can
+        numerically solve for this transition using the full integrated
+        equations: \autoref{fig:3crits}.
+        \begin{figure}[t]
+            \centering
+            \includegraphics[width=0.6\textwidth]{1_weaktide/3crits.png}
+            \caption{Critical values of $s_c$ below which $\mu_4$ is no longer
+            strongly attracting.}\label{fig:3crits}
+        \end{figure}
+
+    \item Indeed, \autoref{fig:3crits} shows that the critical $s_c$ is a fairly
+        flat function of $s$ in our parameter regime of interest. Call this
+        critical $s_c$ $S_0$ owing to unfortunate notation. We can thus identify
+        two regimes:
+        \begin{itemize}
+            \item $s_c < S_{0}$: points above CS4 will be driven away from CS4,
+                and so only points below the separatrix will experience a single
+                chance to separatrix hop. Thus, in this regime, points initially
+                above the separatrix will tidally synchronize, while points
+                below the separatrix will probabilistically either synchronize
+                or go to CS2.
+
+            \item $s_c > S_0$: CS4 becomes \emph{attracting}, and so two
+                consequences: points initially above the separatrix are sucked
+                downwards, and all encounters go to CS2 after 100\% separatrix
+                entry probability.
+        \end{itemize}
+        Since $S_0$ is some function of $s$, it is clear that for intermediate
+        values of $s_C$, we will see single separatrix hopping at early times
+        while separatrix attraction at late times.
+\end{itemize}
 
 \end{document}
 

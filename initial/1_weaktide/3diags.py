@@ -81,8 +81,8 @@ def plot_crits():
 
 if __name__ == '__main__':
     # generate dmu/dt
-    # s_val = 3.0
-    # for s_c in [0.1, 0.3, 0.5, 0.7, 1.0]:
-    #     dmu_mu_plot(s_c, s_val)
+    s_val = 3.0
+    for s_c in [0.1, 0.3, 0.5, 0.7, 1.0]:
+        dmu_mu_plot(s_c, s_val)
 
     plot_crits()

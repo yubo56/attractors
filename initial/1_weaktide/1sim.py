@@ -87,15 +87,13 @@ if __name__ == '__main__':
 
     for s_c in [
             0.1, 0.2,
-            # 0.3, 0.5,
-            # 0.7, 1.0,
-            # 1.5, 2.0
+            0.3, 0.5,
+            0.7, 1.0, 1.5, 2.0
     ]:
         mu_arrs = [[] for i in range(NUM_CASES)]
         fig, ax = plt.subplots(1, 1)
         for mu0 in mus:
-            ret = 2
-            # ret = traj_for_sc(I, s_c, eps, mu0, s0)
+            ret = traj_for_sc(I, s_c, eps, mu0, s0)
             print(s_c, mu0, ret)
             mu_arrs[ret].append(mu0)
         for label, mus in zip(labels, mu_arrs):
