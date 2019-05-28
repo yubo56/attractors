@@ -324,7 +324,8 @@ Cassini State Systems with Weak Tidal Friction}
                         \item $\dot{\mu}^{T}$ is just the tidal component.
 
                         \item $\mu_{eff}$ such that $\dot{\mu}^{T}(\mu_{eff})
-                            \equiv \ev*{\dot{\mu}^{T}(\mu(t))}$.
+                            \equiv \ev*{\dot{\mu}^{T}(\mu(t))}$, $\approx \mu_4
+                            \pm 2\sqrt{\eta \sin I}$.
                     \end{itemize}
             \end{itemize}
         \end{column}
@@ -345,17 +346,18 @@ Cassini State Systems with Weak Tidal Friction}
                 \item Two key properties:
                     \begin{itemize}
                         \item $\Delta \mu$'s sign is set at $\mu_{eff}$, which
-                            changes steeply $\mu_0 \approx \mu_4$.
+                            can be far from $\mu_0$.
 
                         \item $\mu_0 \approx \mu_4$ means large $\Delta \mu$.
                     \end{itemize}
 
-                \item Trajectories will cross CS4 \emph{multiple times}!
+                \item Trajectories might cross CS4 \emph{multiple times} if
+                    $\Delta \mu$ is different signs on two sides!
 
                 \item Effective ``phase portrait''.
                     \begin{itemize}
                         \item Shade $\abs*{\mu_4 - \mu_0} < \sqrt{\eta\sin I}$.
-                            \emph{Attracting}!
+                            \emph{Can be attracting}!
                     \end{itemize}
             \end{itemize}
         \end{column}
@@ -374,17 +376,69 @@ Cassini State Systems with Weak Tidal Friction}
 
 \begin{frame}
     \frametitle{Problem 2}
-    \framesubtitle{Capture Region}
+    \framesubtitle{Attraction Possibility}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=0.9\textwidth]{../../initial/1_weaktide/3diags0_7.png}
+            \end{figure}
+
+            \begin{itemize}
+                \item $\Delta \mu/\Delta t$ in attracting case.
+                \item Depends on sign of $\rd{\mu^{T}}{t}(\mu_{eff, +})$.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Critical $s_c$: smaller means $\Delta \mu/\Delta t(\mu >
+                    \mu_4) > 0$.
+
+                \begin{figure}[t]
+                    \centering
+                    \includegraphics[width=0.9\textwidth]{../../initial/1_weaktide/3crits.png}
+                \end{figure}
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{Capture Region, Attracting Regime}
 
     \begin{itemize}
-        \item Effective CS4 cross section attracts onto CS4, trajectories cross
-            CS4 multiple times, $P_{hop} \approx 1$ to CS2.
+        \item CS4 $\pm \sqrt{2\eta \sin I}$ attracts onto CS4, trajectories
+            cross CS4 multiple times, $P_{hop} \approx 1$, goes to CS2.
 
-        \item Capture region of cross section? Almost all!
+        \item Capture region of attraction basin? Almost all!
 
         \begin{figure}[t]
             \centering
-            \includegraphics[width=0.6\textwidth]{../../initial/1_weaktide/2phase_portrait_pw0_7.png}
+            \begin{subfigure}{0.45\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{../../initial/1_weaktide/1plots/0_700xn0_905.png}
+            \end{subfigure}
+            \begin{subfigure}{0.45\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{../../initial/1_weaktide/1plots/0_700x0_905.png}
+            \end{subfigure}
+        \end{figure}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{Capture Region, Non-attracting Regime}
+
+    \begin{itemize}
+        \item Only points below hit CS4, probabilistically hop $P_{hop} \propto
+            \sqrt{s}$. \emph{Closer points have higher hop probability}.
+
+        \begin{figure}[t]
+            \centering
+            \includegraphics[width=0.7\textwidth]{../../initial/1_weaktide/1hist_0_2.png}
         \end{figure}
     \end{itemize}
 \end{frame}
@@ -393,35 +447,14 @@ Cassini State Systems with Weak Tidal Friction}
     \frametitle{Problem 2}
     \framesubtitle{Summary}
 
-    \begin{columns}
-        \begin{column}{0.5\textwidth}
-            \begin{figure}[t]
-                \centering
-                \includegraphics[width=0.8\columnwidth]{../../initial/1_weaktide/1sim_0_7xn0_9.png}
-            \end{figure}
-            \begin{itemize}
-                \item Slightly outside of capture region in previous slide,
-                    barely intersects $\mu_4$ before $\mu_4$ disappears. Near
-                    capture boundary.
-            \end{itemize}
-        \end{column}
-        \begin{column}{0.5\textwidth}
-            \begin{itemize}
-                \item Capture region
-                    \begin{itemize}
-                        \item Flow CS4 effective cross section backwards in
-                            time.
+    \begin{itemize}
+        \item Two regimes based on $s_c$, attracting/non-attracting $\mu_4$.
 
-                        \item 100\% goes to CS2.
-                    \end{itemize}
+        \item Attracting regime, almost all ICs separatrix hop and go to CS2.
 
-                \item Above: stays near CS1, tides stay weak.
-
-                \item Below: cannot catch up to CS4, go on level curves of
-                    large-$\eta$ Hamiltonian.
-            \end{itemize}
-        \end{column}
-    \end{columns}
+        \item Non-attracting regime, only below ICs probabilistically separatrix
+            hop, rest go straight to CS1.
+    \end{itemize}
 \end{frame}
 
 \end{document}
