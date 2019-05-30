@@ -2,8 +2,9 @@ import numpy as np
 from scipy.integrate import solve_ivp
 import scipy.optimize as opt
 
-def stringify(*args, strf='%.1f'):
-    return 'x'.join([strf % arg for arg in args]).replace('.', '_')
+###################################
+### copied from 0_eta/utils.py
+###################################
 
 def to_cart(q, phi):
     return [
@@ -19,11 +20,46 @@ def to_ang(x, y, z):
         % (2 * np.pi)
     return q, phi
 
+def get_etac(I):
+    return (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
+
+###################################
+### end copy
+###################################
+
+def stringify(*args, strf='%.1f'):
+    return 'x'.join([strf % arg for arg in args]).replace('.', '_')
+
 def H(I, s_c, s, mu, phi):
     eta = s_c / s
     return -0.5 * mu**2 + eta * (
         mu * np.cos(I) -
         np.sqrt(1 - mu**2) * np.sin(I) * np.cos(phi))
+
+def roots(I, s_c, s):
+    '''
+    returns theta roots from EOM, not phi (otherwise same as 0_eta func)
+    '''
+    eta_c = get_etac(I)
+    eta = s_c / s
+
+    # function to minimize and derivatives
+    f = lambda q: -eta * np.sin(q - I) + np.sin(q) * np.cos(q)
+    fp = lambda q: -eta * np.cos(q - I) + np.cos(2 * q)
+
+    if eta < eta_c:
+        roots = []
+        inits = [0, np.pi / 2, -np.pi, -np.pi / 2]
+        for qi in inits:
+            roots.append(opt.newton(f, qi, fprime=fp))
+        return np.array(roots)
+
+    else:
+        roots = []
+        inits = [np.pi / 2 - I, -np.pi + I]
+        for qi in inits:
+            roots.append(opt.newton(f, qi, fprime=fp))
+        return np.array(roots)
 
 def solve_ic(I, s_c, eps, y0, tf, method='RK45', rtol=1e-6, **kwargs):
     '''
@@ -31,15 +67,12 @@ def solve_ic(I, s_c, eps, y0, tf, method='RK45', rtol=1e-6, **kwargs):
     '''
     dydt = get_dydt_0(I, s_c, eps)
     ret = solve_ivp(dydt, [0, tf], y0, rtol=rtol, method=method, **kwargs)
-    return ret.t, ret.y[0:3, :], ret.y[3, :]
+    return ret.t, ret.y[0:3, :], ret.y[3, :], ret
 
 def find_cs(I, eta, q0):
     f = lambda q: -eta * np.sin(q - I) + np.sin(q) * np.cos(q)
     fp = lambda q: -eta * np.cos(q - I) + np.cos(2 * q)
     return np.cos(opt.newton(f, q0, fprime=fp))
-
-def get_etac(I):
-    return (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
 
 def get_crit(I):
     eta_c = get_etac(I)
@@ -56,7 +89,6 @@ def get_mu4(I, s_c, s):
     '''
     eta = s_c / s
     eta_c = get_etac(I)
-    mu4 = []
     mu4 = np.full(np.shape(eta), -1.0)
 
     valid_idxs = np.where(eta < eta_c)
@@ -65,6 +97,18 @@ def get_mu4(I, s_c, s):
         mu4[idx] = find_cs(I, eta[idx], -np.pi/2)
 
     return mu4
+
+def get_mu2(I, s_c, s):
+    '''
+    gets mu2 for a list of spins s
+    '''
+    eta = s_c / s
+    mu2 = np.zeros_like(eta)
+
+    for idx, eta_val in enumerate(eta):
+        mu2[idx] = find_cs(I, eta_val, +np.pi/2)
+
+    return mu2
 
 def get_inf_avg_sol(smax=10):
     '''

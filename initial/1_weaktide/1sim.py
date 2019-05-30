@@ -25,7 +25,7 @@ def traj_for_sc(I, s_c, eps, mu0, s0, tf=2500):
     fig, (ax1, ax2) = plt.subplots(2, 1)
     init = [-np.sqrt(1 - mu0**2), 0, mu0, s0]
 
-    t, svec, s = solve_ic(I, s_c, eps, init, tf)
+    t, svec, s, _ = solve_ic(I, s_c, eps, init, tf)
     mu4 = get_mu4(I, s_c, s)
 
     q, phi = to_ang(*svec)
