@@ -1,3 +1,6 @@
+'''
+similar function to 1sim.py, but has separatrix detection capabilities now
+'''
 import os
 import numpy as np
 import matplotlib
@@ -18,6 +21,11 @@ def plot_traj(I, s_c, eps, mu0, phi0, s0, tf=2500):
     plots (s, mu_{+-}) trajectory over time (shaded) and a few snapshots of
     single orbits in (phi, mu) for each parameter set
     '''
+    filename_no_ext = '%s/%s' % (PLOT_DIR, get_name(s_c, eps, mu0, phi0))
+    if os.path.exists('%s.png' % filename_no_ext):
+        print(filename_no_ext, 'exists!')
+        return
+
     fig, ax = plt.subplots(1, 1)
     init_xy = np.sqrt(1 - mu0**2)
     init = [-init_xy * np.cos(phi0), -init_xy * np.sin(phi0), mu0, s0]
@@ -55,8 +63,7 @@ def plot_traj(I, s_c, eps, mu0, phi0, s0, tf=2500):
     ax.legend(loc='lower right')
     plt.suptitle(r'$(s_c; s_0, \mu_0, \phi_0) = (%.1f; %d, %.3f, %.2f)$' %
                  (s_c, s0, mu0, phi0))
-    plt.savefig('%s/%s.png' % (PLOT_DIR, get_name(s_c, eps, mu0, phi0)),
-                dpi=400)
+    plt.savefig('%s.png' % filename_no_ext, dpi=400)
     plt.close(fig)
 
     # 4 snapshots at beginning, just before/after separatrix crossing + end
@@ -84,10 +91,8 @@ def plot_traj(I, s_c, eps, mu0, phi0, s0, tf=2500):
         dmu_signs = np.sign(mu_0[ :len_min] - mu_pi[ :len_min])
 
         if len(dmu_signs) > 0 and dmu_signs[0] != dmu_signs[-1]:
-            # sanity check that we are in circulating solution; check in here in
-            # case started at CS2 and never circulated
-            assert len(mu_0) - len_min < 2 and len(mu_pi) - len_min < 2,\
-                'Lengths of two mus are %d, %d' % (len(mu_0), len(mu_pi))
+            # can end in a circulating solution about CS1 that is librating
+            # about mu=1! still plot sep crossing as normal though
 
             # criterion 2, circulating and sign flip, sep crossing
             t_cross_idx = np.where(dmu_signs == dmu_signs[-1])[0][0]
@@ -120,10 +125,6 @@ def plot_traj(I, s_c, eps, mu0, phi0, s0, tf=2500):
                                         np.linspace(-1, 1, N))
         # evaluate H at average s, since it doesn't change much over one cycle
         s_avg = np.mean(s)
-        H_grid = H(I, s_c, s_avg, mu_grid, phi_grid)
-        [mu4] = get_mu4(I, s_c, np.array([s_avg]))
-        ax.contour(phi_grid, mu_grid, H_grid,
-                   levels=[H(I, s_c, s_avg, mu4, 0)], colors='k')
 
         cs_vals = np.cos(roots(I, s_c, s_avg))
         styles = ['ro', 'mo', 'go', 'co']
@@ -138,6 +139,12 @@ def plot_traj(I, s_c, eps, mu0, phi0, s0, tf=2500):
             for idx in [0, 2, 3]:
                 ax.plot(0, cs_vals[idx], styles[idx], markersize=ms)
                 ax.plot(2 * np.pi, cs_vals[idx], styles[idx], markersize=ms)
+
+            # only plot separatrix if 4 CS
+            H_grid = H(I, s_c, s_avg, mu_grid, phi_grid)
+            [mu4] = get_mu4(I, s_c, np.array([s_avg]))
+            ax.contour(phi_grid, mu_grid, H_grid,
+                       levels=[H(I, s_c, s_avg, mu4, 0)], colors='k')
 
         # plot trajectory
         ax.scatter(phi, np.cos(q), s=2**2, c='b')
@@ -154,9 +161,54 @@ def plot_traj(I, s_c, eps, mu0, phi0, s0, tf=2500):
 
     plt.suptitle(r'$(s_c; s_0, \mu_0, \phi_0) = (%.1f; %d, %.3f, %.2f)$' %
                  (s_c, s0, mu0, phi0))
-    plt.savefig('%s/%s_ind.png' % (PLOT_DIR, get_name(s_c, eps, mu0, phi0)),
-                dpi=400)
+    plt.savefig('%s_ind.png' % filename_no_ext, dpi=400)
     plt.close(fig)
+
+def plot_individual(I, eps):
+    '''
+    in the terminology of statistics, the below correspond to cases (in order):
+    VI (first attracts onto CS1, then kicked into circulating about CS2 at
+        bifurcation)
+    IV (above) -> VII
+    II -> VII
+    IV (below) -> VII
+
+    I
+    II
+    IV (below)
+    III
+    VI
+    '''
+    s0 = 10
+
+    # s_c = 0.7, strongly attracting, plot above/inside/below respectively
+    plot_traj(I, 0.7, eps, 0.99, 0, s0)
+    plot_traj(I, 0.7, eps, 0.8, 0, s0)
+    plot_traj(I, 0.7, eps, 0.1, 2 * np.pi / 3, s0)
+    plot_traj(I, 0.7, eps, -0.8, 0, s0)
+
+    # s_c = 0.2, probabilistic, plot above/inside/below-enter/below-through
+    plot_traj(I, 0.2, eps, 0.3, 0, s0)
+    plot_traj(I, 0.2, eps, 0.05, 2 * np.pi / 3, s0)
+    plot_traj(I, 0.2, eps, -0.8, 0, s0)
+    plot_traj(I, 0.2, eps, -0.82, 0, s0)
+    plot_traj(I, 0.2, eps, -0.99, 0, s0)
+
+
+def statistics(s_c, s0=10):
+    '''
+    for fixed s0, s_c: random (mu, phi), evolve forward in time. Outcomes:
+    I - Go to CS1, no separatrix encounter
+    II - Go to CS2, no separatrix encounter
+    III - separatrix traversing, to CSI
+    IV - separatrix hopping, to CS2
+    V - Go to CS3, no separatrix encounter (unstable, no)
+
+    VI - Above separatrix, bifurcation
+    VII - Inside separatrix, bifurcation
+    VIII - Below separatrix, bifurcation (not sure exists?)
+    '''
+    pass
 
 if __name__ == '__main__':
     if not os.path.exists(PLOT_DIR):
@@ -164,15 +216,5 @@ if __name__ == '__main__':
 
     I = np.radians(20)
     eps = 1e-3
-    s0 = 10
 
-    # s_c = 0.7, strongly attracting, plot above/inside/below respectively
-    # plot_traj(I, 0.7, eps, 0.8, 0, s0)
-    # plot_traj(I, 0.7, eps, 0.1, 2 * np.pi / 3, s0)
-    # plot_traj(I, 0.7, eps, -0.8, 0, s0)
-
-    # s_c = 0.2, probabilistic, plot above/inside/below-enter/below-through
-    # plot_traj(I, 0.2, eps, 0.3, 0, s0)
-    # plot_traj(I, 0.2, eps, 0.05, 2 * np.pi / 3, s0)
-    # plot_traj(I, 0.2, eps, -0.8, 0, s0)
-    plot_traj(I, 0.2, eps, -0.82, 0, s0)
+    plot_individual(I, eps)
