@@ -3,6 +3,7 @@ similar function to 1sim.py, but has separatrix detection capabilities now
 '''
 import os
 import numpy as np
+import pickle
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -10,13 +11,66 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
-    stringify, H, roots
+    stringify, H, roots, get_H4
 PLOT_DIR = '4plots'
+PKL_FILE = '4dat%s.pkl'
 
 def get_name(s_c, eps, mu0, phi0):
     return stringify(s_c, mu0, phi0, strf='%.3f').replace('-', 'n')
 
-def plot_traj(I, s_c, eps, mu0, phi0, s0, tf=2500):
+def solve_with_events(I, s_c, eps, mu0, phi0, s0, tf):
+    '''
+    solves IVP then returns (mu, s, t) at phi=0, pi + others
+    '''
+    init_xy = np.sqrt(1 - mu0**2)
+    init = [-init_xy * np.cos(phi0), -init_xy * np.sin(phi0), mu0, s0]
+
+    event = lambda t, y: y[1]
+    t, svec, s, ret = solve_ic(I, s_c, eps, init, tf,
+                               events=[event], dense_output=True)
+    q, phi = to_ang(*svec)
+
+    [t_events] = ret.t_events
+    x_events, _, mu_events, s_events = ret.sol(t_events)
+    # phi = 0 means x < 0
+    idxs_0 = np.where(x_events < 0)
+    idxs_pi = np.where(x_events > 0)
+    mu_0, s_0, t_0 = mu_events[idxs_0], s_events[idxs_0], t_events[idxs_0]
+    mu_pi, s_pi, t_pi = mu_events[idxs_pi], s_events[idxs_pi], t_events[idxs_pi]
+
+    return (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events, s, ret
+
+def get_sep_hop_time(t_0, t_pi, mu_0, mu_pi):
+    '''
+    gets the sep hop/cross time, else -1
+    '''
+    # two ways to detect a separatrix crossing, either 1) t_0s stop appearing,
+    # or 2) mu_pi - mu_0 changes signs
+    if len(t_0) > 0 and t_0[-1] < t_pi[-2]:
+        # ends at librating, not circulating solution
+
+        # (nb) technically, this could also be a circulating solution after
+        # bifurcation, ignore for now
+        return t_0[-1]
+    else:
+        # (nb) technically, mu_0, mu_pi are evaluated at different times, but
+        # for circulating solutions they interlock, so they are evaluated at
+        # similar enough times to get the sep crossing to reasonable precision
+        len_min = min(len(mu_0), len(mu_pi))
+        dmu_signs = np.sign(mu_0[ :len_min] - mu_pi[ :len_min])
+
+        if len(dmu_signs) > 0 and dmu_signs[0] != dmu_signs[-1]:
+            # can end in a circulating solution about CS1 that is librating
+            # about mu=1! still plot sep crossing as normal though
+
+            # criterion 2, circulating and sign flip, sep crossing
+            t_cross_idx = np.where(dmu_signs == dmu_signs[-1])[0][0]
+            return t_0[t_cross_idx]
+        else:
+            # no separatrix crossing, even distribution
+            return -1
+
+def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
     '''
     plots (s, mu_{+-}) trajectory over time (shaded) and a few snapshots of
     single orbits in (phi, mu) for each parameter set
@@ -25,25 +79,14 @@ def plot_traj(I, s_c, eps, mu0, phi0, s0, tf=2500):
     if os.path.exists('%s.png' % filename_no_ext):
         print(filename_no_ext, 'exists!')
         return
+    else:
+        print('Running', filename_no_ext)
 
     fig, ax = plt.subplots(1, 1)
-    init_xy = np.sqrt(1 - mu0**2)
-    init = [-init_xy * np.cos(phi0), -init_xy * np.sin(phi0), mu0, s0]
-
-    # track all phi = 0, pi events, split them later
-    event = lambda t, y: y[1]
-    t, svec, s, ret = solve_ic(I, s_c, eps, init, tf,
-                               events=[event], dense_output=True)
-    q, phi = to_ang(*svec)
 
     # get top/bottom mus
-    [t_events] = ret.t_events
-    x_events, _, mu_events, s_events = ret.sol(t_events)
-    # phi = 0 means x < 0
-    idxs_0 = np.where(x_events < 0)
-    idxs_pi = np.where(x_events > 0)
-    mu_0, s_0, t_0 = mu_events[idxs_0], s_events[idxs_0], t_events[idxs_0]
-    mu_pi, s_pi, t_pi = mu_events[idxs_pi], s_events[idxs_pi], t_events[idxs_pi]
+    (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi),\
+        t_events, s, ret = solve_with_events(I, s_c, eps, mu0, phi0, s0, tf)
 
     ax.scatter(s_0, mu_0, c='r', s=2**2, label=r'$\mu(\phi = 0)$')
     scat = ax.scatter(s_pi, mu_pi, c=t_pi,
@@ -72,39 +115,15 @@ def plot_traj(I, s_c, eps, mu0, phi0, s0, tf=2500):
     fig.subplots_adjust(wspace=0.07)
     t_plot0 = t_events[0]
     t_plot3 = t_events[-3]
-    # two ways to detect a separatrix crossing, either 1) t_0s stop appearing,
-    # or 2) mu_pi - mu_0 changes signs
-    if len(t_0) > 0 and t_0[-1] < t_pi[-2]:
-        # ends at librating, not circulating solution
 
-        # (nb) technically, this could also be a circulating solution after
-        # bifurcation, ignore for now
-        t_plot1 = t_0[-1] * 0.95
-        t_plot2 = min(t_0[-1] * 1.05,
-                      (t_plot1 + t_plot3) / 2) # in case 1.05 exceeds
-        prefix = 'L'
+    t_cross = get_sep_hop_time(t_0, t_pi, mu_0, mu_pi)
+    if t_cross == -1:
+        t_plot1, t_plot2 = t_plot0 + (
+            np.array([1, 2]) / 3 * (t_plot3 - t_plot0))
     else:
-        # (nb) technically, mu_0, mu_pi are evaluated at different times, but
-        # for circulating solutions they interlock, so they are evaluated at
-        # similar enough times to get the sep crossing to reasonable precision
-        len_min = min(len(mu_0), len(mu_pi))
-        dmu_signs = np.sign(mu_0[ :len_min] - mu_pi[ :len_min])
+        t_plot1 = t_cross * 0.95
+        t_plot2 = min(t_cross * 1.05, (t_plot1 + t_plot3) / 2)
 
-        if len(dmu_signs) > 0 and dmu_signs[0] != dmu_signs[-1]:
-            # can end in a circulating solution about CS1 that is librating
-            # about mu=1! still plot sep crossing as normal though
-
-            # criterion 2, circulating and sign flip, sep crossing
-            t_cross_idx = np.where(dmu_signs == dmu_signs[-1])[0][0]
-            t_plot1 = t_0[t_cross_idx] * 0.95
-            t_plot2 = min(t_0[t_cross_idx] * 1.05,
-                          (t_plot1 + t_plot3) / 2)
-            prefix = 'H'
-        else:
-            # no separatrix crossing, even distribution
-            t_plot1, t_plot2 = t_plot0 + (
-                np.array([1, 2]) / 3 * (t_plot3 - t_plot0))
-            prefix = 'N'
     # get last t_event before t_plots
     t_plot1_idx, t_plot2_idx = [np.where(t_events <= t)[0][-1]
                                 for t in [t_plot1, t_plot2]]
@@ -142,9 +161,8 @@ def plot_traj(I, s_c, eps, mu0, phi0, s0, tf=2500):
 
             # only plot separatrix if 4 CS
             H_grid = H(I, s_c, s_avg, mu_grid, phi_grid)
-            [mu4] = get_mu4(I, s_c, np.array([s_avg]))
-            ax.contour(phi_grid, mu_grid, H_grid,
-                       levels=[H(I, s_c, s_avg, mu4, 0)], colors='k')
+            H4 = get_H4(I, s_c, s_avg)
+            ax.contour(phi_grid, mu_grid, H_grid, levels=[H4], colors='k')
 
         # plot trajectory
         ax.scatter(phi, np.cos(q), s=2**2, c='b')
@@ -177,25 +195,24 @@ def plot_individual(I, eps):
     II
     IV (below)
     III
-    VI
+    III -> VI
     '''
     s0 = 10
 
     # s_c = 0.7, strongly attracting, plot above/inside/below respectively
-    plot_traj(I, 0.7, eps, 0.99, 0, s0)
-    plot_traj(I, 0.7, eps, 0.8, 0, s0)
-    plot_traj(I, 0.7, eps, 0.1, 2 * np.pi / 3, s0)
-    plot_traj(I, 0.7, eps, -0.8, 0, s0)
+    plot_traj(I, eps, 0.7, 0.99, 0, s0)
+    plot_traj(I, eps, 0.7, 0.8, 0, s0)
+    plot_traj(I, eps, 0.7, 0.1, 2 * np.pi / 3, s0)
+    plot_traj(I, eps, 0.7, -0.8, 0, s0)
 
     # s_c = 0.2, probabilistic, plot above/inside/below-enter/below-through
-    plot_traj(I, 0.2, eps, 0.3, 0, s0)
-    plot_traj(I, 0.2, eps, 0.05, 2 * np.pi / 3, s0)
-    plot_traj(I, 0.2, eps, -0.8, 0, s0)
-    plot_traj(I, 0.2, eps, -0.82, 0, s0)
-    plot_traj(I, 0.2, eps, -0.99, 0, s0)
+    plot_traj(I, eps, 0.2, 0.3, 0, s0)
+    plot_traj(I, eps, 0.2, 0.05, 2 * np.pi / 3, s0)
+    plot_traj(I, eps, 0.2, -0.8, 0, s0)
+    plot_traj(I, eps, 0.2, -0.82, 0, s0)
+    plot_traj(I, eps, 0.2, -0.99, 0, s0)
 
-
-def statistics(s_c, s0=10):
+def statistics(I, eps, s_c, s0=10, tf=2500):
     '''
     for fixed s0, s_c: random (mu, phi), evolve forward in time. Outcomes:
     I - Go to CS1, no separatrix encounter
@@ -207,8 +224,75 @@ def statistics(s_c, s0=10):
     VI - Above separatrix, bifurcation
     VII - Inside separatrix, bifurcation
     VIII - Below separatrix, bifurcation (not sure exists?)
+
+    Really, I-IV (V is impossible) are the only initial outcomes, VI/VII are
+    later outcomes since bifurcation is later than separatrix interactions. So
+    we will focus on (s0, mu0, phi0) -> {I, IV} outcome probability
     '''
-    pass
+    s_c_str = ('%.1f' % s_c).replace('.', '_')
+    pkl_fn = PKL_FILE % s_c_str
+    def get_outcome_for_init(mu0, phi0):
+        '''
+        returns 0-3 describing early stage outcome
+        '''
+        (mu_0, _, t_0), (mu_pi, _, t_pi),\
+            _, _, ret = solve_with_events(I, s_c, eps, mu0, phi0, s0, tf)
+
+        t_cross = get_sep_hop_time(t_0, t_pi, mu_0, mu_pi)
+        x_f, y_f, z_f, s_f = ret.y[:, -1]
+        q_f, phi_f = to_ang(x_f, y_f, z_f)
+        H_f = H(I, s_c, s_f, np.cos(q_f), phi_f)
+        H4 = get_H4(I, s_c, s_f)
+        if t_cross == -1: # no sep encounter, either above or below H4
+            if H_f > H4:
+                return 1, (mu_0, t_0, mu_pi, t_pi, ret.y, mu0, phi0)
+            else:
+                assert z_f > 0, 'z_f is %f' % z_f
+                return 0, (mu_0, t_0, mu_pi, t_pi, ret.y, mu0, phi0)
+        else:
+            if H_f > H4:
+                return 3, (mu_0, t_0, mu_pi, t_pi, ret.y, mu0, phi0)
+            else:
+                assert z_f > 0, 'z_f is %f' % z_f
+                return 2, (mu_0, t_0, mu_pi, t_pi, ret.y, mu0, phi0)
+
+    if not os.path.exists(pkl_fn):
+        print('Running sims, %s not found' % pkl_fn)
+        trajs = [[], [], [], []]
+        mus = np.linspace(-0.99, 0.99, 40)
+        phis = np.linspace(0.1, 2 * np.pi - 0.1, 40)
+
+        for mu0 in mus:
+            for phi0 in phis:
+                print('Running',  mu0, phi0)
+                outcome, traj = get_outcome_for_init(mu0, phi0)
+                trajs[outcome].append(traj)
+        with open(pkl_fn, 'wb') as f:
+            pickle.dump(trajs, f)
+
+    else:
+        print('Loading %s' % pkl_fn)
+        with open(pkl_fn, 'rb') as f:
+            trajs = pickle.load(f)
+
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True)
+    fig.subplots_adjust(wspace=0.07)
+    titles = ['No hop, CS1', 'No hop, CS2', 'Cross to CS1', 'Hop to CS2']
+    for ax, outcome_trajs, title in zip([ax1, ax2, ax3, ax4], trajs, titles):
+        for _, _, _, _, _, mu0, phi0 in outcome_trajs:
+            ax.plot(phi0, mu0, 'bo')
+        ax.set_xlim([0, 2 * np.pi])
+        ax.set_ylim([-1, 1])
+        ax.set_title(title)
+    ax1.set_ylabel(r'$\cos \theta$')
+    ax3.set_xlabel(r'$\phi$')
+    ax.set_xticks([0, np.pi, 2 * np.pi])
+    ax3.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
+    ax3.set_ylabel(r'$\cos \theta$')
+    ax4.set_xlabel(r'$\phi$')
+
+    plt.suptitle(r'$(s_c, s_0) = %.1f, %.1f$' % (s_c, s0))
+    plt.savefig('4_stats%s.png' % s_c_str)
 
 if __name__ == '__main__':
     if not os.path.exists(PLOT_DIR):
@@ -217,4 +301,7 @@ if __name__ == '__main__':
     I = np.radians(20)
     eps = 1e-3
 
-    plot_individual(I, eps)
+    # plot_individual(I, eps)
+    # statistics(I, eps, 0.2)
+    # statistics(I, eps, 0.4)
+    statistics(I, eps, 0.7)

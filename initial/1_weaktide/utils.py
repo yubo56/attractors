@@ -110,6 +110,10 @@ def get_mu2(I, s_c, s):
 
     return mu2
 
+def get_H4(I, s_c, s):
+    [mu4] = get_mu4(I, s_c, np.array([s]))
+    return H(I, s_c, s, mu4, 0)
+
 def get_inf_avg_sol(smax=10):
     '''
     solve averaged equations for IC mu = 0, s >> 1
