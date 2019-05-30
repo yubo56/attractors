@@ -86,7 +86,7 @@ def plot_traj(I, s_c, eps, mu0, phi0, s0, tf=2500):
         if len(dmu_signs) > 0 and dmu_signs[0] != dmu_signs[-1]:
             # sanity check that we are in circulating solution; check in here in
             # case started at CS2 and never circulated
-            assert len(mu_0 - len_min) < 2 and len(mu_pi - len_min) < 2,\
+            assert len(mu_0) - len_min < 2 and len(mu_pi) - len_min < 2,\
                 'Lengths of two mus are %d, %d' % (len(mu_0), len(mu_pi))
 
             # criterion 2, circulating and sign flip, sep crossing
@@ -167,12 +167,12 @@ if __name__ == '__main__':
     s0 = 10
 
     # s_c = 0.7, strongly attracting, plot above/inside/below respectively
-    plot_traj(I, 0.7, eps, 0.8, 0, s0)
-    plot_traj(I, 0.7, eps, 0.1, 2 * np.pi / 3, s0)
-    plot_traj(I, 0.7, eps, -0.8, 0, s0)
+    # plot_traj(I, 0.7, eps, 0.8, 0, s0)
+    # plot_traj(I, 0.7, eps, 0.1, 2 * np.pi / 3, s0)
+    # plot_traj(I, 0.7, eps, -0.8, 0, s0)
 
-    # s_c = 0.2, probabilistic, plot above/inside/below-enter/below-hop
-    plot_traj(I, 0.2, eps, 0.3, 0, s0)
-    plot_traj(I, 0.2, eps, 0.05, 2 * np.pi / 3, s0)
-    plot_traj(I, 0.2, eps, -0.8, 0, s0)
-    plot_traj(I, 0.2, eps, -0.8, 1, s0)
+    # s_c = 0.2, probabilistic, plot above/inside/below-enter/below-through
+    # plot_traj(I, 0.2, eps, 0.3, 0, s0)
+    # plot_traj(I, 0.2, eps, 0.05, 2 * np.pi / 3, s0)
+    # plot_traj(I, 0.2, eps, -0.8, 0, s0)
+    plot_traj(I, 0.2, eps, -0.82, 0, s0)
