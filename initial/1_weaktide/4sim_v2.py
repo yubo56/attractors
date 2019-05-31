@@ -293,7 +293,7 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
     ax4.set_xlabel(r'$\phi$')
 
     plt.suptitle(r'$(s_c, s_0) = %.1f, %.1f$' % (s_c, s0))
-    plt.savefig('4_stats%s.png' % s_c_str)
+    plt.savefig('4_stats%s.png' % s_c_str, dpi=400)
 
 if __name__ == '__main__':
     if not os.path.exists(PLOT_DIR):
@@ -304,6 +304,7 @@ if __name__ == '__main__':
 
     # plot_individual(I, eps)
     statistics(I, eps, 0.2)
+    statistics(I, eps, 0.3)
     statistics(I, eps, 0.4)
     statistics(I, eps, 0.5)
     statistics(I, eps, 0.7)
