@@ -170,11 +170,11 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
                      % (t_vals.min(), t_vals.max(), s_c / s_avg))
         ax.set_xlim([0, 2 * np.pi])
         ax.set_ylim([-1, 1])
-    ax1.set_ylabel(r'$\cos \theta$')
+    ax1.set_ylabel(r'$\mu$')
     ax3.set_xlabel(r'$\phi$')
     ax.set_xticks([0, np.pi, 2 * np.pi])
     ax3.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
-    ax3.set_ylabel(r'$\cos \theta$')
+    ax3.set_ylabel(r'$\mu$')
     ax4.set_xlabel(r'$\phi$')
 
     plt.suptitle(r'$(s_c; s_0, \mu_0, \phi_0) = (%.1f; %d, %.3f, %.2f)$' %
@@ -285,11 +285,19 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
         ax.set_xlim([0, 2 * np.pi])
         ax.set_ylim([-1, 1])
         ax.set_title(title)
-    ax1.set_ylabel(r'$\cos \theta$')
+
+        # overplot separatrix
+        N = 100
+        phi_grid, mu_grid = np.meshgrid(np.linspace(0, 2 * np.pi, N),
+                                        np.linspace(-1, 1, N))
+        H_grid = H(I, s_c, s0, mu_grid, phi_grid)
+        H4 = get_H4(I, s_c, s0)
+        ax.contour(phi_grid, mu_grid, H_grid, levels=[H4], colors='k')
+    ax1.set_ylabel(r'$\mu$')
     ax3.set_xlabel(r'$\phi$')
     ax.set_xticks([0, np.pi, 2 * np.pi])
     ax3.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
-    ax3.set_ylabel(r'$\cos \theta$')
+    ax3.set_ylabel(r'$\mu$')
     ax4.set_xlabel(r'$\phi$')
 
     plt.suptitle(r'$(s_c, s_0) = %.1f, %.1f$' % (s_c, s0))
