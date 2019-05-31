@@ -5,10 +5,10 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('font', family='serif')
+plt.rc('font', family='serif', size=18)
 
 from utils import dydt_nocs, get_dydt_num_avg, get_dydt_piecewise, get_mu4,\
-    stringify
+    stringify, H, get_H4
 EPS = 1e-3
 I = np.radians(20)
 
@@ -79,6 +79,27 @@ def plot_crits():
     plt.savefig('3crits.png')
     plt.close()
 
+def zones(s_c=0.7, s0=7):
+    '''
+    plot separatrix + zone labels for presentation
+    '''
+    N = 100
+    phi_grid, mu_grid = np.meshgrid(np.linspace(0, 2 * np.pi, N),
+                                    np.linspace(-1, 1, N))
+    H_grid = H(I, s_c, s0, mu_grid, phi_grid)
+    H4 = get_H4(I, s_c, s0)
+    plt.text(np.pi, 0.7, 'I')
+    plt.text(np.pi, 0, 'II')
+    plt.text(np.pi, -0.7, 'III')
+    plt.contour(phi_grid, mu_grid, H_grid, levels=[H4], colors='k')
+
+    plt.ylabel(r'$\mu$')
+    plt.xlabel(r'$\phi$')
+    plt.xticks([0, np.pi, 2 * np.pi], labels=['0', r'$\pi$', r'$2\pi$'])
+
+    plt.savefig('3zones.png')
+    plt.close()
+
 if __name__ == '__main__':
     # generate dmu/dt
     s_val = 3.0
@@ -86,3 +107,4 @@ if __name__ == '__main__':
         dmu_mu_plot(s_c, s_val)
 
     plot_crits()
+    zones()

@@ -8,7 +8,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('font', family='serif')
+plt.rc('font', family='serif', size=14)
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
     stringify, H, roots, get_H4
@@ -310,7 +310,7 @@ if __name__ == '__main__':
     I = np.radians(20)
     eps = 1e-3
 
-    # plot_individual(I, eps)
+    plot_individual(I, eps)
     statistics(I, eps, 0.2)
     statistics(I, eps, 0.3)
     statistics(I, eps, 0.4)

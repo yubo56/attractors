@@ -19,7 +19,7 @@ def plot_portrait(I=np.radians(20), s_c=1.5):
     eps = 1e-4
     _mu = np.linspace(-1, 1, N_PTS)
     _s = np.linspace(0.5, smax, N_PTS)
-    quiv_scale = 400
+    quiv_scale = 100
 
     # for integrated flow portraits, mu bound where mu4 disappears
     _mu_int = np.linspace(-0.95, 1, N_PTS) # flow is really strong near (2, -1)
@@ -35,8 +35,8 @@ def plot_portrait(I=np.radians(20), s_c=1.5):
             plt.plot(_s, 2 / _s, 'r', label=r'$d\mu = 0$')
 
             # plot bounding (t -> -\infty, mu = 0, s = infty)
-            mu, s, _ = get_inf_avg_sol(smax)
-            plt.plot(s, mu, 'b', label=r'$(\mu_0, s_0) = (0, \infty)$')
+            # mu, s, _ = get_inf_avg_sol(smax)
+            # plt.plot(s, mu, 'b', label=r'$(\mu_0, s_0) = (0, \infty)$')
 
         # plot mu_4 for a fiducial s_c
         mu4 = get_mu4(I, s_c, s_arr)
@@ -49,7 +49,7 @@ def plot_portrait(I=np.radians(20), s_c=1.5):
     # phase portrait no_cs approximation
     def phase_nocs():
         ds, dmu = dydt_nocs(s, mu)
-        plt.quiver(s, mu, ds, dmu, scale=quiv_scale)
+        plt.quiver(s, mu, ds/s, dmu, scale=quiv_scale)
 
         plt.xlabel(r'$s$')
         plt.ylabel(r'$\mu$')
@@ -60,10 +60,10 @@ def plot_portrait(I=np.radians(20), s_c=1.5):
         plt.ylim(-1.1, 1.1)
         plt.legend(loc='lower left')
         plt.savefig('2quiver%s.png' % stringify(s_c), dpi=400)
-        plt.fill_between(_s[idx4],
-                         mu4[idx4] + cass_width, mu4[idx4] - cass_width,
-                         color='m', alpha=0.3)
-        plt.savefig('2quiver_nocs%s.png' % stringify(s_c), dpi=400)
+        # plt.fill_between(_s[idx4],
+        #                  mu4[idx4] + cass_width, mu4[idx4] - cass_width,
+        #                  color='m', alpha=0.3)
+        # plt.savefig('2quiver_nocs%s.png' % stringify(s_c), dpi=400)
         plt.clf()
 
     # flow mu_4 back in time to find cross section in no_cs approx
@@ -212,15 +212,15 @@ def plot_portrait(I=np.radians(20), s_c=1.5):
         plt.clf()
 
     phase_nocs()
-    cross_nocs()
-    phase_pw()
-    cross_pw()
-    phase_int()
+    # cross_nocs()
+    # phase_pw()
+    # cross_pw()
+    # phase_int()
     # cross_int doesn't seem to produce sensible results
     # cross_int()
 
 if __name__ == '__main__':
-    plot_portrait(s_c=1.0)
+    # plot_portrait(s_c=1.0)
     plot_portrait(s_c=0.7)
-    plot_portrait(s_c=0.3)
-    plot_portrait(s_c=0.1)
+    # plot_portrait(s_c=0.3)
+    # plot_portrait(s_c=0.1)

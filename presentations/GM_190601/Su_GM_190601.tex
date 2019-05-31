@@ -81,11 +81,11 @@
 
 \begin{document}
 
-\title[Cassini S-O Misalignment]{High Spin-Orbit Misalignment as an Attractor in
-Cassini State Systems with Weak Tidal Friction}
-\subtitle{Meeting XX/XX/XXXX}
+\title[Cassini S-O Misalignment]{High Spin-Orbit Misalignment is Sometimes
+Attracting: Cassini State Systems with Weak Tidal Friction}
+\subtitle{Group Meeting}
 \author{Yubo Su}
-\date{Some day}
+\date{May 31, 2019}
 
 \maketitle
 
@@ -122,24 +122,22 @@ Cassini State Systems with Weak Tidal Friction}
                 \rd{\hat{s}}{\tau}
                     &= \p*{\hat{s} \cdot \hat{l}}\p*{\hat{s} \times \hat{l}}
                         - \eta\hat{s} \times \hat{l}_p +
-                        \epsilon \hat{s} \times \p*{\hat{l} \times \hat{s}}
-                        ,\\
-                \pd{\phi}{t} &= \mu - \eta
-                    \p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}}
-                        \cos \phi},\\
-                \pd{\mu}{t} &= -\eta \sin I \sin \phi
-                    + \epsilon \p*{1 - \mu^2},
+                        \epsilon \hat{s} \times \p*{\hat{l} \times \hat{s}}.
             \end{align*}
 
-        \item \emph{Review:} Last meeting, found probability that initial state
-            $\cos\theta < 0$ jumps into separatrix $\propto
+        \item \emph{Review:} Last meeting, found $P_{hop} \propto
             \eta^{3/2}\epsilon^0$.
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.6\textwidth]{../../initial/0_eta/3stats3_5_0_2.png}
+        \end{figure}
     \end{itemize}
 \end{frame}
 
 \begin{frame}
     \frametitle{Problem 1}
-    \framesubtitle{Flow Boundaries}
+    \framesubtitle{Flow Boundaries (optional)}
 
     \begin{columns}
         \begin{column}{0.5\textwidth}
@@ -150,76 +148,12 @@ Cassini State Systems with Weak Tidal Friction}
         \end{column}
         \begin{column}{0.5\textwidth}
             \begin{itemize}
-                \item Notation: subscripts \emph{stable, unstable} manifolds,
-                    superscripts are left/right copy of CS4.
-
-                    \begin{itemize}
-                        \item Below black, continues orbit $\mu < \mu_4$.
-
-                        \item Black/green, escapes.
-
-                        \item Green/red, captures.
-                    \end{itemize}
-
-                \item Evaluate $\Delta \mu$ at $\phi = \pi$ reproduces
-                    probability (numerical was $P_{hop}(\eta = 0.2) = 0.251$).
-            \end{itemize}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Problem 1}
-    \framesubtitle{Melnikov's Method (coarsely)}
-
-    \begin{columns}
-        \begin{column}{0.5\textwidth}
-            \begin{itemize}
-                \item \textbf{Goal:} Under weak perturbation, how much does
-                    trajectory deviate from level curve of $H$?
-
-                \item Procedure:
-
-                    \begin{itemize}
-                        \item Compute $\Delta H^{(0)}$ unperturbed  over
-                            trajectory.
-
-                        \item Locate new level curve to find $\Delta q$ along
-                            coordinate: $\Delta H^{(0)} =
-                            \pd{H^{(0)}}{q}\Delta q$.
-                    \end{itemize}
-                \item So looks something like:
-                    {\tiny
+                \item Key result:
                     \begin{equation*}
-                        \rd{H^{(0)}}{t} =
-                            \underbrace{
-                            \cancel{\pd{H^{(0)}}{\mu}\rd{\mu^{(0)}}{t}
-                                + \pd{H^{(0)}}{\phi}\rd{\phi^{(0)}}{t}}}
-                                _{\dot{\phi}^{(0)}\dot{\mu}^{(0)}
-                                    - \dot{\mu}^{(0)}\dot{\phi}^{(0)}}
-                            + \pd{H^{(0)}}{\mu} \rd{\mu^{(1)}}{t}.
-                    \end{equation*}}
-            \end{itemize}
-        \end{column}
-        \begin{column}{0.5\textwidth}
-            \begin{figure}[t]
-                \centering
-                \includegraphics[width=0.6\columnwidth]{../../initial/0_eta/6manifolds0_20.png}
-            \end{figure}
-            \begin{itemize}
-                \item Gives rise to Melnikov distance:
+                        P_{hop} = \frac{16\eta^{3/2}\cos I \sqrt{\sin I}}{\pi}.
+                    \end{equation*}
 
-                \begin{itemize}
-                    \item $\Delta \mu(\phi) = \frac{1}{\dot{\phi}(\phi)}
-                            \oint \dot{\phi}^{(0)} \epsilon\p*{1 - \mu^2}
-                                \;\mathrm{d}t.$
-                    \item $\mu(\phi) \approx
-                        \eta \cos I \pm \mathcal{O}\p*{\sqrt{\eta}}$.
-
-                    \item $W_s^{(1)}, W_u^{(0)}$: dominated by $1$.
-
-                    \item $W_s^{(0)}, W_u^{(0)}$: dominated by $\eta^{3/2}$!
-                \end{itemize}
+                \item Analytical, similar to MMR capture probability.
             \end{itemize}
         \end{column}
     \end{columns}
@@ -229,20 +163,291 @@ Cassini State Systems with Weak Tidal Friction}
     \frametitle{Problem 2}
     \framesubtitle{Realistic Tides}
 
+    \begin{itemize}
+        \item In realistic tides, $\eta$ can evolve as $s$ spins down.
+
+        \item $\eta \equiv \frac{s_c}{s}$, so $s_c$ is \emph{critical spin at
+            which perturber strength is of order spin-orbit coupling}.
+            \begin{align}
+                \rd{\hat{s}}{\tau}
+                    &= \frac{s}{s_c}\p*{\hat{s} \cdot \hat{l}}
+                        \p*{\hat{s} \times \hat{l}}
+                        - \hat{s} \times \hat{l}_p
+                        + \frac{\epsilon 2\Omega}{s}
+                            \p*{1 - \frac{s}{2\Omega}\p*{\hat{l} \cdot \hat{s}}}
+                                \hat{s} \times \p*{\hat{l} \times \hat{s}},\\
+                \rd{s}{\tau}
+                    &= \epsilon 2\Omega \p*{\hat{s} \cdot \hat{l} -
+                        \frac{s}{2\Omega}\p*{1 + \p*{\hat{s} \cdot \hat{l}}^2}}.
+            \end{align}
+
+        \item Compare to Problem 1:
+            \begin{equation*}
+                \rd{\hat{s}}{\tau}
+                    = \p*{\hat{s} \cdot \hat{l}}\p*{\hat{s} \times \hat{l}}
+                        - \eta\hat{s} \times \hat{l}_p +
+                        \epsilon \hat{s} \times \p*{\hat{l} \times \hat{s}}.
+            \end{equation*}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{Outcomes}
+
+    \begin{itemize}
+        \item Three zones:
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=0.5\textwidth]{../../initial/1_weaktide/3zones.png}
+            \end{figure}
+
+        \item According to work from Problem 1, expect:
+            \begin{description}
+                \item[I] Goes to CS1/alignment.
+                \item[II] Goes to CS2/misalignment.
+                \item[III] $P_{hop}$ to CS2 or CS1.
+            \end{description}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{$s_c = 0.2$, Zone I}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \begin{subfigure}{\columnwidth}
+                    \centering
+                    \includegraphics[width=0.7\columnwidth]{../../initial/1_weaktide/3zones.png}
+                \end{subfigure}
+
+                \begin{subfigure}{\columnwidth}
+                    \centering
+                    \includegraphics[width=0.9\columnwidth]{../../initial/1_weaktide/4plots/0_200x0_300x0_000_ind.png}
+                \end{subfigure}
+            \end{figure}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/4plots/0_200x0_300x0_000.png}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{$s_c = 0.2$, Zone II}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \begin{subfigure}{\columnwidth}
+                    \centering
+                    \includegraphics[width=0.7\columnwidth]{../../initial/1_weaktide/3zones.png}
+                \end{subfigure}
+
+                \begin{subfigure}{\columnwidth}
+                    \centering
+                    \includegraphics[width=0.9\columnwidth]{../../initial/1_weaktide/4plots/0_200x0_050x2_094_ind.png}
+                \end{subfigure}
+            \end{figure}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/4plots/0_200x0_050x2_094.png}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{$s_c = 0.2$, Zone III, Separatrix Hopping}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \begin{subfigure}{\columnwidth}
+                    \centering
+                    \includegraphics[width=0.7\columnwidth]{../../initial/1_weaktide/3zones.png}
+                \end{subfigure}
+
+                \begin{subfigure}{\columnwidth}
+                    \centering
+                    \includegraphics[width=0.9\columnwidth]{../../initial/1_weaktide/4plots/0_200xn0_800x0_000_ind.png}
+                \end{subfigure}
+            \end{figure}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/4plots/0_200xn0_800x0_000.png}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{$s_c = 0.2$, Zone III, Separatrix Crossing}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \begin{subfigure}{\columnwidth}
+                    \centering
+                    \includegraphics[width=0.7\columnwidth]{../../initial/1_weaktide/3zones.png}
+                \end{subfigure}
+
+                \begin{subfigure}{\columnwidth}
+                    \centering
+                    \includegraphics[width=0.9\columnwidth]{../../initial/1_weaktide/4plots/0_200xn0_820x0_000_ind.png}
+                \end{subfigure}
+            \end{figure}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/4plots/0_200xn0_820x0_000.png}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{$s_c = 0.7$, Zone I, Separatrix Crossing!}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \begin{subfigure}{\columnwidth}
+                    \centering
+                    \includegraphics[width=0.7\columnwidth]{../../initial/1_weaktide/3zones.png}
+                \end{subfigure}
+
+                \begin{subfigure}{\columnwidth}
+                    \centering
+                    \includegraphics[width=0.9\columnwidth]{../../initial/1_weaktide/4plots/0_700x0_800x0_000_ind.png}
+                \end{subfigure}
+            \end{figure}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/4plots/0_700x0_800x0_000.png}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{$s_c = 0.7$, Zone III, Always Separatrix Crossing!}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}
+                \centering
+                \begin{subfigure}{\columnwidth}
+                    \centering
+                    \includegraphics[width=0.7\columnwidth]{../../initial/1_weaktide/3zones.png}
+                \end{subfigure}
+
+                \begin{subfigure}{\columnwidth}
+                    \centering
+                    \includegraphics[width=0.9\columnwidth]{../../initial/1_weaktide/4plots/0_700xn0_800x0_000_ind.png}
+                \end{subfigure}
+            \end{figure}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/4plots/0_700xn0_800x0_000.png}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{Outcome Distribution}
+
     \begin{columns}
         \begin{column}{0.5\textwidth}
             \begin{itemize}
-                \item In realistic tides, $\eta$ can evolve as $s$ spins down.
+                \item In summary, going from $s_c = 0.2$ to $s_c = 0.7$ makes
+                    CS2 attracting in zone I, sets $P_{hop} = 1$ for zone III\@.
 
-                \item $\eta = \frac{s_c}{s}$, full expression below.
+                \item Interesting histories
+                    \begin{itemize}
+                        \item CS1, no sep crossing (I).
+                        \item CS2, no sep crossing (II).
+                        \item Cross to CS1 (III).
+                        \item Hop to CS2 (III).
+                    \end{itemize}
 
-                \item First, consider tides alone, phase portrait at right:
+                \item At $s_c \lesssim 0.3$, $P_{hop} \propto \sqrt{s}$, so
+                    closer to sep $\Rightarrow$ higher $P_{hop}$.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/4_stats0_2.png}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
 
-                \begin{itemize}
-                    \item Like ignoring $\rd{\mu}{\phi}$ over precession orbit.
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{Evolution of Outcome Distribution with $s_c$}
 
-                    \item Breaks down near $\mu_4$!
-                \end{itemize}
+    \begin{figure}[t]
+        \centering
+        \begin{subfigure}{0.4\textwidth}
+            \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/4_stats0_3.png}
+        \end{subfigure}
+        \begin{subfigure}{0.4\textwidth}
+            \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/4_stats0_4.png}
+        \end{subfigure}
+
+        \begin{subfigure}{0.4\textwidth}
+            \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/4_stats0_5.png}
+        \end{subfigure}
+        \begin{subfigure}{0.4\textwidth}
+            \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/4_stats0_7.png}
+        \end{subfigure}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Problem 2}
+    \framesubtitle{Phase Portrait}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item In the absence of perturber (just the weak tide
+                    components), phase portrait takes on shape:
+
+                \item Green is $\mu_4$ Cassini State 4, above red is $\dot{\mu}
+                    < 0$.
             \end{itemize}
         \end{column}
         \begin{column}{0.5\textwidth}
@@ -252,209 +457,33 @@ Cassini State Systems with Weak Tidal Friction}
             \end{figure}
         \end{column}
     \end{columns}
-
-    \begin{align}
-        \rd{\hat{s}}{\tau}
-            &= \frac{s}{s_c}\p*{\hat{s} \cdot \hat{l}}
-                \p*{\hat{s} \times \hat{l}}
-                - \hat{s} \times \hat{l}_p
-                + \frac{\epsilon 2\Omega}{s}
-                    \p*{1 - \frac{s}{2\Omega}\p*{\hat{l} \cdot \hat{s}}}
-                        \hat{s} \times \p*{\hat{l} \times \hat{s}},\\
-        \rd{s}{\tau}
-            &= \epsilon 2\Omega \p*{\hat{s} \cdot \hat{l} - \frac{s}{2\Omega}\p*{1
-                + \p*{\hat{s} \cdot \hat{l}}^2}}.
-    \end{align}
 \end{frame}
 
 \begin{frame}
     \frametitle{Problem 2}
-    \framesubtitle{Intuitive Guess}
-
-    \begin{itemize}
-        \item Ignore perturber for now ($\eta \ll 1$). Maybe: \emph{points
-            incident on CS4} have $P_{hop}$ probability of entering separatrix?
-
-        \item For instance, shaded green = capture region:
-    \end{itemize}
-
-    \begin{figure}[t]
-        \centering
-        \includegraphics[width=0.6\textwidth]{../../initial/1_weaktide/2phase_portrait0_7.png}
-    \end{figure}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Problem 2}
-    \framesubtitle{Near CS4}
+    \framesubtitle{Sign of $\ev*{\rd{\mu}{t}}$}
 
     \begin{columns}
         \begin{column}{0.5\textwidth}
             \begin{figure}[t]
                 \centering
-                \includegraphics[width=0.7\columnwidth]{../../initial/0_eta/1contours_02.png}
-            \end{figure}
-
-            \begin{itemize}
-                \item When $\eta$ non-negligible, full phase space $(\mu, \phi,
-                    s)$.
-
-                \item Study $(\mu_0, s)$ where $\mu_0 \equiv \mu(\phi = 0)$.
-                    \begin{itemize}
-                        \item $\mu_0 \approx \mu_4$ = $P_{hop}$ candidate.
-                    \end{itemize}
-            \end{itemize}
-        \end{column}
-        \begin{column}{0.5\textwidth}
-            \begin{itemize}
-                \item Update model:
-                    \begin{itemize}
-                        \item $\abs*{\mu_0 - \mu_4} \gtrsim \sqrt{\eta \sin I}$,
-                            then $\mu(\phi) \approx \mu_0$.
-
-                        \item $\abs*{\mu_0 - \mu_4} \lesssim
-                            \sqrt{\eta \sin I}$, turns out
-
-                            \begin{equation}
-                                \Delta \mu \sim
-                                    \frac{\epsilon}{\mu_4 - \mu_0}
-                                        \dot{\mu}^{T}\p*{\mu_{eff}}.
-                            \end{equation}
-
-                        \item $\dot{\mu}^{T}$ is just the tidal component.
-
-                        \item $\mu_{eff}$ such that $\dot{\mu}^{T}(\mu_{eff})
-                            \equiv \ev*{\dot{\mu}^{T}(\mu(t))}$, $\approx \mu_4
-                            \pm 2\sqrt{\eta \sin I}$.
-                    \end{itemize}
-            \end{itemize}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Problem 2}
-    \framesubtitle{Effective Model}
-
-    \begin{columns}
-        \begin{column}{0.5\textwidth}
-            \begin{equation*}
-                \Delta \mu \sim \frac{\epsilon}{\mu_4 - \mu_0}
-                        \dot{\mu}^{T}\p*{\mu_{eff}}.
-            \end{equation*}
-            \begin{itemize}
-                \item Two key properties:
-                    \begin{itemize}
-                        \item $\Delta \mu$'s sign is set at $\mu_{eff}$, which
-                            can be far from $\mu_0$.
-
-                        \item $\mu_0 \approx \mu_4$ means large $\Delta \mu$.
-                    \end{itemize}
-
-                \item Trajectories might cross CS4 \emph{multiple times} if
-                    $\Delta \mu$ is different signs on two sides!
-
-                \item Effective ``phase portrait''.
-                    \begin{itemize}
-                        \item Shade $\abs*{\mu_4 - \mu_0} < \sqrt{\eta\sin I}$.
-                            \emph{Can be attracting}!
-                    \end{itemize}
-            \end{itemize}
-        \end{column}
-        \begin{column}{0.5\textwidth}
-            \begin{figure}[t]
-                \centering
-                \includegraphics[width=0.7\columnwidth]{../../initial/1_weaktide/2quiver_int0_7.png}
-            \end{figure}
-            \begin{figure}[t]
-                \centering
-                \includegraphics[width=0.7\columnwidth]{../../initial/1_weaktide/2quiver_pw0_7.png}
-            \end{figure}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Problem 2}
-    \framesubtitle{Attraction Possibility}
-
-    \begin{columns}
-        \begin{column}{0.5\textwidth}
-            \begin{figure}[t]
-                \centering
-                \includegraphics[width=0.9\textwidth]{../../initial/1_weaktide/3diags0_7.png}
-            \end{figure}
-
-            \begin{itemize}
-                \item $\Delta \mu/\Delta t$ in attracting case.
-                \item Depends on sign of $\rd{\mu^{T}}{t}(\mu_{eff, +})$.
-            \end{itemize}
-        \end{column}
-        \begin{column}{0.5\textwidth}
-            \begin{itemize}
-                \item Critical $s_c$: smaller means $\Delta \mu/\Delta t(\mu >
-                    \mu_4) > 0$.
-
-                \begin{figure}[t]
+                \begin{subfigure}{0.8\columnwidth}
                     \centering
-                    \includegraphics[width=0.9\textwidth]{../../initial/1_weaktide/3crits.png}
-                \end{figure}
-            \end{itemize}
+                    \includegraphics[width=\textwidth]{../../initial/1_weaktide/3diags0_3.png}
+                \end{subfigure}
+                \begin{subfigure}{0.8\columnwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{../../initial/1_weaktide/3diags0_7.png}
+                \end{subfigure}
+            \end{figure}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[t]
+                \centering
+                \includegraphics[width=\columnwidth]{../../initial/1_weaktide/3crits.png}
+            \end{figure}
         \end{column}
     \end{columns}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Problem 2}
-    \framesubtitle{Capture Region, Attracting Regime}
-
-    \begin{itemize}
-        \item CS4 $\pm \sqrt{2\eta \sin I}$ attracts onto CS4, trajectories
-            cross CS4 multiple times, $P_{hop} \approx 1$, goes to CS2.
-
-        \item Capture region of attraction basin? Almost all!
-
-        \begin{figure}[t]
-            \centering
-            \begin{subfigure}{0.45\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{../../initial/1_weaktide/1plots/0_700xn0_905.png}
-            \end{subfigure}
-            \begin{subfigure}{0.45\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{../../initial/1_weaktide/1plots/0_700x0_905.png}
-            \end{subfigure}
-        \end{figure}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Problem 2}
-    \framesubtitle{Capture Region, Non-attracting Regime}
-
-    \begin{itemize}
-        \item Only points below hit CS4, probabilistically hop $P_{hop} \propto
-            \sqrt{s}$. \emph{Closer points have higher hop probability}.
-
-        \begin{figure}[t]
-            \centering
-            \includegraphics[width=0.7\textwidth]{../../initial/1_weaktide/1hist_0_2.png}
-        \end{figure}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Problem 2}
-    \framesubtitle{Summary}
-
-    \begin{itemize}
-        \item Two regimes based on $s_c$, attracting/non-attracting $\mu_4$.
-
-        \item Attracting regime, almost all ICs separatrix hop and go to CS2.
-
-        \item Non-attracting regime, only below ICs probabilistically separatrix
-            hop, rest go straight to CS1.
-    \end{itemize}
 \end{frame}
 
 \end{document}
