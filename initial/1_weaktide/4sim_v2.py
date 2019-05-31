@@ -259,8 +259,9 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
     if not os.path.exists(pkl_fn):
         print('Running sims, %s not found' % pkl_fn)
         trajs = [[], [], [], []]
-        mus = np.linspace(-0.99, 0.99, 40)
-        phis = np.linspace(0.1, 2 * np.pi - 0.1, 40)
+        N_PTS = 40
+        mus = np.linspace(-0.99, 0.99, N_PTS)
+        phis = np.linspace(0.1, 2 * np.pi - 0.1, N_PTS)
 
         for mu0 in mus:
             for phi0 in phis:
@@ -280,7 +281,7 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
     titles = ['No hop, CS1', 'No hop, CS2', 'Cross to CS1', 'Hop to CS2']
     for ax, outcome_trajs, title in zip([ax1, ax2, ax3, ax4], trajs, titles):
         for _, _, _, _, _, mu0, phi0 in outcome_trajs:
-            ax.plot(phi0, mu0, 'bo')
+            ax.plot(phi0, mu0, 'bo', markersize=0.5)
         ax.set_xlim([0, 2 * np.pi])
         ax.set_ylim([-1, 1])
         ax.set_title(title)
@@ -302,6 +303,7 @@ if __name__ == '__main__':
     eps = 1e-3
 
     # plot_individual(I, eps)
-    # statistics(I, eps, 0.2)
-    # statistics(I, eps, 0.4)
+    statistics(I, eps, 0.2)
+    statistics(I, eps, 0.4)
+    statistics(I, eps, 0.5)
     statistics(I, eps, 0.7)
