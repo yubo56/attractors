@@ -1,8 +1,13 @@
 '''
-similar function to 1sim.py, but has separatrix detection capabilities now
+similar to 1sim.py, runs simulations over wide range of initial conditions
+
+now isotropic initial conditions (not just mu0 dist), include sep
+detection/pretty plotting and t/s_cross statistics
 '''
 import os
 import numpy as np
+from multiprocessing import Pool
+
 import pickle
 import matplotlib
 matplotlib.use('Agg')
@@ -17,6 +22,9 @@ PKL_FILE = '4dat%s.pkl'
 
 def get_name(s_c, eps, mu0, phi0):
     return stringify(s_c, mu0, phi0, strf='%.3f').replace('-', 'n')
+
+def s_c_str(s_c):
+    return ('%.2f' % s_c).replace('.', '_')
 
 def solve_with_events(I, s_c, eps, mu0, phi0, s0, tf):
     '''
@@ -40,7 +48,7 @@ def solve_with_events(I, s_c, eps, mu0, phi0, s0, tf):
 
     return (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events, s, ret
 
-def get_sep_hop_time(t_0, t_pi, mu_0, mu_pi):
+def get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi):
     '''
     gets the sep hop/cross time, else -1
     '''
@@ -51,7 +59,7 @@ def get_sep_hop_time(t_0, t_pi, mu_0, mu_pi):
 
         # (nb) technically, this could also be a circulating solution after
         # bifurcation, ignore for now
-        return t_0[-1]
+        return t_0[-1], s_0[-1]
     else:
         # (nb) technically, mu_0, mu_pi are evaluated at different times, but
         # for circulating solutions they interlock, so they are evaluated at
@@ -65,10 +73,10 @@ def get_sep_hop_time(t_0, t_pi, mu_0, mu_pi):
 
             # criterion 2, circulating and sign flip, sep crossing
             t_cross_idx = np.where(dmu_signs == dmu_signs[-1])[0][0]
-            return t_0[t_cross_idx]
+            return t_0[t_cross_idx], s_0[t_cross_idx]
         else:
             # no separatrix crossing, even distribution
-            return -1
+            return -1, -1
 
 def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
     '''
@@ -116,7 +124,7 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
     t_plot0 = t_events[0]
     t_plot3 = t_events[-3]
 
-    t_cross = get_sep_hop_time(t_0, t_pi, mu_0, mu_pi)
+    t_cross, _ = get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi)
     if t_cross == -1:
         t_plot1, t_plot2 = t_plot0 + (
             np.array([1, 2]) / 3 * (t_plot3 - t_plot0))
@@ -212,8 +220,10 @@ def plot_individual(I, eps):
     plot_traj(I, eps, 0.2, -0.82, 0, s0)
     plot_traj(I, eps, 0.2, -0.99, 0, s0)
 
-def statistics(I, eps, s_c, s0=10, tf=2500):
+def _run_sim(I, eps, s_c, s0, tf):
     '''
+    returns list of trajs from sim, memoized
+
     for fixed s0, s_c: random (mu, phi), evolve forward in time. Outcomes:
     I - Go to CS1, no separatrix encounter
     II - Go to CS2, no separatrix encounter
@@ -229,43 +239,44 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
     later outcomes since bifurcation is later than separatrix interactions. So
     we will focus on (s0, mu0, phi0) -> {I, IV} outcome probability
     '''
-    s_c_str = ('%.1f' % s_c).replace('.', '_')
-    pkl_fn = PKL_FILE % s_c_str
+    pkl_fn = PKL_FILE % s_c_str(s_c)
+    H4 = get_H4(I, s_c, s0)
+    N_PTS = 100
+
     def get_outcome_for_init(mu0, phi0):
         '''
         returns 0-3 describing early stage outcome
         '''
-        (mu_0, _, t_0), (mu_pi, _, t_pi),\
+        print('Running for %.2f, %.3f, %.3f' % (s_c, mu0, phi0))
+        (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi),\
             _, _, ret = solve_with_events(I, s_c, eps, mu0, phi0, s0, tf)
 
-        t_cross = get_sep_hop_time(t_0, t_pi, mu_0, mu_pi)
+        t_cross, _ = get_sep_hop(t_0, s_0, mu_0, t_pi, s_0, mu_pi)
         x_f, y_f, z_f, s_f = ret.y[:, -1]
         q_f, phi_f = to_ang(x_f, y_f, z_f)
         H_f = H(I, s_c, s_f, np.cos(q_f), phi_f)
-        H4 = get_H4(I, s_c, s_f)
+        store_tuple = (mu_0, s_0, t_0, mu_pi, s_pi, t_pi, mu0, phi0)
         if t_cross == -1: # no sep encounter, either above or below H4
             if H_f > H4:
-                return 1, (mu_0, t_0, mu_pi, t_pi, ret.y, mu0, phi0)
+                return 1, store_tuple
             else:
                 assert z_f > 0, 'z_f is %f' % z_f
-                return 0, (mu_0, t_0, mu_pi, t_pi, ret.y, mu0, phi0)
+                return 0, store_tuple
         else:
             if H_f > H4:
-                return 3, (mu_0, t_0, mu_pi, t_pi, ret.y, mu0, phi0)
+                return 3, store_tuple
             else:
                 assert z_f > 0, 'z_f is %f' % z_f
-                return 2, (mu_0, t_0, mu_pi, t_pi, ret.y, mu0, phi0)
+                return 2, store_tuple
 
     if not os.path.exists(pkl_fn):
         print('Running sims, %s not found' % pkl_fn)
         trajs = [[], [], [], []]
-        N_PTS = 40
         mus = np.linspace(-0.99, 0.99, N_PTS)
         phis = np.linspace(0.1, 2 * np.pi - 0.1, N_PTS)
 
         for mu0 in mus:
             for phi0 in phis:
-                print('Running',  mu0, phi0)
                 outcome, traj = get_outcome_for_init(mu0, phi0)
                 trajs[outcome].append(traj)
         with open(pkl_fn, 'wb') as f:
@@ -275,12 +286,21 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
         print('Loading %s' % pkl_fn)
         with open(pkl_fn, 'rb') as f:
             trajs = pickle.load(f)
+    return trajs
+
+def statistics(I, eps, s_c, s0=10, tf=2500):
+    '''
+    for run simulations, scatter plot ICs vs final outcomes per _run_sim
+    outcomes
+    '''
+    trajs = _run_sim(I, eps, s_c, s0, tf)
 
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True)
     fig.subplots_adjust(wspace=0.07)
     titles = ['No hop, CS1', 'No hop, CS2', 'Cross to CS1', 'Hop to CS2']
-    for ax, outcome_trajs, title in zip([ax1, ax2, ax3, ax4], trajs, titles):
-        for _, _, _, _, _, mu0, phi0 in outcome_trajs:
+    for ax, outcome_trajs, title, cross_lst in\
+            zip([ax1, ax2, ax3, ax4], trajs, titles, cross_outcomes):
+        for _, _, _, _, _, _, phi0, mu0 in outcome_trajs:
             ax.plot(phi0, mu0, 'bo', markersize=0.5)
         ax.set_xlim([0, 2 * np.pi])
         ax.set_ylim([-1, 1])
@@ -291,7 +311,6 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
         phi_grid, mu_grid = np.meshgrid(np.linspace(0, 2 * np.pi, N),
                                         np.linspace(-1, 1, N))
         H_grid = H(I, s_c, s0, mu_grid, phi_grid)
-        H4 = get_H4(I, s_c, s0)
         ax.contour(phi_grid, mu_grid, H_grid, levels=[H4], colors='k')
     ax1.set_ylabel(r'$\mu$')
     ax3.set_xlabel(r'$\phi$')
@@ -301,7 +320,64 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
     ax4.set_xlabel(r'$\phi$')
 
     plt.suptitle(r'$(s_c, s_0) = %.1f, %.1f$' % (s_c, s0))
-    plt.savefig('4_stats%s.png' % s_c_str, dpi=400)
+    plt.savefig('4_stats%s.png' % s_c_str(s_c), dpi=400)
+    plt.close(fig)
+
+def cross_times(I, eps, s_c, s0=10, tf=2500):
+    '''
+    plot t_cross and s_cross(H_4 - H_0) (H4 > H0 for all these, H4 evaluated at
+    start)
+
+    three classifications: below + cross (mu0 < mu4, case III), below + hop (mu0
+    < mu4, case IV), above + hop (mu0 > mu4, case IV)
+    '''
+    H4 = get_H4(I, s_c, s0)
+    [mu4] = get_mu4(I, s_c, np.array([s0]))
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+    fig.subplots_adjust(hspace=0)
+
+    [_, _, traj3, traj4] = _run_sim(I, eps, s_c, s0, tf)
+    below_cross, below_hop, above_hop = [[], [], []]
+
+    for mu_0, s_0, t_0, mu_pi, s_pi, t_pi, mu0, phi0 in traj3:
+        t_cross, s_cross = get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi)
+
+        H0 = H(I, s_c, s0, mu0, phi0)
+        below_cross.append([H4 - H0, t_cross, s_cross])
+
+    for mu_0, t_0, mu_pi, t_pi, y, mu0, phi0 in traj4:
+        t_cross, s_cross = get_sep_hop(t_0, mu_0, t_pi, mu_pi)
+
+        H0 = H(I, s_c, s0, mu0, phi0)
+        if mu0 < mu4:
+            below_hop.append([H4 - H0, t_cross, s_cross])
+        else:
+            above_hop.append([H4 - H0, t_cross, s_cross])
+
+    ms = 2
+    ax1.plot(*(np.array(below_cross).T[0, 1]), 'ro',
+             label='Below cross', markersize=ms)
+    ax1.plot(*(np.array(below_hop).T[0, 1]), 'bo',
+             label='Below hop', markersize=ms)
+    if len(above_hop) > 0:
+        ax1.plot(*(np.array(above_hop).T[0, 1]), 'go',
+                 label='Above hop', markersize=ms)
+
+    ax2.plot(*(np.array(below_cross).T[0, 2]), 'ro',
+             label='Below cross', markersize=ms)
+    ax2.plot(*(np.array(below_hop).T[0, 2]), 'bo',
+             label='Below hop', markersize=ms)
+    if len(above_hop) > 0:
+        ax2.plot(*(np.array(above_hop).T[0, 2]), 'go',
+                 label='Above hop', markersize=ms)
+
+    ax1.set_ylabel('Cross time')
+    ax2.set_ylabel('Cross s')
+    ax2.set_xlabel(r'$H_4(0) - H(0)$')
+
+    ax1.legend(loc='lower right', fontsize=6)
+    plt.savefig('4_cross%s.png' % s_c_str(s_c), dpi=400)
+    plt.close(fig)
 
 if __name__ == '__main__':
     if not os.path.exists(PLOT_DIR):
@@ -311,8 +387,19 @@ if __name__ == '__main__':
     eps = 1e-3
 
     plot_individual(I, eps)
-    statistics(I, eps, 0.2)
-    statistics(I, eps, 0.3)
-    statistics(I, eps, 0.4)
-    statistics(I, eps, 0.5)
-    statistics(I, eps, 0.7)
+
+    def runner(s_c):
+        statistics(I, eps, s_c)
+        cross_times(I, eps, s_c)
+        return 0
+
+    p = Pool(4)
+    p.map(runner, [
+        0.01,
+        0.05,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.7,
+    ])
