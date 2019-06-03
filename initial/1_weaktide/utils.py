@@ -130,16 +130,26 @@ def get_dydt_0(I, s_c, eps):
     def dydt(t, v):
         '''
         ds/dt, dmu/dt
+
+        try two tricks to keep s close to unit norm: renormalize at start and
+        only take normal component at end
         '''
         x, y, z, s = v
+        # renormalize, else numerical error accumulates
+        x, y, z = v[ :3] / np.sqrt(np.sum(v[ :3]**2))
         tide = eps * 2 / s * (1 - s * z / 2)
-        rat = s / s_c
-        return [
-            rat * y * z - y * np.cos(I) - tide * z * x,
-            -rat * x * z + (x * np.cos(I) - z * np.sin(I)) - tide * z * y,
+        eta_inv = s / s_c
+        ret = [
+            eta_inv * y * z - y * np.cos(I) - tide * z * x,
+            -eta_inv * x * z + (x * np.cos(I) - z * np.sin(I)) - tide * z * y,
             y * np.sin(I) + tide * (1 - z**2),
             2 * eps * (z - s * (1 + z**2) / 2),
         ]
+
+        # take normal component to s
+        s_hat = np.array([x, y, z])
+        ret[ :3] -= np.dot(ret[ :3], s_hat) * s_hat
+        return ret
     return dydt
 
 def dydt_nocs(s, mu):

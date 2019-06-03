@@ -46,7 +46,10 @@ def solve_with_events(I, s_c, eps, mu0, phi0, s0, tf):
     mu_0, s_0, t_0 = mu_events[idxs_0], s_events[idxs_0], t_events[idxs_0]
     mu_pi, s_pi, t_pi = mu_events[idxs_pi], s_events[idxs_pi], t_events[idxs_pi]
 
-    return (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events, s, ret
+    shat_f = np.sqrt(np.sum(ret.y[ :3, -1]**2))
+    print('Finished for %.2f, %.3f, %.3f. shat norm = %.5f' %
+          (s_c, mu0, phi0, shat_f))
+    return (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events, s, ret, shat_f
 
 def get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi):
     '''
@@ -93,8 +96,8 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
     fig, ax = plt.subplots(1, 1)
 
     # get top/bottom mus
-    (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi),\
-        t_events, s, ret = solve_with_events(I, s_c, eps, mu0, phi0, s0, tf)
+    (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events,\
+        s, ret, shat_f = solve_with_events(I, s_c, eps, mu0, phi0, s0, tf)
 
     ax.scatter(s_0, mu_0, c='r', s=2**2, label=r'$\mu(\phi = 0)$')
     scat = ax.scatter(s_pi, mu_pi, c=t_pi,
@@ -220,6 +223,9 @@ def plot_individual(I, eps):
     plot_traj(I, eps, 0.2, -0.82, 0, s0)
     plot_traj(I, eps, 0.2, -0.99, 0, s0)
 
+    # extra case for low-s_c calc
+    plot_traj(I, eps, 0.03, -0.3, 0, s0, tf=1500)
+
 def _run_sim(I, eps, s_c, s0, tf):
     '''
     returns list of trajs from sim, memoized
@@ -247,15 +253,14 @@ def _run_sim(I, eps, s_c, s0, tf):
         '''
         returns 0-3 describing early stage outcome
         '''
-        print('Running for %.2f, %.3f, %.3f' % (s_c, mu0, phi0))
-        (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi),\
-            _, _, ret = solve_with_events(I, s_c, eps, mu0, phi0, s0, tf)
+        (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), _,\
+            _, ret, shat_f = solve_with_events(I, s_c, eps, mu0, phi0, s0, tf)
 
         t_cross, _ = get_sep_hop(t_0, s_0, mu_0, t_pi, s_0, mu_pi)
         x_f, y_f, z_f, s_f = ret.y[:, -1]
         q_f, phi_f = to_ang(x_f, y_f, z_f)
         H_f = H(I, s_c, s_f, np.cos(q_f), phi_f)
-        store_tuple = (mu_0, s_0, t_0, mu_pi, s_pi, t_pi, mu0, phi0)
+        store_tuple = (mu_0, s_0, t_0, mu_pi, s_pi, t_pi, mu0, phi0, shat_f)
         if t_cross == -1: # no sep encounter, either above or below H4
             if H_f > H4:
                 return 1, store_tuple
@@ -300,7 +305,7 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
     titles = ['No hop, CS1', 'No hop, CS2', 'Cross to CS1', 'Hop to CS2']
     for ax, outcome_trajs, title, cross_lst in\
             zip([ax1, ax2, ax3, ax4], trajs, titles, cross_outcomes):
-        for _, _, _, _, _, _, phi0, mu0 in outcome_trajs:
+        for _, _, _, _, _, _, phi0, mu0, _ in outcome_trajs:
             ax.plot(phi0, mu0, 'bo', markersize=0.5)
         ax.set_xlim([0, 2 * np.pi])
         ax.set_ylim([-1, 1])
@@ -339,7 +344,7 @@ def cross_times(I, eps, s_c, s0=10, tf=2500):
     [_, _, traj3, traj4] = _run_sim(I, eps, s_c, s0, tf)
     below_cross, below_hop, above_hop = [[], [], []]
 
-    for mu_0, s_0, t_0, mu_pi, s_pi, t_pi, mu0, phi0 in traj3:
+    for mu_0, s_0, t_0, mu_pi, s_pi, t_pi, mu0, phi0, _ in traj3:
         t_cross, s_cross = get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi)
 
         H0 = H(I, s_c, s0, mu0, phi0)
@@ -395,11 +400,11 @@ if __name__ == '__main__':
 
     p = Pool(4)
     p.map(runner, [
-        0.01,
         0.05,
         0.2,
         0.3,
         0.4,
         0.5,
+        0.6,
         0.7,
     ])
