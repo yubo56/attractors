@@ -383,7 +383,8 @@ Then, we can compare the empirical Poincar\'e section of the points that cross
 the separatrix versus the total predicted interval width $\delta \mu_c,
 f^{-1}\p*{\delta \mu_c}$; this would predict $7.2\%, 18\%$. This does alright!
 
-\subsection{Consideration 4: Plotting Stable/Unstable manifolds}
+\subsection{Consideration 4: Plotting Stable/Unstable
+manifolds}\label{ss:melnikov_success}
 
 We can plot the stable/unstable manifolds of two Cassini States as in
 \autoref{fig:CS4s}. Then, since phase space is roughly flat near $\phi = \pi$
@@ -807,6 +808,81 @@ I did a bunch of work w/o writing it up, so this is the basic gist.
             \caption{Outcome hists.}
         \end{figure}
 \end{itemize}
+
+\subsection{Weak Perturber Hopping Distribution}
+
+We consider in the weak perturber (strong coupling) regime, where $s_c < S_0$.
+We will re-apply \autoref{ss:melnikov_success} to the weak tidal friction
+equations to compute $P_{hop}(s_\star)$ where $\star$ denotes at separatrix
+crossing. We will then seek an approximate form for $s_{\star}$ given arbitrary
+initial conditions to predict the hopping probability distribution over initial
+conditions. We only seek to solve Zone III (below separatrix) initial
+conditions.
+
+First, we note that the two integrals that I earlier called $\Delta_m, \Delta_c$
+(garbage notation sorry) can be evaluated for the new weak tidal friction
+integrals as follows:
+\begin{align}
+    \Delta_M &= \int\limits_0^{2\pi}\epsilon\p*{1 - \mu^2}
+            \p*{\frac{2\Omega}{s} - \mu} \;\mathrm{d}\phi,\nonumber\\
+        &\approx 2\pi \epsilon \frac{2\Omega}{s},\\
+    \Delta_c &= \oint \epsilon \p*{1 - \mu^2}\p*{\frac{2\Omega}{s} - \mu}
+            \;\mathrm{d}\phi,\nonumber\\
+        &= 2\int\limits_0^{2\pi}
+            \epsilon\sqrt{2\eta \sin I\p*{1 - \cos \phi}}\;\mathrm{d}\phi
+            ,\nonumber\\
+        &= 16\epsilon\sqrt{\eta \sin I}.
+\end{align}
+Recalling that $\eta = s_c/s$, we arrive at
+\begin{equation}
+    P_{hop} = \frac{4\sqrt{ss_c\sin I}}{\pi \Omega}.
+\end{equation}
+
+We evaluate the above at $s = s_\star$ for a given trajectory; we now want to
+compute an analytical approximation to $s_\star$. Under a familiar set of
+approximations, we can write
+\begin{align*}
+    \rd{s}{t} &\approx -s\epsilon,&
+    \rd{\mu^{(1)}}{t} &\approx
+    \begin{cases}
+        -\epsilon\mu & \mu \gtrsim \frac{2\Omega}{s},\\
+        \epsilon\frac{2\Omega}{s} & \mu \lesssim \frac{2\Omega}{s}.
+    \end{cases}
+\end{align*}
+We have taken $\mu \ll \frac{s}{2\Omega}, 1 + \mu^2 \sim 1$ to arrive at the
+first expression. The second expression hinges on the dominant term in
+$\frac{2\Omega}{s} - \mu$; since $\mu < 0$ in Zone III, this term is always
+positive.
+
+Now, recall that we won't get a sensible answer this way, since the dynamics
+near the separatrix $\abs*{\mu - \mu_4} \sim \sqrt{2\eta \sin I}$ are governed
+by the piecewise map we defined before. However, if $s_c$ is truly small, then
+the majority of the separatrix approach will be governed by the above flow. If
+we also adopt the $\mu \lesssim \frac{2\Omega}{s}$ limit, in this spirit, then
+an analytical solution can be approximated: we first observe that $\rd{\ln s}{t}
+\gtrsim \rd{\mu^{(1)}}{t}$ in this limit by a factor of $\frac{s}{2\Omega}$, so
+we approximate $s \approx s_0e^{-\epsilon t}$. This gives us
+\begin{equation*}
+    \mu(t) \approx \mu_0 + \frac{2\Omega}{s_0}\p*{e^{\epsilon t} - 1}.
+\end{equation*}
+If $\epsilon t \lesssim 1$, we can arrive at closed form $t_\star \approx
+\frac{s_0 \Delta \mu}{2\Omega \epsilon}$. Note that $\Delta \mu$ here should be
+calculated at $\phi = \pi$ since phase space is not flat there, unlike near the
+saddle point (same motivation as usual). This gives us $s_\star = s_0
+e^{-\frac{s_0 \Delta \mu}{2\Omega}}$. For a sample run at $s_0 = 10, s_c =
+0.03, \mu_0 = -0.3, \phi_0 = 0$, this estimates $t_\star \sim 500$ which is
+reasonably close to the measured $t_\star = 575$.
+
+If we are to use this prescription, then we can obtain
+\begin{equation}
+    P_{hop}\p*{\mu_\pi(t = 0)}
+        = \frac{4\sqrt{s_c \sin I s_0}}{\pi \Omega}
+            e^{-\frac{s_0}{4\Omega}\Delta \mu_\pi}.
+\end{equation}
+What is noteworthy is the \emph{exponential} dependence on $\Delta \mu_\pi$; we
+might expect similar behavior to manifest elsewhere thanks to the $\rd{\ln s}{t}
+\sim \epsilon, \rd{\mu}{t} \propto \z*{-\epsilon \mu, \epsilon/s}$ in both
+regimes of $\rd{\mu}{t}$. Further numerical testing to be performed.
 
 \end{document}
 
