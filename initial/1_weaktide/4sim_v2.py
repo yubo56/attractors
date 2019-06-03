@@ -220,7 +220,7 @@ def plot_individual(I, eps):
     plot_traj(I, eps, 0.2, 0.3, 0, s0)
     plot_traj(I, eps, 0.2, 0.05, 2 * np.pi / 3, s0)
     plot_traj(I, eps, 0.2, -0.8, 0, s0)
-    plot_traj(I, eps, 0.2, -0.82, 0, s0)
+    plot_traj(I, eps, 0.2, -0.81, 0, s0)
     plot_traj(I, eps, 0.2, -0.99, 0, s0)
 
     # extra case for low-s_c calc
@@ -393,18 +393,18 @@ if __name__ == '__main__':
 
     plot_individual(I, eps)
 
-    def runner(s_c):
-        statistics(I, eps, s_c)
-        cross_times(I, eps, s_c)
-        return 0
+    # def runner(s_c):
+    #     statistics(I, eps, s_c)
+    #     cross_times(I, eps, s_c)
+    #     return 0
 
-    p = Pool(4)
-    p.map(runner, [
-        0.05,
-        0.2,
-        0.3,
-        0.4,
-        0.5,
-        0.6,
-        0.7,
-    ])
+    # p = Pool(4)
+    # p.map(runner, [
+    #     0.05,
+    #     0.2,
+    #     0.3,
+    #     0.4,
+    #     0.5,
+    #     0.6,
+    #     0.7,
+    # ])
