@@ -32,7 +32,7 @@ def stringify(*args, strf='%.1f'):
 
 def H(I, s_c, s, mu, phi):
     eta = s_c / s
-    return -0.5 * mu**2 + eta * (
+    return -0.5 * (s / s_c) * mu**2 + (
         mu * np.cos(I) -
         np.sqrt(1 - mu**2) * np.sin(I) * np.cos(phi))
 

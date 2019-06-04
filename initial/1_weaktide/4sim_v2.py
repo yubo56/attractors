@@ -378,8 +378,8 @@ def cross_times(I, eps, s_c, s0=10, tf=2500):
         ax2.plot(*(np.array(above_hop).T[ ::2]), 'go',
                  label='Above hop', markersize=ms)
 
-    ax1.set_ylabel('Cross time')
-    ax2.set_ylabel('Cross s')
+    ax1.set_ylabel(r'$t_\star$')
+    ax2.set_ylabel(r'$s_\star$')
     ax2.set_xlabel(r'$H_4(0) - H(0)$')
 
     ax1.legend(loc='lower right', fontsize=6)
@@ -397,13 +397,13 @@ if __name__ == '__main__':
 
     s_c_vals = [
         # 0.05,
-        # 0.2,
-        0.3,
-        # 0.4,
-        # 0.5,
-        0.55, # eta_crit = 0.574 for I
-        # 0.6,
-        # 0.7,
+        0.2,
+        # 0.3,
+        0.4,
+        0.5,
+        # 0.55, # eta_crit = 0.574 for I
+        0.6,
+        0.7,
     ]
 
     def runner(s_c):
@@ -414,5 +414,5 @@ if __name__ == '__main__':
     p.map(runner, s_c_vals)
 
     for s_c in s_c_vals:
-        statistics(I, eps, s_c)
+        # statistics(I, eps, s_c)
         cross_times(I, eps, s_c)
