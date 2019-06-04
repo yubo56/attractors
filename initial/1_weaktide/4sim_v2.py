@@ -19,6 +19,7 @@ from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
     stringify, H, roots, get_H4
 PLOT_DIR = '4plots'
 PKL_FILE = '4dat%s.pkl'
+N_PTS = 40
 
 def get_name(s_c, eps, mu0, phi0):
     return stringify(s_c, mu0, phi0, strf='%.3f').replace('-', 'n')
@@ -247,7 +248,6 @@ def _run_sim(I, eps, s_c, s0=10, tf=2500):
     '''
     pkl_fn = PKL_FILE % s_c_str(s_c)
     H4 = get_H4(I, s_c, s0)
-    N_PTS = 40
 
     def get_outcome_for_init(mu0, phi0):
         '''
@@ -360,27 +360,38 @@ def cross_times(I, eps, s_c, s0=10, tf=2500):
         else:
             above_hop.append([H4 - H0, t_cross, s_cross])
 
+    below_cross = np.array(below_cross).T
+    below_hop = np.array(below_hop).T
+    above_hop = np.array(above_hop).T
+
+    # NB: [ :2] = [0, 1], [ ::2] = [0, 2]
     ms = 2
-    # [ :2] = [0, 1], [ ::2] = [0, 2]
-    ax1.plot(*(np.array(below_cross).T[ :2]), 'ro',
-             label='Below cross', markersize=ms)
-    ax1.plot(*(np.array(below_hop).T[ :2]), 'bo',
+    ax1.plot(*(below_hop[ :2]), 'bo',
              label='Below hop', markersize=ms)
+    ax2.plot(*(below_hop[ ::2]), 'bo',
+             label='Below hop', markersize=ms)
+
+    if len(below_cross) > 0:
+        ax1.plot(*(below_cross[ :2]), 'ro',
+                 label='Below cross', markersize=ms)
+        ax2.plot(*(below_cross[ ::2]), 'ro',
+                 label='Below cross', markersize=ms)
     if len(above_hop) > 0:
-        ax1.plot(*(np.array(above_hop).T[ :2]), 'go',
+        ax1.plot(*(above_hop[ :2]), 'go',
+                 label='Above hop', markersize=ms)
+        ax2.plot(*(above_hop[ ::2]), 'go',
                  label='Above hop', markersize=ms)
 
-    ax2.plot(*(np.array(below_cross).T[ ::2]), 'ro',
-             label='Below cross', markersize=ms)
-    ax2.plot(*(np.array(below_hop).T[ ::2]), 'bo',
-             label='Below hop', markersize=ms)
-    if len(above_hop) > 0:
-        ax2.plot(*(np.array(above_hop).T[ ::2]), 'go',
-                 label='Above hop', markersize=ms)
+    # overplot \Delta t estimate
+    dH_arr = np.linspace(2 * np.sin(I), s0 / (2 * s_c), N_PTS)
+    ax1.plot(dH_arr, 600 / max(dH_arr) * dH_arr + 650, 'r:')
 
     ax1.set_ylabel(r'$t_\star$')
     ax2.set_ylabel(r'$s_\star$')
     ax2.set_xlabel(r'$H_4(0) - H(0)$')
+    ax2.set_xlim([0, s0 / (2 * s_c)])
+    # ax1.set_ylim([0, tf])
+    ax1.set_ylim([0, 1500])
 
     ax1.legend(loc='lower right', fontsize=6)
     plt.savefig('4_cross%s.png' % s_c_str(s_c), dpi=400)
@@ -396,12 +407,12 @@ if __name__ == '__main__':
     plot_individual(I, eps)
 
     s_c_vals = [
-        # 0.05,
+        0.05,
         0.2,
-        # 0.3,
+        0.3,
         0.4,
         0.5,
-        # 0.55, # eta_crit = 0.574 for I
+        0.55, # eta_crit = 0.574 for I
         0.6,
         0.7,
     ]
@@ -414,5 +425,5 @@ if __name__ == '__main__':
     p.map(runner, s_c_vals)
 
     for s_c in s_c_vals:
-        # statistics(I, eps, s_c)
+        statistics(I, eps, s_c)
         cross_times(I, eps, s_c)
