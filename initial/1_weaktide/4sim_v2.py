@@ -87,6 +87,7 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
     single orbits in (phi, mu) for each parameter set
     '''
     filename_no_ext = '%s/%s' % (PLOT_DIR, get_name(s_c, eps, mu0, phi0))
+    title_str = r'$(s_c; s_0, \mu_0, \phi_0) = (%.2f; %d, %.3f, %.2f)$'
     if os.path.exists('%s.png' % filename_no_ext):
         print(filename_no_ext, 'exists!')
         return
@@ -100,8 +101,7 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
         s, ret, shat_f = solve_with_events(I, s_c, eps, mu0, phi0, s0, tf)
 
     ax.scatter(s_0, mu_0, c='r', s=2**2, label=r'$\mu(\phi = 0)$')
-    scat = ax.scatter(s_pi, mu_pi, c=t_pi,
-                      marker='+', s=5**2, label=r'$\mu(\phi = \pi)$')
+    scat = ax.scatter(s_pi, mu_pi, c=t_pi, s=2**2, label=r'$\mu(\phi = \pi)$')
     fig.colorbar(scat, ax=ax)
 
     # overplot mu2, mu4
@@ -115,8 +115,7 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
     ax.set_ylabel(r'$\mu$')
     ax.set_xlim([0, 1.1 * s0])
     ax.legend(loc='lower right')
-    plt.suptitle(r'$(s_c; s_0, \mu_0, \phi_0) = (%.1f; %d, %.3f, %.2f)$' %
-                 (s_c, s0, mu0, phi0))
+    plt.suptitle(title_str % (s_c, s0, mu0, phi0))
     plt.savefig('%s.png' % filename_no_ext, dpi=400)
     plt.close(fig)
 
@@ -188,8 +187,7 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
     ax3.set_ylabel(r'$\mu$')
     ax4.set_xlabel(r'$\phi$')
 
-    plt.suptitle(r'$(s_c; s_0, \mu_0, \phi_0) = (%.1f; %d, %.3f, %.2f)$' %
-                 (s_c, s0, mu0, phi0))
+    plt.suptitle(title_str % (s_c, s0, mu0, phi0))
     plt.savefig('%s_ind.png' % filename_no_ext, dpi=400)
     plt.close(fig)
 
@@ -225,8 +223,10 @@ def plot_individual(I, eps):
 
     # extra case for low-s_c calc
     plot_traj(I, eps, 0.03, -0.3, 0, s0, tf=1500)
+    plot_traj(I, eps, 0.03, -0.5, 0, s0, tf=1500)
+    plot_traj(I, eps, 0.03, -0.8, 0, s0, tf=1500)
 
-def _run_sim(I, eps, s_c, s0, tf):
+def _run_sim(I, eps, s_c, s0=10, tf=2500):
     '''
     returns list of trajs from sim, memoized
 
@@ -247,7 +247,7 @@ def _run_sim(I, eps, s_c, s0, tf):
     '''
     pkl_fn = PKL_FILE % s_c_str(s_c)
     H4 = get_H4(I, s_c, s0)
-    N_PTS = 100
+    N_PTS = 40
 
     def get_outcome_for_init(mu0, phi0):
         '''
@@ -299,13 +299,14 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
     outcomes
     '''
     trajs = _run_sim(I, eps, s_c, s0, tf)
+    H4 = get_H4(I, s_c, s0)
 
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True)
     fig.subplots_adjust(wspace=0.07)
     titles = ['No hop, CS1', 'No hop, CS2', 'Cross to CS1', 'Hop to CS2']
-    for ax, outcome_trajs, title, cross_lst in\
-            zip([ax1, ax2, ax3, ax4], trajs, titles, cross_outcomes):
-        for _, _, _, _, _, _, phi0, mu0, _ in outcome_trajs:
+    for ax, outcome_trajs, title in\
+            zip([ax1, ax2, ax3, ax4], trajs, titles):
+        for _, _, _, _, _, _, mu0, phi0, _ in outcome_trajs:
             ax.plot(phi0, mu0, 'bo', markersize=0.5)
         ax.set_xlim([0, 2 * np.pi])
         ax.set_ylim([-1, 1])
@@ -324,7 +325,7 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
     ax3.set_ylabel(r'$\mu$')
     ax4.set_xlabel(r'$\phi$')
 
-    plt.suptitle(r'$(s_c, s_0) = %.1f, %.1f$' % (s_c, s0))
+    plt.suptitle(r'$(s_c, s_0) = %.2f, %.1f$' % (s_c, s0))
     plt.savefig('4_stats%s.png' % s_c_str(s_c), dpi=400)
     plt.close(fig)
 
@@ -350,8 +351,8 @@ def cross_times(I, eps, s_c, s0=10, tf=2500):
         H0 = H(I, s_c, s0, mu0, phi0)
         below_cross.append([H4 - H0, t_cross, s_cross])
 
-    for mu_0, t_0, mu_pi, t_pi, y, mu0, phi0 in traj4:
-        t_cross, s_cross = get_sep_hop(t_0, mu_0, t_pi, mu_pi)
+    for mu_0, s_0, t_0, mu_pi, s_pi, t_pi, mu0, phi0, _ in traj4:
+        t_cross, s_cross = get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi)
 
         H0 = H(I, s_c, s0, mu0, phi0)
         if mu0 < mu4:
@@ -360,20 +361,21 @@ def cross_times(I, eps, s_c, s0=10, tf=2500):
             above_hop.append([H4 - H0, t_cross, s_cross])
 
     ms = 2
-    ax1.plot(*(np.array(below_cross).T[0, 1]), 'ro',
+    # [ :2] = [0, 1], [ ::2] = [0, 2]
+    ax1.plot(*(np.array(below_cross).T[ :2]), 'ro',
              label='Below cross', markersize=ms)
-    ax1.plot(*(np.array(below_hop).T[0, 1]), 'bo',
+    ax1.plot(*(np.array(below_hop).T[ :2]), 'bo',
              label='Below hop', markersize=ms)
     if len(above_hop) > 0:
-        ax1.plot(*(np.array(above_hop).T[0, 1]), 'go',
+        ax1.plot(*(np.array(above_hop).T[ :2]), 'go',
                  label='Above hop', markersize=ms)
 
-    ax2.plot(*(np.array(below_cross).T[0, 2]), 'ro',
+    ax2.plot(*(np.array(below_cross).T[ ::2]), 'ro',
              label='Below cross', markersize=ms)
-    ax2.plot(*(np.array(below_hop).T[0, 2]), 'bo',
+    ax2.plot(*(np.array(below_hop).T[ ::2]), 'bo',
              label='Below hop', markersize=ms)
     if len(above_hop) > 0:
-        ax2.plot(*(np.array(above_hop).T[0, 2]), 'go',
+        ax2.plot(*(np.array(above_hop).T[ ::2]), 'go',
                  label='Above hop', markersize=ms)
 
     ax1.set_ylabel('Cross time')
@@ -393,18 +395,24 @@ if __name__ == '__main__':
 
     plot_individual(I, eps)
 
-    # def runner(s_c):
-    #     statistics(I, eps, s_c)
-    #     cross_times(I, eps, s_c)
-    #     return 0
+    s_c_vals = [
+        # 0.05,
+        # 0.2,
+        0.3,
+        # 0.4,
+        # 0.5,
+        0.55, # eta_crit = 0.574 for I
+        # 0.6,
+        # 0.7,
+    ]
 
-    # p = Pool(4)
-    # p.map(runner, [
-    #     0.05,
-    #     0.2,
-    #     0.3,
-    #     0.4,
-    #     0.5,
-    #     0.6,
-    #     0.7,
-    # ])
+    def runner(s_c):
+        _run_sim(I, eps, s_c)
+        return 0
+
+    p = Pool(4)
+    p.map(runner, s_c_vals)
+
+    for s_c in s_c_vals:
+        statistics(I, eps, s_c)
+        cross_times(I, eps, s_c)
