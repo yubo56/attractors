@@ -19,7 +19,7 @@ from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
     stringify, H, roots, get_H4
 PLOT_DIR = '4plots'
 PKL_FILE = '4dat%s.pkl'
-N_PTS = 40
+N_PTS = 100
 
 def get_name(s_c, eps, mu0, phi0):
     return stringify(s_c, mu0, phi0, strf='%.3f').replace('-', 'n')
@@ -48,8 +48,6 @@ def solve_with_events(I, s_c, eps, mu0, phi0, s0, tf):
     mu_pi, s_pi, t_pi = mu_events[idxs_pi], s_events[idxs_pi], t_events[idxs_pi]
 
     shat_f = np.sqrt(np.sum(ret.y[ :3, -1]**2))
-    print('Finished for %.2f, %.3f, %.3f. shat norm = %.5f' %
-          (s_c, mu0, phi0, shat_f))
     return (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events, s, ret, shat_f
 
 def get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi):
@@ -227,34 +225,23 @@ def plot_individual(I, eps):
     plot_traj(I, eps, 0.03, -0.5, 0, s0, tf=1500)
     plot_traj(I, eps, 0.03, -0.8, 0, s0, tf=1500)
 
-def _run_sim(I, eps, s_c, s0=10, tf=2500):
+def _run_sim_thread(I, eps, s_c, s0, tf, num_threads, thread_idx):
     '''
-    returns list of trajs from sim, memoized
-
-    for fixed s0, s_c: random (mu, phi), evolve forward in time. Outcomes:
-    I - Go to CS1, no separatrix encounter
-    II - Go to CS2, no separatrix encounter
-    III - separatrix traversing, to CSI
-    IV - separatrix hopping, to CS2
-    V - Go to CS3, no separatrix encounter (unstable, no)
-
-    VI - Above separatrix, bifurcation
-    VII - Inside separatrix, bifurcation
-    VIII - Below separatrix, bifurcation (not sure exists?)
-
-    Really, I-IV (V is impossible) are the only initial outcomes, VI/VII are
-    later outcomes since bifurcation is later than separatrix interactions. So
-    we will focus on (s0, mu0, phi0) -> {I, IV} outcome probability
+    run sim for params and assign in outcomes (N_PTS x N_PTS list of tuples)
     '''
-    pkl_fn = PKL_FILE % s_c_str(s_c)
+    mus = np.linspace(-0.99, 0.99, N_PTS)
+    phis = np.linspace(0.1, 2 * np.pi - 0.1, N_PTS)
     H4 = get_H4(I, s_c, s0)
+    trajs = [[], [], [], []]
 
-    def get_outcome_for_init(mu0, phi0):
+    def get_outcome_for_init(mu0, phi0, thread_idx):
         '''
         returns 0-3 describing early stage outcome
         '''
         (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), _,\
             _, ret, shat_f = solve_with_events(I, s_c, eps, mu0, phi0, s0, tf)
+        print('(%d) Finished for %.2f, %.3f, %.3f. shat norm = %.5f' %
+              (thread_idx, s_c, mu0, phi0, shat_f))
 
         t_cross, _ = get_sep_hop(t_0, s_0, mu_0, t_pi, s_0, mu_pi)
         x_f, y_f, z_f, s_f = ret.y[:, -1]
@@ -274,16 +261,50 @@ def _run_sim(I, eps, s_c, s0=10, tf=2500):
                 assert z_f > 0, 'z_f is %f' % z_f
                 return 2, store_tuple
 
+    for mu0 in mus[thread_idx::num_threads]:
+        for phi0 in phis:
+            outcome, traj = get_outcome_for_init(mu0, phi0, thread_idx)
+            trajs[outcome].append(traj)
+    return trajs
+
+def run_sim(I, eps, s_c, s0=10, tf=2500, num_threads=0):
+    '''
+    returns list of trajs from sim, memoized
+
+    for fixed s0, s_c: random (mu, phi), evolve forward in time. Outcomes:
+    I - Go to CS1, no separatrix encounter
+    II - Go to CS2, no separatrix encounter
+    III - separatrix traversing, to CSI
+    IV - separatrix hopping, to CS2
+    V - Go to CS3, no separatrix encounter (unstable, no)
+
+    VI - Above separatrix, bifurcation
+    VII - Inside separatrix, bifurcation
+    VIII - Below separatrix, bifurcation (not sure exists?)
+
+    Really, I-IV (V is impossible) are the only initial outcomes, VI/VII are
+    later outcomes since bifurcation is later than separatrix interactions. So
+    we will focus on (s0, mu0, phi0) -> {I, IV} outcome probability
+    '''
+    pkl_fn = PKL_FILE % s_c_str(s_c)
+
     if not os.path.exists(pkl_fn):
         print('Running sims, %s not found' % pkl_fn)
-        trajs = [[], [], [], []]
-        mus = np.linspace(-0.99, 0.99, N_PTS)
-        phis = np.linspace(0.1, 2 * np.pi - 0.1, N_PTS)
+        assert num_threads > 0
 
-        for mu0 in mus:
-            for phi0 in phis:
-                outcome, traj = get_outcome_for_init(mu0, phi0)
-                trajs[outcome].append(traj)
+        p = Pool(num_threads)
+        traj_lst = p.starmap(_run_sim_thread, [
+            (I, eps, s_c, s0, tf, num_threads, thread_idx)
+            for thread_idx in range(num_threads)
+        ])
+
+        # merge the list of [traj1, traj2, traj3, traj4] in traj_lst
+        trajs = [[], [], [], []]
+        for traj_thread in traj_lst:
+            for sim_traj, target_traj in zip(traj_thread, trajs):
+                target_traj.extend(sim_traj)
+        print(trajs)
+
         with open(pkl_fn, 'wb') as f:
             pickle.dump(trajs, f)
 
@@ -295,10 +316,10 @@ def _run_sim(I, eps, s_c, s0=10, tf=2500):
 
 def statistics(I, eps, s_c, s0=10, tf=2500):
     '''
-    for run simulations, scatter plot ICs vs final outcomes per _run_sim
+    for run simulations, scatter plot ICs vs final outcomes per run_sim
     outcomes
     '''
-    trajs = _run_sim(I, eps, s_c, s0, tf)
+    trajs = run_sim(I, eps, s_c, s0, tf)
     H4 = get_H4(I, s_c, s0)
 
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True)
@@ -342,7 +363,7 @@ def cross_times(I, eps, s_c, s0=10, tf=2500):
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
     fig.subplots_adjust(hspace=0)
 
-    [_, _, traj3, traj4] = _run_sim(I, eps, s_c, s0, tf)
+    [_, _, traj3, traj4] = run_sim(I, eps, s_c, s0, tf)
     below_cross, below_hop, above_hop = [[], [], []]
 
     for mu_0, s_0, t_0, mu_pi, s_pi, t_pi, mu0, phi0, _ in traj3:
@@ -407,23 +428,14 @@ if __name__ == '__main__':
     plot_individual(I, eps)
 
     s_c_vals = [
+        0.7,
         0.05,
         0.2,
-        0.3,
         0.4,
-        0.5,
         0.55, # eta_crit = 0.574 for I
-        0.6,
-        0.7,
     ]
 
-    def runner(s_c):
-        _run_sim(I, eps, s_c)
-        return 0
-
-    p = Pool(4)
-    p.map(runner, s_c_vals)
-
     for s_c in s_c_vals:
+        run_sim(I, eps, s_c, num_threads=4)
         statistics(I, eps, s_c)
         cross_times(I, eps, s_c)
