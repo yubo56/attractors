@@ -809,7 +809,7 @@ I did a bunch of work w/o writing it up, so this is the basic gist.
         \end{figure}
 \end{itemize}
 
-\subsection{Weak Perturber Hopping Distribution}
+\subsection{Weak Perturber Hopping Distribution (Probably incorrect?)}
 
 We consider in the weak perturber (strong coupling) regime, where $s_c < S_0$.
 We will re-apply \autoref{ss:melnikov_success} to the weak tidal friction
@@ -883,6 +883,98 @@ What is noteworthy is the \emph{exponential} dependence on $\Delta \mu_\pi$; we
 might expect similar behavior to manifest elsewhere thanks to the $\rd{\ln s}{t}
 \sim \epsilon, \rd{\mu}{t} \propto \z*{-\epsilon \mu, \epsilon/s}$ in both
 regimes of $\rd{\mu}{t}$. Further numerical testing to be performed.
+
+\textbf{Note:} This section's calculation may be inaccurate because $H$ is not
+an adiabatic invariant. I thought that maybe $s$ could be imagined to be
+approximately constant over the final orbit, I'm not sure how accurate that is
+though.
+
+\subsection{Relation to Henrard 1982}
+
+Henrard's \emph{Capture into resonance: An extension of the use of adiabatic
+invariants} is somewhat similar to our work but covers a slightly different
+scenario. We summarize the similarities below:
+\begin{itemize}
+    \item Henrard considers a dissipation-free system where $H^{(0)}$ slowly
+        changes in time due to a varying parameter $\lambda$. Contrast this to
+        our two considered problems, both of which have dissipation.
+
+    \item His result for hopping probabilities is the same as ours though:
+        consider $K = H - H^*$, which for us is $\Delta H = H - H_4$, then
+        we can write down expressions for the evolution of $\Delta H$ along the
+        heteroclinic orbit. Henrard calls these $B_i$ for energy balance.
+
+    \item Consider then an inbound trajectory on one of the two legs of the
+        separatrix, call this leg $1$ and the other leg $2$. Furthermore, adopt
+        convention whereby the separatrix has $K < 0$. Then, upon the final
+        orbit prior to separatrix crossing, the trajectory experiences some
+        $\Delta H = B_1$. Subsequently, it will hop onto the second leg of the
+        separatrix, where it further experiences some $\Delta H = B_2$. Note
+        that $B_1 < 0$ is necessary to experience separatrix crossing, otherwise
+        trajectories will be repelled from the separatrix.
+
+    \item Henrard then enumerates three possible cases: $B_2 < 0$ produces
+        guaranteed capture, $B_2 > 0, B_1 + B_2 > 0$ produces guaranteed
+        crossing, and $B_2 > 0, B_1 + B_2 < 0$ is effectively probabilistic.
+
+    \item These conclusions mirror ours, if we replace $\Delta_M = B_1, \Delta_c
+        = B_1 + B_2$; one may immediately see that $\Delta_c$ has the same sign
+        as $\Delta_M$ in the probabilistic case, and in the $s_c > S_{0}$ case
+        we have exactly $B_1, B_2 < 0$ attraction.
+\end{itemize}
+
+In our problem, we have both dissipation thanks to $\rd{\mu^{(1)}}{t}$ and
+parameter variation $\rd{s}{t}$. Paralleling Equation 41 of Henrard's paper, we
+may expand:
+\begin{align}
+    \rd{H}{t} &= \pd{H}{t} + \pd{H}{\phi}\rd{\phi}{t} + \pd{H}{\mu}\rd{\mu}{t}
+            + \pd{H}{s}\pd{s}{t},\nonumber\\
+        &= \dot{\mu}^{(1)} \dot{\phi}^{(0)} + \pd{H}{s}\rd{s}{t},\\
+    \rd{H_4}{t} &= \pd{H_4}{s}\rd{s}{t},\\
+    \rd{K}{\phi} &=
+        \dot{\mu}^{(1)} + \frac{\dot{s}^{(1)}}{\dot{\phi}^{(0)}}
+            \p*{\pd{H}{s} - \pd{H_4}{s}},\\
+    \Delta K_i &= \oint_{\mathcal{C}_i}
+        \dot{\mu}^{(1)} + \frac{\dot{s}^{(1)}}{\dot{\phi}^{(0)}}
+            \p*{\pd{H}{s} - \pd{H_4}{s}}\;\mathrm{d}\phi.
+\end{align}
+We have arbitrarily added superscripts to indicate to what order in $\epsilon$
+our expansions proceed. Note the resemblance of this formula to Equation 41 of
+Henrard's paper, but also to our earlier work in the constant tides case. Again,
+$\Delta K_i = H - H_4$ over path $\mathcal{C}_i$, which in our case can be either
+the bottom half of the separatrix or the entire separatrix (in which case
+$\Delta K_1 = B_1 = \Delta_M, \Delta K_2 = B_1 + B_2 = \Delta_c$).
+
+\subsection{Weak Perturber Hopping Revisited}
+
+First, let's examine our $t_{\star}$ plot (TODO add). We observe that there is a
+roughly linear slope $\rd{t_{\star}}{(\Delta H)} \sim \frac{600}{s_0/2s_c}$
+where $-s_0/2s_c$ is the minimum value of $H$ on the domain and so is the
+maximum value for $\Delta H = H_4 - H_0$. Note that
+\begin{align*}
+    H(\mu, \phi; s) &= -\frac{s}{s_c}\frac{\mu^2}{2}
+        + \mu \cos I - \sin I \sqrt{1 - \mu^2}\cos \phi, &
+    H_4(s) &= -\sin I + \frac{s_c}{2s}\cos^2 I.
+\end{align*}
+While $s$ is actually a dynamical variable, it is a parameter to the 1D
+Hamiltonian. Plugging these expressions ino our above expression for $\rd{K}{t}
+= -\rd{(\Delta H)}{t}$, we obtain
+\begin{align}
+    \rd{(\Delta H)}{t} &= -\dot{\mu}^{(1)}\dot{\phi}^{(0)} - \dot{s}^{(1)}
+            \rd{(\Delta H)}{s},\\
+    -\rd{(\Delta H)}{(\epsilon t)} &= (1 - \mu^2)\p*{\frac{2\Omega}{s} - \mu}
+            \dot{\phi}^{(0)} + 2\Omega\p*{1 + \frac{s}{2\Omega}(1 + \mu^2)}
+            \s*{\frac{\mu^2}{2s_c} + \sin I + \frac{s_c}{2s^2}\cos^2 I}.
+\end{align}
+Now, if we evaluate far from the separatrix and for large $s$, similar to most
+of our initial conditions, we obtain $\rd{(\Delta H)}{t} \approx \epsilon
+\frac{s\mu^2}{s_c}\p*{1 - \mu^2 + \frac{1 + \mu^2}{2}} \sim
+-\epsilon\frac{s\mu^2}{s_c}$. Comparing to our plot, we would predict that this
+derivative should be close to $\frac{s/s_c}{1200}$ (assuming $s \sim s_0$
+initially), so it seems like we at least have the scaling correct.
+
+This allows for a rudimentary prediction of $t_{\star}, s_{\star}$ at separatrix
+crossing; we next want to compute the separatrix crossing probabilities.
 
 \end{document}
 
