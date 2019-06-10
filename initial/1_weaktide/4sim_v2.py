@@ -261,8 +261,8 @@ def _run_sim_thread(I, eps, s_c, s0, tf, num_threads, thread_idx):
                 assert z_f > 0, 'z_f is %f' % z_f
                 return 2, store_tuple
 
-    for mu0 in mus[thread_idx::num_threads]:
-        for phi0 in phis:
+    for mu0 in mus:
+        for phi0 in phis[thread_idx::num_threads]:
             outcome, traj = get_outcome_for_init(mu0, phi0, thread_idx)
             trajs[outcome].append(traj)
     return trajs
@@ -303,7 +303,6 @@ def run_sim(I, eps, s_c, s0=10, tf=2500, num_threads=0):
         for traj_thread in traj_lst:
             for sim_traj, target_traj in zip(traj_thread, trajs):
                 target_traj.extend(sim_traj)
-        print(trajs)
 
         with open(pkl_fn, 'wb') as f:
             pickle.dump(trajs, f)
@@ -429,10 +428,10 @@ if __name__ == '__main__':
 
     s_c_vals = [
         0.7,
-        0.05,
         0.2,
         0.4,
-        0.55, # eta_crit = 0.574 for I
+        0.55, # eta_crit = 0.574 for I = 20
+        0.05,
     ]
 
     for s_c in s_c_vals:
