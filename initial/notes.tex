@@ -921,6 +921,17 @@ scenario. We summarize the similarities below:
         = B_1 + B_2$; one may immediately see that $\Delta_c$ has the same sign
         as $\Delta_M$ in the probabilistic case, and in the $s_c > S_{0}$ case
         we have exactly $B_1, B_2 < 0$ attraction.
+
+    \item Henrard in a later paper cites the formula $\Pr\p*{i \to j} =
+        \abs*{\pd{J_j}{t} / \pd{J_i}{t}}$. This can be related to the above
+        $B_i, \Delta_H$ by:
+        \begin{equation}
+            \Delta H = \int \pd{H}{\lambda}\dot{\lambda}\mathrm{d}t
+                = \int \pd{J}{\lambda}\pd{H}{J}\dot{\lambda}\mathrm{d}t
+                = 2\pi \dot{\lambda}\pd{J}{\lambda},
+        \end{equation}
+        where $J$ is the action variable; this is easy to see since $\pd{H}{J}$
+        is just the angular velocity of the corresponding angle variable to $J$.
 \end{itemize}
 
 In our problem, we have both dissipation thanks to $\rd{\mu^{(1)}}{t}$ and
