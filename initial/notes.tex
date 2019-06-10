@@ -978,14 +978,24 @@ Hamiltonian. Plugging these expressions ino our above expression for $\rd{K}{t}
             \s*{\frac{\mu^2}{2s_c} + \sin I + \frac{s_c}{2s^2}\cos^2 I}.
 \end{align}
 Now, if we evaluate far from the separatrix and for large $s$, similar to most
-of our initial conditions, we obtain $\rd{(\Delta H)}{t} \approx \epsilon
-\frac{s\mu^2}{s_c}\p*{1 - \mu^2 + \frac{1 + \mu^2}{2}} \sim
--\epsilon\frac{s\mu^2}{s_c}$. Comparing to our plot, we would predict that this
-derivative should be close to $\frac{s/s_c}{1200}$ (assuming $s \sim s_0$
-initially), so it seems like we at least have the scaling correct.
+of our initial conditions, we approximate $\dot{\phi} \approx \frac{s_c}{s}$ and
+we obtain
+\begin{equation}
+    \rd{(\Delta H)}{t} \approx \epsilon
+        \frac{s\mu^2}{s_c}\p*{1 - \mu^2 + \frac{1 + \mu^2}{2}} \sim
+        -\epsilon\frac{s\mu^2}{s_c}.
+\end{equation}
+Comparing to our plot, we would predict that this derivative should be close to
+$\frac{s/s_c}{1200}$ (assuming $s \sim s_0$ initially), so it seems like we at
+least have the scaling correct.
 
 This allows for a rudimentary prediction of $t_{\star}, s_{\star}$ at separatrix
-crossing; we next want to compute the separatrix crossing probabilities.
+crossing; we next want to compute the separatrix crossing probabilities. It's
+not immediately obvious whether the dissipation or adiabatic invariance term
+should dominate the crossing probability or the $\Delta H$ evolution: since
+$\pd{H}{s} \propto \mu^2$ but also $\dot{\phi}^{(0)} \to 0$ for much of the
+trajectory, it will require some careful statistics/simulation to disentangle
+the two.
 
 \end{document}
 
