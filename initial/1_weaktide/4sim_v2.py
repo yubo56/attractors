@@ -355,6 +355,8 @@ def cross_times(trajs, I, eps, s_c, s0=10, tf=2500):
 
     three classifications: below + cross (mu0 < mu4, case III), below + hop (mu0
     < mu4, case IV), above + hop (mu0 > mu4, case IV)
+
+    also plot P_hop(s_cross) via histogram of two below cases
     '''
     H4 = get_H4(I, s_c, s0)
     [mu4] = get_mu4(I, s_c, np.array([s0]))
@@ -409,11 +411,43 @@ def cross_times(trajs, I, eps, s_c, s0=10, tf=2500):
     ax2.set_ylabel(r'$s_\star$')
     ax2.set_xlabel(r'$H_4(0) - H(0)$')
     ax2.set_xlim([0, s0 / (2 * s_c)])
-    # ax1.set_ylim([0, tf])
-    ax1.set_ylim([0, 1500])
+    ax1.set_ylim([0, tf])
 
     ax1.legend(loc='lower right', fontsize=6)
     plt.savefig('4_cross%s.png' % s_c_str(s_c), dpi=400)
+    plt.close(fig)
+
+    # P_hop(s_cross) histogram
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+    fig.subplots_adjust(hspace=0)
+
+    s_hop = [] if len(below_hop) == 0 else below_hop[2]
+    s_cross = [] if len(below_cross) == 0 else below_cross[2]
+    [n_hop, n_tot], bins, _ = ax1.hist([s_hop, s_cross],
+                                         bins=N_PTS // 3,
+                                         label=['Hop', 'Cross'],
+                                         stacked=True)
+
+    # hist seems to return two copies of n_hop when s_cross is empty
+    n_cross = n_tot - n_hop
+    s_vals = (bins[ :-1] + bins[1: ]) / 2
+    valids = np.where(n_hop > 0)[0]
+    p_hop = n_hop[valids] / (n_hop[valids] + n_cross[valids])
+    p_hop_err = np.sqrt(n_hop[valids]) / (n_hop[valids] + n_cross[valids])
+    ax2.errorbar(s_vals[valids], p_hop,
+                 yerr=p_hop_err, fmt='ro', label='Data')
+    ax1.set_ylabel('Counts')
+    ax2.set_xlabel(r'$s_\star$')
+    ax2.set_ylabel(r'$P_{hop}$')
+
+    # overplot analytic estimate?
+    p_hop_anal = 4 * np.sqrt(s_vals * s_c * np.sin(I)) / np.pi
+    ax2.plot(s_vals, np.minimum(p_hop_anal, np.ones_like(p_hop_anal)),
+             'g', label='Anal')
+
+    ax1.legend()
+    ax2.legend()
+    plt.savefig('4_cross_hist%s.png' % s_c_str(s_c), dpi=400)
     plt.close(fig)
 
 if __name__ == '__main__':
