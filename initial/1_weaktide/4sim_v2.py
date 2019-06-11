@@ -443,7 +443,12 @@ def cross_times(trajs, I, eps, s_c, s0=10, tf=2500):
     # overplot analytic estimate?
     p_hop_anal = 4 * np.sqrt(s_vals * s_c * np.sin(I)) / np.pi
     ax2.plot(s_vals, np.minimum(p_hop_anal, np.ones_like(p_hop_anal)),
-             'g', label='Anal')
+             'b', label='Anal')
+    ax2.plot(s_vals,
+             np.minimum(
+                 p_hop_anal * (1 + np.sqrt(s_c * s_vals * np.sin(I) / 2)),
+                 np.ones_like(p_hop_anal)),
+             'g', label='Anal (corr.)')
 
     ax1.legend()
     ax2.legend()

@@ -443,7 +443,30 @@ hopping probability
 \end{equation}
 This agrees perfectly with the cases we've run.
 
-\section{Weak Tidal Friction, changing $\eta$}
+\section{Parametric Separatrix Hopping: Only changing $\eta$}
+
+Though this section is located before the weak tidal friction section, we
+actually return to this second toy problem to get some practice on the Henrard
+paper, to confirm the accuracy of our simulations compared to analytical
+predictions, and to get some practice doing these new integrals. Consider the
+dissipation-free Cassini state system with a small but constant $\pd{\eta}{t} =
+\epsilon$. For clarity, the Hamiltonian is
+\begin{equation}
+    H = -\frac{\mu^2}{2} + \eta
+        \p*{\mu \cos I - \sin I \sqrt{1 - \mu^2} \theta \cos \phi}.
+\end{equation}
+
+For an arbitrary initial condition outside of the separatrix, we want: (i) to
+know when it will encounter the separatrix, and (ii) what its fate will be. We
+will begin with (ii) since it is the more fun problem. We know that this boils
+down to the Melnikov-like formula
+\begin{equation}
+    B_i = \int_{\mathcal{C}_i} \dot{\eta}\pd{\Delta H}{\eta}
+        \;\mathrm{d}t.
+\end{equation}
+$B_i$ is the change in $\Delta H = H_4 - H$ over contour $\mathcal{C}_i$.
+
+\section{Weak Tidal Friction, changing $\eta$ and $\theta$}
 
 Previously, we took the effect of tides to simply be $\rd{\hat{s}}{t} = \epsilon
 \hat{s} \times \p*{\hat{l} \times \hat{s}}$, but in reality, tides will spin
@@ -825,7 +848,8 @@ integrals as follows:
 \begin{align}
     \Delta_M &= \int\limits_0^{2\pi}\epsilon\p*{1 - \mu^2}
             \p*{\frac{2\Omega}{s} - \mu} \;\mathrm{d}\phi,\nonumber\\
-        &\approx 2\pi \epsilon \frac{2\Omega}{s},\\
+        &\sim 2\pi \epsilon \p*{\frac{2\Omega}{s}
+            - \sqrt{2\frac{s_c}{s}\sin I}},\\
     \Delta_c &= \oint \epsilon \p*{1 - \mu^2}\p*{\frac{2\Omega}{s} - \mu}
             \;\mathrm{d}\phi,\nonumber\\
         &= 2\int\limits_0^{2\pi}
@@ -835,7 +859,8 @@ integrals as follows:
 \end{align}
 Recalling that $\eta = s_c/s$, we arrive at
 \begin{equation}
-    P_{hop} = \frac{4\sqrt{ss_c\sin I}}{\pi \Omega}.
+    P_{hop} = \frac{4\sqrt{ss_c\sin I}}{\pi \Omega}
+        \p*{1 + \sqrt{\frac{s_cs\sin I}{2}}}.\label{eq:p_hop_sqrt_s}
 \end{equation}
 
 We evaluate the above at $s = s_\star$ for a given trajectory; we now want to
@@ -958,36 +983,55 @@ $\Delta K_1 = B_1 = \Delta_M, \Delta K_2 = B_1 + B_2 = \Delta_c$).
 
 \subsection{Weak Perturber Hopping Revisited}
 
-First, let's examine our $t_{\star}$ plot (TODO add). We observe that there is a
-roughly linear slope $\rd{t_{\star}}{(\Delta H)} \sim \frac{600}{s_0/2s_c}$
-where $-s_0/2s_c$ is the minimum value of $H$ on the domain and so is the
-maximum value for $\Delta H = H_4 - H_0$. Note that
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../initial/1_weaktide/4_cross0_20.png}
+    \caption{$t_\star, s_\star$ for $s_c = 0.2$. Red line is a by-eye linear
+    fit.}\label{fig:4_cross0_20}
+\end{figure}
+
+First, let's examine our $t_{\star}$ plot e.g.\ \autoref{fig:4_cross0_20}. We
+observe that there is a roughly linear slope $\rd{t_{\star}}{(\Delta H)} \sim
+\frac{600}{s_0/2s_c}$ where $-s_0/2s_c$ is the minimum value of $H$ on the
+domain and so is the maximum value for $\Delta H = H_4 - H_0$. Note that
 \begin{align*}
     H(\mu, \phi; s) &= -\frac{s}{s_c}\frac{\mu^2}{2}
         + \mu \cos I - \sin I \sqrt{1 - \mu^2}\cos \phi, &
     H_4(s) &= -\sin I + \frac{s_c}{2s}\cos^2 I.
 \end{align*}
 While $s$ is actually a dynamical variable, it is a parameter to the 1D
-Hamiltonian. Plugging these expressions ino our above expression for $\rd{K}{t}
+Hamiltonian. Plugging these expressions into our above expression for $\rd{K}{t}
 = -\rd{(\Delta H)}{t}$, we obtain
 \begin{align}
     \rd{(\Delta H)}{t} &= -\dot{\mu}^{(1)}\dot{\phi}^{(0)} - \dot{s}^{(1)}
-            \rd{(\Delta H)}{s},\\
+            \pd{(\Delta H)}{s},\\
     -\rd{(\Delta H)}{(\epsilon t)} &= (1 - \mu^2)\p*{\frac{2\Omega}{s} - \mu}
             \dot{\phi}^{(0)} + 2\Omega\p*{1 + \frac{s}{2\Omega}(1 + \mu^2)}
-            \s*{\frac{\mu^2}{2s_c} + \sin I + \frac{s_c}{2s^2}\cos^2 I}.
+            \s*{\frac{\mu^2}{2s_c} - \frac{s_c}{2s^2}\cos^2 I}.
 \end{align}
-Now, if we evaluate far from the separatrix and for large $s$, similar to most
-of our initial conditions, we approximate $\dot{\phi} \approx \frac{s_c}{s}$ and
-we obtain
-\begin{equation}
-    \rd{(\Delta H)}{t} \approx \epsilon
-        \frac{s\mu^2}{s_c}\p*{1 - \mu^2 + \frac{1 + \mu^2}{2}} \sim
-        -\epsilon\frac{s\mu^2}{s_c}.
-\end{equation}
-Comparing to our plot, we would predict that this derivative should be close to
-$\frac{s/s_c}{1200}$ (assuming $s \sim s_0$ initially), so it seems like we at
-least have the scaling correct.
+Note that this expression is encouraging since both $\dot{\phi}^{(0)},
+\pd{\p*{\Delta H}}{s}$ vanish near CS4 (where $\mu_4 \approx \frac{s_c}{s}\cos
+I$), which corresponds to separatrix approach slowing down (also consistent w/
+our plots). Now, if we evaluate far from the separatrix and for large $s$,
+similar to most of our initial conditions, we approximate $\dot{\phi} \approx
+\frac{s_c}{s}$ and we obtain
+\begin{align}
+    \rd{(\Delta H)}{(\epsilon t)} &\approx
+            \p*{1 - \mu^2}\p*{\frac{2\Omega}{s} - \mu}\frac{s}{s_c}\mu
+                + s\p*{1 + \mu^2}\p*{\frac{\mu^2}{2s_c}},\nonumber\\
+        &\approx -\frac{s\mu^2}{2s_c} \p*{2(1 - \mu^2) - 1 + \mu^2}
+            ,\nonumber\\
+        &= -\frac{s\mu^2}{2s_c}\p*{3 - \mu^2}.
+\end{align}
+The linear fit by eye on the plot corresponds to a slope of $-\rd{(\Delta H)}{t}
+\approx \frac{s_0/s_c}{1200}$ which is of the right order $-\epsilon
+\frac{3s\mu^2}{2s_c}$, so it seems like we at least have the scaling correct.
+The intercept offset is given by the dynamics near $\Delta H$ small, or
+sufficiently small that $\dot{\phi}^{(0)} \approx \frac{s}{s_c}$ is no longer
+accurate (where phase space begins to be distorted by the separatrix); we will
+analyze this separately later/never.
+
+\subsection{$P_{hop}$ More Carefully}
 
 This allows for a rudimentary prediction of $t_{\star}, s_{\star}$ at separatrix
 crossing; we next want to compute the separatrix crossing probabilities. It's
@@ -996,6 +1040,25 @@ should dominate the crossing probability or the $\Delta H$ evolution: since
 $\pd{H}{s} \propto \mu^2$ but also $\dot{\phi}^{(0)} \to 0$ for much of the
 trajectory, it will require some careful statistics/simulation to disentangle
 the two.
+
+It bears noting that the formula \autoref{eq:p_hop_sqrt_s} only holds under the
+following assumptions: (i) the Melnikov splitting is stronger than the adiabatic
+invariant effect described by Henrard, and (ii) $\frac{2\Omega}{s} \gtrsim \mu$
+along the separatrix. Condition (ii) is expected to hold in the weak perturber
+regime $s_c$ small, and indeed it seems to give the correct prediction, as seen
+in \autoref{fig:4_cross_hist0_05} (a few other trials also seem to suggest
+this).
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../initial/1_weaktide/4_cross_hist0_05.png}
+    \caption{Histogram of $P_{hop}(s_\star)$ with prediction of
+    \autoref{eq:p_hop_sqrt_s} overlaid. Anal indicates just the prefactor, while
+    corrected analytic denotes including the estimated corrective term. We see
+    that the true curve lies somewhere in between.}\label{fig:4_cross_hist0_05}
+\end{figure}
+
+Can we analytically show that the Melnikov splitting dominates, and that in
+particular the seeming small excess of $P_{hop}$ is predictable?
 
 \end{document}
 
