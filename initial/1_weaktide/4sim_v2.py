@@ -313,12 +313,11 @@ def run_sim(I, eps, s_c, s0=10, tf=2500, num_threads=0):
             trajs = pickle.load(f)
     return trajs
 
-def statistics(I, eps, s_c, s0=10, tf=2500):
+def statistics(trajs, I, eps, s_c, s0=10, tf=2500):
     '''
     for run simulations, scatter plot ICs vs final outcomes per run_sim
     outcomes
     '''
-    trajs = run_sim(I, eps, s_c, s0, tf)
     H4 = get_H4(I, s_c, s0)
 
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True)
@@ -340,7 +339,7 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
         ax.contour(phi_grid, mu_grid, H_grid, levels=[H4], colors='k')
     ax1.set_ylabel(r'$\mu$')
     ax3.set_xlabel(r'$\phi$')
-    ax.set_xticks([0, np.pi, 2 * np.pi])
+    ax3.set_xticks([0, np.pi, 2 * np.pi])
     ax3.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
     ax3.set_ylabel(r'$\mu$')
     ax4.set_xlabel(r'$\phi$')
@@ -349,7 +348,7 @@ def statistics(I, eps, s_c, s0=10, tf=2500):
     plt.savefig('4_stats%s.png' % s_c_str(s_c), dpi=400)
     plt.close(fig)
 
-def cross_times(I, eps, s_c, s0=10, tf=2500):
+def cross_times(trajs, I, eps, s_c, s0=10, tf=2500):
     '''
     plot t_cross and s_cross(H_4 - H_0) (H4 > H0 for all these, H4 evaluated at
     start)
@@ -362,7 +361,7 @@ def cross_times(I, eps, s_c, s0=10, tf=2500):
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
     fig.subplots_adjust(hspace=0)
 
-    [_, _, traj3, traj4] = run_sim(I, eps, s_c, s0, tf)
+    [_, _, traj3, traj4] = trajs
     below_cross, below_hop, above_hop = [[], [], []]
 
     for mu_0, s_0, t_0, mu_pi, s_pi, t_pi, mu0, phi0, _ in traj3:
@@ -435,6 +434,6 @@ if __name__ == '__main__':
     ]
 
     for s_c in s_c_vals:
-        run_sim(I, eps, s_c, num_threads=4)
-        statistics(I, eps, s_c)
-        cross_times(I, eps, s_c)
+        trajs = run_sim(I, eps, s_c, num_threads=4)
+        statistics(trajs, I, eps, s_c)
+        cross_times(trajs, I, eps, s_c)
