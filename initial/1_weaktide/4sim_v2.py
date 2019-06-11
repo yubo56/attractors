@@ -424,7 +424,7 @@ def cross_times(trajs, I, eps, s_c, s0=10, tf=2500):
     s_hop = [] if len(below_hop) == 0 else below_hop[2]
     s_cross = [] if len(below_cross) == 0 else below_cross[2]
     [n_hop, n_tot], bins, _ = ax1.hist([s_hop, s_cross],
-                                         bins=N_PTS // 3,
+                                         bins=int(N_PTS / 2.5),
                                          label=['Hop', 'Cross'],
                                          stacked=True)
 
