@@ -23,6 +23,7 @@ def plot_traj(I, ret, filename):
     q, phi = to_ang(*y[0:3])
     plot_x, plot_y = get_plot_coords(q, phi)
     ax1.plot(plot_x, plot_y, 'r', linewidth=1)
+    ax1.plot(plot_x[-1], plot_y[-1], 'co', markersize=3)
 
     # use this to plot equator + south pole
     bound_phi = np.linspace(0, 2 * np.pi, n_pts)
@@ -30,10 +31,10 @@ def plot_traj(I, ret, filename):
     bound_y = np.sin(bound_phi)
     ax1.plot(bound_x, bound_y, 'k', linewidth=5)
 
-    # plot separatrix @ crossing/end
+    # plot separatrix @ end
     t_areas, areas, t_cross = get_areas(ret)
     crossed_idxs = np.where(t > t_cross)[0]
-    eta = y[3, -1] if len(crossed_idxs) == 0 else y[3, crossed_idxs[0]]
+    eta = y[3, -1]
     cs_qs = roots(I, eta)
     q4 = cs_qs[-1]
     # convention: -np.pi / 2 < q4 < 0
@@ -86,6 +87,7 @@ def plot_traj(I, ret, filename):
     ax2.legend(lns, [l.get_label() for l in lns],
                loc='upper left', fontsize=8)
 
+    ax1.set_title(r'$\mu_0 = %.3f$' % y[2][0])
     fig.tight_layout()
     fig.savefig(filename, dpi=400)
     plt.close(fig)
@@ -107,4 +109,3 @@ if __name__ == '__main__':
     eta0 = 0.01
 
     run_single(I, eps, tf, eta0, np.pi / 2 - 0.14, '1testo1.png')
-    run_single(I, eps, tf, eta0, np.pi / 2 + 0.12, '1testo2.png')
