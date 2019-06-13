@@ -59,6 +59,20 @@ def H(I, eta, q, phi):
         mu * np.cos(I) -
         np.sqrt(1 - mu**2) * np.sin(I) * np.cos(phi))
 
+def get_mu4(I, eta):
+    '''
+    gets mu4 for a list of spins s, returning -1 if no CS4 for given s
+    '''
+    eta_c = get_etac(I)
+    mu4 = np.full(np.shape(eta), -1.0)
+
+    valid_idxs = np.where(eta < eta_c)
+
+    for idx in zip(*valid_idxs):
+        mu4[idx] = np.cos(roots(I, eta[idx])[3])
+
+    return mu4
+
 ############
 # END COPIED
 ############
@@ -72,7 +86,7 @@ def get_areas(ret):
     (assumptions detailed at top of file). then at all times, either t_0/t_pi
     interlocking or only t_pi exists
     - circulating: area is sum(-mu * dphi) between successive t_0 points
-    - librating: area is sum(phi * dmu) between over *three* t_pi points
+    - librating: area is sum(-mu * dphi) between over *three* t_pi points
     '''
     num_pts = 100
 
@@ -102,8 +116,9 @@ def get_areas(ret):
 
         areas.append(area)
 
+    print(len(t_0), len(t_pi))
     _lib_ts = t_pi[np.where(t_pi > t_0[-1])[0]]
-    if len(_lib_ts) > 0:
+    if len(_lib_ts) > 1:
         t_cross = t_0[-1]
 
         lib_ts = _lib_ts[ ::2] # only every other time
@@ -124,7 +139,7 @@ def get_areas(ret):
 
             areas.append(area)
     else:
-        t_cross = t_pi[-1] # WRT area calculations, this is fine
+        t_cross = np.inf # WRT area calculations, this is fine
 
     return t_areas, np.array(areas), t_cross
 
