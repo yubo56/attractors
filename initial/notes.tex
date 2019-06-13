@@ -452,19 +452,39 @@ predictions, and to get some practice doing these new integrals. Consider the
 dissipation-free Cassini state system with a small but constant $\pd{\eta}{t} =
 \epsilon$. For clarity, the Hamiltonian is
 \begin{equation}
-    H = -\frac{\mu^2}{2} + \eta
-        \p*{\mu \cos I - \sin I \sqrt{1 - \mu^2} \theta \cos \phi}.
+    H = -\alpha\frac{\mu^2}{2} +
+        \mu \cos I - \sin I \sqrt{1 - \mu^2} \theta \cos \phi.
 \end{equation}
+This proves to be the algebraically easiest formulation, instead of using
+$\eta$.
 
 For an arbitrary initial condition outside of the separatrix, we want: (i) to
 know when it will encounter the separatrix, and (ii) what its fate will be. We
 will begin with (ii) since it is the more fun problem. We know that this boils
 down to the Melnikov-like formula
 \begin{equation}
-    B_i = \int_{\mathcal{C}_i} \dot{\eta}\pd{\Delta H}{\eta}
+    B_i = \int_{\mathcal{C}_i} \dot{\alpha}\pd{\Delta H}{\alpha}
         \;\mathrm{d}t.
 \end{equation}
 $B_i$ is the change in $\Delta H = H_4 - H$ over contour $\mathcal{C}_i$.
+
+In order to probe the relevant physics here, we firsst cite without proof (refer
+to \autoref{ss:revisited} for this) that $\pd{\Delta H}{\alpha} =
+\frac{\mu^2}{2} - \frac{1}{2\alpha^2}\cos^2 I$. This implies that
+\begin{equation}
+    B_i = \int_{\mathcal{C}_i} \dot{\alpha}\s*{
+        \frac{\mu^2}{2} - \frac{1}{2\alpha^2}\cos^2 I}
+        \;\mathrm{d}t.
+\end{equation}
+Recall that the capture probability is $\frac{B_1 + B_2}{B_1}$ when this
+expression is $\in [0, 1]$. However, we immediately see a problem: the first
+term will dominate the second term, since $\alpha \gg 1$, but the first term is
+also positive semidefinite. This implies $B_1, B_2$ will always have the same
+sign unless $\dot{\alpha}$ has different signs over the two trajectories!
+
+Thus, in our toy model, we \emph{cannot} choose a simple form e.g.\
+$\rd{\alpha}{t} = -\epsilon\alpha$, it must have differing signs over
+$\mathcal{C}_i$.
 
 \section{Weak Tidal Friction, changing $\eta$ and $\theta$}
 
@@ -981,7 +1001,7 @@ $\Delta K_i = H - H_4$ over path $\mathcal{C}_i$, which in our case can be eithe
 the bottom half of the separatrix or the entire separatrix (in which case
 $\Delta K_1 = B_1 = \Delta_M, \Delta K_2 = B_1 + B_2 = \Delta_c$).
 
-\subsection{Weak Perturber Hopping Revisited}
+\subsection{Weak Perturber Hopping Revisited}\label{ss:revisited}
 
 \begin{figure}[t]
     \centering
