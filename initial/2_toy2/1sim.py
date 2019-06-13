@@ -75,6 +75,7 @@ def plot_traj(I, ret, filename):
         + 8 * np.sqrt(eta[circ_idx] * np.sin(I))
     ln2 = ax2.plot(t[circ_idx], circ_area / (4 * np.pi),
                    'b', linewidth=2, label=r'$A_{sep}$')
+    # TODO circ_area is not accurate when separatrix escape occurs
     ax2.plot(t[lib_idx], 4 * np.sqrt(eta[lib_idx] * np.sin(I)) / np.pi, 'b',
              linewidth=2)
 
@@ -87,14 +88,17 @@ def plot_traj(I, ret, filename):
     ax2.legend(lns, [l.get_label() for l in lns],
                loc='upper left', fontsize=8)
 
-    ax1.set_title(r'$\mu_0 = %.3f$' % y[2][0])
+    # label title w/ result
+    q_f, phi_f = to_ang(y[0][-1], y[1][-1], y[2][-1])
+    dH_f = H(I, eta0, q_f, phi_f) - H(I, eta0, q4, 0)
+    ax1.set_title(r'$\mu_0 = %.3f$ (%s)' %
+                  (y[2][0], 'Capture' if dH_f > 0 else 'Escape'))
     fig.tight_layout()
     fig.savefig(filename, dpi=400)
     plt.close(fig)
 
 def run_single(I, eps, tf, eta0, q0, filename):
     q4 = roots(I, eta0)[3]
-    print(H(I, eta0, q0, 0) - H(I, eta0, q4, 0))
 
     y0 = [*to_cart(q0, 0.2), eta0]
     ret = solve_ic(I, eps, y0, tf)
@@ -103,9 +107,9 @@ def run_single(I, eps, tf, eta0, q0, filename):
 
 if __name__ == '__main__':
     I = np.radians(20)
-    eps = 1e-4
     tf = 10000
 
     eta0 = 0.01
 
-    run_single(I, eps, tf, eta0, np.pi / 2 - 0.14, '1testo1.png')
+    run_single(I, 1e-3, tf, eta0, np.pi / 2 - 0.14, '1testo1.png')
+    run_single(I, 1.2e-3, tf, eta0, np.pi / 2 - 0.14, '1testo2.png')

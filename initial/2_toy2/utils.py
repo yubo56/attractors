@@ -116,7 +116,6 @@ def get_areas(ret):
 
         areas.append(area)
 
-    print(len(t_0), len(t_pi))
     _lib_ts = t_pi[np.where(t_pi > t_0[-1])[0]]
     if len(_lib_ts) > 1:
         t_cross = t_0[-1]
@@ -155,7 +154,7 @@ def solve_ic(I, eps, y0, tf, rtol=1e-6, **kwargs):
             y * z - eta * y * np.cos(I),
             -x * z + eta * (x * np.cos(I) - z * np.sin(I)),
             eta * y * np.sin(I),
-            eps * eta,
+            eps * eta * z,
         ]
     event = lambda t, y: y[1]
     ret = solve_ivp(dydt, [0, tf], y0,
