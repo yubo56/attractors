@@ -34,8 +34,8 @@ def plot_traj(I, ret, filename):
     # plot separatrix @ end
     t_areas, areas, t_cross = get_areas(ret)
     crossed_idxs = np.where(t > t_cross)[0]
-    eta = y[3, -1]
-    cs_qs = roots(I, eta)
+    eta_f = y[3, -1]
+    cs_qs = roots(I, eta_f)
     q4 = cs_qs[-1]
     # convention: -np.pi / 2 < q4 < 0
 
@@ -43,7 +43,7 @@ def plot_traj(I, ret, filename):
     q_sep_top, q_sep_bot = np.zeros_like(phi_sep), np.zeros_like(phi_sep)
     for idx, phi in enumerate(phi_sep):
         def dH(q):
-            return H(I, eta, q, phi) - H(I, eta, q4, 0)
+            return H(I, eta_f, q, phi) - H(I, eta_f, q4, 0)
         q_sep_bot[idx] = opt.brentq(dH, -np.pi, q4)
         q_sep_top[idx] = opt.brentq(dH, q4, 0)
 
@@ -90,7 +90,7 @@ def plot_traj(I, ret, filename):
 
     # label title w/ result
     q_f, phi_f = to_ang(y[0][-1], y[1][-1], y[2][-1])
-    dH_f = H(I, eta0, q_f, phi_f) - H(I, eta0, q4, 0)
+    dH_f = H(I, eta_f, q_f, phi_f) - H(I, eta_f, q4, 0)
     ax1.set_title(r'$\mu_0 = %.3f$ (%s)' %
                   (y[2][0], 'Capture' if dH_f > 0 else 'Escape'))
     fig.tight_layout()
