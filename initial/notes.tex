@@ -484,7 +484,28 @@ sign unless $\dot{\alpha}$ has different signs over the two trajectories!
 
 Thus, in our toy model, we \emph{cannot} choose a simple form e.g.\
 $\rd{\alpha}{t} = -\epsilon\alpha$, it must have differing signs over
-$\mathcal{C}_i$.
+$\mathcal{C}_i$. Let's consider a model where $\dot{\eta} = +\epsilon \eta \mu$.
+It should be noted that, upon careful calculation, $\dot{\eta} = -\epsilon \eta
+\mu$ will \emph{not} result in any captures! We will see this below.
+
+Our expression then becomes (using our usual decomposition $\mu = \bar{\mu} +
+\mu'$ where $\bar{\mu} = \mu_4 \approx \cos I/\alpha$)
+\begin{align*}
+    B_i &= \int -\frac{\epsilon \mu}{\alpha}\frac{\mu^2}{2}\;\mathrm{d}t,\\
+        &\approx \int \frac{\epsilon \mu^3}{2\alpha \mu'}.
+\end{align*}
+It may be tempting now to predict $B_{top} = -\frac{2\pi \epsilon 4\sin
+I/\alpha}{2\alpha^2}$, by directly substituting $\mu \approx \mu'$, and use the
+same $\mu^3 = \mu'\p*{2\bar{\mu}\mu'}$ trick as in toy problem 1 to get an
+antisymmetric term and obtain
+\begin{equation}
+    B_{tot} = -\frac{4\pi \epsilon 2\sqrt{\frac{\sin I}{\alpha}}\frac{\cos
+        I}{\alpha}}{2\alpha^2}.
+\end{equation}
+This predicts a capture probability $P_c = \frac{\cos I}{\sqrt{\sin
+I}}\sqrt{\eta}$ where again $\eta\alpha = 1$. We note that this is \emph{not} in
+accordance with our calculations, which predict $P_{c} \propto \eta^0$! Further
+investigation necessary.
 
 \section{Weak Tidal Friction, changing $\eta$ and $\theta$}
 
