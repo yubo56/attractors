@@ -93,12 +93,20 @@ def get_areas(ret):
     [t_events] = ret.t_events
     x_events, _, z_events, eta_events = ret.sol(t_events)
     # phi = 0 means x < 0
-    t_0 = t_events[np.where(x_events < 0)[0]]
-    t_pi = t_events[np.where(x_events > 0)[0]]
+    idx_0 = np.where(x_events < 0)[0]
+    idx_pi = np.where(x_events > 0)[0]
+    t_0 = t_events[idx_0]
+    t_pi = t_events[idx_pi]
+
+    t_cross = np.inf
+    ends_circ = False
 
     t_areas = []
     areas = []
-    for t_0_i, t_0_f in zip(t_0[ :-1], t_0[1: ]):
+
+    # NB: t_pi is always longer than t_0
+    for t_0_i, t_0_f, t_pi_i, t_pi_f in zip(t_0[ :-1], t_0[1: ],
+                                            t_pi, t_pi[1: ]):
         # all t_0 points correspond to circulation
         t_vals = np.linspace(t_0_i, t_0_f, num_pts)
         sol_vals = np.array(ret.sol(t_vals)[ : 3]).T # index by time then var
@@ -115,6 +123,13 @@ def get_areas(ret):
             area += -(np.cos(q1) + np.cos(q0)) / 2 * dphi
 
         areas.append(area)
+
+        # detect escape
+        mu_0_i, mu_0_f, mu_pi_i, mu_pi_f =\
+            ret.sol(np.array([t_0_i, t_0_f, t_pi_i, t_pi_f]))[2]
+        if np.sign(mu_pi_f - mu_0_f) != np.sign(mu_pi_i - mu_0_i):
+            ends_circ = True
+            t_cross = (t_pi_f + t_pi_i) / 2
 
     _lib_ts = t_pi[np.where(t_pi > t_0[-1])[0]]
     if len(_lib_ts) > 1:
@@ -137,10 +152,8 @@ def get_areas(ret):
                 area += -(np.cos(q1) + np.cos(q0)) / 2 * dphi
 
             areas.append(area)
-    else:
-        t_cross = np.inf # WRT area calculations, this is fine
 
-    return t_areas, np.array(areas), t_cross
+    return t_areas, np.array(areas), t_cross, ends_circ
 
 def solve_ic(I, eps, y0, tf, rtol=1e-6, **kwargs):
     '''
