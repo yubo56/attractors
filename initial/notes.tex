@@ -192,7 +192,7 @@ and two solutions near $\mu = 0$:
 For $\eta \gg 1$, the solutions obviously just come from $\cos I \pm \sin I \cot
 \theta = 0$, which are just $\sin (I \pm \theta) = 0$
 
-\subsection{Separatrix Area}
+\subsection{Separatrix Area}\label{ss:sep_area}
 
 We can estimate the area enclosed by the separatrix, as shown in
 \autoref{fig:1contours}. Note that the separatrix joins Cassini State 4 to its
@@ -209,12 +209,12 @@ value at CS4 gives
 \begin{align*}
     H_4 &\equiv H\p*{\mu_4, \phi_4}
         \approx -\frac{\mu_4^2}{2} + \eta \mu_4 \cos I - \eta \sin I,\\
-        &= +\eta^2\cos^2 I - \eta \sin I,\\
+        &= +\frac{\eta^2\cos^2 I}{2} - \eta \sin I,\\
     H(\mu_{sep}, \phi_{sep})
         &= H_4 = -\eta \sin I \cos \phi_{sep} - \frac{\mu_{sep}^2}{2} + \eta
             \mu_{sep} \cos I + \mathcal{O}(\eta^3),\\
     0 &\approx \frac{\mu_{sep}^2}{2} - \eta \mu_{sep} \cos I
-        - \eta \sin I\p*{1 - \cos \phi_{sep}} + \eta^2\cos^2I,\\
+        - \eta \sin I\p*{1 - \cos \phi_{sep}} + \frac{\eta^2\cos^2I}{2},\\
     \mu_{sep}\p*{\phi} &\approx \sqrt{2\eta \sin I\p*{1 - \cos \phi}}
         + \mathcal{O}(\eta).
 \end{align*}
@@ -443,7 +443,7 @@ hopping probability
 \end{equation}
 This agrees perfectly with the cases we've run.
 
-\section{Parametric Separatrix Hopping: Only changing $\eta$}
+\section{Parametric Separatrix Hopping: Only changing $\eta$}\label{s:p2}
 
 Though this section is located before the weak tidal friction section, we
 actually return to this second toy problem to get some practice on the Henrard
@@ -468,7 +468,7 @@ down to the Melnikov-like formula
 \end{equation}
 $B_i$ is the change in $\Delta H = H_4 - H$ over contour $\mathcal{C}_i$.
 
-In order to probe the relevant physics here, we firsst cite without proof (refer
+In order to probe the relevant physics here, we first cite without proof (refer
 to \autoref{ss:revisited} for this) that $\pd{\Delta H}{\alpha} =
 \frac{\mu^2}{2} - \frac{1}{2\alpha^2}\cos^2 I$. This implies that
 \begin{equation}
@@ -1016,9 +1016,42 @@ observe that there is a roughly linear slope $\rd{t_{\star}}{(\Delta H)} \sim
 domain and so is the maximum value for $\Delta H = H_4 - H_0$. Note that
 \begin{align*}
     H(\mu, \phi; s) &= -\frac{s}{s_c}\frac{\mu^2}{2}
-        + \mu \cos I - \sin I \sqrt{1 - \mu^2}\cos \phi, &
+        + \mu \cos I - \sin I \sqrt{1 - \mu^2}\cos \phi,&
     H_4(s) &= -\sin I + \frac{s_c}{2s}\cos^2 I.
 \end{align*}
+
+I accidentally did some extra algebra and computed to one extra order in
+$\frac{s_c}{s}$, so I might as well leave it in. We will compute carefully,
+noting that $\mu_4 = \frac{\cos I}{\alpha - \sin I}, \phi_4 = 0$ is exact (where
+$\alpha = s/s_c$ for brevity and compatibility with \autoref{s:p2}).
+\begin{align*}
+    H_4 &= -\alpha \frac{\mu_4^2}{2} + \mu_4 \cos I - \sin I \sqrt{1 - \mu_4^2}
+            \cos \phi_4,\\
+        &= -\frac{\alpha \cos^2 I}{2(\alpha - \sin I)^2}
+            + \frac{\cos^2 I}{\alpha - \sin I}
+            - \sin I \frac{\sqrt{(\alpha - \sin I)^2 - \cos^2 I}}{
+                \alpha - \sin I},\\
+        &= \frac{1}{\p*{\alpha - \sin I}^2}
+            \s*{-\alpha \cos^2 I + \p*{\alpha - \sin I}
+                \p*{\cos^2 I - \sin I \sqrt{
+                    (\alpha - \sin I)^2 - \cos^2 I}}},\\
+        &\approx \frac{1}{\p*{\alpha - \sin I}^2}
+            \s*{\frac{\alpha \cos^2 I}{2} -\sin I \cos^2 I - \alpha^2 \sin I
+                \p*{1 - \frac{2\alpha \sin I + \cos^2 I - \sin^2 I}{2\alpha^2}}
+                + \sin^2 I\alpha\p*{1 - \frac{2\alpha \sin I}{2\alpha^2}}},\\
+        &\approx \frac{1}{\alpha^2}\p*{1 + \frac{2\sin I}{\alpha}
+            + \frac{3\sin^2 I}{\alpha^2}}\p*{
+                -\alpha^2 \sin I + 2\sin^2 I\alpha
+                    + \frac{\alpha \cos^2 I}{2}
+                    - \frac{(\cos^2 I + 3\sin^2 I)\sin I}{2}},\\
+        &\approx -\sin I + \frac{\cos^2 I}{2\alpha}
+            + \frac{1}{\alpha^2}\s*{
+                -3\sin^3 I - \frac{\p*{\cos^2 I + 3\sin^2 I}\sin I}{2}
+                    + 4\sin^3 I + \sin I \cos^2 I},\\
+        &= -\sin I + \frac{\cos^2 I}{2\alpha}
+            + \frac{\p*{\cos^2 I - \sin^2 I}\sin I}{2\alpha^2}.
+\end{align*}
+
 While $s$ is actually a dynamical variable, it is a parameter to the 1D
 Hamiltonian. Plugging these expressions into our above expression for $\rd{K}{t}
 = -\rd{(\Delta H)}{t}$, we obtain
