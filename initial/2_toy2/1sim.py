@@ -111,5 +111,5 @@ if __name__ == '__main__':
 
     eta0 = 0.01
 
-    run_single(I, 1e-3, tf, eta0, np.pi / 2 - 0.14, '1testo1.png')
-    run_single(I, 1.2e-3, tf, eta0, np.pi / 2 - 0.14, '1testo2.png')
+    run_single(I, 1e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo1.png')
+    run_single(I, 1.2e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo2.png')
