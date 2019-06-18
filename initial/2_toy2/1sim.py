@@ -200,7 +200,7 @@ def run_stats(I_deg):
                   % (I_deg, mean_p))
     ax1.set_ylabel('Capture Probability')
     ax1.legend()
-    plt.savefig('1hist%d.png' % I_deg)
+    plt.savefig('1hist%d.png' % I_deg, dpi=400)
     plt.close(fig)
 
 if __name__ == '__main__':
@@ -212,6 +212,6 @@ if __name__ == '__main__':
     # plot_single(I, 1.2e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo2.png')
     # plot_single(I, 1e-4, 10 * tf, eta0, -np.pi / 2 + 0.14, '1testo3.png')
 
-    # run_stats(20)
-    # run_stats(10)
-    # run_stats(25)
+    run_stats(20)
+    run_stats(10)
+    run_stats(25)
