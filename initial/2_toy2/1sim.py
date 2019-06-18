@@ -204,13 +204,14 @@ def run_stats(I_deg):
     plt.close(fig)
 
 if __name__ == '__main__':
-    # I = np.radians(20)
-    # tf = 10000
-    # eta0 = 0.01
+    I = np.radians(20)
+    tf = 10000
+    eta0 = 0.01
     # capture/escape cases respectively
     # plot_single(I, 1e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo1.png')
     # plot_single(I, 1.2e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo2.png')
+    # plot_single(I, 1e-4, 10 * tf, eta0, -np.pi / 2 + 0.14, '1testo3.png')
 
-    run_stats(20)
-    run_stats(10)
-    run_stats(25)
+    # run_stats(20)
+    # run_stats(10)
+    # run_stats(25)
