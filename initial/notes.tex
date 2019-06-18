@@ -486,26 +486,43 @@ Thus, in our toy model, we \emph{cannot} choose a simple form e.g.\
 $\rd{\alpha}{t} = -\epsilon\alpha$, it must have differing signs over
 $\mathcal{C}_i$. Let's consider a model where $\dot{\eta} = +\epsilon \eta \mu$.
 It should be noted that, upon careful calculation, $\dot{\eta} = -\epsilon \eta
-\mu$ will \emph{not} result in any captures! We will see this below.
+\mu$ will \emph{not} result in any captures! Our choice only permits captures
+\emph{from top down}. We will see this below.
 
-Our expression then becomes (using our usual decomposition $\mu = \bar{\mu} +
-\mu'$ where $\bar{\mu} = \mu_4 \approx \cos I/\alpha$)
+Our expression then becomes:
 \begin{align*}
-    B_i &= \int -\frac{\epsilon \mu}{\alpha}\frac{\mu^2}{2}\;\mathrm{d}t,\\
-        &\approx \int \frac{\epsilon \mu^3}{2\alpha \mu'}.
+    B_i &= \int -\frac{\epsilon \mu}{2\alpha^2}\s*{
+        \alpha^2 \mu^2 - \cos^2 I}\;\mathrm{d}t,\\
+        &\approx -\frac{\epsilon}{2\alpha^2} \int
+            \mu \frac{\alpha^2 \mu^2 - \cos^2 I}{
+                -\alpha \mu + \cos I}\;\mathrm{d}\phi,\\
+        &\approx +\frac{\epsilon}{2\alpha^2}\int
+            \mu\p*{\alpha \mu + \cos I}\;\mathrm{d}\phi.
 \end{align*}
-It may be tempting now to predict $B_{top} = -\frac{2\pi \epsilon 4\sin
-I/\alpha}{2\alpha^2}$, by directly substituting $\mu \approx \mu'$, and use the
-same $\mu^3 = \mu'\p*{2\bar{\mu}\mu'}$ trick as in toy problem 1 to get an
-antisymmetric term and obtain
-\begin{equation}
-    B_{tot} = -\frac{4\pi \epsilon 2\sqrt{\frac{\sin I}{\alpha}}\frac{\cos
-        I}{\alpha}}{2\alpha^2}.
-\end{equation}
-This predicts a capture probability $P_c = \frac{\cos I}{\sqrt{\sin
-I}}\sqrt{\eta}$ where again $\eta\alpha = 1$. We note that this is \emph{not} in
-accordance with our calculations, which predict $P_{c} \propto \eta^0$! Further
-investigation necessary.
+Now, we can evaluate our two integrals. The first integral is just over the top
+leg, which is roughly
+\begin{align*}
+    \frac{B_{top}(2\alpha^2)}{\epsilon} &\approx
+            \int\limits_{2\pi}^{0}\alpha \mu^2\;\mathrm{d}\phi,\\
+        &\approx -2\pi \alpha \eta \sin I.
+\end{align*}
+The second integral around the full curve has two antisymmetric components, and
+so (borrowing the old $\mu = \bar{\mu} + \mu'$ notation, where $\bar{\mu} =
+\mu_4$ and $\mu'$ is antisymmetric over the two legs)
+\begin{align*}
+    \frac{B_{tot}(2\alpha^2)}{\epsilon} &\approx
+        2\int\limits_{2\pi}^0 \alpha \bar{\mu}\mu'
+            + \mu'\cos I\;\mathrm{d}\phi,\\
+        &= -2\cos I A_{sep},\\
+        &= -32\sqrt{\eta \sin I}\cos I.
+\end{align*}
+This predicts capture probability $P_c = \frac{16\cos I}{\pi \sqrt{\sin
+I}}\sqrt{\eta}$. This doesn't seem to agree with our numerical integrations,
+which suggest $P_c \propto \eta^1 I^0$, no dependence on $I$! There's a bit of
+interpretation still, but that is WIP\@.
+
+We can repeat this calculation using $\eta$ instead of $\alpha$ if desired, but
+it doesn't give us any qualitatively different result.
 
 \section{Weak Tidal Friction, changing $\eta$ and $\theta$}
 
