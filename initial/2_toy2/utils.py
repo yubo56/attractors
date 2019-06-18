@@ -125,11 +125,13 @@ def get_areas(ret):
         areas.append(area)
 
         # detect escape
-        mu_0_i, mu_0_f, mu_pi_i, mu_pi_f =\
-            ret.sol(np.array([t_0_i, t_0_f, t_pi_i, t_pi_f]))[2]
+        sol_at_i_f = ret.sol(np.array([t_0_i, t_0_f, t_pi_i, t_pi_f]))
+        mu_0_i, mu_0_f, mu_pi_i, mu_pi_f = sol_at_i_f[2]
         if np.sign(mu_pi_f - mu_0_f) != np.sign(mu_pi_i - mu_0_i):
             ends_circ = True
             t_cross = (t_pi_f + t_pi_i) / 2
+            # debug how much adiabaticity is violated during crossing
+            # print('Etas during escape', sol_at_i_f[3])
 
     _lib_ts = t_pi[np.where(t_pi > t_0[-1])[0]]
     if len(_lib_ts) > 1:

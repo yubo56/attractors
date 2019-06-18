@@ -4,6 +4,7 @@ import numpy as np
 from multiprocessing import Pool
 
 import matplotlib
+import pickle
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
@@ -18,6 +19,7 @@ def plot_traj(I, ret, filename):
     n_pts = 100 # number of points used to draw equator
     t = ret.t
     y = ret.y
+    lw = 1
 
     fig, (ax1, ax2) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]})
 
@@ -35,6 +37,7 @@ def plot_traj(I, ret, filename):
 
     # plot separatrix @ end
     t_areas, areas, t_cross, ends_circ = get_areas(ret)
+    # print('Initial area', areas[0])
     eta_f = y[3, -1]
     cs_qs = roots(I, eta_f)
     q4 = cs_qs[-1]
@@ -63,7 +66,7 @@ def plot_traj(I, ret, filename):
     # plot sep area + eta
     eta = y[3]
     ln1 = ax2.plot(t_areas, areas / (4 * np.pi), 'ro',
-                   markersize=4, label=r'$A_{traj}$')
+                   markersize=1, label=r'$A_{traj}$')
     ax2.set_ylabel(r'$A_{enc} / 4\pi$')
 
     circ_idx = np.where(t <= t_cross)[0]
@@ -74,20 +77,20 @@ def plot_traj(I, ret, filename):
     circ_area = np.sign(y[2][0] - mu4) * 2 * np.pi * mu4\
         + 8 * np.sqrt(eta[circ_idx] * np.sin(I))
     ln2 = ax2.plot(t[circ_idx], circ_area / (4 * np.pi),
-                   'b', linewidth=2, label=r'$A_{sep}$')
+                   'b', linewidth=lw, label=r'$A_{sep}$')
     # account for post_idx depending on ends_circ (whether ends circulating)
     if ends_circ:
         mu4_post = get_mu4(I, eta[post_idx])
         circ_area_post = np.sign(y[2][-1] - mu4_post) * 2 * np.pi * mu4_post\
             + 8 * np.sqrt(eta[post_idx] * np.sin(I))
         ax2.plot(t[post_idx], circ_area_post / (4 * np.pi),
-                 'b', linewidth=2)
+                 'b', linewidth=lw)
     else:
         ax2.plot(t[post_idx], 4 * np.sqrt(eta[post_idx] * np.sin(I)) / np.pi,
-                 'b', linewidth=2)
+                 'b', linewidth=lw)
 
     ax3 = ax2.twinx()
-    ln3 = ax3.plot(t, eta, 'g:', linewidth=2, label=r'$\eta$')
+    ln3 = ax3.plot(t, eta, 'g:', linewidth=lw, label=r'$\eta$')
     ax3.set_xlabel(r'$t$')
     ax3.set_ylabel(r'$\eta$')
 
@@ -114,9 +117,7 @@ def plot_single(I, eps, tf, eta0, q0, filename):
     ret = run_single(I, eps, tf, eta0, q0)
     plot_traj(I, ret, filename)
 
-def run_stats(q0):
-    I = np.radians(20)
-
+def stats_runner(I, q0):
     tf = 10000
     def result_single(eps, tf, eta0):
         ret = run_single(I, eps, tf, eta0, q0)
@@ -133,31 +134,40 @@ def run_stats(q0):
         return dH_f > 0, ret.y[3, crossed_idxs[0]]
 
     counts = 0
-    n_eta = 13
-    n_eps = 11
+    n_eta = 50
+    n_eps = 30
     res = []
-    for eta0 in np.linspace(0.01, 0.016, n_eta):
+    for eta0 in np.linspace(0.01, 0.02, n_eta):
         for eps in np.linspace(1e-3, 2e-3, n_eps):
             capture, eta_f = result_single(eps, tf, eta0)
+            print('\t', q0, 'Finished', eta0, eps, capture, eta_f)
             res.append((eta_f, capture))
             if capture:
                 counts += 1
     return res
 
-if __name__ == '__main__':
-    # I = np.radians(20)
-    # tf = 10000
-    # eta0 = 0.01
-    # plot_single(I, 1e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo1.png')
-    # plot_single(I, 1.2e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo2.png')
+def run_stats(I_deg):
+    I = np.radians(I_deg)
 
-    p = Pool(4)
-    res_arr = p.map(run_stats, [
-        -np.pi / 2 + 0.11,
-        -np.pi / 2 + 0.12,
-        -np.pi / 2 + 0.13,
-        -np.pi / 2 + 0.14,
-    ])
+    PKL_FN = '1dat%d.pkl' % I_deg
+    if not os.path.exists(PKL_FN):
+        p = Pool(4)
+        res_arr = p.starmap(stats_runner, [
+            (I, -np.pi / 2 + 0.11),
+            (I, -np.pi / 2 + 0.115),
+            (I, -np.pi / 2 + 0.12),
+            (I, -np.pi / 2 + 0.125),
+            (I, -np.pi / 2 + 0.13),
+            (I, -np.pi / 2 + 0.135),
+            (I, -np.pi / 2 + 0.14),
+            (I, -np.pi / 2 + 0.145),
+        ])
+        with open(PKL_FN, 'wb') as f:
+            pickle.dump(res_arr, f)
+    else:
+        with open(PKL_FN, 'rb') as f:
+            res_arr = pickle.load(f)
+
     captures, escapes = [], []
     for res in res_arr:
         for etaf, capture in res:
@@ -169,14 +179,34 @@ if __name__ == '__main__':
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
     fig.subplots_adjust(hspace=0)
     n, bins, _ = ax2.hist([captures, escapes],
-                           bins=15,
+                           bins=40,
                            label=['Capture', 'Escape'],
                            stacked= True)
     ax2.set_xlabel(r'$\eta_\star$')
     ax2.legend()
 
     x_vals = (bins[ :-1] + bins[1: ]) / 2
-    ax1.plot(x_vals, n[0] / n[1])
+    # ax1.plot(x_vals, n[0] / n[1])
+    ax1.errorbar(x_vals, n[0] / n[1], yerr = np.sqrt(n[0]) / n[1],
+                 fmt='o', label='Data')
+    mean_p = np.mean(n[0] / n[1])
+    ax1.axhline(mean_p, c='r', label='Mean')
+    ax1.plot(x_vals, 22.25 * x_vals, 'g:', linewidth=2,
+             label='Not-Fit')
+    ax1.set_title(r'$I = %d^\circ, \langle \eta_\star \rangle = %.3f$'
+                  % (I_deg, mean_p))
     ax1.set_ylabel('Capture Probability')
-    plt.savefig('1hist.png')
+    ax1.legend()
+    plt.savefig('1hist%d.png' % I_deg)
     plt.close(fig)
+
+if __name__ == '__main__':
+    # I = np.radians(20)
+    # tf = 10000
+    # eta0 = 0.01
+    # capture/escape cases respectively
+    # plot_single(I, 1e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo1.png')
+    # plot_single(I, 1.2e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo2.png')
+
+    run_stats(20)
+    run_stats(10)
