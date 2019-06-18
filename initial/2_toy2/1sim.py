@@ -190,7 +190,7 @@ def run_stats(I_deg):
     ax1.errorbar(eta_vals, n[0] / n[1], yerr = np.sqrt(n[0]) / n[1],
                  fmt='o', label='Data')
     mean_p = np.mean(n[0] / n[1])
-    ax1.axhline(mean_p, c='r', label='Mean')
+    # ax1.axhline(mean_p, c='r', label='Mean')
     fit = lambda eta: 48 * np.cos(I) * np.sqrt(eta * np.sin(I)) / (
         4 * np.pi * np.sin(I)
             + 24 * np.cos(I) * np.sqrt(eta * np.sin(I))
