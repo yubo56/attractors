@@ -453,7 +453,7 @@ dissipation-free Cassini state system with a small but constant $\pd{\eta}{t} =
 \epsilon$. For clarity, the Hamiltonian is
 \begin{equation}
     H = -\alpha\frac{\mu^2}{2} +
-        \mu \cos I - \sin I \sqrt{1 - \mu^2} \theta \cos \phi.
+        \mu \cos I - \sin I \sqrt{1 - \mu^2} \cos \phi.
 \end{equation}
 This proves to be the algebraically easiest formulation, instead of using
 $\eta$.
@@ -533,6 +533,74 @@ prefactor that the $\sqrt{\eta}$ term is competitive with the $\eta^0$ term in
 the denominator; my earlier work showed $P_c = \frac{8\cos
 I\sqrt{\eta}}{\pi \sqrt{\sin I}}$. The last term in the denominator is
 negligible though, as one might expect.
+
+\subsection{Retry without changing Hamiltonian}
+
+Of course, it should be noted that modifying the Hamiltonian by dividing through
+by $\eta$ and defining $\alpha = 1/\eta$ actually changes the dynamics; we can
+see this since $\pd{(H/\eta)}{t}\dot{\eta} \neq
+\pd{H}{t}\frac{\dot{\eta}}{\eta}$. Since my simulated system actually uses the
+same Hamiltonian as toy problem 1, we should probably update the above algebra
+to use the correct term. Note that the correction should be small, of order
+$\frac{H/\eta^2}{\pd{H}{\eta}/\eta}$.
+
+For clarity, $H$ and $H_4$ are now
+\begin{align*}
+    H &= -\frac{\mu^2}{2}
+            + \eta\p*{\mu \cos I - \sin I \sqrt{1 - \mu^2}\cos \phi}, &
+    H_4 &= -\eta \sin I + \frac{\eta^2 \cos^2 I}{2}.
+\end{align*}
+Thus, our $B_i$ are
+\begin{align*}
+    B_i &= \int_{\mathcal{C}_i} \epsilon \mu \eta
+            \s*{-\sin I + \eta \cos^2 I -
+                \p*{\mu \cos I - \sin I \sqrt{1 - \mu^2}\cos \phi}}
+            \;\mathrm{d}t,\\
+        &\approx \int_{\mathcal{C}_i} \epsilon \mu \eta
+            \frac{\eta \cos^2 I - \mu \cos I
+                + \sin I\p*{\cos \phi \sqrt{1 - \mu^2} - 1}}{-\mu + \eta \cos I}
+            \;\mathrm{d}\phi,\\
+        &= \int_{\mathcal{C}_i} \epsilon \mu \eta
+            \p*{-\cos I + \sin I \frac{\cos \phi \sqrt{1 - \mu^2} - 1}{-\mu +
+            \eta \cos I}} \;\mathrm{d}\phi.
+\end{align*}
+That the second term does not diverge requires some careful work:
+\begin{align*}
+    \frac{\cos \phi\sqrt{1 - \mu^2} - 1}{\mu - \eta \cos I}
+        &\approx \frac{\sqrt{1 - 2\eta \sin I\p*{1 - \cos \phi}}\cos \phi
+            - 1}{\mu - \eta \cos I},\\
+        &\approx \frac{(1 - \eta \sin I(1 - \cos \phi))\cos \phi - 1}{
+            \mu - \eta \cos I},\\
+        &\approx \pm\frac{(1 + \eta \sin I)(\cos \phi - 1)}{\sqrt{2\eta \sin I
+            (1 - \cos \phi)}},\\
+        &\approx \mp\sqrt{\frac{1 - \cos \phi}{2\eta \sin I}},\\
+    B_i &= \int_{\mathcal{C}_i} \epsilon \mu \eta
+            \p*{-\cos I \pm \sin I
+                \sqrt{\frac{1 - \cos \phi}{2\eta \sin I}}} \;\mathrm{d}\phi.
+\end{align*}
+Note that the plus sign corresponds to the top integral, where $\mu - \eta \cos
+I > 0$. The top integral evaluates easily
+\begin{align*}
+    B_{top} &= \int\limits_{2\pi}^0 -\epsilon \mu \eta \cos I\;\mathrm{d}\phi
+            + \frac{\epsilon}{2}\int\limits_{2\pi}^0
+                \mu\sqrt{2\eta \sin I\p*{1 - \cos \phi}}\;\mathrm{d}\phi,\\
+        &= \epsilon \eta \cos I\p*{2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
+            + \frac{\epsilon}{2}\p*{\eta \cos I (8\sqrt{\eta \sin I})
+            + 4\pi \eta \sin I},\\
+        &= \epsilon \eta \s*{
+            2\pi \sin I + 12\sqrt{\eta \sin I}\cos I + 2\pi \eta \cos^2 I}.
+\end{align*}
+The bottom integral just flips the signs of the cross terms (the $\sqrt{\eta}$
+terms), since the integration path changes, which changes the sign inside the
+$B_i$ expression and $\mu$. The total integral is the difference between the top
+and bottom integrals, which is just twice the sign-changed terms, and so we
+obtain
+\begin{equation}
+    P_c = \frac{24\cos I \sqrt{\eta \sin I}}{
+            2\pi \sin I + 12\sqrt{\eta \sin I}\cos I + 2\pi \eta \cos^2 I}.
+\end{equation}
+Indeed we get the same expression; this is probably since the approximations we
+made in writing down $B_i$ washed out the extra $\eta$ dependence.
 
 \section{Weak Tidal Friction, changing $\eta$ and $\theta$}
 
