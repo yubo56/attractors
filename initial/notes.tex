@@ -499,30 +499,40 @@ Our expression then becomes:
         &\approx +\frac{\epsilon}{2\alpha^2}\int
             \mu\p*{\alpha \mu + \cos I}\;\mathrm{d}\phi.
 \end{align*}
-Now, we can evaluate our two integrals. The first integral is just over the top
-leg, which is roughly
-\begin{align*}
-    \frac{B_{top}(2\alpha^2)}{\epsilon} &\approx
-            \int\limits_{2\pi}^{0}\alpha \mu^2\;\mathrm{d}\phi,\\
-        &\approx -2\pi \alpha \eta \sin I.
-\end{align*}
-The second integral around the full curve has two antisymmetric components, and
-so (borrowing the old $\mu = \bar{\mu} + \mu'$ notation, where $\bar{\mu} =
-\mu_4$ and $\mu'$ is antisymmetric over the two legs)
-\begin{align*}
-    \frac{B_{tot}(2\alpha^2)}{\epsilon} &\approx
-        2\int\limits_{2\pi}^0 \alpha \bar{\mu}\mu'
-            + \mu'\cos I\;\mathrm{d}\phi,\\
-        &= -2\cos I A_{sep},\\
-        &= -32\sqrt{\eta \sin I}\cos I.
-\end{align*}
-This predicts capture probability $P_c = \frac{16\cos I}{\pi \sqrt{\sin
-I}}\sqrt{\eta}$. This doesn't seem to agree with our numerical integrations,
-which suggest $P_c \propto \eta^1 I^0$, no dependence on $I$! There's a bit of
-interpretation still, but that is WIP\@.
+Now, we can evaluate our two integrals. For some reason my usual arguments
+(taking symmetric/antisymmetric part etc.) don't seem to do too well here, there
+are too many terms, so we will keep as many terms as possible.
 
-We can repeat this calculation using $\eta$ instead of $\alpha$ if desired, but
-it doesn't give us any qualitatively different result.
+First, we tackle the top integral. Here, the integrand is evaluated at
+$\mu_+(\phi) = \eta \cos I + \sqrt{2\eta \sin I\p*{1 - \cos \phi}}$, so we can
+plug this in and compute
+\begin{align*}
+    B_{top}\frac{2\alpha^2}{\epsilon} &= \int\limits_{2\pi}^{0}
+            \mu(\alpha \mu + \cos I)\;\mathrm{d}\phi,\\
+        &= -\int\limits_0^{2\pi}
+            \p*{\eta \cos I + \sqrt{2\eta \sin I\p*{1 - \cos \phi}}}
+                \p*{2\cos I + \sqrt{2\sin I\p*{1 - \cos \phi}/\eta}}
+                \;\mathrm{d}\phi.
+\end{align*}
+Let's track the four terms in FOIL (first, outer, inner, last) order. (F)
+evaluates to just $4\pi \eta \cos^2 I$. (O) evaluates to $\frac{\cos
+I}{2}A_{sep} = 8\cos I\sqrt{\eta \sin I}$, and (I) twice that. Lastly, (L)
+evaluates to $4\pi \sin I$. This agrees with our numerical check.
+
+We now track the bottom integral. Here, the integrand is instead evaluated at
+$\mu_-(\phi) = \eta \cos I - \sqrt{2\eta \sin I\p*{1 - \cos \phi}}$. This flips
+the signs of the (O) and (I) terms above. Furthermore, the $\mathrm{d}\phi$
+direction changes, and so we arrive at capture probability
+\begin{equation}
+    P_{c} = \frac{48\cos I \sqrt{\eta \sin I}}{
+        4\pi \sin I + 24\cos I \sqrt{\eta \sin I} + 4\pi \eta \cos^2 I}.
+\end{equation}
+The issue compared to the analytical computation comes in because $\cos I$ gives
+an extra factor of $1.5$ to the antisymmetric term, which gives a large enough
+prefactor that the $\sqrt{\eta}$ term is competitive with the $\eta^0$ term in
+the denominator; my earlier work showed $P_c = \frac{8\cos
+I\sqrt{\eta}}{\pi \sqrt{\sin I}}$. The last term in the denominator is
+negligible though, as one might expect.
 
 \section{Weak Tidal Friction, changing $\eta$ and $\theta$}
 
