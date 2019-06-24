@@ -190,11 +190,12 @@ def run_stats(I_deg):
     ax1.errorbar(eta_vals, n[0] / n[1], yerr = np.sqrt(n[0]) / n[1],
                  fmt='o', label='Data')
     mean_p = np.mean(n[0] / n[1])
+    # ax1.axhline(mean_p, c='r', label='Mean')
     fit = lambda eta: 48 * np.cos(I) * np.sqrt(eta * np.sin(I)) / (
         4 * np.pi * np.sin(I)
             + 24 * np.cos(I) * np.sqrt(eta * np.sin(I))
             + 4 * np.pi * eta * np.cos(I)**2)
-    ax1.plot(eta_vals, fit(eta_vals), 'r', linewidth=3, label='Fit')
+    ax1.plot(eta_vals, fit(eta_vals), 'g:', linewidth=2, label='Fit')
     ax1.set_title(r'$I = %d^\circ, \langle \eta_\star \rangle = %.3f$'
                   % (I_deg, mean_p))
     ax1.set_ylabel('Capture Probability')
