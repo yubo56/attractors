@@ -1,0 +1,565 @@
+    \documentclass[
+        fleqn,
+        usenatbib,
+    ]{mnras}
+    \usepackage{
+        amsmath,
+        amssymb,
+        newtxtext,
+        newtxmath,
+        ae, aecompl,
+        graphicx,
+        booktabs,
+    }
+    \usepackage[T1]{fontenc}
+    \usepackage[
+        labelfont=bf, % caption names are labeled in bold
+        font=scriptsize % smaller font for captions
+    ]{caption}
+
+    \newcommand*{\rd}[2]{\frac{\mathrm{d}#1}{\mathrm{d}#2}}
+    \newcommand*{\pd}[2]{\frac{\partial#1}{\partial#2}}
+    \newcommand*{\md}[2]{\frac{\mathrm{D}#1}{\mathrm{D}#2}}
+    \newcommand*{\at}[1]{\left.#1\right|}
+    \newcommand*{\abs}[1]{\left|#1\right|}
+    \newcommand*{\ev}[1]{\langle#1\rangle}
+    \newcommand*{\p}[1]{\left(#1\right)}
+    \newcommand*{\s}[1]{\left[#1\right]}
+    \newcommand*{\z}[1]{\left\{#1\right\}}
+    \DeclareMathOperator*{\argmin}{argmin}
+    \DeclareMathOperator*{\argmax}{argmax}
+    \DeclareMathOperator*{\med}{med}
+
+\title[Cassini State Capture]{Cassini State Capture}
+\author[Y. Su et\ al.]{
+Yubo Su$^1$,
+Dong Lai$^1$
+\\
+$^1$ Cornell Center for Astrophysics and Planetary Science, Department of
+Astronomy, Cornell University, Ithaca, NY 14853, USA
+}
+
+\date{Accepted XXX\@. Received YYY\@; in original form ZZZ}
+
+\pubyear{2019}
+
+\begin{document}\label{firstpage}
+\pagerange{\pageref{firstpage}--\pageref{lastpage}}
+\renewcommand*{\sectionautorefname}{Section}
+\maketitle
+
+
+\begin{abstract}
+    Abstract
+\end{abstract}
+
+\begin{keywords}
+planet--star interactions % chktex 8
+\end{keywords}
+
+\section{Introduction}
+
+Introduction, test citation \citep{henrard1982}.
+
+\section{Cassini States}\label{s:cs}
+
+Denote $\hat{s}$ spin of planet, $\hat{l}$ angular momentum of planet, and
+$\hat{l}_p$ angular momentum of perturber. The Cassini state Hamiltonian in the
+frame corotating with $\hat{l}_p$ about $\hat{l}$ is:
+\begin{equation}
+    H = -\frac{\alpha}{2}\p{\hat{s} \cdot \hat{l}}^2
+        -g \p{\hat{s} \cdot \hat{l}_p}.
+\end{equation}
+$\alpha > 0, g < 0$ depend on the particular dynamics of the system. Frequently,
+parameter
+\begin{equation}
+    \eta \equiv \frac{\abs*{g}}{\alpha} \label{eq:eta}
+\end{equation}
+is defined; we refrain from doing so immediately.
+
+Choose $\hat{l} = \hat{z}$ and $\hat{l}_p = \cos I \hat{z} + \sin I \hat{x}$.
+Furthermore, choose standard convention where $\phi = 0$ corresponds to
+$\hat{l}_p, \hat{s}$ lying on \emph{opposite} sides of $\hat{l}$. This allows us
+to evaluate Hamiltonian
+\begin{equation}
+    H = -\frac{\alpha}{2}\cos^2\theta
+        + \abs{g} \p{\cos \theta \cos I - \sin I \sin \theta \cos \phi}
+        \label{eq:H}
+\end{equation}
+Here, $\mu \equiv \cos \theta, \phi$ are canonically conjugate.
+
+\subsection{Equilibria}
+
+The evolution of $\hat{s}$ in this corotating frame is governed by:
+\begin{equation}
+    \rd{\hat{s}}{t} = \alpha \p{\hat{s} \cdot \hat{l}}
+            \p{\hat{s} \times \hat{l}}
+        - \abs{g}\p{\hat{s} \times \hat{l}_p}.
+        \label{eq:dsdt_base}
+\end{equation}
+
+Spin states satisfying $\rd{\hat{s}}{t} = 0$ are referred to as \emph{Cassini
+States} (CS). When $\eta < \eta_c$, there are four CSs, and when $\eta > \eta_c$
+there are only two; $\eta_c$ is
+\begin{equation}
+    \eta_c \equiv \p{\sin^{2/3}I + \cos^{2/3}I}^{3/2}.
+\end{equation}
+Using the standard numbering given in \autoref{fig:0_1contours}, CSs 1, 2, 3 are
+stable while CS4 is unstable.
+
+\subsection{Separatrix}
+
+In the four-CS regime, one of the CSs is a saddle point, conventionally denoted
+Cassini State 4 (CS4). On the cylindrical phase space parameterized by $(\mu,
+\phi)$, all trajectories are periodic with finite period except two critical (or
+heteroclinic) trajectories. These are asymptotic in the past and future to CS4.
+Together, these two heteroclinic are referred to as the \emph{separatrix} and
+divide phase space into three zones.
+
+The area enclosed by the separatrix is known exactly in literature
+\citep{henrard1987}, but a serviceable approximation for small $\eta$ can be
+derived as follows. Call $H_4$ the value of $H$ at CS4, then the separatrix is
+defined implicitly by solutions to $H\p{\mu_{sep}(\phi), \phi} = H_4$. This may
+be evaluated and we obtain
+\begin{equation}
+    \mu_{sep}(\phi) \approx \pm \sqrt{2\eta \sin I \p{1 - \cos \phi}}
+        + \eta \cos I + \mathcal{O}\p{\eta^{3/2}}.\label{eq:mu_sep}
+\end{equation}
+The enclosed area between the two solutions can be obtained via explicit
+integration. It can be expressed as a fraction of the total phase space area:
+\begin{equation}
+    \frac{A_{sep}}{4\pi} \approx \frac{4\sqrt{\eta \sin I}}{\pi}
+        + \mathcal{O}\p{\eta^{3/2}}.\label{eq:a_sep}
+\end{equation}
+
+Contours of equal $H$, CSs and the separatrix are plotted in
+\autoref{fig:0_1contours}.
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/0_eta/1contours.png}
+    \caption{Contours of equal $H$, given by \autoref{eq:H}, at different values
+    of $\eta \equiv \frac{\abs{g}}{\alpha}$. Labeled are CS1 (red), CS2
+    (purple), CS3 (green) and CS4 (cyan). The thick black dashed line is the
+    separatrix (which disappears for $\eta > \eta_c$). Finally, the fractional
+    area enclosed by the separatrix is noted in the plot subtitles, in good
+    agreement with \autoref{eq:a_sep}.}\label{fig:0_1contours}
+\end{figure}
+
+\section{Separatrix Crossing: Theory}\label{s:sep_cross}
+
+In an exactly Hamiltonian system, $H$ is a conserved quantity and trajectories
+in phase space coincide with level curves of $H$. If a system is only slightly
+non-Hamiltonian, trajectories will generally cross level curves. Of particular
+interest is the behavior of trajectories near the separatrix (also a level
+curve), as it frequently governs the dynamics of resonance capture (CITE MMR,
+Cassini, others). The intersection of system trajectories with the separatrix is
+referred to as \emph{separatrix crossing}.
+
+In previous work by~\cite{henrard1982}, separatrix crossing was studied for systems
+that are Hamiltonian save for an adiabatically-varying parameter. In related work
+surveyed by~\cite{g_and_h}, the impact of small perturbations to the equations
+of motion of a Hamiltonian system are studied (referred to as \emph{saddle
+connection bifurcations}). However, in some astrophysical systems of interest,
+leading-order perturbations to a Hamiltonian system contribute in both of the
+above ways. Such systems resist characterization via either existing technique.
+We suggest a possible generalization unifying the above techniques. [Probably
+eventually move this paragraph to the introduction]
+
+\subsection{Derivation}\label{ss:henrard}
+
+Consider our Hamiltonian described in \autoref{eq:H} as a unperturbed
+Hamiltonian $H^{(0)}(\mu, \phi; \eta)$ where $\eta$ is to be varied
+adiabatically. As $\eta$ varies, the location of the separatrix also changes. We
+follow~\cite{henrard1982} by defining
+\begin{equation}
+    h(\mu, \phi; \eta) \equiv H^{(0)}(\mu, \phi; \eta) - H_4(\eta).
+\end{equation}
+The significance of $h$ is that it always vanishes along the separatrix. Note
+that $h$ corresponds to $K$ in~\cite{henrard1982}, though in our problem
+$H^{(0)} > H_4$ corresponds to the \emph{interior} of the separatrix. The
+evolution of $h$ over time then determines whether and when a trajectory
+experiences separatrix crossing. Denoting time derivatives with dots, we write
+\begin{align}
+    \rd{h}{t} &= \rd{H^{(0)}}{t} - \pd{H_4}{\eta}\dot{\eta},\nonumber\\
+        &= \s{\pd{H^{(0)}}{\mu}\dot{\mu}
+                + \pd{H^{(0)}}{\phi}\dot{\phi}
+                + \pd{H^{(0)}}{\eta}\dot{\eta}}
+            - \pd{H_4}{\eta}\dot{\eta},\nonumber\\
+        &= \s{\pd{H^{(0)}}{\mu}\dot{\mu}
+                + \pd{H^{(0)}}{\phi}\dot{\phi}
+                + \pd{H^{(0)}}{\eta}\dot{\eta}}
+            - \pd{H_4}{\eta}\dot{\eta},\nonumber\\
+        &= \s{\dot{\phi}^{(0)}\dot{\mu}^{(1)}
+                - \dot{\mu}^{(0)}\dot{\phi}^{(1)}
+                + \pd{H^{(0)}}{\eta}\dot{\eta}} -
+            \pd{H_4}{\eta}\dot{\eta}.\label{eq:dhdt}
+\end{align}
+We've notated $\dot{\phi}^{(0)} \equiv \pd{H^{(0)}}{\mu}$ and $\dot{\phi}^{(1)}
+= \dot{\phi} - \dot{\phi}^{(0)}$ and similarly for $\mu$. The scenario studied
+in~\cite{henrard1982} corresponds to $\dot{\mu}^{(1)} = \dot{\phi}^{(1)} = 0$
+while that in~\cite{g_and_h} sets $\dot{\eta} = 0$.
+
+In the neighborhood of $\mathcal{C}_{\pm}$, $\rd{h}{t}$ can be
+approximated by its value on $\mathcal{C}_{\pm}$. This is the \emph{guiding
+orbit} approximation; its accuracy is proven in~\cite{henrard1982} for their
+specific application, while we will take it on good faith in ours. Denote then
+\begin{equation}
+    \Delta_{\pm} \equiv \int_{\mathcal{C}_{\pm}} \rd{h}{t}\;\mathrm{d}t.
+        \label{eq:delta}
+\end{equation}
+These approximate $\Delta h$ for trajectories near $\mathcal{C}_{\pm}$ over one
+orbit. They are identical to the $B_i$ defined in~\cite{henrard1982}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/1_weaktide/3zones.png}
+    \caption{Nomenclature of the two legs of the separatrix $\mathcal{C}_{\pm}$
+    and three zones of the domain. For both $\mathcal{C}_{\pm}$, we will take
+    the positive direction to be anti-clockwise.}\label{fig:1_3zones}
+\end{figure}
+For concreteness, we consider a specific example first. We assign labels to our
+phase space as shown in \autoref{fig:1_3zones}. Consider a trajectory that
+begins in zone III, which is circulating with $\dot{\phi} > 0$ and has $h < 0$,
+and consider if $\rd{h}{t} > 0$ in all of zone III, such that the trajectory
+eventually experiences separatrix crossing at $\mathcal{C}_-$. The following
+sequence of events unfolds:
+\begin{enumerate}
+    \item[\textbf{(i)}] At the beginning ($\phi = 0$) of its separatrix-crossing
+        orbit, $h_i \equiv h(\mu, \phi = 0; \eta) \in (\Delta_-, 0)$. Note
+        that $h_i < 0$ to still be in zone III at the start of the orbit, while
+        $h_i > \Delta_-$ to be separatrix crossing during the final orbit.
+
+    \item[\textbf{(ii)}] After traversing the length of $\mathcal{C}_-$, the
+        value of $h$ is now $h_i + \Delta_- > 0$ (recall $\Delta_- > 0$), and so
+        the trajectory has entered zone II\@. Since zone II hosts only librating
+        solutions, the trajectory will then ``turn around'' and track
+        $\mathcal{C}_+$ from inside zone II\@.
+
+    \item[\textbf{(iii)}] At the end of following $\mathcal{C}_+$, $h$ now takes
+        value $h_f \equiv h_i + \Delta_- + \Delta_+$. There are now two
+        possibilities:
+
+    \item[\textbf{(iii-a)}] If $h_f > 0$, the trajectory remains inside zone II
+        accrues further multiples of $\Delta_- + \Delta_+ = h_f - h_i > 0$.
+        Thus, the trajectory must securely enter zone II\@. This outcome
+        commonly corresponds to \emph{resonance capture}, a transition into zone
+        II\@.
+
+    \item[\textbf{(iii-b)}] If $h_f < 0$, the trajectory exits zone II and
+        enters zone I\@. Since $\Delta_+ = h_f - h_i - \Delta_- < 0$ (as $h_f
+        < 0, h_i + \Delta_- > 0$), the trajectory will continue circulation in
+        zone I and accrue further multiples of $\Delta_+$, securely entering
+        zone I\@. This corresponds to a zone III-zone I transition,
+        \emph{escape}.
+\end{enumerate}
+
+Thus, the result of separatrix crossing depends on the sign of $h_i +
+\Delta_- + \Delta_+$ where $\Delta_{\pm}$ are given by \autoref{eq:delta} and
+$h_i \in [-\Delta_-, 0]$. The result of this analysis reproduces the conclusion
+of~\cite{henrard1982}:
+\begin{itemize}
+    \item If $\Delta_+ < -\Delta_-$, then $h_f < 0$ necessarily, secure escape
+        ensues.
+
+    \item If $\Delta_+ > 0$, then $h_f > 0$ necessarily, and secure capture
+        ensues.
+
+    \item If $\Delta_+ + \Delta_- \in [0, \Delta_-]$, then it is clear that the
+        sign of $h_f$ depends on the precise value of $h_i$. Generally,
+        $\Delta_-$ can be assumed to be small as perturbations are weak, and
+        so $\Delta_-$ is usually much smaller than the range of $h$ of interest.
+        Thus, $h_i$ can be treated as uniformly distributed on interval
+        $[-\Delta_-, 0]$, and a probability of resonance capture can be
+        computed:
+
+        \begin{equation}
+            P_c \equiv \frac{\Delta_+ + \Delta_-}{\Delta_-}.
+                \label{eq:p_c_gen}
+        \end{equation}
+\end{itemize}
+With the exception of \autoref{eq:dhdt}, the above outlines the argument given
+in~\cite{henrard1982}.
+
+Similar derivations can be given for trajectories originating in zone I.
+TODO say something about zone-II originating systems.
+
+\subsection{Equivalence to Stable/Unstable Manifold Splitting}\label{ss:meln}
+
+We now establish equivalence to an alternative formulation popular in dynamical
+systems that is more graphically intuitive. For simplicity, we will take
+$\dot{\eta} = 0$.
+
+If we return to the unperturbed Hamiltonian system, recall that CS4 is joined to
+itself by an infinite-period orbit. For a given saddle point, we may define the
+\emph{stable manifold} $W_s$ of a saddle point to be the set of points whose
+forward evolution converges to the saddle point. Similarly, we may define the
+\emph{unstable manifold} $W_u$ of a saddle point to be the set of points that
+originated \emph{from} the saddle point, or whose backwards evolution converges
+to the saddle point. A \emph{saddle connection} is when the unstable manifold of
+one saddle point and the unstable manifold of another saddle point are
+degenerate. It is evident that the separatrix is formed of two saddle
+connections: $\mathcal{C}_+$ is the unstable manifold of CS4 at $\phi = 2\pi$
+and the stable manifold of CS4 at $\phi = 0$.
+
+In the presence of a small perturbation, the stable and unstable manifolds
+generally separate, as the perturbations along the saddle connection will
+generally be different going forwards and backwards in time. The separation
+distance as a function of time along the \emph{unperturbed} trajectory can be
+computed via \emph{Melnikov's Method}
+\begin{equation}
+    d(t_0) = \frac{\epsilon}{\abs{f(q^0(-t_0))}}
+        \int\limits_{-\infty}^\infty
+            f(q^0(t - t_0)) \wedge g(q^0(t - t_0), t)\;\mathrm{d}t.
+\end{equation}
+The notation used here is that of~\cite{g_and_h}, where $d(t_0)$ is the distance
+between the stable/unstable manifolds at time $t_0$ along the heteroclinic
+orbit, $f = \p{\dot{\mu}^{(0)}, \dot{\phi}^{(0)}}$, $\epsilon g =
+\p{\dot{\mu}^{(1)}, \dot{\phi}^{(1)}}$ a general time-dependent perturbation,
+$q^0(t)$ is the unperturbed trajectory along the saddle connection (time
+coordinate defined such that $t = 0$ coincides with the ``middle'' of the
+infinite trajectory), and $\wedge$ is the wedge product.
+
+We will assume $\epsilon g$ is not explicitly time-dependent, characteristic of
+secular/averaged equations in astrophysics, then the integral above is simply
+the familiar
+\begin{equation}
+    d(t_0) \abs{\vec{\nabla}H^{(0)}}(t_0) = \epsilon \int\limits_{-\infty}^\infty
+        \dot{\mu}^{(0)}\dot{\phi}^{(1)} - \dot{\phi}^{(0)}\dot{\mu}^{(1)}
+            \;\mathrm{d}t.\label{eq:melnikov}
+\end{equation}
+The right hand side is just the total change in $H^{(0)}$ over the saddle
+connection though, equivalent to our \autoref{eq:delta} in the $\dot{\eta} = 0$
+limit. The left hand side on the other hand is exactly $\abs{\vec{d} \cdot
+\vec{\nabla}H^{(0)}}$ where the displacement is along $\vec{\nabla}H^{(0)}$.
+Thus, the effect of the $\Delta_{\pm}$ is to split the stable/unstable manifolds
+along the saddle connections.
+
+Visually, this is depicted in \autoref{fig:0_6manifolds}. Note that:
+trajectories starting in zone III below $W_s^{(1)}$ fail to separatrix cross;
+those between $W_s^{(1)}$ and $W_s^{(0)}$ continue between $W_u^{(1)}$ and
+$W_s^{(0)}$, eventually escaping; those between $W_s^{(0)}$ and $W_u^{(0)}$ are
+securely captured, and no trajectories can begin above $W_u^{(0)}$ at $\phi =
+0$.
+
+The saddle connection splitting is easiest to measure where $\vec{\nabla}H^{(0)}
+\propto \hat{\phi}$, where $\dot{\mu} = 0$, and \autoref{eq:melnikov} reduces to
+just $\Delta \mu \pd{H^{(0)}}{\mu} = \Delta H^{(0)}$. Then the capture
+probability must be given by ratio of $\Delta \mu$ separating $W_s^{(0)},
+W_u^{(0)}$ to $\Delta \mu$ separating $W_s^{(1)}, W_u^{(0)}$. These $\Delta \mu$
+values are those given in the title, and the resultant $P_c$ capture probability
+is also quoted.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/0_eta/6manifolds0_20.png}
+    \caption{Sample plot of saddle connection breaking in the presence of weakly
+    non-Hamiltonian dissipation. Equations are used from \autoref{s:p1}. Stable
+    and unstable manifolds are indexed such that superscript $(0)$/$(1)$
+    belongs to the saddle point at left/right. $\Delta \mu$ represent the
+    manifold separations, resulting in capture probability $P_c$
+    prediction per \autoref{eq:p_c_dmu}. Numerical simulations predict $P_c
+    \approx 0.252$.}\label{fig:0_6manifolds}
+\end{figure}
+
+Finally, the connection between \autoref{ss:henrard} and \autoref{ss:meln} is
+evident: the ratio of the $\Delta \mu$ values is simply
+\begin{align}
+    P_c &= \frac{\Delta \mu(W_s^{(0)}, W_u^{(0)})}{
+            \Delta \mu\p{W_s^{(1)}, W_u^{(0)}}},\label{eq:p_c_dmu},\\
+        &= \frac{\Delta H^{(0)}_- + \Delta H^{(0)}_+}{\Delta H^{(0)}_-}.
+\end{align}
+This is exactly \autoref{eq:p_c_gen} when $\dot{\eta} = 0$.
+
+\section{Problem 1: Weakly Dissipitive Hamiltonian}\label{s:p1}
+
+We first consider a toy separatrix crossing problem in the $\dot{\eta} = 0$
+limit, the case discussed in \autoref{ss:meln}. Consider adding to the
+Hamiltonian Cassini State problem an additional aligning term
+$\p{\rd{\theta}{t}}^{(1)} = -\frac{1}{t_s}\sin\theta$ that favors alignment
+$\theta = 0$ on synchronization timescale $t_s$. This translates to equation of
+motion
+\begin{equation}
+    \rd{\hat{s}}{\tau} = \p{\hat{s} \cdot \hat{l}}\p{\hat{s} \times \hat{l}}
+        - \eta\p{\hat{s} \times \hat{l}_p}
+        - \epsilon \sin \theta \hat{\theta}.
+\end{equation}
+We have divided \autoref{eq:dsdt_base} by $\alpha$ and defined $\tau \equiv
+\alpha t, \epsilon \equiv \frac{1}{\alpha t_s}$. The equations of motion for
+canonical variables $\mu \equiv \cos\theta, \phi$ are
+\begin{subequations}\label{se:p1_eom}
+    \begin{align}
+        \mu' &= -\cos\theta
+            + \eta\p{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}} \cos \phi},\\
+        \mu' &= -\eta \sin I \sin \theta \sin \phi
+            \s{+ \epsilon\p{1 - \mu^2}}.
+    \end{align}
+\end{subequations}
+Primes denote $\rd{}{\tau}$. The bracketed term in $\mu'$ is the perturbation
+component.
+
+With a dissipitive term that favors alignment, we expect that separatrix
+encounters can only occur from zone II and zone III\@. We will focus on the
+outcomes of trajectories origiating in zone III for now. We now aim to compute
+\autoref{eq:p_c_gen}, for which we need:
+\begin{subequations}
+    \begin{align}
+        \Delta_- &= \int\limits_{\mathcal{C}_-}
+                \phi'\epsilon\p{1 - \mu^2}\;\mathrm{d}t,\nonumber\\
+            &= \int\limits_{\mathcal{C}_s}
+                \p{1 - \mu^2}\;\mathrm{d}\phi,\\
+        \Delta_- + \Delta_+ &= \int\limits_{\mathcal{C}_- + \mathcal{C}_+}
+            \epsilon\p{1 - \mu^2}\;\mathrm{d}\phi.
+    \end{align}
+\end{subequations}
+Note that along $\mathcal{C}_{\pm}$ that $\mathrm{d}\phi$ has sign $\mp$
+respectively, thanks to our sign convention. We proceed to integrate:
+\begin{itemize}
+    \item $\Delta_-$: Recalling the parameterization for the separatrix
+        $\mu_{sep}(\phi)$ given by \autoref{eq:mu_sep}, we can approximate the
+        integrand as $1 + \mathcal{O}(\eta^1)$. This yields simply $\Delta_-
+        \approx 2\pi \epsilon + \mathcal{O}(\eta^1)$.
+
+    \item $\Delta_- + \Delta_+$: Since $\mathrm{d}\phi$ changes signs from
+        $\mathcal{C}_-$ to $\mathcal{C}_+$, only terms in $(1 - \mu^2)$ that
+        also change sign over $\mathcal{C}_{\mp}$ contribute to the integral.
+        The leading order term that does so can be read off of
+        \autoref{eq:mu_sep}, so the integral evaluates as
+        \begin{align}
+            \Delta_- + \Delta_+ &\approx
+                2\int\limits_0^{2\pi}
+                    \s{(\eta \cos I) \sqrt{2\eta \sin I(1 - \cos \phi)}
+                        + \mathcal{O}(\eta^{5/2})} \;\mathrm{d}\phi,\\
+                &\approx 32\epsilon \eta^{3/2} \cos I \sqrt{\sin I}
+                    + \mathcal{O}(\eta^{5/2}).
+        \end{align}
+\end{itemize}
+From these two integrals, we obtain
+\begin{equation}
+    P_c = \frac{16\eta^{3/2}\cos I \sqrt{\sin I}}{\pi}.\label{eq:p1pc}
+\end{equation}
+
+As evidence, we provide the following table of separatrix capture probabilities
+in \autoref{tab:p_c_num} (TODO make a plot and more robust parameter
+exploration):
+\begin{table*}
+    \centering
+    \begin{tabular}{c|c c c c}
+        $\eta$ & $0.025$ & $0.05$ & $0.1$ & $0.2$\\\midrule
+        Numerical $P_c$ & $0.010 \pm 0.002$ & $0.028 \pm 0.003$
+            & $0.085 \pm 0.004$ & $0.251 \pm 0.006$ \\
+        Analytical $P_c$ & $0.0111$ & $0.0313$ & $0.0886$ & $0.2503$.
+    \end{tabular}
+    \caption{Capture probability for four different values of $\eta$, all using
+    $\epsilon = 3 \times 10^{-4}$. Different values of $\epsilon$ were tried
+    $\epsilon \in 10^{[-2, -4]}$ with no effect on $P_c$. $10000$ random initial
+    conditions were used for the numerical calculations, of which roughly $1/2$
+    experience separatrix crossing. Numerical uncertainties are estimated as
+    $\sqrt{N}$ errors.}\label{tab:p_c_num}
+\end{table*}
+
+For trajectories originating in zone II, numerical simulations indicate they can
+never leave the separatrix. This can be intuited by considering trajectories
+that are near the separatrix; over one orbit, they accumulate $\Delta h =
+\Delta_+ + \Delta_- > 0$, which acts to drive them \emph{towards} CS2 and away
+from the separatrix. Thus, separatrix crossing is forbidden in zone II, and our
+above characterization of separatrix encounters with $P_c$ in \autoref{eq:p1pc}
+is complete.
+
+TODO prove the above completely.
+
+\section{Problem 2: Adiabatic Capture}\label{s:p2}
+
+Here, instead of introducing an aligning perturbation, we will instead
+adiabatically vary $\eta$.
+
+\subsection{Spindown Model}
+
+We may first consider the unperturbed Hamiltonian
+system with $\rd{\eta}{t} = \frac{\eta}{t_\eta}$ growth with characteristic
+timescale $t_\eta$. Again rescaling time $\tau \equiv \alpha t$ and defining
+$\epsilon \equiv \frac{1}{\alpha t_\eta}$, we obtain $\eta' = \epsilon
+\eta$, where $\epsilon > 0$. Such a model is motivated e.g.\ when a planet's
+spin $\hat{s}$ orbits a host star with angular momentum $\hat{l}$ while the star
+spins down; $\dot{\alpha} < 0$ here, and $\eta' > 0$.
+
+We then seek $\Delta_{\pm}$, determined by
+\begin{align}
+    \Delta_{\pm} &= \int\limits_{\mathcal{C}_{\pm}}
+            \pd{h}{\eta}\eta'\;\mathrm{d}\tau,\nonumber\\
+        &= \int\limits_{\mathcal{C}_{\pm}}
+            \frac{\pd{h}{\eta}}{\phi'}\eta'\;\mathrm{d}\phi.
+\end{align}
+We must proceed carefully since $\phi' \to 0$ at the endpoints of
+$\mathcal{C}_{\pm}$; careful work shows these zeros cancel against zeros of
+$\pd{h}{\eta}$, and
+\begin{equation}
+    \Delta_{\pm} = \int\limits_{\mathcal{C}_{\pm}} \eta'
+        \p{\cos I \mp \sin I \sqrt{\frac{1 - \cos \phi}{2\eta\sin I}}}
+            \;\mathrm{d}\phi.\label{eq:p2_delta}
+\end{equation}
+Immediately, we see that if we use $\eta' = \epsilon \eta$, then $\Delta_{\pm} >
+0$ and \emph{all separatrix encounters result in capture} regardless of whether
+the trajectory originates in zone I or zone III\@. Since increasing $\eta$
+results in larger separatrix, zone II trajectories will not experience
+separatrix crossing. Indeed, an example of such a simulation is presented in
+\autoref{fig:2_1testo4}. Further simulations with other initial conditions
+support the guaranteed capture prediction in this system.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/2_toy2/1testo4.png}
+    \caption{Simulation with initial condition in zone I subject to $\eta' =
+    \epsilon \eta$, where $\epsilon = 10^{-4}$. The top panel shows the
+    trajectory (red) and separatrix at separatrix crossing (dashed black) in
+    the labelled coordinates. The bottom panel shows the evolution of the
+    enclosed area by the trajectory (red dots), area of the separatrix (blue)
+    and $\eta$ (dotted green) over time.}\label{fig:2_1testo4}
+\end{figure}
+
+If instead $\epsilon < 0$, then only zone II initial conditions experience
+separatrix encounter, and since $\Delta_{\pm} < 0$, all trajectories are
+ejected as the separatrix shrinks.
+
+\subsection{Toy Model}
+
+It is clear that $\eta'$ in \autoref{eq:p2_delta} being the same sign along both
+$\mathcal{C}_{\pm}$ is the source of this guaranteed capture. To assess the
+accuracy of our formalism, we choose to further study $\eta' = \epsilon \eta
+\mu$. Straightforward evaluation of \autoref{eq:p2_delta} yields
+\begin{equation}
+    \Delta_{\pm} = \pm \epsilon \eta_\star \s{
+        2\pi \sin I \pm 12 \sqrt{\eta_\star \sin I}\cos I
+            + 2\pi \eta_\star \cos^2 I}.
+\end{equation}
+It bears noting that we must evaluate these integrals at $\eta = \eta_\star$ the
+value at separatrix crossing. Since $\eta$ evolves over time, $\eta_{\star}$
+depends on initial conditions. While one might expect the adiabatic invariance
+of the action variable determines $\eta_\star$, this turns out to not be the
+case; we address this in \autoref{ss:noncons}.
+
+Since $\abs{\Delta_+} > \abs{\Delta_-}$, separatrix encounters originating in
+zone III always result in capture. However, encounters originating in zone I
+experience capture probability
+\begin{equation}
+    P_c = \frac{24\cos I \sqrt{\eta_\star \sin I}}{
+        2\pi \sin I + 12\sqrt{\eta_\star \sin I}\cos I
+            + 2\pi \eta_\star \cos^2 I}.
+\end{equation}
+This is in good agreement
+% TODOYUBO plots
+
+\subsection{Non-conservation of Adiabatic Invariant}\label{ss:noncons}
+
+Best evidence is $\eta_{\star}$ when changing $I$, blatantly wrong scaling
+
+\section{Problem 3: Weak Tidal Dissipation}\label{s:p3}
+
+% TODOYUBO show that zone II stays in zone II?
+
+\bibliographystyle{mnras}
+\bibliography{paper}
+
+% \clearpage
+% \onecolumn
+% \appendix
+
+\label{lastpage} % chktex 24
+\end{document}

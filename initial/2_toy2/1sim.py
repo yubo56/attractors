@@ -12,7 +12,7 @@ plt.rc('font', family='serif', size=12)
 
 PLOT_DIR = '1plots'
 from utils import to_cart, to_ang, solve_ic, get_areas, get_plot_coords,\
-    roots, H, get_mu4
+    roots, H, get_mu4, solve_ic_base
 
 def plot_traj(I, ret, filename):
     ''' convention: -np.pi / 2 < q4 < 0 '''
@@ -21,7 +21,10 @@ def plot_traj(I, ret, filename):
     y = ret.y
     lw = 1
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]})
+    fig, (ax1, ax2) = plt.subplots(2, 1,
+                                   figsize=(6, 8),
+                                   gridspec_kw={'height_ratios': [3, 1]})
+    ax1.set_aspect('equal')
 
     # plot projection
     q, phi = to_ang(*y[0:3])
@@ -35,18 +38,21 @@ def plot_traj(I, ret, filename):
     bound_y = np.sin(bound_phi)
     ax1.plot(bound_x, bound_y, 'k', linewidth=5)
 
-    # plot separatrix @ end
+    # plot separatrix @ cross
     t_areas, areas, t_cross, ends_circ = get_areas(ret)
     # print('Initial area', areas[0])
-    eta_f = y[3, -1]
-    cs_qs = roots(I, eta_f)
+    circ_idxs = np.where(t <= t_cross)[0]
+    post_idxs = np.where(t > t_cross)[0]
+    cross_idx = circ_idxs[-1]
+    eta_cross = y[3, cross_idx]
+    cs_qs = roots(I, eta_cross)
     q4 = cs_qs[-1]
 
     phi_sep = np.linspace(0, 2 * np.pi, n_pts)[1: -1] # omit endpoints
     q_sep_top, q_sep_bot = np.zeros_like(phi_sep), np.zeros_like(phi_sep)
     for idx, phi in enumerate(phi_sep):
         def dH(q):
-            return H(I, eta_f, q, phi) - H(I, eta_f, q4, 0)
+            return H(I, eta_cross, q, phi) - H(I, eta_cross, q4, 0)
         q_sep_bot[idx] = opt.brentq(dH, -np.pi, q4)
         q_sep_top[idx] = opt.brentq(dH, q4, 0)
 
@@ -69,24 +75,22 @@ def plot_traj(I, ret, filename):
                    markersize=1, label=r'$A_{traj}$')
     ax2.set_ylabel(r'$A_{enc} / 4\pi$')
 
-    circ_idx = np.where(t <= t_cross)[0]
-    post_idx = np.where(t > t_cross)[0]
     # area enclosed in librating case is just sep area, but action in
     # circulating case has to subtract out mu4
-    mu4 = get_mu4(I, eta[circ_idx])
+    mu4 = get_mu4(I, eta[circ_idxs])
     circ_area = np.sign(y[2][0] - mu4) * 2 * np.pi * mu4\
-        + 8 * np.sqrt(eta[circ_idx] * np.sin(I))
-    ln2 = ax2.plot(t[circ_idx], circ_area / (4 * np.pi),
+        + 8 * np.sqrt(eta[circ_idxs] * np.sin(I))
+    ln2 = ax2.plot(t[circ_idxs], circ_area / (4 * np.pi),
                    'b', linewidth=lw, label=r'$A_{sep}$')
-    # account for post_idx depending on ends_circ (whether ends circulating)
+    # account for post_idxs depending on ends_circ (whether ends circulating)
     if ends_circ:
-        mu4_post = get_mu4(I, eta[post_idx])
+        mu4_post = get_mu4(I, eta[post_idxs])
         circ_area_post = np.sign(y[2][-1] - mu4_post) * 2 * np.pi * mu4_post\
-            + 8 * np.sqrt(eta[post_idx] * np.sin(I))
-        ax2.plot(t[post_idx], circ_area_post / (4 * np.pi),
+            + 8 * np.sqrt(eta[post_idxs] * np.sin(I))
+        ax2.plot(t[post_idxs], circ_area_post / (4 * np.pi),
                  'b', linewidth=lw)
     else:
-        ax2.plot(t[post_idx], 4 * np.sqrt(eta[post_idx] * np.sin(I)) / np.pi,
+        ax2.plot(t[post_idxs], 4 * np.sqrt(eta[post_idxs] * np.sin(I)) / np.pi,
                  'b', linewidth=lw)
 
     ax3 = ax2.twinx()
@@ -100,6 +104,7 @@ def plot_traj(I, ret, filename):
 
     # label title w/ result
     q_f, phi_f = to_ang(y[0][-1], y[1][-1], y[2][-1])
+    eta_f = y[3, -1]
     dH_f = H(I, eta_f, q_f, phi_f) - H(I, eta_f, q4, 0)
     ax1.set_title(r'$\mu_0 = %.3f$ (%s)' %
                   (y[2][0], 'Capture' if dH_f > 0 else 'Escape'))
@@ -107,20 +112,20 @@ def plot_traj(I, ret, filename):
     fig.savefig(filename, dpi=400)
     plt.close(fig)
 
-def run_single(I, eps, tf, eta0, q0):
+def run_single(I, eps, tf, eta0, q0, solve=solve_ic):
     q4 = roots(I, eta0)[3]
 
     y0 = [*to_cart(q0, 0.2), eta0]
-    return solve_ic(I, eps, y0, tf)
+    return solve(I, eps, y0, tf)
 
-def plot_single(I, eps, tf, eta0, q0, filename):
-    ret = run_single(I, eps, tf, eta0, q0)
+def plot_single(I, eps, tf, eta0, q0, filename, solve=solve_ic):
+    ret = run_single(I, eps, tf, eta0, q0, solve)
     plot_traj(I, ret, filename)
 
 def stats_runner(I, q0):
     tf = 10000
     def result_single(eps, tf, eta0):
-        ret = run_single(I, eps, tf, eta0, q0)
+        ret = run_single(I, eps, tf, eta0, q0, solve=solve_ic)
 
         q_f, phi_f = to_ang(ret.y[0][-1], ret.y[1][-1], ret.y[2][-1])
         eta_f = ret.y[3, -1]
@@ -211,7 +216,9 @@ if __name__ == '__main__':
     # plot_single(I, 1e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo1.png')
     # plot_single(I, 1.2e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo2.png')
     # plot_single(I, 1e-4, 10 * tf, eta0, -np.pi / 2 + 0.14, '1testo3.png')
+    plot_single(I, 1e-4, 20000, eta0, -np.pi / 2 + 0.14, '1testo4.png',
+                solve=solve_ic_base)
 
-    run_stats(20)
-    run_stats(10)
-    run_stats(25)
+    # run_stats(20)
+    # run_stats(10)
+    # run_stats(25)

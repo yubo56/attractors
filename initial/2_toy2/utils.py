@@ -178,5 +178,26 @@ def solve_ic(I, eps, y0, tf, rtol=1e-6, **kwargs):
 
     return ret
 
+def solve_ic_base(I, eps, y0, tf, rtol=1e-6, **kwargs):
+    '''
+    get dy/dt for (x, y, z, eta)
+
+    returns (t, y, sep areas, ret)
+    '''
+    def dydt(t, s):
+        x, y, z, eta = s
+        return [
+            y * z - eta * y * np.cos(I),
+            -x * z + eta * (x * np.cos(I) - z * np.sin(I)),
+            eta * y * np.sin(I),
+            eps * eta,
+        ]
+    event = lambda t, y: y[1]
+    ret = solve_ivp(dydt, [0, tf], y0,
+                    rtol=rtol, dense_output=True, events=[event],
+                    **kwargs)
+
+    return ret
+
 def get_plot_coords(q, phi):
     return np.sin(q / 2) * np.cos(phi), np.sin(q / 2) * np.sin(phi)

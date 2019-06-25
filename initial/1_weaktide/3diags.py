@@ -91,6 +91,9 @@ def zones(s_c=0.7, s0=7):
     plt.text(np.pi, 0.7, 'I')
     plt.text(np.pi, 0, 'II')
     plt.text(np.pi, -0.7, 'III')
+
+    plt.text(5, 0.33, r'$\mathcal{C}_+$')
+    plt.text(5, -0.24, r'$\mathcal{C}_-$')
     plt.contour(phi_grid, mu_grid, H_grid, levels=[H4], colors='k')
 
     plt.ylabel(r'$\mu$')
@@ -102,9 +105,9 @@ def zones(s_c=0.7, s0=7):
 
 if __name__ == '__main__':
     # generate dmu/dt
-    s_val = 3.0
-    for s_c in [0.1, 0.3, 0.5, 0.7, 1.0]:
-        dmu_mu_plot(s_c, s_val)
+    # s_val = 3.0
+    # for s_c in [0.1, 0.3, 0.5, 0.7, 1.0]:
+    #     dmu_mu_plot(s_c, s_val)
 
-    plot_crits()
+    # plot_crits()
     zones()
