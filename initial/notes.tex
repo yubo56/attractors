@@ -446,6 +446,17 @@ hopping probability
 \end{equation}
 This agrees perfectly with the cases we've run.
 
+\textbf{Note:} The full formula, by actually evaluating all the terms, comes out
+to be
+\begin{equation}
+    P_{hop} = \frac{16\eta^{3/2}\cos I \sqrt{\sin I}}{\pi
+        \p{1 - 2\eta \sin I - \eta^2 \cos^2 I}
+        + 8\eta^{3/2}\cos I \sqrt{\sin I}}.
+\end{equation}
+It bears noting this formula slightly overpredicts $P_{hop}$ compared to the
+actual simulation values; this comes down to ICs too near the separatrix being
+necessarily escape-bound (can see \autoref{fig:CS4s} for more evidence).
+
 \section{Parametric Separatrix Hopping: Only changing $\eta$}\label{s:p2}
 
 Though this section is located before the weak tidal friction section, we
@@ -1229,8 +1240,50 @@ this).
     that the true curve lies somewhere in between.}\label{fig:4_cross_hist0_05}
 \end{figure}
 
-Can we analytically show that the Melnikov splitting dominates, and that in
-particular the seeming small excess of $P_{hop}$ is predictable?
+\textbf{Revisited:} We should be able to evaluate this integral analytically.
+We've already mostly done the $\dot{\mu}\;\mathrm{d}\phi$ integral, let's now
+consider the $\frac{\dot{s}}{\dot{\phi}}\Delta H_{,s}\;\mathrm{d}\phi$
+component. This is just (we change sign convention, $\Delta H = H - H_4$ now,
+per recent developments)
+\begin{align*}
+    \int_{\mathcal{C}_{\pm}} \frac{\dot{s}}{\dot{\phi}^{(0)}}
+            \pd{\Delta H}{s}\;\mathrm{d}\phi &=
+        \int \dot{s}\frac{-\frac{\mu^2}{2s_c} + \frac{\cos^2 Is_c}{2s^2}}{
+            -\frac{s}{s_c}\mu + \cos I}\;\mathrm{d}\phi,\\
+        &= \int \frac{\dot{s}s_c}{2s^2}\s*{\frac{s\mu}{s_c} + \cos
+            I}\;\mathrm{d}\phi,\\
+        &= \pm \int \epsilon 2\Omega_1
+            \p*{\mu_{\pm} - \frac{s}{2\Omega_1}\p*{1 + \mu_{\pm}^2}}
+                \frac{s_c}{2s^2} \sqrt{2\frac{s_c}{s} \sin I\p*{1 - \cos \phi}}
+                \;\mathrm{d}\phi,\\
+        &\approx \pm \frac{\epsilon \Omega_1 s_c}{s^2}
+            \int \p*{\mu_{\pm} - \frac{s}{2\Omega_1}}
+            \sqrt{2\frac{s_c}{s} \sin I\p*{1 - \cos \phi}} \;\mathrm{d}\phi,\\
+        &\approx \pm\frac{\epsilon \Omega_1 s_c}{s^2}
+            \int \p*{\mu_4 - \frac{s}{2\Omega_1} \pm
+                \sqrt{2\frac{s_c}{s} \sin I\p*{1 - \cos \phi}}}
+            \sqrt{2\frac{s_c}{s} \sin I\p*{1 - \cos \phi}} \;\mathrm{d}\phi,\\
+        &= \frac{\epsilon \Omega_1 s_c}{s^2}\s*{
+            \pm \p*{\mu_4 - \frac{s}{2\Omega_1}}\p*{-8\sqrt{\eta \sin I}}
+                + 4\pi \frac{s_c}{s}\sin I}.
+\end{align*}
+Indeed, the sum over the two legs is positive, which is expected: during
+spindown, the separatrix expands, so the separatrix must have $\Delta H > 0$
+owing just to adiabatic expansion.
+
+For the $\dot{\mu}$ integral, the integrand is $\p*{\frac{2\Omega}{s} - \mu}$
+times the original integrand; this means the final result is $\frac{2\Omega}{s}$
+times the old result plus a contribution approximately $-\int \epsilon \mu
+\;\mathrm{d}\phi$. This latter term is a purely antisymmetric contribution, so
+we may approximate
+\begin{align*}
+    \int_{\mathcal{C}_{\pm}}\dot{\mu}^{(1)}\;\mathrm{d}\phi
+        &\approx \epsilon\frac{2\Omega}{s}\p{\mp 2\pi
+            + 16\cos I \eta^{3/2}\sqrt{\sin I}}
+            + 8\epsilon\sqrt{\eta \sin I},\\
+        &\approx \mp \frac{4\pi\epsilon \Omega}{s} + 8\sqrt{\eta \sin I}.
+\end{align*}
+This is in agreement with our work from 5.1. Thus, the total expression is
 
 \end{document}
 

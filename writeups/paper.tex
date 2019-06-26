@@ -16,6 +16,8 @@
         labelfont=bf, % caption names are labeled in bold
         font=scriptsize % smaller font for captions
     ]{caption}
+    \usepackage[font=scriptsize]{subcaption} % subfigures
+    \captionsetup{compatibility=false}
 
     \newcommand*{\rd}[2]{\frac{\mathrm{d}#1}{\mathrm{d}#2}}
     \newcommand*{\pd}[2]{\frac{\partial#1}{\partial#2}}
@@ -414,70 +416,106 @@ Note that along $\mathcal{C}_{\pm}$ that $\mathrm{d}\phi$ has sign $\mp$
 respectively, thanks to our sign convention. We proceed to integrate:
 \begin{itemize}
     \item $\Delta_-$: Recalling the parameterization for the separatrix
-        $\mu_{sep}(\phi)$ given by \autoref{eq:mu_sep}, we can approximate the
-        integrand as $1 + \mathcal{O}(\eta^1)$. This yields simply $\Delta_-
-        \approx 2\pi \epsilon + \mathcal{O}(\eta^1)$.
+        $\mu_{sep}(\phi)$ given by \autoref{eq:mu_sep}, we can evaluate
+        explicitly over $\mathcal{C}_-$. This gives result
+        \begin{equation}
+            \Delta_- = 2\pi\p{1 - 2\eta \sin I - \eta^2 \cos^2 I}
+                + 16\cos I \eta^{3/2}\sqrt{\sin I}.
+        \end{equation}
 
-    \item $\Delta_- + \Delta_+$: Since $\mathrm{d}\phi$ changes signs from
-        $\mathcal{C}_-$ to $\mathcal{C}_+$, only terms in $(1 - \mu^2)$ that
-        also change sign over $\mathcal{C}_{\mp}$ contribute to the integral.
-        The leading order term that does so can be read off of
-        \autoref{eq:mu_sep}, so the integral evaluates as
+    \item $\Delta_- + \Delta_+$: Note $\mathrm{d}\phi$ changes signs between
+        $\mathcal{C}_-$ and $\mathcal{C}_+$. Thus, only terms in $\Delta_-$ that
+        also change signs on $\mathcal{C}_+$ contribute to the integral. This
+        allows us to evaluate
         \begin{align}
-            \Delta_- + \Delta_+ &\approx
-                2\int\limits_0^{2\pi}
-                    \s{(\eta \cos I) \sqrt{2\eta \sin I(1 - \cos \phi)}
-                        + \mathcal{O}(\eta^{5/2})} \;\mathrm{d}\phi,\\
-                &\approx 32\epsilon \eta^{3/2} \cos I \sqrt{\sin I}
-                    + \mathcal{O}(\eta^{5/2}).
+            \Delta_- + \Delta_+ &= 32\epsilon \eta^{3/2} \cos I \sqrt{\sin I}.
         \end{align}
 \end{itemize}
 From these two integrals, we obtain
 \begin{equation}
-    P_c = \frac{16\eta^{3/2}\cos I \sqrt{\sin I}}{\pi}.\label{eq:p1pc}
+    P_c = \frac{16\eta^{3/2}\cos I \sqrt{\sin I}}{\pi
+        \p{1 - 2\eta \sin I - \eta^2 \cos^2 I}
+        + 8\eta^{3/2}\cos I \sqrt{\sin I}}.\label{eq:p1pc}
 \end{equation}
 
-As evidence, we provide the following table of separatrix capture probabilities
-in \autoref{tab:p_c_num} (TODO make a plot and more robust parameter
-exploration):
 \begin{table*}
     \centering
     \begin{tabular}{c|c c c c}
         $\eta$ & $0.025$ & $0.05$ & $0.1$ & $0.2$\\\midrule
-        Numerical $P_c$ & $0.010 \pm 0.002$ & $0.028 \pm 0.003$
-            & $0.085 \pm 0.004$ & $0.251 \pm 0.006$ \\
-        Analytical $P_c$ & $0.0111$ & $0.0313$ & $0.0886$ & $0.2503$.
+        Numerical $P_c$ & $0.010 \pm 0.002$ & $0.029 \pm 0.003$
+            & $0.082 \pm 0.004$ & $0.256 \pm 0.006$ \\
+        Analytical $P_c$ & $0.0112$ & $0.0320$ & $0.0915$ & $0.2627$.
     \end{tabular}
     \caption{Capture probability for four different values of $\eta$, all using
     $\epsilon = 3 \times 10^{-4}$. Different values of $\epsilon$ were tried
     $\epsilon \in 10^{[-2, -4]}$ with no effect on $P_c$. $10000$ random initial
-    conditions were used for the numerical calculations, of which roughly $1/2$
-    experience separatrix crossing. Numerical uncertainties are estimated as
-    $\sqrt{N}$ errors.}\label{tab:p_c_num}
+    conditions uniformly distributed in $(\mu, \phi)$ were used for the
+    numerical calculations, of which roughly $1/2$ experience separatrix
+    crossing. Numerical uncertainties are estimated as $\sqrt{N}$ where $N$ is
+    the count per bin.}\label{tab:p_c_num}
 \end{table*}
+As evidence, we provide the following table of separatrix capture probabilities
+in \autoref{tab:p_c_num}.
+
+It may be noted that the numerical $P_c$ are systematically low compared to
+their analytical estimates. This has a clean explanation: initial conditions
+that start too close to the separatrix violate the assumption where $h_i$ is
+uniformly distributed on $[-\Delta_-, 0]$. In particular, most of the points
+near the separatrix and in zone III are escaping points, as can be visually seen
+in \autoref{fig:0_6manifolds}. A systematic underdensity of points converging to
+CS2 (separatrix capture) can be seen on the right hand side of the plot near the
+separatrix in \autoref{fig:0_3stats}.
+
+A further interesting feature in \autoref{fig:0_3stats} is a small portion of
+points in zone II near CS4  at $\phi = 2\pi$ that escape. These points accrue
+$\Delta_+$ on their first orbit and escape without librating. Visually, this
+zone is obvious in \autoref{fig:0_6manifolds} as the separation between
+$W_s^{(1)} \cup W_u^{(1)}$ and $W_s^{(0)} \cup W_u^{(0)}$ near $\phi = 2\pi$.
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/0_eta/3stats3_5_0_1.png}
+    \caption{Plot of the CSs that initial conditions converge to. Each subplot
+    has a set of initial conditions (black dots) and the CS (red dot) that each
+    of these initial conditions converge to. Initial conditions are chosen
+    uniformly in $(\mu, \phi)$ coordinates. The parameters for the simulation
+    are in the title.}\label{fig:0_3stats}
+\end{figure}
 
 For trajectories originating in zone II, numerical simulations indicate they can
-never leave the separatrix. This can be intuited by considering trajectories
-that are near the separatrix; over one orbit, they accumulate $\Delta h =
-\Delta_+ + \Delta_- > 0$, which acts to drive them \emph{towards} CS2 and away
-from the separatrix. Thus, separatrix crossing is forbidden in zone II, and our
-above characterization of separatrix encounters with $P_c$ in \autoref{eq:p1pc}
-is complete.
-
-TODO prove the above completely.
+never leave the separatrix. This can be understood quantitatively (excepting the
+few initial conditions in \autoref{fig:0_3stats} discussed above). For any orbit
+in zone II that completes a full libration over contour $\mathcal{C}$, the total
+change in $h$ is given
+\begin{equation}
+    \Delta h = \epsilon \oint_{\mathcal{C}} (1 - \mu^2)\;\mathrm{d}\phi.
+\end{equation}
+Since $\mathcal{C}$ is a closed contour, any terms that are symmetric on the top
+and bottom legs of $\mathcal{C}$ vanish. If we decompose $\mu(\phi) \equiv
+\bar{\mu} \pm \mu'(\phi)$ where $\bar{\mu}$ is the average value of $\mu(\phi)$
+over $\mathcal{C}$ and $\mu'(\phi) \geq 0$ everywhere, then it is clear
+\begin{equation}
+    \Delta h = 2\epsilon \int\limits_0^{2\pi} 2\bar{\mu}\mu'(\phi)
+            \;\mathrm{d}\phi.
+\end{equation}
+Now, since $\mu'(\phi) \geq 0$ everywhere, and $\bar{\mu} \in [\mu_2, \mu_4] >
+0$ as well, $\Delta h > 0$ necessarily, and \emph{all full librations in zone II
+will be driven towards CS2} (the point of maximum $h$ and maximum $H^{(0)}$).
 
 \section{Problem 2: Adiabatic Capture}\label{s:p2}
 
 Here, instead of introducing an aligning perturbation, we will instead
 adiabatically vary $\eta$.
 
-\subsection{Spindown Model}
+\subsection{Spindown Model}\label{ss:p2_spindown}
 
 We may first consider the unperturbed Hamiltonian
 system with $\rd{\eta}{t} = \frac{\eta}{t_\eta}$ growth with characteristic
 timescale $t_\eta$. Again rescaling time $\tau \equiv \alpha t$ and defining
-$\epsilon \equiv \frac{1}{\alpha t_\eta}$, we obtain $\eta' = \epsilon
-\eta$, where $\epsilon > 0$. Such a model is motivated e.g.\ when a planet's
+$\epsilon \equiv \frac{1}{\alpha t_\eta}$, we obtain
+\begin{equation}
+    \rd{\eta}{t} = \epsilon \eta,
+\end{equation}
+where $\epsilon > 0$. Such a model is motivated e.g.\ when a planet's
 spin $\hat{s}$ orbits a host star with angular momentum $\hat{l}$ while the star
 spins down; $\dot{\alpha} < 0$ here, and $\eta' > 0$.
 
@@ -508,22 +546,28 @@ support the guaranteed capture prediction in this system.
     \includegraphics[width=\columnwidth]{../initial/2_toy2/1testo4.png}
     \caption{Simulation with initial condition in zone I subject to $\eta' =
     \epsilon \eta$, where $\epsilon = 10^{-4}$. The top panel shows the
-    trajectory (red) and separatrix at separatrix crossing (dashed black) in
-    the labelled coordinates. The bottom panel shows the evolution of the
-    enclosed area by the trajectory (red dots), area of the separatrix (blue)
-    and $\eta$ (dotted green) over time.}\label{fig:2_1testo4}
+    trajectory (red) starting with initial condition $\mu_0 = 0.140, \phi_0 = 0$
+    (green dot) and separatrix at separatrix crossing (dashed black) in
+    the labelled coordinates. The end of the simulation is labelled in the blue
+    cyan dot. The bottom panel shows the evolution of the enclosed area by the
+    trajectory (red dots), area of the separatrix (blue) and $\eta$ (dotted
+    green) over time.}\label{fig:2_1testo4}
 \end{figure}
 
 If instead $\epsilon < 0$, then only zone II initial conditions experience
 separatrix encounter, and since $\Delta_{\pm} < 0$, all trajectories are
 ejected as the separatrix shrinks.
 
-\subsection{Toy Model}
+\subsection{Nontrivial Test Problem}\label{ss:p2_toy}
 
 It is clear that $\eta'$ in \autoref{eq:p2_delta} being the same sign along both
 $\mathcal{C}_{\pm}$ is the source of this guaranteed capture. To assess the
-accuracy of our formalism, we choose to further study $\eta' = \epsilon \eta
-\mu$. Straightforward evaluation of \autoref{eq:p2_delta} yields
+accuracy of our formalism, we propose instead test problem where $\eta$ is
+varied following
+\begin{equation}
+    \eta' = \epsilon \eta \mu.
+\end{equation}
+Straightforward evaluation of \autoref{eq:p2_delta} yields
 \begin{equation}
     \Delta_{\pm} = \pm \epsilon \eta_\star \s{
         2\pi \sin I \pm 12 \sqrt{\eta_\star \sin I}\cos I
@@ -539,20 +583,211 @@ Since $\abs{\Delta_+} > \abs{\Delta_-}$, separatrix encounters originating in
 zone III always result in capture. However, encounters originating in zone I
 experience capture probability
 \begin{equation}
-    P_c = \frac{24\cos I \sqrt{\eta_\star \sin I}}{
+    P_c(\eta_\star) = \frac{24\cos I \sqrt{\eta_\star \sin I}}{
         2\pi \sin I + 12\sqrt{\eta_\star \sin I}\cos I
-            + 2\pi \eta_\star \cos^2 I}.
+            + 2\pi \eta_\star \cos^2 I}.\label{eq:p_c_p2}
 \end{equation}
-This is in good agreement
-% TODOYUBO plots
 
-\subsection{Non-conservation of Adiabatic Invariant}\label{ss:noncons}
+To test this capture probability, we adopt a slightly different testing
+methodology than in \autoref{s:p1}. For fixed initial condition $(\mu_0,
+\phi_0)$ in zone I, we vary the initial $\eta \in [0.01, 0.02]$ and $\epsilon
+\in 10^{[-3, -2]}$. In this way, every simulation experiences probabilistic
+separatrix crossing at roughly comparable times. We then repeated this procedure
+for three different values $I = 10^\circ, 20^\circ, 25^\circ$. A natural spread
+in $\eta_\star$ was observed at each $I$ value, which permitted comparison to
+\autoref{eq:p_c_p2} independently. The results for the three $I$ values are
+presented in \autoref{fig:2_1hist}, where good agreement with
+\autoref{eq:p_c_p2} is shown.
+\begin{figure}
+    \centering
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/2_toy2/1hist10.png}
+    \end{subfigure}
 
-Best evidence is $\eta_{\star}$ when changing $I$, blatantly wrong scaling
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/2_toy2/1hist20.png}
+    \end{subfigure}
+
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/2_toy2/1hist25.png}
+    \end{subfigure}
+    \caption{Simulations depicting $P_c(\eta_\star)$ at three different values
+    $I = 10^\circ, 20^\circ, 25^\circ$. The top panel represents the binned
+    outcomes as a function of $\eta_\star$, and the resulting estimates of $P_c$
+    are compared with the analytical curve (red) from \autoref{eq:p_c_p2} in the
+    bottom panel. Uncertainties in $P_c(\eta_\star)$ from data are estimated as
+    $\sqrt{N}$ where $N$ is the count per bin. Also reported is the average
+    value of $\eta_\star$.}\label{fig:2_1hist}
+\end{figure}
+
+\subsection{Conservation of Adiabatic Invariant}\label{ss:noncons}
+
+Under the theory of adiabatic invariants (see e.g.\ \cite{henrard1982,
+l_and_l}), trajectories following Hamiltonian equations of motion save for small
+$\eta'$ conserve action variable $I$ except at separatrix crossing, where
+\begin{equation}
+    I \equiv \frac{1}{2\pi}\oint p\;\mathrm{d}q.
+\end{equation}
+$I$ has physical interpretation the enclosed phase space area of trajectories.
+Its evolution can be seen in \autoref{fig:2_1testo4}. Under the assumption $I$
+is conserved except at separatrix crossing, $\eta_\star$ is fixed implicitly by
+$I = A_{sep}(\eta_\star)$ for $I$ the initial value of the action variable.
+Since $A_{sep}$ is given by \autoref{eq:a_sep}, it would appear $\eta_\star$ can
+be predicted exactly.
+
+\textbf{NOTE:} The rest of this section is not very complete.
+
+This turns out to be accurate in \autoref{ss:p2_spindown} but not in
+\autoref{ss:p2_toy}, so it's probably non-physical/has to do with $\eta' = 0$
+when $\mu = 0$. Not sure whether this is physically useful. Useful formulas for
+$\rd{I}{t}$ can be taken from~\cite{henrard1982, l_and_l}:
+\begin{equation}
+    \rd{I}{\tau} = \s{\pd{H}{\eta}T(\eta) - \int\limits_0^{T(\eta)}
+            \pd{H}{\eta}\;\mathrm{d}\tau} \eta'
+        = -\pd{}{w}\p{\pd{S}{\eta}}\eta'.
+\end{equation}
+Here, $T(\eta)$ is the period of the orbit, $w$ is the angle variable conjugate
+to $I$, and $S$ is the generating function for canonical transformation $\mu =
+\pd{S}{\phi}, w = \pd{S}{I}$. These expressions are hard to evaluate, but maybe
+they will tell us how much to expect $\rd{I}{\tau}$ to deviate from zero near
+the separatrix?
 
 \section{Problem 3: Weak Tidal Dissipation}\label{s:p3}
 
-% TODOYUBO show that zone II stays in zone II?
+\subsection{Solution}
+
+We consider now the full Cassini State system with under weak tidal friction
+(see e.g.\ \cite{lai2012}). Note that generally $\abs{g}$ is a constant under
+weak tidal friction, as it is an orbit-orbit coupling term, while $\alpha
+\propto s$. Defining then $s_c$ critical spin such that $\frac{s}{s_c} \equiv
+\frac{\alpha}{\abs{g}}$\footnote{$s_c$ has interpretation \emph{critical spin}
+such that $\alpha, \abs{g}$ are equal.} and $\Omega_1$ the spin that $\hat{s}$
+is coupled to, we can write down fully coupled evolution equations for $(\mu,
+\phi, s)$:
+\begin{subequations}\label{se:p3_eom}
+    \begin{align}
+        \pd{\phi}{\tau} &= \frac{s}{s_c}\mu
+            - \p{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}} \cos \phi},\\
+        \pd{\mu}{\tau} &= -\sin I \sin \phi +
+            \epsilon \p{1 - \mu^2} \p{\frac{2\Omega_1}{s} - \mu},\\
+        \rd{s}{\tau}
+            &= \epsilon 2\Omega_1 \p{\mu - \frac{s}{2\Omega_1}\p{1 + \mu^2}}.
+    \end{align}
+\end{subequations}
+The expressions for $H^{(0)}, H_4$ can also be written down
+\begin{align}
+    H(\mu, \phi; s) &= -\frac{s}{s_c}\frac{\mu^2}{2}
+        + \mu \cos I - \sin I \sqrt{1 - \mu^2}\cos \phi.\\
+    H_4(s) &= -\sin I + \frac{s_c}{2s}\cos^2 I.
+\end{align}
+
+Note that here $s$ takes the role of adiabatically-varying parameter. Thus, when
+computing $\Delta_{\pm}$ along the separatrix using \autoref{eq:delta}, there
+are two contributions. In particular, we write
+\begin{equation}
+    \Delta_{\pm} = \int_{\mathcal{C}_{\pm}} \dot{\mu}^{(1)} +
+        \frac{\dot{s}}{\dot{\phi}^{(0)}} \pd{h}{s}
+        \;\mathrm{d}\phi.
+\end{equation}
+Both of these integrals were performed in preceeding sections, and we may
+express in closed form (dropping some terms for simplicity)
+\begin{align}
+    \Delta_{\pm} \approx{}& \epsilon\z{
+            \mp \frac{4\pi  \Omega_1}{s} + 8\sqrt{\frac{s_c}{s}\sin I}
+            }\nonumber\\
+        &+\epsilon\z{\frac{ \Omega_1 s_c}{s^2}
+            \s{\pm 8\sqrt{\frac{s_c}{s} \sin I}
+            \p{\frac{s}{2\Omega_1} - \frac{s_c\cos I}{s}}
+                + 4\pi \frac{s_c}{s}\sin I}}.\label{eq:delta_p3}
+\end{align}
+We can then compute separatrix capture probability from zone III (which is $P_c
+= \frac{\Delta_+ + \Delta_-}{\Delta_-}$), again evaluating at $s = s_\star$:
+\begin{equation}
+    P_c(s_\star) = \frac{16\sqrt{\frac{s_c}{s_\star}\sin I} +
+        8\pi\frac{s_c}{s_\star}\sin I}{
+            \frac{4\pi \Omega_1}{s_\star} - \frac{8\Omega_1
+            s_c}{s_\star^2}\sqrt{\frac{s_c}{s_\star}\sin I}
+            \p{\frac{s_\star}{2\Omega_1} - \frac{s_c \cos I}{s_\star}}}.
+            \label{eq:p_c_p3}
+\end{equation}
+Note that for $\frac{s_c}{s_\star} < \eta_c$ that no separatrix (or resonance)
+exists anymore, so we will generally assume $s_\star \gtrsim s_c, \Omega_1$.
+
+To test \autoref{eq:p_c_p3}, we generate an evenly spaced grid of initial
+conditions $(\mu_0, \phi_0)$ and initialize $s_0 = 10$. We then record $s_\star$
+and the final ooutcome of the trajectory over many simulations. The agreement of
+\autoref{eq:p_c_p3} with data can be observed in \autoref{fig:1_4stats}.
+\begin{figure}
+    \centering
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/1_weaktide/4_cross_hist0_05.png}
+    \end{subfigure}
+
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/1_weaktide/4_cross_hist0_20.png}
+    \end{subfigure}
+
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/1_weaktide/4_cross_hist0_40.png}
+    \end{subfigure}
+
+    \caption{Histogram of simulation and inferred $P_c(s_\star)$ compared with
+    \autoref{eq:p_c_p3}. $s_c$ used are numbered at the top of each plot. $10^4$
+    simulations were used for each plot, and a single $I = 20^\circ$ was
+    used.}\label{fig:1_4stats}
+\end{figure}
+
+\subsection{Estimating $s_\star$}
+
+In \autoref{s:p2}, the capture probability $P_c(\eta_\star)$ depended on
+$\eta_\star$ which could be determined by conservation of the action varible
+$I$. Such an argument is not possible in the weak tidal prescription as the
+system is dissipitive thanks to $\dot{\mu}^{(1)}$ (see \autoref{se:p3_eom}).
+
+However, instead we can write down $\rd{h}{\tau}$, just as \autoref{eq:dhdt}.
+Since the initial value of $h$ can be computed from initial conditions, the ODE
+can simply be integrated numerically to find $\tau_\star$ the separatrix
+crossing time. In fact, for $\mu$ far from the separatrix, $\rd{h}{\tau} \approx
+\frac{3s\mu^2}{2s_c}$, predicting
+\begin{equation}
+    \tau_\star = \frac{h(t = 0)}{3s\mu^2/2s_c} + C,
+\end{equation}
+where $C$ depends on the detairs of $\rd{h}{\tau}$ near the separatrix. This is
+in good agreement with measurement (see top panel of \autoref{fig:1_4cross}).
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/1_weaktide/4_cross0_20.png}
+    \caption{TODO make this plot actually look reasonable. The top and bottom
+    panels show $t_\star, s_\star$ as a function of $-h = H_4 - H$. The dotted
+    red line in the top panel is $t_\star = \frac{h}{3s\mu^2/2s_c} + C$ where
+    $C$ is a fitting parameter determined by the behavior of $\rd{h}{\tau}$ near
+    the separatrix.}\label{fig:1_4cross}
+\end{figure}
+
+\subsection{High Misalignment as an Attractor}
+
+Careful examination of \autoref{eq:delta_p3} reveals that for sufficiently large
+$s_c$, $\Delta_+$ changes sign and becomes positive. When $\Delta_+ < 0$,
+trajectories in zone I above the separatrix cannot enter the separatrix, as $h$
+decreases over an orbit. However, if $\Delta_+ > 0$, then trajectories in zone I
+can also enter the separatrix. The critical value of $s_c$ where $\Delta_+$
+changes sign as a function of $s$ can thus be determined analytically. TODO
+write down the formula and check it against my numerical solution earlier.
+
+Furthermore, $\rd{\mu}{\tau} < 0$ for $\mu > \frac{2\Omega_1}{s}$, it is clear
+that if $s$ is initially large, then aligned states $\mu > 0$ are driven towards
+misalignment and the separatrix, where they may then be captured for
+sufficiently large $s_c$. We find that $s_c \gtrsim 0.5 \Omega_1$ is sufficient
+that an initial spin of $s_0 = 10$ will \emph{always} be captured into CS2. TODO
+could shore this up a bit, find a good way to plot.
+
+TODO find a clean plot to demonstrate this, I have the data already.
 
 \bibliographystyle{mnras}
 \bibliography{paper}

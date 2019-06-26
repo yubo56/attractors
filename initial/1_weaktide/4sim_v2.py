@@ -425,7 +425,7 @@ def cross_times(trajs, I, eps, s_c, s0=10, tf=2500):
     s_cross = [] if len(below_cross) == 0 else below_cross[2]
     [n_hop, n_tot], bins, _ = ax1.hist([s_hop, s_cross],
                                          bins=int(N_PTS / 2.5),
-                                         label=['Hop', 'Cross'],
+                                         label=['Capture', 'Escape'],
                                          stacked=True)
 
     # hist seems to return two copies of n_hop when s_cross is empty
@@ -435,23 +435,24 @@ def cross_times(trajs, I, eps, s_c, s0=10, tf=2500):
     p_hop = n_hop[valids] / (n_hop[valids] + n_cross[valids])
     p_hop_err = np.sqrt(n_hop[valids]) / (n_hop[valids] + n_cross[valids])
     ax2.errorbar(s_vals[valids], p_hop,
-                 yerr=p_hop_err, fmt='ro', label='Data')
+                 yerr=p_hop_err, fmt='bo', label='Data')
     ax1.set_ylabel('Counts')
     ax2.set_xlabel(r'$s_\star$')
     ax2.set_ylabel(r'$P_{hop}$')
 
-    # overplot analytic estimate?
-    p_hop_anal = 4 * np.sqrt(s_vals * s_c * np.sin(I)) / np.pi
+    # overplot analytic estimate
+    p_hop_top = 16 * np.sqrt(s_c / s_vals * np.sin(I))\
+        + 8 * np.pi * s_c * np.sin(I) / s_vals
+    p_hop_bot = 4 * np.pi / s_vals \
+        - 8 * s_c / s_vals**2 * np.sqrt(s_c * np.sin(I) / s_vals)\
+        * (s_vals / 2 - s_c * np.cos(I) / s_vals)
+    p_hop_anal = p_hop_top / p_hop_bot
     ax2.plot(s_vals, np.minimum(p_hop_anal, np.ones_like(p_hop_anal)),
-             'b', label='Anal')
-    ax2.plot(s_vals,
-             np.minimum(
-                 p_hop_anal * (1 + np.sqrt(s_c * s_vals * np.sin(I) / 2)),
-                 np.ones_like(p_hop_anal)),
-             'g', label='Anal (corr.)')
+             'r', label='Anal')
 
     ax1.legend()
     ax2.legend()
+    plt.suptitle(r'$s_c = %.2f$' % s_c)
     plt.savefig('4_cross_hist%s.png' % s_c_str(s_c), dpi=400)
     plt.close(fig)
 

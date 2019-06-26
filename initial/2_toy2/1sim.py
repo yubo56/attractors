@@ -40,7 +40,6 @@ def plot_traj(I, ret, filename):
 
     # plot separatrix @ cross
     t_areas, areas, t_cross, ends_circ = get_areas(ret)
-    # print('Initial area', areas[0])
     circ_idxs = np.where(t <= t_cross)[0]
     post_idxs = np.where(t > t_cross)[0]
     cross_idx = circ_idxs[-1]
@@ -82,6 +81,7 @@ def plot_traj(I, ret, filename):
         + 8 * np.sqrt(eta[circ_idxs] * np.sin(I))
     ln2 = ax2.plot(t[circ_idxs], circ_area / (4 * np.pi),
                    'b', linewidth=lw, label=r'$A_{sep}$')
+    print('Initial area, cross area', areas[0], circ_area[-1])
     # account for post_idxs depending on ends_circ (whether ends circulating)
     if ends_circ:
         mu4_post = get_mu4(I, eta[post_idxs])
@@ -106,7 +106,7 @@ def plot_traj(I, ret, filename):
     q_f, phi_f = to_ang(y[0][-1], y[1][-1], y[2][-1])
     eta_f = y[3, -1]
     dH_f = H(I, eta_f, q_f, phi_f) - H(I, eta_f, q4, 0)
-    ax1.set_title(r'$\mu_0 = %.3f$ (%s)' %
+    ax1.set_title(r'$(\mu_0, \phi_0) = (%.3f, 0)$ (%s)' %
                   (y[2][0], 'Capture' if dH_f > 0 else 'Escape'))
     fig.tight_layout()
     fig.savefig(filename, dpi=400)
@@ -181,7 +181,8 @@ def run_stats(I_deg):
             else:
                 escapes.append(etaf)
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+    # swap order HACK
+    fig, (ax2, ax1) = plt.subplots(2, 1, sharex=True)
     fig.subplots_adjust(hspace=0)
     n, bins, _ = ax2.hist([captures, escapes],
                            bins=40,
@@ -200,10 +201,11 @@ def run_stats(I_deg):
         4 * np.pi * np.sin(I)
             + 24 * np.cos(I) * np.sqrt(eta * np.sin(I))
             + 4 * np.pi * eta * np.cos(I)**2)
-    ax1.plot(eta_vals, fit(eta_vals), 'g:', linewidth=2, label='Fit')
-    ax1.set_title(r'$I = %d^\circ, \langle \eta_\star \rangle = %.3f$'
+    ax1.plot(eta_vals, fit(eta_vals), 'r', linewidth=2, label='Analytical')
+    ax2.set_title(r'$I = %d^\circ, \langle \eta_\star \rangle = %.3f$'
                   % (I_deg, mean_p))
     ax1.set_ylabel('Capture Probability')
+    ax2.set_ylabel('Counts')
     ax1.legend()
     plt.savefig('1hist%d.png' % I_deg, dpi=400)
     plt.close(fig)
@@ -214,11 +216,13 @@ if __name__ == '__main__':
     eta0 = 0.01
     # capture/escape cases respectively
     # plot_single(I, 1e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo1.png')
-    # plot_single(I, 1.2e-3, tf, eta0, -np.pi / 2 + 0.14, '1testo2.png')
-    # plot_single(I, 1e-4, 10 * tf, eta0, -np.pi / 2 + 0.14, '1testo3.png')
-    plot_single(I, 1e-4, 20000, eta0, -np.pi / 2 + 0.14, '1testo4.png',
-                solve=solve_ic_base)
+    # plot_single(I, 2e-4, 5 * tf, eta0, -np.pi / 2 + 0.14, '1testo2.png')
+    # plot_single(I, 1e-3, tf, 2 * eta0, -np.pi / 2 + 0.14, '1testo3.png')
+    # plot_single(I, 1e-4, 20000, eta0, -np.pi / 2 + 0.14, '1testo4.png',
+    #             solve=solve_ic_base)
+    # plot_single(I, 1e-4, 20000, 1.1 * eta0, -np.pi / 2 + 0.14, '1testo5.png',
+    #             solve=solve_ic_base)
 
-    # run_stats(20)
-    # run_stats(10)
-    # run_stats(25)
+    run_stats(20)
+    run_stats(10)
+    run_stats(25)
