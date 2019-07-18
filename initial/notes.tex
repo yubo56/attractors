@@ -247,7 +247,7 @@ $\p*{\rd{\hat{s}}{t}}_{tide} = \epsilon \hat{s} \times \p*{\hat{l} \times
     \p*{\rd{\hat{s}}{t}}_{tide} &= \epsilon \p*{\hat{z} - s_z\hat{s}}
         ,\nonumber\\
         &= \epsilon \p*{-s_z s_x\hat{x} - s_zs_y\hat{y} + \p*{1 - s_z^2}
-            \hat{z}}.
+            \hat{z}}.\label{eq:p1_eom}
 \end{align}
 We run numerical simulations for weaker $\epsilon \ll \eta \ll 1$ and stronger
 $\epsilon \lesssim \eta \ll 1$.
@@ -459,12 +459,17 @@ necessarily escape-bound (can see \autoref{fig:CS4s} for more evidence).
 
 \section{Parametric Separatrix Hopping: Only changing $\eta$}\label{s:p2}
 
+\subsection{Using $\alpha = 1/\eta$}
+
 Though this section is located before the weak tidal friction section, we
 actually return to this second toy problem to get some practice on the Henrard
 paper, to confirm the accuracy of our simulations compared to analytical
 predictions, and to get some practice doing these new integrals. Consider the
-dissipation-free Cassini state system with a small but constant $\pd{\eta}{t} =
-\epsilon$. For clarity, the Hamiltonian is
+dissipation-free Cassini state system with a small but constant
+\begin{equation}
+    \pd{\eta}{t} = \epsilon.\label{eq:p2_eom}
+\end{equation}
+For clarity, the Hamiltonian is
 \begin{equation}
     H = -\alpha\frac{\mu^2}{2} +
         \mu \cos I - \sin I \sqrt{1 - \mu^2} \cos \phi.
@@ -615,6 +620,46 @@ obtain
 \end{equation}
 Indeed we get the same expression; this is probably since the approximations we
 made in writing down $B_i$ washed out the extra $\eta$ dependence.
+
+For reference, let's also write down the $B_i$ in the $\dot{\eta} = \epsilon
+\eta$ case. First, $B_{+}$:
+\begin{align*}
+    B_{top} &= \int\limits_{2\pi}^0 -\epsilon \eta \cos I\;\mathrm{d}\phi
+            + \frac{\epsilon}{2}\int\limits_{2\pi}^0
+                \sqrt{2\eta \sin I\p*{1 - \cos \phi}}\;\mathrm{d}\phi,\\
+        &= 2\pi \epsilon \eta \cos I - \frac{\epsilon}{2}8\sqrt{\eta \sin I}.
+\end{align*}
+Along the bottom leg, the first term changes signs (both integrals have their
+paths flipped, but the sign of the second integral also changes), and so
+\begin{equation}
+    B_{\pm} = \pm 2\pi \epsilon \eta \cos I
+        - \frac{\epsilon}{2}8\sqrt{\eta \sin I}.
+\end{equation}
+Generally, since $\eta$ is small, $B_{+} + B_- < -\abs*{B_+}, -\abs*{B_-}$ which
+implies guaranteed capture from both sides, as expected (note that in our actual
+paper, we compute changes for $h \equiv H^{(0)} - H_4$, while here we compute
+changes in $H_4 - H^{(0)}$, accounting for the change in sign).
+
+\subsection{Toy Problem 3: Including Toy Tides}
+
+Consider now the extended toy problem where we both include the tidal term
+\autoref{eq:p1_eom} and adiabatic parameter variation \autoref{eq:p2_eom}. In
+the interest of generality, we replace
+\begin{equation}
+    \rd{\eta}{\tau} = f \epsilon \eta,
+\end{equation}
+such that the two $\epsilon$-fast terms have a tunable relative strength
+$f \sim 1$.
+
+We can now compute the $\Delta_{\pm}$ changes in $h \equiv H^{(0)} - H_4$
+(following my paper's convention, rather than those earlier in these notes),
+which are:
+\begin{equation}
+    \Delta_{\pm} = \epsilon\s*{\mp 2\pi \p{1 - 2\eta \sin I - \eta^2 \cos^2 I} +
+        16\cos I\eta^{3/2}\sqrt{\sin I}} + f\epsilon
+            \s*{\mp 2\pi \eta \cos I + 4\sqrt{\eta \sin I}}.
+\end{equation}
+The two contributions are bracketed.
 
 \section{Weak Tidal Friction, changing $\eta$ and $\theta$}
 
