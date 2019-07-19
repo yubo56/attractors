@@ -103,7 +103,7 @@ def run_stats(I_deg, delta, p=None):
         return (
             (32 * np.cos(I) * eta + 8 * delta) * np.sqrt(eta * np.sin(I))
         ) / (
-            2 * np.pi * (1 - 2 * eta * np.cos(I) + delta * eta * np.cos(I))
+            2 * np.pi * (1 - 2 * eta * np.sin(I) + delta * eta * np.cos(I))
                 + (16 * np.cos(I) * eta + 4 * delta) * np.sqrt(eta * np.sin(I)))
     ax2.plot(eta_vals, fit(eta_vals), 'r', linewidth=2, label='Analytical')
     ax1.set_title(r'$I = %d^\circ$' % I_deg)
