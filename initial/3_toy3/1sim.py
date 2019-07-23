@@ -27,7 +27,7 @@ def run_single(I, tf, eta0, q0, delta):
 
 def stats_runner(I, q0, delta):
     tf = 3000
-    n_eta = 151
+    n_eta = 201
 
     def result_single(tf, eta0):
         ret = run_single(I, tf, eta0, q0, delta)
@@ -40,12 +40,13 @@ def stats_runner(I, q0, delta):
         _, _, t_cross, _ = get_areas(ret)
         crossed_idxs = np.where(ret.t > t_cross)[0]
         if len(crossed_idxs) == 0:
-            return dH_f > 0, -1
-        return dH_f > 0, ret.y[3, crossed_idxs[0]], ret.y[2, -1]
+            return dH_f > 0, eta0, -1
+        eta_cross = ret.sol(t_cross)[3]
+        return dH_f > 0, eta_cross, ret.y[2, -1]
 
     counts = 0
     res = []
-    for eta0 in np.linspace(0.1, 0.2, n_eta):
+    for eta0 in np.linspace(0.05, 0.2, n_eta):
         capture, eta_f, z_f = result_single(tf, eta0)
         print('\t', '%.3f' % q0, 'Finished', '%.3f' % (eta_f - eta0), capture,
               '%.3f' % z_f)
@@ -74,11 +75,11 @@ def run_stats(I_deg, delta, p=None):
 
     captures, escapes = [], []
     for res in res_arr:
-        for etaf, capture in res:
+        for eta_cross, capture in res:
             if capture:
-                captures.append(etaf)
+                captures.append(eta_cross)
             else:
-                escapes.append(etaf)
+                escapes.append(eta_cross)
 
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
     fig.subplots_adjust(hspace=0)

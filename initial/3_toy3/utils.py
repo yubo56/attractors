@@ -129,13 +129,15 @@ def get_areas(ret):
         mu_0_i, mu_0_f, mu_pi_i, mu_pi_f = sol_at_i_f[2]
         if np.sign(mu_pi_f - mu_0_f) != np.sign(mu_pi_i - mu_0_i):
             ends_circ = True
+            # extrapolate for crossing time as halfway around crossing orbit
             t_cross = (t_pi_f + t_pi_i) / 2
             # debug how much adiabaticity is violated during crossing
             # print('Etas during escape', sol_at_i_f[3])
 
     _lib_ts = t_pi[np.where(t_pi > t_0[-1])[0]]
     if len(_lib_ts) > 1:
-        t_cross = t_0[-1]
+        # extrapolate for crossing time as halfway around crossing orbit
+        t_cross = (_lib_ts[0] + _lib_ts[1]) / 2
 
         lib_ts = _lib_ts[ ::2] # only every other time
         for t_0_i, t_0_f in zip(lib_ts[ :-1], lib_ts[1: ]):

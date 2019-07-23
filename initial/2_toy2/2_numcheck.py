@@ -24,6 +24,14 @@ def arg_bot(phi):
     m = mu_down(phi)
     return m * (m / eta + np.cos(I))
 
+def arg2(phi):
+    return eta * (-np.cos(I) + np.sin(I) * np.sqrt((1 - np.cos(phi)) /
+        (2 * eta * np.sin(I))))
+
+def arg2_bot(phi):
+    return eta * (-np.cos(I) - np.sin(I) * np.sqrt((1 - np.cos(phi)) /
+        (2 * eta * np.sin(I))))
+
 if __name__ == '__main__':
     top = integrate.quad(arg, 0, 2 * np.pi)[0]
     bot = integrate.quad(arg_bot, 0, 2 * np.pi)[0]
@@ -32,5 +40,14 @@ if __name__ == '__main__':
         4 * np.pi * eta * np.cos(I)**2 +
           24 * np.cos(I) * np.sqrt(eta * np.sin(I)))
     tot_anal = (48 * np.cos(I) * np.sqrt(eta * np.sin(I)))
+    print(top_anal, top)
+    print(tot_anal, tot)
+
+    print('Version 2')
+    top = integrate.quad(arg2, 0, 2 * np.pi)[0]
+    bot = integrate.quad(arg2_bot, 0, 2 * np.pi)[0]
+    tot = top - bot
+    top_anal = -2 * np.pi * eta * np.cos(I) + 4 * np.sqrt(eta * np.sin(I))
+    tot_anal = 8 * np.sqrt(eta * np.sin(I))
     print(top_anal, top)
     print(tot_anal, tot)
