@@ -98,7 +98,21 @@ def zones(s_c=0.7, s0=7):
 
     plt.ylabel(r'$\mu$')
     plt.xlabel(r'$\phi$')
-    plt.xticks([0, np.pi, 2 * np.pi], labels=['0', r'$\pi$', r'$2\pi$'])
+    plt.xticks([]) # clear xticks?
+    plt.xticks(locs=[0, np.pi, 2 * np.pi], labels=['0', r'$\pi$', r'$2\pi$'])
+
+    # plot fake sample trajectory
+    _phi = np.linspace(0, 2 * np.pi, N)
+    phi = _phi[ :-7]
+    eta = s_c / s0
+    plt.plot(phi, eta * np.cos(I)
+             - np.sqrt(2 * eta * np.sin(I) * (1 - np.cos(phi)))
+             + (phi - np.pi) * 0.03,
+             'b', linewidth=2)
+    plt.plot(phi, eta * np.cos(I)
+             + np.sqrt(2 * eta * np.sin(I) * (1 - np.cos(phi)))
+             - (phi - np.pi) * 0.03,
+             'b', linewidth=2)
 
     plt.savefig('3zones.png')
     plt.close()
