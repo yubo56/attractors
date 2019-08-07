@@ -204,7 +204,7 @@ def run_stats(I_deg):
     ax1.plot(eta_vals, fit(eta_vals), 'r', linewidth=2, label='Analytical')
     ax2.set_title(r'$I = %d^\circ, \langle \eta_\star \rangle = %.3f$'
                   % (I_deg, mean_p))
-    ax1.set_ylabel('Capture Probability')
+    ax1.set_ylabel(r'$P_c$')
     ax2.set_ylabel('Counts')
     ax1.legend()
     plt.savefig('1hist%d.png' % I_deg, dpi=400)

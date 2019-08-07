@@ -435,10 +435,10 @@ def cross_times(trajs, I, eps, s_c, s0=10, tf=2500):
     p_hop = n_hop[valids] / (n_hop[valids] + n_cross[valids])
     p_hop_err = np.sqrt(n_hop[valids]) / (n_hop[valids] + n_cross[valids])
     ax2.errorbar(s_vals[valids], p_hop,
-                 yerr=p_hop_err, fmt='bo', label='Data')
+                 yerr=p_hop_err, fmt='C0o', label='Data')
     ax1.set_ylabel('Counts')
     ax2.set_xlabel(r'$s_\star$')
-    ax2.set_ylabel(r'$P_{hop}$')
+    ax2.set_ylabel(r'$P_{c}$')
 
     # overplot analytic estimate
     p_hop_top = 16 * np.sqrt(s_c / s_vals * np.sin(I))\

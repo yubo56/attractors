@@ -108,7 +108,7 @@ def run_stats(I_deg, delta, p=None):
                 + (16 * np.cos(I) * eta + 4 * delta) * np.sqrt(eta * np.sin(I)))
     ax2.plot(eta_vals, fit(eta_vals), 'r', linewidth=2, label='Analytical')
     ax1.set_title(r'$I = %d^\circ$' % I_deg)
-    ax2.set_ylabel('Capture Probability')
+    ax2.set_ylabel(r'$P_c$')
     ax1.set_ylabel('Counts')
     ax2.legend()
     plt.savefig('1hist%s.png' % my_fmt(I_deg, delta),

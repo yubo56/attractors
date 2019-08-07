@@ -38,7 +38,7 @@ def plot_manifolds(eta):
     phi1 = np.unwrap(_phi1 + np.pi) - 2 * np.pi
     term1 = np.where(phi1 < 0)[0][0]
     plt.plot(phi1[ :term1], s1[2, :term1], 'g',
-             label=r'$W_s^{(0)}$', linewidth=0.6)
+             label=r'$W_s^{L}$', linewidth=0.6)
 
     # forwards from CS4^0
     init = get_displaced(-1, 1)
@@ -51,7 +51,7 @@ def plot_manifolds(eta):
         phi2 < 1,
     ))[0][0]
     plt.plot(phi2[ :term2], s2[2, :term2], 'r',
-             label=r'$W_u^{(0)}$', linewidth=0.6)
+             label=r'$W_u^{L}$', linewidth=0.6)
 
     # backwards from CS4^1
     init = get_displaced(-1, -1)
@@ -60,7 +60,7 @@ def plot_manifolds(eta):
     phi3 = np.unwrap(_phi3 + np.pi)
     term3 = np.where(phi3 < 0)[0][0]
     plt.plot(phi3[ :term3], s3[2, :term3], 'k',
-             label=r'$W_s^{(1)}$', linewidth=0.6)
+             label=r'$W_s^{R}$', linewidth=0.6)
 
     # forwards from CS4^1
     init = get_displaced(1, -1)
@@ -69,7 +69,7 @@ def plot_manifolds(eta):
     phi4 = np.unwrap(_phi4 + np.pi)
     term4 = np.where(phi4 < 0)[0][0]
     plt.plot(phi4[ :term4], s4[2, :term4], 'k',
-             label=r'$W_u^{(1)}$', linewidth=0.6)
+             label=r'$W_u^{R}$', linewidth=0.6)
 
     plt.xlim([0, 2 * np.pi])
     mu1, mu2, mu3 = min(s1[2, :term1]), min(s2[2, :term2]), min(s3[2, :term3])
