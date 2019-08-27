@@ -580,7 +580,7 @@ Thus, our $B_i$ are
                 + \sin I\p*{\cos \phi \sqrt{1 - \mu^2} - 1}}{-\mu + \eta \cos I}
             \;\mathrm{d}\phi,\\
         &= \int_{\mathcal{C}_i} \epsilon \mu \eta
-            \p*{-\cos I + \sin I \frac{\cos \phi \sqrt{1 - \mu^2} - 1}{-\mu +
+            \p*{\cos I + \sin I \frac{\cos \phi \sqrt{1 - \mu^2} - 1}{-\mu +
             \eta \cos I}} \;\mathrm{d}\phi.
 \end{align*}
 That the second term does not diverge requires some careful work:
@@ -594,19 +594,19 @@ That the second term does not diverge requires some careful work:
             (1 - \cos \phi)}},\\
         &\approx \mp\sqrt{\frac{1 - \cos \phi}{2\eta \sin I}},\\
     B_i &= \int_{\mathcal{C}_i} \epsilon \mu \eta
-            \p*{-\cos I \pm \sin I
+            \p*{\cos I \pm \sin I
                 \sqrt{\frac{1 - \cos \phi}{2\eta \sin I}}} \;\mathrm{d}\phi.
 \end{align*}
 Note that the plus sign corresponds to the top integral, where $\mu - \eta \cos
 I > 0$. The top integral evaluates easily
 \begin{align*}
-    B_{top} &= \int\limits_{2\pi}^0 -\epsilon \mu \eta \cos I\;\mathrm{d}\phi
+    B_{top} &= \int\limits_{2\pi}^0 \epsilon \mu \eta \cos I\;\mathrm{d}\phi
             + \frac{\epsilon}{2}\int\limits_{2\pi}^0
                 \mu\sqrt{2\eta \sin I\p*{1 - \cos \phi}}\;\mathrm{d}\phi,\\
-        &= \epsilon \eta \cos I\p*{2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
-            + \frac{\epsilon}{2}\p*{\eta \cos I (8\sqrt{\eta \sin I})
+        &= -\epsilon \eta \cos I\p*{2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
+            - \frac{\epsilon}{2}\p*{\eta \cos I (8\sqrt{\eta \sin I})
             + 4\pi \eta \sin I},\\
-        &= \epsilon \eta \s*{
+        &= -\epsilon \eta \s*{
             2\pi \sin I + 12\sqrt{\eta \sin I}\cos I + 2\pi \eta \cos^2 I}.
 \end{align*}
 The bottom integral just flips the signs of the cross terms (the $\sqrt{\eta}$
@@ -624,15 +624,15 @@ made in writing down $B_i$ washed out the extra $\eta$ dependence.
 For reference, let's also write down the $B_i$ in the $\dot{\eta} = \epsilon
 \eta$ case. First, $B_{+}$:
 \begin{align*}
-    B_{top} &= \int\limits_{2\pi}^0 -\epsilon \eta \cos I\;\mathrm{d}\phi
+    B_{top} &= \int\limits_{2\pi}^0 \epsilon \eta \cos I\;\mathrm{d}\phi
             + \frac{\epsilon}{2}\int\limits_{2\pi}^0
                 \sqrt{2\eta \sin I\p*{1 - \cos \phi}}\;\mathrm{d}\phi,\\
-        &= 2\pi \epsilon \eta \cos I - \frac{\epsilon}{2}8\sqrt{\eta \sin I}.
+        &= -2\pi \epsilon \eta \cos I - \frac{\epsilon}{2}8\sqrt{\eta \sin I}.
 \end{align*}
 Along the bottom leg, the first term changes signs (both integrals have their
 paths flipped, but the sign of the second integral also changes), and so
 \begin{equation}
-    B_{\pm} = \pm 2\pi \epsilon \eta \cos I
+    B_{\pm} = \mp 2\pi \epsilon \eta \cos I
         - \frac{\epsilon}{2}8\sqrt{\eta \sin I}.
 \end{equation}
 Generally, since $\eta$ is small, $B_{+} + B_- < -\abs*{B_+}, -\abs*{B_-}$ which
@@ -657,7 +657,7 @@ which are:
 \begin{equation}
     \Delta_{\pm} = \epsilon\s*{\mp 2\pi \p{1 - 2\eta \sin I - \eta^2 \cos^2 I} +
         16\cos I\eta^{3/2}\sqrt{\sin I}} + f\epsilon
-            \s*{\mp 2\pi \eta \cos I + 4\sqrt{\eta \sin I}}.
+            \s*{\pm 2\pi \eta \cos I + 4\sqrt{\eta \sin I}}.
 \end{equation}
 The two contributions are bracketed.
 

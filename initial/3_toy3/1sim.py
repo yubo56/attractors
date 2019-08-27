@@ -1,5 +1,7 @@
 import os
 import scipy.optimize as opt
+from scipy import integrate
+from scipy.interpolate import interp1d
 import numpy as np
 import multiprocessing as mp
 
@@ -12,7 +14,7 @@ plt.rc('font', family='serif', size=12)
 
 PLOT_DIR = '1plots'
 from utils import to_cart, to_ang, solve_ic, get_areas, get_plot_coords,\
-    roots, H, get_mu4
+    roots, H
 
 EPS = 3e-4
 
@@ -54,6 +56,150 @@ def stats_runner(I, q0, delta):
         if capture:
                 counts += 1
     return res
+
+def get_hop_anal(I, eta, delta):
+    ''' P_hop(eta) analytical from bottom'''
+    bot = (
+        2 * np.pi * (1 - 2 * eta * np.sin(I) - delta * eta * np.cos(I))
+            + (16 * np.cos(I) * eta + 4 * delta) * np.sqrt(eta * np.sin(I)))
+    top = (
+        2 * np.pi * (1 - 2 * eta * np.sin(I) - delta * eta * np.cos(I))
+            - (16 * np.cos(I) * eta + 4 * delta) * np.sqrt(eta * np.sin(I)))
+    return (bot - top) / bot
+
+def get_hop_approx(I, eta, delta):
+    ''' eta = scalar, approximate mu(phi) '''
+    def mu_up(phi):
+        return eta * np.cos(I) + np.sqrt(2 * eta * np.sin(I) * (1 - np.cos(phi)))
+
+    def mu_down(phi):
+        return eta * np.cos(I) - np.sqrt(2 * eta * np.sin(I) * (1 - np.cos(phi)))
+
+    def arg_top(phi):
+        m = mu_up(phi)
+        return (1 - m**2) + delta * (
+            -eta * np.cos(I) - np.sqrt(eta * np.sin(I) * (1 - np.cos(phi)) / 2)
+        )
+
+    def arg_bot(phi):
+        m = mu_down(phi)
+        return (1 - m**2) + delta * (
+            -eta * np.cos(I) + np.sqrt(eta * np.sin(I) * (1 - np.cos(phi)) / 2)
+        )
+
+    eps = 0.15 # integrand = 0/0 @ endpoints, omit
+    top = integrate.quad(arg_top, eps, 2 * np.pi - eps)[0]
+    bot = integrate.quad(arg_bot, eps, 2 * np.pi - eps)[0]
+    return (bot - top) / bot
+
+def get_hop_num(I, eta, delta):
+    ''' eta = scalar, numerical mu(phi) '''
+    q4 = roots(I, eta)[3]
+    def mu_up(phi):
+        def dH(q):
+            return H(I, eta, q, phi) - H(I, eta, q4, 0)
+        return np.cos(opt.brentq(dH, q4, 0))
+
+    def mu_down(phi):
+        def dH(q):
+            return H(I, eta, q, phi) - H(I, eta, q4, 0)
+        return np.cos(opt.brentq(dH, -np.pi, q4))
+
+    def arg_top(phi):
+        m = mu_up(phi)
+        return (1 - m**2) + delta * eta * (
+            np.sin(I) - eta * np.cos(I)**2
+                + (m * np.cos(I) - np.sin(I) * np.sqrt(1 - m**2)
+                   * np.cos(phi))) / (-m + eta * np.cos(I))
+
+    def arg_bot(phi):
+        m = mu_down(phi)
+        return (1 - m**2) + delta * eta * (
+            np.sin(I) - eta * np.cos(I)**2
+                + (m * np.cos(I) - np.sin(I) * np.sqrt(1 - m**2)
+                   * np.cos(phi))) / (-m + eta * np.cos(I))
+
+    eps = 0.15 # integrand = 0/0 @ endpoints, omit
+    top = integrate.quad(arg_top, eps, 2 * np.pi - eps)[0]
+    bot = integrate.quad(arg_bot, eps, 2 * np.pi - eps)[0]
+    return (bot - top) / bot
+
+def get_hop_traj(I, eta_i, delta):
+    tf = 150
+    # quick heuristic calculation of Delta_-, to IC for evolve around sep
+    q4 = roots(I, eta_i)[3]
+    def mu_down(phi):
+        return eta_i * np.cos(I) - np.sqrt(
+            2 * eta_i * np.sin(I) * (1 - np.cos(phi)))
+
+    def arg_top(phi):
+        m = mu_up(phi)
+        return (1 - m**2) + delta * (
+            -eta_i * np.cos(I) - np.sqrt(eta_i * np.sin(I) * (1 - np.cos(phi)) / 2)
+        )
+
+    def arg_bot(phi):
+        m = mu_down(phi)
+        return (1 - m**2) + delta * (
+            -eta_i * np.cos(I) + np.sqrt(eta_i * np.sin(I) * (1 - np.cos(phi)) / 2)
+        )
+
+    bot = EPS * integrate.quad(arg_bot, 0, 2 * np.pi)[0]
+    def dH(q):
+        # return bot/5 below H4
+        return H(I, eta_i, q, 0) - (H(I, eta_i, q4, 0) - bot / 5)
+    q0 = opt.brentq(dH, -np.pi, q4)
+    y0 = [*to_cart(q0, 0), eta_i]
+    ret = solve_ic(I, EPS, delta, y0, tf)
+
+    # figure out timestamps of end of bottom (max(phi)), end of top (min(phi))
+    # examine over t in [0, t_events[0][3]], which is after 1 circle
+    # mostly monotonic function, should converge easily if restrict domain well
+    max_phi_val = lambda t: -to_ang(*ret.sol(t)[ :3])[1]
+    ret1 = opt.minimize(max_phi_val, ret.t_events[0][3] / 2)
+    end_bottom = ret1.x[0]
+
+    min_phi_val = lambda t: to_ang(*ret.sol(t)[ :3])[1]
+    ret2 = opt.minimize(min_phi_val, 2 * ret.t_events[0][3] / 2)
+    end_top = ret2.x[0]
+
+    # now actually integrate, using realistic values
+    def arg_top(phi):
+        t = np.linspace(end_bottom, end_top, 200)
+        x, y, z, eta_sol = ret.sol(t)
+        q, phi_sol = to_ang(x, y, z)
+        m = interp1d(phi_sol, np.cos(q))
+        eta = interp1d(phi_sol, eta_sol)
+        try:
+            return (1 - m(phi)**2) + delta * eta(phi) * (
+                np.sin(I) - eta(phi) * np.cos(I)**2
+                    + (m(phi) * np.cos(I) - np.sin(I) * np.sqrt(1 - m(phi)**2)
+                       * np.cos(phi))) / (-m(phi) + eta(phi) * np.cos(I))
+        except:
+            print(phi)
+            raise
+    def arg_bot(phi):
+        t = np.linspace(0, end_bottom, 200)
+        x, y, z, eta_sol = ret.sol(t)
+        q, phi_sol = to_ang(x, y, z)
+        m = interp1d(phi_sol, np.cos(q))
+        eta = interp1d(phi_sol, eta_sol)
+        try:
+            return (1 - m(phi)**2) + delta * eta(phi) * (
+                np.sin(I) - eta(phi) * np.cos(I)**2
+                    + (m(phi) * np.cos(I) - np.sin(I) * np.sqrt(1 - m(phi)**2)
+                       * np.cos(phi))) / (-m(phi) + eta(phi) * np.cos(I))
+        except:
+            print(phi, phi_sol.min(), phi_sol.max())
+            raise
+
+    eps = 0.4 # integrand = 0/0 @ endpoints + traj doesn't go all the way
+    phi_vals = np.linspace(eps, 2 * np.pi - eps, 201)
+    top_vals = [arg_top(f) for f in phi_vals]
+    bot_vals = [arg_bot(f) for f in phi_vals]
+    top = integrate.simps(top_vals, x=phi_vals)
+    bot = integrate.simps(bot_vals, x=phi_vals)
+    return (bot - top) / bot
 
 def run_stats(I_deg, delta, p=None):
     I = np.radians(I_deg)
@@ -98,15 +244,16 @@ def run_stats(I_deg, delta, p=None):
                  yerr = np.sqrt(n[0][nonzero_idxs]) / n[1][nonzero_idxs],
                  fmt='o', label='Data')
 
-    # overplot fit
-    def fit(eta):
-        ''' P_hop(eta) analytical from bottom'''
-        return (
-            (32 * np.cos(I) * eta + 8 * delta) * np.sqrt(eta * np.sin(I))
-        ) / (
-            2 * np.pi * (1 - 2 * eta * np.sin(I) + delta * eta * np.cos(I))
-                + (16 * np.cos(I) * eta + 4 * delta) * np.sqrt(eta * np.sin(I)))
-    ax2.plot(eta_vals, fit(eta_vals), 'r', linewidth=2, label='Analytical')
+    # overplot fits
+    fit_anal = get_hop_anal(I, eta_vals, delta)
+    ax2.plot(eta_vals, fit_anal, 'r', linewidth=2, label='An.')
+    # fit_quad_approx = [get_hop_approx(I, eta, delta) for eta in eta_vals]
+    # ax2.plot(eta_vals, fit_quad_approx, 'g:', linewidth=2, label='Approx. Quad')
+    # fit_quad_num = [get_hop_num(I, eta, delta) for eta in eta_vals]
+    # ax2.plot(eta_vals, fit_quad_num, 'k:', linewidth=2, label='Full num')
+    # fit_quad_traj = [get_hop_traj(I, eta, delta) for eta in eta_vals]
+    # ax2.plot(eta_vals, fit_quad_traj, 'm:', linewidth=2, label='Num int')
+
     ax1.set_title(r'$I = %d^\circ$' % I_deg)
     ax2.set_ylabel(r'$P_c$')
     ax1.set_ylabel('Counts')

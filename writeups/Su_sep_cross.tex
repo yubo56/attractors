@@ -432,7 +432,7 @@ $\mathcal{C}_{\pm}$; careful work shows these zeros cancel against zeros of
 $\pd{h}{\eta}$, and
 \begin{align}
     \Delta_{\pm} &= \int\limits_{\mathcal{C}_{\pm}} \eta'
-        \p{\cos I \mp \sin I \sqrt{\frac{1 - \cos \phi}{2\eta\sin I}}}
+        \p{-\cos I \mp \sin I \sqrt{\frac{1 - \cos \phi}{2\eta\sin I}}}
             \;\mathrm{d}\phi,\label{eq:p1_delta_eq}\\
         &= \mp 2\pi \epsilon \eta \cos I
             + 4\epsilon\sqrt{\eta \sin I}.\label{eq:p1_delta}
@@ -465,9 +465,9 @@ separatrix. There are then three possibilities:
         \end{figure}
 
     \item If $\eta_\star > \frac{4\sin I}{\pi^2 \cos^2 I}, \eta_\star < \eta_c$,
-        then the separatrix still exists, and $\Delta_+ < 0, \Delta_- > 0$,
-        $\Delta_+ + \Delta_- > 0$. This implies: zone I + zone II trajectories
-        do not experience separatrix encounters, while zone III trajectories are
+        then the separatrix still exists, and $\Delta_- < 0, \Delta_+ > 0$,
+        $\Delta_+ + \Delta_- > 0$. This implies: zone III + zone II trajectories
+        do not experience separatrix encounters, while zone I trajectories are
         captured into zone II with probability
         \begin{equation}
             P_c = \frac{8\sqrt{\eta_\star \sin I}}{2\pi \eta_\star \cos I +
@@ -495,9 +495,9 @@ transition into zones I/III with probabilities given respectively (see
 \autoref{ss:z2_ic}):
 \begin{equation}
     \begin{split}
-        P_{II \to I} &= \frac{2\pi \eta_\star \cos I + 4\sqrt{\eta_\star \sin I}}
+        P_{II \to I} &= \frac{-2\pi \eta_\star \cos I + 4\sqrt{\eta_\star \sin I}}
             {8\sqrt{\eta_\star \sin I}}, \\
-        P_{II \to III} &= \frac{-2\pi \eta_\star \cos I + 4\sqrt{\eta_\star \sin
+        P_{II \to III} &= \frac{2\pi \eta_\star \cos I + 4\sqrt{\eta_\star \sin
             I}} {8\sqrt{\eta_\star \sin I}}.
     \end{split}
 \end{equation}
@@ -751,13 +751,13 @@ $\mathcal{C}_{\pm}$ is simply combining the results of \autoref{eq:p1_delta} and
     \Delta_{\pm} ={}& \epsilon\s{
         \mp 2\pi \p{1 - 2\eta \sin I - \eta^2 \cos^2 I}
             + 16\cos I\eta^{3/2}\sqrt{\sin I}}\nonumber\\
-        &+ \delta \s{\mp 2\pi \eta \cos I + 4\sqrt{\eta \sin I}}.
+        &+ \delta \s{\pm 2\pi \eta \cos I + 4\sqrt{\eta \sin I}}.
 \end{align}
 Thus, the capture probability from a zone III initial condition into the
 separatrix is
 \begin{equation}
     P_c \approx \frac{\p{32 \eta_\star \cos I + 8f}\sqrt{\eta_\star \sin I}}{
-        2\pi\p{1 - 2\eta_{\star}\sin I + f\eta_\star \cos I}
+        2\pi\p{1 - 2\eta_{\star}\sin I - f\eta_\star \cos I}
             + \p{16\eta_\star\cos I + 4f} \sqrt{\eta_\star\sin I}}.
             \label{eq:p3_p_c}
 \end{equation}
