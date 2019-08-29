@@ -450,7 +450,7 @@ This agrees perfectly with the cases we've run.
 to be
 \begin{equation}
     P_{hop} = \frac{16\eta^{3/2}\cos I \sqrt{\sin I}}{\pi
-        \p{1 - 2\eta \sin I - \eta^2 \cos^2 I}
+        \p*{1 - 2\eta \sin I - \eta^2 \cos^2 I}
         + 8\eta^{3/2}\cos I \sqrt{\sin I}}.
 \end{equation}
 It bears noting this formula slightly overpredicts $P_{hop}$ compared to the
@@ -655,7 +655,7 @@ We can now compute the $\Delta_{\pm}$ changes in $h \equiv H^{(0)} - H_4$
 (following my paper's convention, rather than those earlier in these notes),
 which are:
 \begin{equation}
-    \Delta_{\pm} = \epsilon\s*{\mp 2\pi \p{1 - 2\eta \sin I - \eta^2 \cos^2 I} +
+    \Delta_{\pm} = \epsilon\s*{\mp 2\pi \p*{1 - 2\eta \sin I - \eta^2 \cos^2 I} +
         16\cos I\eta^{3/2}\sqrt{\sin I}} + f\epsilon
             \s*{\pm 2\pi \eta \cos I + 4\sqrt{\eta \sin I}}.
 \end{equation}
@@ -1303,38 +1303,64 @@ per recent developments)
             -\frac{s}{s_c}\mu + \cos I}\;\mathrm{d}\phi,\\
         &= \int \frac{\dot{s}s_c}{2s^2}\s*{\frac{s\mu}{s_c} + \cos
             I}\;\mathrm{d}\phi,\\
-        &= \pm \int \epsilon 2\Omega_1
+        &= \int \epsilon 2\Omega_1
             \p*{\mu_{\pm} - \frac{s}{2\Omega_1}\p*{1 + \mu_{\pm}^2}}
-                \frac{s_c}{2s^2} \sqrt{2\frac{s_c}{s} \sin I\p*{1 - \cos \phi}}
+                \frac{s_c}{2s^2} \s*{
+                    2\cos I \pm
+                    \sqrt{2\frac{s}{s_c} \sin I\p*{1 - \cos \phi}}}
                 \;\mathrm{d}\phi,\\
-        &\approx \pm \frac{\epsilon \Omega_1 s_c}{s^2}
-            \int \p*{\mu_{\pm} - \frac{s}{2\Omega_1}}
-            \sqrt{2\frac{s_c}{s} \sin I\p*{1 - \cos \phi}} \;\mathrm{d}\phi,\\
-        &\approx \pm\frac{\epsilon \Omega_1 s_c}{s^2}
-            \int \p*{\mu_4 - \frac{s}{2\Omega_1} \pm
-                \sqrt{2\frac{s_c}{s} \sin I\p*{1 - \cos \phi}}}
-            \sqrt{2\frac{s_c}{s} \sin I\p*{1 - \cos \phi}} \;\mathrm{d}\phi,\\
-        &= \frac{\epsilon \Omega_1 s_c}{s^2}\s*{
-            \pm \p*{\mu_4 - \frac{s}{2\Omega_1}}\p*{-8\sqrt{\eta \sin I}}
-                + 4\pi \frac{s_c}{s}\sin I}.
+        &\approx \epsilon \frac{s_c}{s^2} \int
+            \p*{\mu_{\pm} - \frac{s}{2}}
+                \s*{2\cos I \pm \sqrt{\frac{2 \sin I}{\eta}\p*{1 - \cos \phi}}}
+                \;\mathrm{d}\phi.
 \end{align*}
+At this point, the integral is rather messy, so we have approximated $1 +
+\mu_{\pm}^2 \approx 1$, set $\epsilon = \Omega_1 = 1$, then split $\mu_{\pm} -
+s/2$ into two terms, $\mu_4 - s/2$ and the square root. We further break down
+into three terms to evaluate the integral of the product: the $2\cos I$ term,
+the product of the two square root components. These three integrals are
+respectively
+\begin{align*}
+    \int_{\pm} 2\cos I \p*{\mu_{\pm} - \frac{s}{2}}\;\mathrm{d}\phi &=
+        -2\cos I\p*{\pm 2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
+        \pm 2\pi s\cos I,\\
+    \pm \int_{\pm} \p*{\mu_4 - \frac{s}{2}}
+            \sqrt{\frac{2\sin I}{\eta}\p*{1 - \cos \phi}} \;\mathrm{d}\phi &=
+        \eta \cos I \p*{-8\sqrt{\sin I / \eta}}
+            + \frac{s}{2}8\sqrt{\sin I/\eta} ,\\
+    \int_{\pm} 2\sin I \p*{1 - \cos \phi}\;\mathrm{d}\phi &= \mp 4\pi \sin I.
+\end{align*}
+
 Indeed, the sum over the two legs is positive, which is expected: during
 spindown, the separatrix expands, so the separatrix must have $\Delta H > 0$
 owing just to adiabatic expansion.
 
 For the $\dot{\mu}$ integral, the integrand is $\p*{\frac{2\Omega}{s} - \mu}$
 times the original integrand; this means the final result is $\frac{2\Omega}{s}$
-times the old result plus a contribution approximately $-\int \epsilon \mu
-\;\mathrm{d}\phi$. This latter term is a purely antisymmetric contribution, so
-we may approximate
+times the old result plus a contribution $\int \epsilon \p*{1 - \mu^2}\p*{-\mu}
+\;\mathrm{d}\phi$. This second term can be evaluated exactly, and we obtain
 \begin{align*}
     \int_{\mathcal{C}_{\pm}}\dot{\mu}^{(1)}\;\mathrm{d}\phi
-        &\approx \epsilon\frac{2\Omega}{s}\p{\mp 2\pi
+        &\approx \epsilon\frac{2\Omega}{s}\p*{\mp 2\pi\p*{1 - 2\eta \sin I}
             + 16\cos I \eta^{3/2}\sqrt{\sin I}}
-            + 8\epsilon\sqrt{\eta \sin I},\\
-        &\approx \mp \frac{4\pi\epsilon \Omega}{s} + 8\sqrt{\eta \sin I}.
+            + 8\epsilon\sqrt{\eta \sin I}
+            \pm 2 \pi \eta \cos I
+            - \frac{64}{3}\epsilon \p*{\eta \sin I}^{3/2}.
 \end{align*}
 This is in agreement with our work from 5.1. Thus, the total expression is
+\begin{align}
+    \frac{\Delta_{\pm}}{\epsilon} ={}&
+        -2\cos I\p*{\pm 2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
+        \pm 2\pi s\cos I
+        + \eta \cos I \p*{-8\sqrt{\sin I / \eta}}
+            + \frac{s}{2}8\sqrt{\sin I/\eta}\nonumber\\
+        &+ \frac{2\Omega}{s}\p*{\mp 2\pi\p*{1 - 2\eta \sin I}
+            + 16\cos I \eta^{3/2}\sqrt{\sin I}}
+            + 8\sqrt{\eta \sin I}
+            \pm 2 \pi \eta \cos I
+            - \frac{64}{3} \p*{\eta \sin I}^{3/2},\\
+    P_c ={}& \frac{\Delta_+ + \Delta_-}{\Delta_-}.
+\end{align}
 
 \end{document}
 

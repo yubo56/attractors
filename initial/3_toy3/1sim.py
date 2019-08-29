@@ -68,7 +68,7 @@ def get_hop_anal(I, eta, delta):
     return (bot - top) / bot
 
 def get_hop_approx(I, eta, delta):
-    ''' eta = scalar, approximate mu(phi) '''
+    ''' eta = scalar, numerically integrate over approximate separatrix '''
     def mu_up(phi):
         return eta * np.cos(I) + np.sqrt(2 * eta * np.sin(I) * (1 - np.cos(phi)))
 
@@ -93,7 +93,7 @@ def get_hop_approx(I, eta, delta):
     return (bot - top) / bot
 
 def get_hop_num(I, eta, delta):
-    ''' eta = scalar, numerical mu(phi) '''
+    ''' eta = scalar, numerically integrate over exact separatrix '''
     q4 = roots(I, eta)[3]
     def mu_up(phi):
         def dH(q):
@@ -125,6 +125,7 @@ def get_hop_num(I, eta, delta):
     return (bot - top) / bot
 
 def get_hop_traj(I, eta_i, delta):
+    ''' eta = scalar, numerically integrate over IC-integrated trajectory '''
     tf = 150
     # quick heuristic calculation of Delta_-, to IC for evolve around sep
     q4 = roots(I, eta_i)[3]
@@ -246,11 +247,11 @@ def run_stats(I_deg, delta, p=None):
 
     # overplot fits
     fit_anal = get_hop_anal(I, eta_vals, delta)
-    ax2.plot(eta_vals, fit_anal, 'r', linewidth=2, label='An.')
+    ax2.plot(eta_vals, fit_anal, 'r', linewidth=2, label='Anal.')
     # fit_quad_approx = [get_hop_approx(I, eta, delta) for eta in eta_vals]
-    # ax2.plot(eta_vals, fit_quad_approx, 'g:', linewidth=2, label='Approx. Quad')
-    # fit_quad_num = [get_hop_num(I, eta, delta) for eta in eta_vals]
-    # ax2.plot(eta_vals, fit_quad_num, 'k:', linewidth=2, label='Full num')
+    # ax2.plot(eta_vals, fit_quad_approx, 'g:', linewidth=2, label='Num.')
+    fit_quad_num = [get_hop_num(I, eta, delta) for eta in eta_vals]
+    ax2.plot(eta_vals, fit_quad_num, 'k:', linewidth=2, label='Num.')
     # fit_quad_traj = [get_hop_traj(I, eta, delta) for eta in eta_vals]
     # ax2.plot(eta_vals, fit_quad_traj, 'm:', linewidth=2, label='Num int')
 

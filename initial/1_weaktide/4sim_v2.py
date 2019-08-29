@@ -7,6 +7,8 @@ detection/pretty plotting and t/s_cross statistics
 import os
 import numpy as np
 from multiprocessing import Pool
+import scipy.optimize as opt
+from scipy import integrate
 
 import pickle
 import matplotlib
@@ -20,6 +22,9 @@ from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
 PLOT_DIR = '4plots'
 PKL_FILE = '4dat%s.pkl'
 N_PTS = 100
+# eta higher than this, do not attempt phop matching; sep is hard to find
+# bit generous, otherwise sep is hard to find eta ~< 0.3
+ETA_CUTOFF = 0.3
 
 def get_name(s_c, eps, mu0, phi0):
     return stringify(s_c, mu0, phi0, strf='%.3f').replace('-', 'n')
@@ -441,17 +446,103 @@ def cross_times(trajs, I, eps, s_c, s0=10, tf=2500):
     ax2.set_ylabel(r'$P_{c}$')
 
     # overplot analytic estimate
-    p_hop_top = 16 * np.sqrt(s_c / s_vals * np.sin(I))\
-        + 8 * np.pi * s_c * np.sin(I) / s_vals
-    p_hop_bot = 4 * np.pi / s_vals \
-        - 8 * s_c / s_vals**2 * np.sqrt(s_c * np.sin(I) / s_vals)\
-        * (s_vals / 2 - s_c * np.cos(I) / s_vals)
-    p_hop_anal = p_hop_top / p_hop_bot
-    ax2.plot(s_vals, np.minimum(p_hop_anal, np.ones_like(p_hop_anal)),
-             'r', label='Anal')
+    def get_hop_approx(s):
+        ''' eta = scalar, approx mu(phi) '''
+        eta = s_c / s
+        if eta > ETA_CUTOFF:
+            return -1
+        [mu4] = get_mu4(I, s_c, np.array([s]))
+
+        def mu_up(phi):
+            def dH(mu):
+                return H(I, s_c, s, mu, phi) - H(I, s_c, s, mu4, 0)
+            return opt.brentq(dH, mu4, 1)
+        def mu_down(phi):
+            def dH(mu):
+                return H(I, s_c, s, mu, phi) - H(I, s_c, s, mu4, 0)
+            return opt.brentq(dH, -1, mu4)
+
+        def arg_top(phi):
+            m = mu_up(phi)
+            return (
+                2 * (m - s / 2) * s_c / (2 * s**2) * (
+                    m / eta + np.cos(I))
+                + (1 - m**2) * (2 / s - m)
+            )
+        def arg_bot(phi):
+            m = mu_down(phi)
+            return (
+                2 * (m - s * (1 + m**2) / 2) * s_c / (2 * s**2) * (
+                    m / eta + np.cos(I)) +
+                (1 - m**2) * (2 / s - m)
+            )
+
+        eps = 0.2 # don't integrate too close to edges, hard to find separatrix
+        top = -integrate.quad(arg_top, eps, 2 * np.pi - eps)[0]
+        bot = integrate.quad(arg_bot, eps, 2 * np.pi - eps)[0]
+
+        return min((top + bot) / bot, 1)
+
+    def get_hop_anal(s):
+        eta = s_c / s
+        top_anal = s_c / s**2 * (
+            -2 * np.cos(I) * (
+                2 * np.pi * eta * np.cos(I)
+                + (8 * np.sqrt(eta * np.sin(I)))
+            )
+            + s * np.cos(I) * 2 * np.pi
+
+            + (eta * np.cos(I)) * (
+                -8 * np.sqrt(np.sin(I) / eta)
+            )
+            + (s / 2) * (8 * np.sqrt(np.sin(I) / eta))
+
+            - 4 * np.pi * np.sin(I)
+        ) + 2 / s * ( # second term
+            -2 * np.pi * (1 - 2 * eta * np.sin(I))
+                - (16 * np.cos(I) * eta) * np.sqrt(eta * np.sin(I))
+        ) + (
+            8 * np.sqrt(eta * np.sin(I))
+            + 2 * np.pi * eta * np.cos(I)
+            - 64/3 * (eta * np.sin(I))**(3/2)
+        )
+        bot_anal = s_c / s**2 * (
+            -2 * np.cos(I) * (
+                -2 * np.pi * eta * np.cos(I)
+                + (8 * np.sqrt(eta * np.sin(I)))
+            )
+            - s * np.cos(I) * 2 * np.pi
+
+            + (eta * np.cos(I)) * (
+                -8 * np.sqrt(np.sin(I) / eta)
+            )
+            + (s / 2) * (8 * np.sqrt(np.sin(I) / eta))
+
+            + 4 * np.pi * np.sin(I)
+        ) + 2 / s * ( # second term
+            +2 * np.pi * (1 - 2 * eta * np.sin(I))
+                - (16 * np.cos(I) * eta) * np.sqrt(eta * np.sin(I))
+        ) + (
+            8 * np.sqrt(eta * np.sin(I))
+            - 2 * np.pi * eta * np.cos(I)
+            - 64/3 * (eta * np.sin(I))**(3/2)
+        )
+        pc = (top_anal + bot_anal) / bot_anal
+        pc[np.where(eta > ETA_CUTOFF)[0]] = -1
+        return np.minimum(pc, np.ones_like(pc))
+
+    eta_vals = s_c / s_vals
+    p_hop_anal = get_hop_anal(s_vals)
+    p_hop_approx = np.array([get_hop_approx(s) for s in s_vals])
+    anal_idx = np.where(p_hop_anal > 0)[0]
+    app_idx = np.where(p_hop_approx > 0)[0]
+    ax2.plot(s_vals[anal_idx], p_hop_anal[anal_idx], 'r', label='Anal.')
+    ax2.plot(s_vals[app_idx], p_hop_approx[app_idx], 'k:', label='Num.')
 
     ax1.legend()
     ax2.legend()
+    ax2.set_ylim([-0.1, 1.1])
+    ax2.set_yticks([0, 0.25, 0.5, 0.75, 1])
     plt.suptitle(r'$s_c = %.2f$' % s_c)
     plt.savefig('4_cross_hist%s.png' % s_c_str(s_c), dpi=400)
     plt.close(fig)

@@ -765,14 +765,11 @@ An $\eta_\star^2$ term has been dropped from the denominator, and $f \equiv
 \frac{\delta}{\epsilon}$ measures the relative strength of the two
 perturbations. Note that $f = 0$ reduces to \autoref{s:p2}.
 
-The accuracy of \autoref{eq:p3_p_c} is illustrated in \autoref{fig:p3_hist}. A
-small deviation can be noticed at larger $\eta_\star$ values as $f$ is
-increased. This is attributed to the separatrix becoming significantly
-asymmetric around $\eta \sim 0.15$, therefore our \autoref{eq:mu_sep} is no
-longer an accurate approximation. When $f = 0$, the small deviations are
-significantly suppressed as the numerator scales with $\eta_\star^{3/2}$
-compared to when $f \sim 1$, where the numerator instead scales with
-$\eta_{\star}^{1/2}$.
+The good accuracy of \autoref{eq:p3_p_c} is illustrated in
+\autoref{fig:p3_hist}. Both a red line from \autoref{eq:p3_p_c} and a black line
+from numerically evaluating $\Delta h$ along the numerically-determined
+separatrix (obtained by solving $H(\mu_{sep}, \phi_{sep}) = H_4$) are presented.
+Good agreement is observed.
 \begin{figure}
     \centering
     \begin{subfigure}{\columnwidth}
@@ -794,9 +791,9 @@ $\eta_{\star}^{1/2}$.
     \end{subfigure}
     \caption{Histogram of simulation and inferred $P_c(s_\star)$ compared with
     \autoref{eq:p3_p_c}, where $f = \delta/\epsilon$ is varied. $3 \times 10^4$
-    initial conditions were used for both plots. While the $f = 0$ case
-    indicates perfect agreement, the other two cases show increasingly large
-    deviations at larger $\eta_\star$.}\label{fig:p3_hist}
+    initial conditions were used for both plots. The solid red line denotes the
+    prediction of \autoref{eq:p3_p_c}, while the black dotted line is estimated
+    via numerical integration instead.}\label{fig:p3_hist}
 \end{figure}
 
 \section{Problem 4: Weak Tidal Dissipation (sims)}\label{s:p4}
@@ -839,31 +836,30 @@ are two contributions. In particular, we write
 Both of these integrals were performed in preceeding sections, and we may
 express in closed form (dropping some terms for simplicity)
 \begin{align}
-    \Delta_{\pm} \approx{}& \epsilon\z{
-            \mp \frac{4\pi  \Omega_1}{s} + 8\sqrt{\frac{s_c}{s}\sin I}
-            }\nonumber\\
-        &+\epsilon\z{\frac{ \Omega_1 s_c}{s^2}
-            \s{\pm 8\sqrt{\frac{s_c}{s} \sin I}
-            \p{\frac{s}{2\Omega_1} - \frac{s_c\cos I}{s}}
-                + 4\pi \frac{s_c}{s}\sin I}}.\label{eq:delta_p4}
+    \frac{\Delta_{\pm}}{\epsilon} ={}&
+        -2\cos I\p*{\pm 2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
+        \pm 2\pi s\cos I\nonumber\\
+        &+ \eta \cos I \p*{-8\sqrt{\sin I / \eta}}
+            + \frac{s}{2}8\sqrt{\sin I/\eta}\nonumber\\
+        &+ \frac{2\Omega}{s}\p*{\mp 2\pi\p*{1 - 2\eta \sin I}
+            + 16\cos I \eta^{3/2}\sqrt{\sin I}}\nonumber\\
+        &+ 8\sqrt{\eta \sin I}
+            \pm 2 \pi \eta \cos I
+            - \frac{64}{3} \p*{\eta \sin I}^{3/2},\label{eq:delta_p4}\\
+    P_{c} &= \frac{\Delta_+ + \Delta_-}{\Delta_-}. \label{eq:p_c_p4}
 \end{align}
-We can then compute separatrix capture probability from zone III (which is $P_c
-= \frac{\Delta_+ + \Delta_-}{\Delta_-}$), again evaluating at $s = s_\star$:
-\begin{equation}
-    P_c(s_\star) = \frac{16\sqrt{\frac{s_c}{s_\star}\sin I} +
-        8\pi\frac{s_c}{s_\star}\sin I}{
-            \frac{4\pi \Omega_1}{s_\star} - \frac{8\Omega_1
-            s_c}{s_\star^2}\sqrt{\frac{s_c}{s_\star}\sin I}
-            \p{\frac{s_\star}{2\Omega_1} - \frac{s_c \cos I}{s_\star}}}.
-            \label{eq:p_c_p4}
-\end{equation}
-Note that for $\frac{s_c}{s_\star} < \eta_c$ that no separatrix (or resonance)
-exists anymore, so we will generally assume $s_\star \gtrsim s_c, \Omega_1$.
+Here, $P_c$ describes the separatrix capture probability from zone III\@. Note
+that for $\frac{s_c}{s_\star} < \eta_c$ that no separatrix (or resonance) exists
+anymore, so we will generally assume $s_\star \gtrsim s_c$ and correspeondingly
+$\Omega_1$.
 
 To test \autoref{eq:p_c_p4}, we generate an evenly spaced grid of initial
 conditions $(\mu_0, \phi_0)$ and initialize $s_0 = 10$. We then record $s_\star$
 and the final outcome of the trajectory over many simulations. The agreement of
-\autoref{eq:p_c_p4} with data can be observed in \autoref{fig:1_4stats}.
+\autoref{eq:p_c_p4} with data can be observed in \autoref{fig:1_4stats}. As
+before, a red solid line depicting \autoref{eq:p_c_p4} and a black dotted line
+using numerical evaluation of $\Delta h$ and a numerically-determined separatrix
+are depicted.
 \begin{figure}
     \centering
     \begin{subfigure}{\columnwidth}
@@ -884,7 +880,10 @@ and the final outcome of the trajectory over many simulations. The agreement of
     \caption{Histogram of simulation and inferred $P_c(s_\star)$ compared with
     \autoref{eq:p_c_p4}. $s_c$ used are numbered at the top of each plot. $10^4$
     simulations were used for each plot, and a single $I = 20^\circ$ was
-    used.}\label{fig:1_4stats}
+    used. The solid red and dotted black lines denote N\autoref{eq:p_c_p4} and a
+    full numerical evaluation of $P_c$ from $\Delta_{\pm}$ respectively. Note
+    that small values of $s$ cannot be evaluated as the separatrix has
+    disappeared $\eta > \eta_c$.}\label{fig:1_4stats}
 \end{figure}
 
 \subsection{Estimating $s_\star$}
