@@ -1364,10 +1364,11 @@ This is in agreement with our work from 5.1. Thus, the total expression is
 
 \section{Misc}
 
-\subsection{Canonical Coordinates}
+\subsection{Another Set of Canonical Coordinates}
 
-Consider canonical coordinates $x = \sin \frac{\theta}{2}\cos \phi, y = \sin
-\frac{\theta}{2}\sin \phi$, then the Hamiltonian can be written
+Consider canonical coordinates $x = 2\sin \frac{\theta}{2}\cos \phi, y = 2\sin
+\frac{\theta}{2}\sin \phi$ (these can be verified to be canonical by evaluating
+PB $\z*{y, x}_{\cos \theta, \phi} = 1$), then the Hamiltonian can be written
 \begin{align}
     H &= -\frac{1}{2}\cos^2\theta
         + \eta \p*{\cos \theta \cos I - \sin I \sin \theta \cos \phi}
@@ -1376,10 +1377,27 @@ Consider canonical coordinates $x = \sin \frac{\theta}{2}\cos \phi, y = \sin
             + \eta\p*{\p*{1 - 2\sin^2\frac{\theta}{2}}\cos I
             - 2 \sin \frac{\theta}{2}\cos \phi \cos \frac{\theta}{2}\sin I}
             ,\nonumber\\
-        &= -\frac{1}{2}\p*{1 - 2\p*{x^2 + y^2}}^2
-            + \eta\p*{\p*{1 - 2\p*{x^2 + y^2}}\cos I
-                - 2\sin I x\sqrt{1 - \p*{x^2 + y^2}}}.
+        &= -\frac{1}{2}\p*{1 - \frac{x^2 + y^2}{2}}^2
+            + \eta\p*{\p*{1 - \frac{x^2 + y^2}{2}}\cos I
+                - \sin I x\sqrt{1 - \frac{x^2 + y^2}{4}}}.
 \end{align}
+This is in agreement w/ Millholland \& Batygin 2019's Eq.~26. These have EOM
+\begin{align*}
+    \dot{y} = -\pd{H}{x} &=
+        -x\p*{1 - \frac{x^2 + y^2}{2}} - \eta\p*{
+            -x \cos I + \frac{x^2\sin I}{4}\p*{1 - \frac{x^2 + y^2}{4}}^{-1/2}
+            - \sin I \sqrt{1 - \frac{x^2 + y^2}{4}}},\\
+    \dot{x} = \pd{H}{y} &=
+        y\p*{1 - \frac{x^2 + y^2}{2}} + \eta\p*{
+            -y \cos I + \frac{xy\sin I}{4}\p*{1 - \frac{x^2 + y^2}{4}}^{-1/2}
+            },\\
+\end{align*}
+The signs can be confirmed by considering that $\theta, x, y \approx 0$ in the
+$\eta \to 0$ limit results in $\dot{\phi} < 0$, or at $\phi \approx 0, y \propto
+\sin \phi \propto \phi$ and $\dot{y} < 0$. It bears noting that $x^2 + y^2 \in
+[0, 4]$, so the EOM diverge as $\theta \to \pi$. This is one fewer singularity
+than the naive $\p*{\cos\theta, \phi}$ covering, but full cartesian $\hat{s} =
+\p*{s_x, s_y, s_z}$ still has no singularities.
 
 \subsection{Destruction of CS via Tides}
 
