@@ -1436,6 +1436,11 @@ This can then be substituted back in to find the correction to $\mu_{4, 2}$
 These corrections and $\epsilon_c$ can be found in good agreement w/ numerics in
 \lstinline{99_misc/0_stab.png}.
 
+In fact, we can really do better: just let $\sin \phi = \frac{\epsilon\p*{1 -
+z_0^2}}{\eta \sin I}$, then $\mu = \frac{\eta \cos I}{1 - \eta \sin I \cos \phi
+\frac{1}{\sqrt{1 - z_0}}}$ where $z_0 = \eta \cos I$ is the zeroth order
+estimate. This is what is plotted in the aforementioned plot.
+
 Now, a slightly more subtle question: is it possible for CS2 to still exist but
 lose stability? Consider that for some $\epsilon\lesssim \epsilon_c$, the
 equilibria lie at $\phi_{2, 4} = \pi/2 \pm \Delta \phi$, where $\epsilon_c -
@@ -1464,7 +1469,8 @@ corresponding to the two CSs. Otherwise, we can identify that for
     \Delta \phi &\leq \eta^3 \sin I \cos^2 I,\\
     \epsilon_c - \epsilon &\leq \frac{\eta^7 \sin^3 I \cos^4 I}{2},
 \end{align*}
-that CS2 becomes unstable.
+that CS2 becomes unstable. We can also numerically validate this via
+\lstinline{99_misc/0_stab.py}.
 
 \end{document}
 

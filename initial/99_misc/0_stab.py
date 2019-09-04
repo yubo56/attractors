@@ -11,7 +11,7 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=12)
 
 I = np.radians(20)
-eta = 0.1
+eta = 0.15
 mu2 = eta * np.cos(I) / (1 + eta * np.sin(I))
 mu4 = eta * np.cos(I) / (1 - eta * np.sin(I))
 eps_crit = eta * np.sin(I) / (1 - (eta * np.cos(I))**2)
@@ -51,13 +51,21 @@ def to_cart(q, phi):
         np.cos(q),
     ]
 
-def get_cs2(eps):
+def get_cs2(eps, tol=1e-10, log=False, method='hybr'):
     cs2 = [np.sqrt(1 - mu2**2), 0, mu2]
-    return opt.root(get_dydt(eps), cs2, jac=get_jac(eps))
+    ret = opt.root(get_dydt(eps), cs2, tol=tol)
+    if log and not ret.success:
+        print('get_cs2 did not succeed')
+        print(ret)
+    return ret
 
-def get_cs4(eps):
+def get_cs4(eps, tol=1e-10, log=False, method='hybr'):
     cs4 = [-np.sqrt(1 - mu4**2), 0, mu4]
-    return opt.root(get_dydt(eps), cs4, jac=get_jac(eps))
+    ret = opt.root(get_dydt(eps), cs4, tol=tol)
+    if log and not ret.success:
+        print('get_cs4 did not succeed')
+        print(ret)
+    return ret
 
 def get_eps_crit_num():
     left = 0
@@ -97,30 +105,32 @@ def plot_cs_pts():
                                    figsize=(6, 9),
                                    sharex=True)
     fig.subplots_adjust(hspace=0)
+    for ax in [ax1, ax2]:
+        ax.axvline(eps_crit, color='m', label=r'$\epsilon_{c,an}$')
+        ax.axvline(get_eps_crit_num(), color='k', label=r'$\epsilon_{c,num}$')
 
     ax1.plot(eps_vals, mu2s, 'r', label=r'$\mu_2$')
     ax1.plot(eps_vals, mu4s, 'b', label=r'$\mu_4$')
-    mu2_th = mu2 + eta**2 * np.sin(I) * np.cos(I) / (1 + eta * np.sin(I)) * \
-        (eps_vals / (eta * np.sin(I)))**2 / 2
-    mu4_th = mu4 - eta**2 * np.sin(I) * np.cos(I) / (1 - eta * np.sin(I)) * \
-        (eps_vals / (eta * np.sin(I)))**2 / 2
-    ax1.plot(eps_vals, np.ones_like(eps_vals) * mu2_th, 'r:')
-    ax1.plot(eps_vals, np.ones_like(eps_vals) * mu4_th, 'b:')
     ax1.set_ylabel(r'$\mu$')
     ax1.legend()
 
-    phi2_th = np.pi - eps_vals / (eta * np.sin(I))
-    phi4_th = eps_vals / (eta * np.sin(I))
     ax2.plot(eps_vals, phi2s, 'r', label=r'$\phi_2$')
     ax2.plot(eps_vals, phi4s, 'b', label=r'$\phi_4$')
-    ax2.plot(eps_vals, np.ones_like(eps_vals) * phi2_th, 'r:')
-    ax2.plot(eps_vals, np.ones_like(eps_vals) * phi4_th, 'b:')
     ax2.set_ylabel(r'$\phi$')
     ax2.legend()
 
-    for ax in [ax1, ax2]:
-        ax.axvline(eps_crit, color='m')
-        ax.axvline(get_eps_crit_num(), color='k')
+    # "exact" sols
+    phi2_th = np.pi - np.arcsin(eps_vals * (1 - mu2**2) / (eta * np.sin(I)))
+    phi4_th = np.arcsin(eps_vals * (1 - mu4**2) / (eta * np.sin(I)))
+    mu2_th = eta * np.cos(I) / (
+        1 - eta * np.sin(I) * np.cos(phi2_th) / np.sqrt(1 - mu2**2))
+    mu4_th = eta * np.cos(I) / (
+        1 - eta * np.sin(I) * np.cos(phi4_th) / np.sqrt(1 - mu4**2))
+    ax1.plot(eps_vals, mu2_th, 'r:')
+    ax1.plot(eps_vals, mu4_th, 'b:')
+    ax2.plot(eps_vals, phi2_th, 'r:')
+    ax2.plot(eps_vals, phi4_th, 'b:')
+
     ax1.set_title(r'$\eta = %.1f$' % eta)
     plt.savefig('0_stab.png')
 
@@ -128,14 +138,16 @@ def get_stab():
     eps_crit_exact = get_eps_crit_num()
     delta_eps = eta**7 * np.sin(I)**3 * np.cos(I)**4 / 2
 
-    eps_test = eps_crit_exact - eps_crit_exact * 100
-    dydt = get_dydt(eps_test)
-
-    def get_eigens(init):
+    def get_eigens(eps_frac):
         '''
         pick unit-vector offsets from CS2 to get matrix elements, then eigens
+        eps used is eps_c - eps_frac * delta_eps
         '''
-        delta = 1e-6
+        eps = eps_crit_exact - eps_frac * delta_eps
+        cs2 = get_cs2(eps, tol=1e-10, log=True, method='anderson')
+        init = cs2.x
+        dydt = get_dydt(eps)
+        delta = 1e-5
         lin_mat = []
         init_ang = to_ang(*init)
         jac_ang = []
@@ -145,16 +157,16 @@ def get_stab():
             # first-order derivative
             offset_ang = init_ang + np.array(offset)
             offset_init = to_cart(*offset_ang)
-            diff = dydt(offset_init) * delta
+            diff = dydt(offset_init)
 
-            # d_ang/dt = (to_ang(y + dydt * dt) - to_ang(y)) / dt
-            d_ang = to_ang(*(offset_init + diff)) - to_ang(*offset_init)
-            lin_mat.append(d_ang / delta)
-        print(lin_mat)
-        print(np.linalg.eigvals(lin_mat))
+            # too lazy to coordinate change, dydt_ang = to_ang(y0_cart +
+            # dydt_cart * delta) - to_ang(y0_cart)
+            dydt_ang = to_ang(*(offset_init + diff)) - offset_ang
+            lin_mat.append(dydt_ang / delta)
+        print(eps_frac, np.linalg.eigvals(lin_mat))
 
-    cs2 = get_cs2(eps_test)
-    get_eigens(cs2.x)
+    get_eigens(0.9)
+    get_eigens(1.1)
 
 if __name__ == '__main__':
     # plot_cs_pts()
