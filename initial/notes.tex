@@ -1472,5 +1472,22 @@ corresponding to the two CSs. Otherwise, we can identify that for
 that CS2 becomes unstable. We can also numerically validate this via
 \lstinline{99_misc/0_stab.py}.
 
+\subsection{Dissipating Disk: $\theta_f$ Distribution}
+
+Consider if $\eta$ crosses $\eta_c$ with $\eta(t = 0) > \eta_c$, and there is no
+dissipation, only variation of $\eta$. The area contained within the separatrix
+when it first forms is given in Ward \& Hamilton Paper I\@:
+\begin{equation}
+    A_{crit} = 4\pi \s*{1 - \p*{1 + \tan^{2/3}I}^{-3/2}}.
+\end{equation}
+We are interested in states that start nearly aligned w/ the disk, so in Zone II
+by our designation. Then, once three states appear, Zone II continues to shrink
+until separatrix crossing occurs. At the time of separatrix crossing, the
+trajectory is ejected into either Zone I/III (if Zone III is shrinking, then
+exclusively Zone I\@; can analytically state using Henrard \& Murigande 1987).
+The possible values for the new action of the ejected state are either $A_2 +
+A_3 - 2\pi$ or $A_3 - 2\pi$, when integrating $\mu\;\mathrm{d}\phi$. From here,
+the states will precess uniformly at some $\theta_f = A / 2\pi$.
+
 \end{document}
 
