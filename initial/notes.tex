@@ -282,7 +282,7 @@ We zoom in on Cassini State $4$, which has $\theta_4 =
 I}{1 - \eta \sin I}, \phi_4 = 0$. Then, using
 equations of motion
 \begin{align}
-    \pd{\phi}{t} &= \mu - \eta\p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}}
+    \pd{\phi}{t} &= -\mu + \eta\p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}}
         \cos \phi} ,\\
     \pd{\mu}{t} &= -\eta \sin I \sin \phi + \s*{\epsilon \p*{1 - \mu^2}},
 \end{align}
@@ -742,8 +742,8 @@ To make the equations more anemable to analytic analysis (not simulation), let's
 write down the EOM in $(\mu, \phi)$ coordinates again. The $\phi$ EOM does not
 change from the tide-free case, so we can reuse earlier equation:
 \begin{align}
-    \pd{\phi}{\tau} &= \frac{s}{s_c}\mu
-        - \p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}} \cos \phi} ,\\
+    \pd{\phi}{\tau} &= -\frac{s}{s_c}\mu
+        + \p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}} \cos \phi} ,\\
     \pd{\mu}{\tau} &= -\sin I \sin \phi +
         \epsilon \frac{2\Omega_1}{s}\p*{1 - \mu^2}
             \p*{1 - \frac{s}{2\Omega_1}\mu},\\
@@ -1361,6 +1361,92 @@ This is in agreement with our work from 5.1. Thus, the total expression is
             - \frac{64}{3} \p*{\eta \sin I}^{3/2},\\
     P_c ={}& \frac{\Delta_+ + \Delta_-}{\Delta_-}.
 \end{align}
+
+\section{Misc}
+
+\subsection{Canonical Coordinates}
+
+Consider canonical coordinates $x = \sin \frac{\theta}{2}\cos \phi, y = \sin
+\frac{\theta}{2}\sin \phi$, then the Hamiltonian can be written
+\begin{align}
+    H &= -\frac{1}{2}\cos^2\theta
+        + \eta \p*{\cos \theta \cos I - \sin I \sin \theta \cos \phi}
+        ,\nonumber\\
+        &= -\frac{1}{2}\p*{1 - 2\sin^2\frac{\theta}{2}}^2
+            + \eta\p*{\p*{1 - 2\sin^2\frac{\theta}{2}}\cos I
+            - 2 \sin \frac{\theta}{2}\cos \phi \cos \frac{\theta}{2}\sin I}
+            ,\nonumber\\
+        &= -\frac{1}{2}\p*{1 - 2\p*{x^2 + y^2}}^2
+            + \eta\p*{\p*{1 - 2\p*{x^2 + y^2}}\cos I
+                - 2\sin I x\sqrt{1 - \p*{x^2 + y^2}}}.
+\end{align}
+
+\subsection{Destruction of CS via Tides}
+
+Let's return to the simple EOM considered in the constant $\eta$ tides case,
+where
+\begin{align}
+    \pd{\phi}{t} &= -\mu + \eta\p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}}
+        \cos \phi} ,\\
+    \pd{\mu}{t} &= -\eta \sin I \sin \phi + \s*{\epsilon \p*{1 - \mu^2}},
+\end{align}
+We want to determine where tides destroys CS2. We saw before that tides tends to
+shift CS2/CS4 towards each other. In fact, we can immediately see where they
+will collide: in the $\dot{\mu}$ equation, no $\phi$ is stationary if
+\begin{equation}
+    \epsilon > \frac{\eta \sin I}{1 - \mu^2}.
+\end{equation}
+We can substitute in $\mu_2, \mu_4 \sim \eta \cos I$ to obtain
+\begin{equation}
+    \epsilon_{c} \approx \frac{\eta \sin I}{1 - \eta^2\cos^2 I}.
+\end{equation}
+
+Of course, we can also solve perturbatively to higher order for the corrections
+to CS2/CS4 about their $\epsilon = 0$ values; we have already found before the
+first order correction to $\phi$
+\begin{equation}
+    \phi_{4, 2} = \z*{0, \pi} \pm \frac{\epsilon\p*{1 - \mu^2}}{\eta \sin I}
+        \approx \z*{0, \pi} \pm \frac{\epsilon}{\eta \sin I} +
+        \mathcal{O}\p*{\epsilon^2}.
+\end{equation}
+This can then be substituted back in to find the correction to $\mu_{4, 2}$
+\begin{equation}
+    \mu_{4, 2} \approx \frac{\eta \cos I}{1 \mp \eta \sin I}
+        \mp \frac{1}{2}\frac{\eta^2 \sin I \cos I}{1 \mp \eta \sin I}
+            \p*{\frac{\epsilon}{\eta \sin I}}^2 + \mathcal{O}\p*{\epsilon^3}.
+\end{equation}
+These corrections and $\epsilon_c$ can be found in good agreement w/ numerics in
+\lstinline{99_misc/0_stab.png}.
+
+Now, a slightly more subtle question: is it possible for CS2 to still exist but
+lose stability? Consider that for some $\epsilon\lesssim \epsilon_c$, the
+equilibria lie at $\phi_{2, 4} = \pi/2 \pm \Delta \phi$, where $\epsilon_c -
+\epsilon = \eta \sin I \frac{\Delta \phi^2}{2}$, then we consider perturbation
+about these equilibria $\phi_{2, 4} = \pi/2 \pm \Delta \phi + \delta \phi$. The
+linearized equations then read
+\begin{subequations}
+    \begin{align}
+        \dot{\phi} &\approx -\delta \mu \mp \eta^2 \sin I \cos I \delta \phi,\\
+        \dot{\mu} &\approx \pm\eta \sin I \Delta \phi \delta \phi.
+    \end{align}
+\end{subequations}
+The eigenvalue equation for this first-order system reads
+\begin{equation}
+    \lambda^2 \pm \eta^2 \sin I \cos I \pm \eta \sin I \Delta \phi = 0.
+\end{equation}
+This has real solutions if
+\begin{equation}
+    \p*{\eta^2 \sin I \cos I}^2 \mp \eta \sin I \Delta \phi > 0.
+\end{equation}
+If $\epsilon \sim \epsilon_c / 2$, i.e.\ not too close to critical, then
+$\Delta \phi^2 \sim 1$, so except for $\epsilon_c - \epsilon \ll \epsilon_c$,
+the second term dominates the first and we have one real and one imaginary root,
+corresponding to the two CSs. Otherwise, we can identify that for
+\begin{align*}
+    \Delta \phi &\leq \eta^3 \sin I \cos^2 I,\\
+    \epsilon_c - \epsilon &\leq \frac{\eta^7 \sin^3 I \cos^4 I}{2},
+\end{align*}
+that CS2 becomes unstable.
 
 \end{document}
 
