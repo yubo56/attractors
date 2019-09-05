@@ -33,7 +33,7 @@ def plot_A_crit():
     plt.savefig('1_Acrit.png', dpi=400)
     plt.clf()
 
-def get_area_ward(eta, I):
+def get_areas_ward(eta, I):
     mu4 = eta * np.cos(I) / (1 - eta * np.sin(I))
     q4 = -np.arccos(mu4)
 
@@ -44,21 +44,31 @@ def get_area_ward(eta, I):
         chi**2 * np.cos(q4)**2 + 1)
     T = 2 * chi * np.cos(q4) / (
         chi**2 * np.cos(q4)**2 - 1)
-    A2_ward = 8 * rho + 4 * np.arctan(T) - 8 * z0 * np.arctan(1 / chi)
-    return A2_ward
+    A2 = 8 * rho + 4 * np.arctan(T) - 8 * z0 * np.arctan(1 / chi)
+    A1 = 2 * np.pi * (1 - z0) - A2 / 2
+    A3 = 2 * np.pi * (1 + z0) - A2 / 2
+    return A1, A2, A3
 
 def plot_areas():
     ''' plot exact area + my old approx '''
-    eta = np.linspace(0, 0.5, 101)
     I = np.radians(5)
+    eta_c = (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
+    eta = np.linspace(0, eta_c, 101)
 
-    A2_ward = get_area_ward(eta, I)
-    A_mine = 16 * np.sqrt(eta * np.sin(I))
-    plt.plot(eta, A_mine / (4 * np.pi), 'g:', label='Mine')
-    plt.plot(eta, A2_ward / (4 * np.pi), 'k', label='Ward')
+    A1w, A2w, A3w = get_areas_ward(eta, I)
+    A2ys = 16 * np.sqrt(eta * np.sin(I))
+    A1ys = 2 * np.pi * (1 - eta * np.cos(I)) - A2ys / 2
+    A3ys = 2 * np.pi * (1 + eta * np.cos(I)) - A2ys / 2
+    plt.plot(eta, A1ys / (4 * np.pi), 'g:')
+    plt.plot(eta, A1w / (4 * np.pi), 'g', label='A1')
+    plt.plot(eta, A2ys / (4 * np.pi), 'k:')
+    plt.plot(eta, A2w / (4 * np.pi), 'k', label='A2')
+    plt.plot(eta, A3ys / (4 * np.pi), 'r:')
+    plt.plot(eta, A3w / (4 * np.pi), 'r', label='A3')
     plt.legend()
     plt.xlabel(r'$\eta$')
     plt.ylabel(r'$A_{sep} / 4\pi$')
+    plt.title(r'$I = %d^\circ$' % np.degrees(I))
     plt.savefig('1_areas.png', dpi=400)
     plt.clf()
 
@@ -81,6 +91,7 @@ def plot_eps_dist():
     plt.plot(eps_init, np.degrees(np.arccos(q_f_2)), 'r')
     plt.xlabel(r'Initial $\epsilon$')
     plt.ylabel(r'Final $\theta$')
+    plt.title(r'$I = %d^\circ$' % np.degrees(I))
     plt.savefig('1_eps_dist.png', dpi=400)
     plt.clf()
 

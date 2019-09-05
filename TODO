@@ -6,3 +6,7 @@ check 1epsdist numerically, maybe add non-ad + backreaction term s ~ l
 - s ~ l, in Kassandra's paper?
 
 Maybe consider basin of attraction for CS2 w/ nonzero eps?
+
+
+# reach
+See whether can derive non-adiabatic obliquity excitation case
