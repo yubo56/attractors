@@ -16,11 +16,13 @@ if __name__ == '__main__':
 
     def mu_up(phi, eta=eta):
         q4 = roots(I, eta)[3]
-        return eta * np.cos(I) + np.sqrt(2 * eta * np.sin(I) * (1 - np.cos(phi)))
+        return (eta * np.cos(I) / (1 - eta * np.sin(I))
+                + np.sqrt(2 * eta * np.sin(I) * (1 - np.cos(phi))))
 
     def mu_down(phi, eta=eta):
         q4 = roots(I, eta)[3]
-        return eta * np.cos(I) - np.sqrt(2 * eta * np.sin(I) * (1 - np.cos(phi)))
+        return (eta * np.cos(I) / (1 - eta * np.sin(I))
+                - np.sqrt(2 * eta * np.sin(I) * (1 - np.cos(phi))))
 
     def n_mu_up(phi, eta=eta):
         q4 = roots(I, eta)[3]

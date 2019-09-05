@@ -523,8 +523,10 @@ Now, we can evaluate our two integrals. For some reason my usual arguments
 are too many terms, so we will keep as many terms as possible.
 
 First, we tackle the top integral. Here, the integrand is evaluated at
-$\mu_+(\phi) = \eta \cos I + \sqrt{2\eta \sin I\p*{1 - \cos \phi}}$, so we can
-plug this in and compute
+$\mu_+(\phi) = \eta \cos I + \sqrt{2\eta \sin I\p*{1 - \cos \phi}}$\footnote{
+Bears noting that $\mu_{\pm} = \frac{\eta \cos I}{1 - \eta \sin I} \pm \dots$
+significantly improves accuracy, it appears. Too many replacements to fix}, so
+we can plug this in and compute
 \begin{align*}
     B_{top}\frac{2\alpha^2}{\epsilon} &= \int\limits_{2\pi}^{0}
             \mu(\alpha \mu + \cos I)\;\mathrm{d}\phi,\\
@@ -660,12 +662,6 @@ which are:
             \s*{\pm 2\pi \eta \cos I + 4\sqrt{\eta \sin I}}.
 \end{equation}
 The two contributions are bracketed.
-
-Now, this turns out to be slightly inaccurate for $f > 0$ simply because our
-$\mu_{sep}$ approximation is not so accurate for $\eta \gtrsim 0.2$, where the
-top leg is significantly lower than the symmetric $\mu_{sep} = \eta \cos I \pm
-\dots$ would predict. This would mean the two legs don't cancel as exactly, and
-the capture probability increases, which is observed.
 
 \section{Weak Tidal Friction, changing $\eta$ and $\theta$}
 
