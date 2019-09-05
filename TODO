@@ -1,5 +1,8 @@
-Disk/Kassandra problem new things?
-- https://arxiv.org/pdf/1904.07338.pdf
-What is eta / eps ratio at which separatrix is destroyed?
-- https://arxiv.org/pdf/1812.01624.pdf /
-- criterion @ which unstable? or maybe just eta(delta H) criterion
+Petrovich presentation from Iceland?
+Millholland & Laughlin WASP12b
+
+check 1epsdist numerically, maybe add non-ad + backreaction term s ~ l
+- compare non-ad to Dong formula?
+- s ~ l, in Kassandra's paper?
+
+Maybe consider basin of attraction for CS2 w/ nonzero eps?

@@ -1469,7 +1469,10 @@ corresponding to the two CSs. Otherwise, we can identify that for
     \Delta \phi &\leq \eta^3 \sin I \cos^2 I,\\
     \epsilon_c - \epsilon &\leq \frac{\eta^7 \sin^3 I \cos^4 I}{2},
 \end{align*}
-that CS2 becomes unstable. We can also numerically validate this via
+the eigenvalues become real. However, for CS2, since the eigenvalue equation
+reads $\lambda^2 + b\lambda + c = 0$ and the eigenvalues take form $\p*{-b \pm
+\sqrt{b^2 - 4c}}/2$, no eigenvalue w/ positive real part ever appears, so it
+remains forever stable. We can also numerically validate this via
 \lstinline{99_misc/0_stab.py}.
 
 \subsection{Dissipating Disk: $\theta_f$ Distribution}
@@ -1482,12 +1485,18 @@ when it first forms is given in Ward \& Hamilton Paper I\@:
 \end{equation}
 We are interested in states that start nearly aligned w/ the disk, so in Zone II
 by our designation. Then, once three states appear, Zone II continues to shrink
-until separatrix crossing occurs. At the time of separatrix crossing, the
-trajectory is ejected into either Zone I/III (if Zone III is shrinking, then
-exclusively Zone I\@; can analytically state using Henrard \& Murigande 1987).
-The possible values for the new action of the ejected state are either $A_2 +
-A_3 - 2\pi$ or $A_3 - 2\pi$, when integrating $\mu\;\mathrm{d}\phi$. From here,
-the states will precess uniformly at some $\theta_f = A / 2\pi$.
+until separatrix crossing occurs, which is at $J_i = A_2$. At the time of
+separatrix crossing, the trajectory is ejected into either Zone I/III (if Zone
+III is shrinking, then exclusively Zone I\@; can analytically state using
+Henrard \& Murigande 1987). The possible values for the new action of the
+ejected state are either $J_f = A_2 + A_3 - 2\pi$ or $J_f = A_3 - 2\pi$, when
+integrating $\mu\;\mathrm{d}\phi$. From here, the states will precess uniformly
+at some $\theta_f = J_f / 2\pi$.
+
+We can investigate two behaviors here then, the range of permitted $\theta_f$ as
+a function of $I$ (when $J_i = A_{crit}$), and the values of $\theta_f$ given
+some initial mutual inclination $\hat{s} \cdot \hat{l}_p$ ($J_i = 2\pi\p*{1 -
+\cos \epsilon}$ where $\epsilon$ is the initial mutual inclination).
 
 \end{document}
 

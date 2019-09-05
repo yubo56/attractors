@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=12)
 
-I = np.radians(20)
+I = np.radians(5)
 eta = 0.15
 mu2 = eta * np.cos(I) / (1 + eta * np.sin(I))
 mu4 = eta * np.cos(I) / (1 - eta * np.sin(I))
@@ -132,7 +132,7 @@ def plot_cs_pts():
     ax2.plot(eps_vals, phi4_th, 'b:')
 
     ax1.set_title(r'$\eta = %.1f$' % eta)
-    plt.savefig('0_stab.png')
+    plt.savefig('0_stab.png', dpi=400)
 
 def get_stab():
     eps_crit_exact = get_eps_crit_num()
@@ -169,5 +169,5 @@ def get_stab():
     get_eigens(1.1)
 
 if __name__ == '__main__':
-    # plot_cs_pts()
-    get_stab()
+    plot_cs_pts()
+    # get_stab()
