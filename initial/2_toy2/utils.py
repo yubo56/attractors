@@ -50,7 +50,9 @@ def roots(I, eta):
         roots = []
         inits = [np.pi / 2 - I, -np.pi + I]
         for qi in inits:
-            roots.append(opt.newton(f, qi, fprime=fp))
+            # newton doesn't seem to work very well here...
+            # roots.append(opt.newton(f, qi, fprime=fp))
+            roots.append(opt.bisect(f, 0, 2 * (np.pi / 2 - I)))
         return np.array(roots)
 
 def H(I, eta, q, phi):
