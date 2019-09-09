@@ -42,32 +42,79 @@ def plot_traj_colors(I, ret, filename):
     print('Saved', filename)
     plt.clf()
 
-def get_inital_area(ret):
+def get_areas_2(ret, num_pts=201):
     '''
-    gets initial area enclosed by ret ODE solution
-    initial area usually encloses pole, so area enclosed is given by (1 - mu)
-    dphi
+    not get_areas in utils since this that assumes start -> ejection from sep
     '''
-    n_pts = 200
+    t_events = ret.t_events[-1]
+    x_events, _, z_events, eta_events = ret.sol(t_events)
+    # phi = 0 means x < 0
+    idx_0 = np.where(x_events < 0)[0]
+    idx_pi = np.where(x_events > 0)[0]
+    t_0 = t_events[idx_0]
+    t_pi = t_events[idx_pi]
+    areas = []
+    t_areas = []
+    # to ease casework, if starts circulating, ensure first event is a t_0
+    if t_0[0] < t_pi[1] and t_0[0] > t_pi[0]:
+        t_pi = t_pi[1: ]
 
-    t_i, t_f = ret.t_events[-1][0], ret.t_events[-1][2]
-    t = np.linspace(t_i, t_f, n_pts)
-    x, y, z, _ = ret.sol(t)
-    q, phi = to_ang(x, y, z)
-    phi = np.unwrap(phi)
-    dphi = np.gradient(phi)
-    return np.sum((1 - np.cos(q)) * dphi)
+    # can start either circulating or librating, but always eventually
+    # transitions to librating about CS2, and ends up circulating again...
+
+    # if starts circulating, integrate (1 - mu) dphi for continuity... so many
+    # cases
+    for t_0_i, t_0_f, t_pi_f in zip(t_0, t_0[1: ], t_pi[1: ]):
+        if t_0_f < t_pi_f: # circulating
+            t_vals = np.linspace(t_0_i, t_0_f, num_pts)
+            t_areas.append((t_0_f + t_pi_f) / 2)
+
+            x, y, z, _ = ret.sol(t_vals)
+            q, phi = to_ang(x, y, z)
+            dphi = np.gradient(np.unwrap(phi))
+            areas.append(np.sum((1 - np.cos(q)) * dphi))
+    # truncate list of times during initial circulation
+    if len(areas):
+        t_end_circ = t_areas[-1]
+        t_0 = t_0[np.where(t_0 > t_end_circ)[0][0]: ]
+        t_pi = t_pi[np.where(t_pi > t_end_circ)[0][0]: ]
+    # now solve librating period
+    t_end_lib = max(t_pi) if len(t_0) == 0 else t_0[0]
+    t_pi_lib = t_pi[np.where(t_pi < t_end_lib)[0]]
+    for t_pi_i, t_pi_f in zip(t_pi_lib[2::2], t_pi_lib[ :-2:2]):
+        t_vals = np.linspace(t_pi_i, t_pi_f, num_pts)
+        t_areas.append((t_pi_i + t_pi_f) / 2)
+
+        x, y, z, _ = ret.sol(t_vals)
+        q, phi = to_ang(x, y, z)
+        dphi = np.gradient(np.unwrap(phi))
+        areas.append(np.sum(np.cos(q) * dphi))
+    # final circ period; note that t_0[0] < t_pi_fin[0] again
+    t_pi_fin = t_pi[np.where(t_pi > t_end_lib)[0]]
+    for t_0_i, t_0_f, t_pi_f in zip(t_0, t_0[1: ], t_pi_fin[1: ]):
+        t_vals = np.linspace(t_0_i, t_0_f, num_pts)
+        t_areas.append((t_0_f + t_pi_f) / 2)
+
+        x, y, z, _ = ret.sol(t_vals)
+        q, phi = to_ang(x, y, z)
+        dphi = np.abs(np.gradient(np.unwrap(phi)))
+        areas.append(np.sum(np.cos(q) * dphi))
+    return t_end_lib, np.array(t_areas), np.array(areas)
 
 def plot_traj(I, ret, filename, dq):
-    ''' plot a few mu(t) '''
+    '''
+    plot mu(t) and zoomed in for a trajectory
+    overplot area conservation
+    '''
     # get initial area
-    a_init = get_inital_area(ret)
-    a_cross = 2 * np.pi * (1 - np.cos(dq))
-    print('Areas (integrated/estimated): ', a_init, a_cross)
+    t_end_lib, t_areas, areas = get_areas_2(ret)
+    a_init_int = areas[0]
+    a_init_dq = 2 * np.pi * (1 - np.cos(dq))
+    print('Areas (integrated/estimated): ', a_init_int, a_init_dq)
 
-    fig, axs = plt.subplots(2, 1,
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1,
                             sharex=True,
-                            gridspec_kw={'height_ratios': [3, 2]})
+                            gridspec_kw={'height_ratios': [3, 2, 2]})
     fig.subplots_adjust(hspace=0)
     t = ret.t
     etas = ret.y[3]
@@ -103,7 +150,15 @@ def plot_traj(I, ret, filename, dq):
                 pass
 
     # plot trajectory's mu, separatrix's min/max mu, CS2
-    for ax in axs:
+    eta_c_anal = (a_init_dq / 16)**2 / np.sin(I)
+    eta_c_num = ret.sol(t_end_lib)[3]
+    print('eta @ cross', eta_c_anal, eta_c_num)
+    eta_c = eta_c_anal
+    a_crossed = 2 * np.pi * eta_c * np.cos(I) + 8 * np.sqrt(eta_c * np.sin(I))
+    a_crossed2 = 2 * np.pi * eta_c * np.cos(I) - 8 * np.sqrt(eta_c * np.sin(I))
+    mu_f = a_crossed / (2 * np.pi)
+    mu_f2 = a_crossed2 / (2 * np.pi)
+    for ax in [ax1, ax2]:
         ax.plot(t, np.cos(q), 'k', label='Sim')
         max_valid_idxs = np.where(mu_max > 0)[0]
         ax.plot(t[idx4s][max_valid_idxs], mu_max[max_valid_idxs],
@@ -115,12 +170,20 @@ def plot_traj(I, ret, filename, dq):
         ax.legend()
 
         # predicted final mu
-        eta_c = (a_cross / 16)**2 / np.sin(I)
-        mu_f = (eta_c * np.cos(I) + 8 * np.sqrt(eta_c * np.sin(I))) / (2 * np.pi)
         ax.axhline(mu_f, c='r')
-    axs[1].set_ylim([-1.5 * mu_f, 1.5 * mu_f])
+        ax.axhline(mu_f2, c='r')
+    ax2.set_ylim([-1.5 * mu_f, 1.5 * mu_f])
+    ax1.set_title(r'$I = %d^\circ$' % np.degrees(I))
 
-    axs[0].set_title(r'$I = %d^\circ$' % np.degrees(I))
+    # plot areas
+    t_pre_cross = t_areas[np.where(t_areas < t_end_lib)[0]]
+    t_crossed = t_areas[np.where(t_areas > t_end_lib)[0]]
+    ax3.plot(t_pre_cross, np.full_like(t_pre_cross, a_init_dq), 'r:')
+    ax3.plot(t_crossed, np.full_like(t_crossed, a_crossed), 'r:')
+    ax3.plot(t_crossed, np.full_like(t_crossed, a_crossed2), 'r:')
+    ax3.set_ylabel('Enclosed Area')
+    ax3.plot(t_areas, areas, 'bo', markersize=0.3)
+
     plt.savefig(filename, dpi=400)
     print('Saved', filename)
     plt.clf()
@@ -130,14 +193,17 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3):
     ret = solve_ic_base(I, eps, y0, tf)
     plot_traj(I, ret, filename, dq)
 
-def max_theta_a_crit(I):
-    '''
-    for given I, compute maximum initial mutual inclination such
-    that will encounter separatrix at some point (i.e. 4pi - A3_min)
-    '''
-    area_crit_frac = 1 - (1 + np.tan(np.radians(I))**(2/3))**(-3/2)
-    # area_crit_frac = area / 4pi = 2pi * (1 - cos(q_max)) / 4pi
-    return np.arccos(1 - 2 * area_crit_frac)
+def fetch_ring(I, eta, dq, n_pts):
+    q2, _ = roots(I, eta)
+    tf = 4 * np.pi / eta # 2pi / eta = precession about CS2
+    y0_ring = [*to_cart(q2 + dq, 0), eta]
+    event = lambda t, y: (to_ang(*y[0:3])[1] % 2 * np.pi) - np.pi
+    event.direction = +1
+    ret_ring = solve_ic_base(I, 0, y0_ring, tf, events=[event])
+    # either initially librating, so 2 t_events, or circulating, in which case
+    # we sample over two orbits, not the worst thing
+    t_ring = np.linspace(0, ret_ring.t_events[-1][2], n_pts)
+    return ret_ring.sol(t_ring)
 
 def sim_for_dq(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=10, dq=0.3,
                plot=False):
@@ -146,17 +212,10 @@ def sim_for_dq(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=10, dq=0.3,
     for a ring of ICs, look @ final mu values (terminate @ eta = 1e-3)
     '''
     eta0 = eta0_mult * get_etac(I)
-    q2, _ = roots(I, eta0)
     print('Running for', dq)
 
     # start w/ a ring of constant J_init. calc via eps=0 sim
-    tf = 4 * np.pi / eta0 # 2pi / eta0 = precession about CS2
-    y0_ring = [*to_cart(q2 + dq, 0), eta0]
-    event = lambda t, y: (to_ang(*y[0:3])[1] % 2 * np.pi) - np.pi
-    event.direction = +1
-    ret_ring = solve_ic_base(I, 0, y0_ring, tf, events=[event])
-    t_ring = np.linspace(0, ret_ring.t_events[-1][1], n_pts)
-    y0s = ret_ring.sol(t_ring)
+    y0s = fetch_ring(I, eta0, dq, n_pts)
 
     # run for each traj
     final_mus = []
@@ -176,16 +235,23 @@ def sim_for_dq(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=10, dq=0.3,
         print('Final Mus', final_mus)
     return final_mus
 
-def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=10, n_dqs=20):
+def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51):
+    '''
+    variable number of points per ring,
+    starting from n_pts/4 to n_pts linearly over dqs
+    '''
     I_deg = round(np.degrees(I))
-    # dqs = np.linspace(0.05, 0.99 * max_theta_a_crit(I), n_dqs)
+    eta0 = eta0_mult * get_etac(I)
     dqs = np.linspace(0.05, 0.99 * np.pi / 2, n_dqs)
+    n_pts_float = np.linspace(n_pts // 4, n_pts, n_dqs)
+
     PKL_FN = '3dat%d.pkl' % I_deg
     filename = '3_ensemble_%d.png' % I_deg
     title = r'$I = %d^\circ$' % I_deg
     if not os.path.exists(PKL_FN):
         p = Pool(4)
-        args = [(I, eps, eta0_mult, etaf, n_pts, dq) for dq in dqs]
+        args = [(I, eps, eta0_mult, etaf, int(round(n_pt)), dq)
+                for dq, n_pt in zip(dqs, n_pts_float)]
         res_arr = p.starmap(sim_for_dq, args)
         with open(PKL_FN, 'wb') as f:
             pickle.dump(res_arr, f)
@@ -193,18 +259,45 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=10, n_dqs=20):
         with open(PKL_FN, 'rb') as f:
             res_arr = pickle.load(f)
     for dq, final_mus in zip(dqs, res_arr):
-        plt.scatter(dq * np.ones_like(final_mus), final_mus)
+        final_q_deg = np.degrees(np.arccos(final_mus))
+        plt.scatter(np.full_like(final_mus, np.degrees(dq)),
+                    final_q_deg, c='b', s=0.5)
     plt.xlabel(r'$\mathrm{d}\theta$')
-    plt.ylabel(r'$\mu_f$')
+    plt.ylabel(r'$\theta_f$')
+    plt.ylim([120, 0])
     plt.title(title)
-    plt.savefig(filename)
+    plt.savefig(filename, dpi=400)
+    plt.clf()
+
+    # plot all ICs
+    inits_fn = '3_ensemble_inits%d.png' % I_deg
+    if not os.path.exists(inits_fn):
+        color_base = np.linspace(0, 1, n_dqs)
+        q2, _ = roots(I, eta0)
+        for dq, npts, color_num in zip(dqs, n_pts_float, color_base):
+            y0s = fetch_ring(I, eta0, dq, int(round(npts)))
+            c = [[1 - color_num, 0, color_num]]
+            q, phi = to_ang(*y0s[0:3])
+            plt.scatter(phi, np.cos(q), c=c, s=0.5)
+        plt.xlabel(r'$\phi$')
+        plt.ylabel(r'$\cos\theta$')
+        plt.xlim([0, 2 * np.pi])
+        plt.ylim([-1, 1])
+        plt.scatter(np.pi, np.cos(q2), c='g')
+        plt.savefig(inits_fn, dpi=400)
+        plt.clf()
 
 if __name__ == '__main__':
     I = np.radians(5)
-    tf = 15000
+
+    tf = 50000
     eta0 = 10 * get_etac(I)
     q2, _ = roots(I, eta0)
+    # first one goes down, second TODO
+    # plot_single(I, -3e-4, tf, eta0, q2, '3testo.png', dq=0.3)
+    plot_single(I, -3.1e-4, tf, eta0, q2, '3testo2.png', dq=0.3)
 
-    # plot_single(I, -1e-3, tf, eta0, q2, '3testo.png', dq=0.3)
-    # sim_for_dq(I, dq=max_theta_a_crit(I), plot=True)
-    sim_for_many(I, n_pts=21, n_dqs=51)
+    # sim_for_dq(I, dq=np.pi / 2, plot=True)
+    # sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
+    # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
+    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)
