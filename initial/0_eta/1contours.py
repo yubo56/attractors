@@ -59,5 +59,5 @@ if __name__ == '__main__':
     ax.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
     ax.set_ylabel(r'$\cos \theta$')
     ax.set_xlabel(r'$\phi$')
-    plot_H_for_eta(f, ax, 0.1, I)
+    plot_H_for_eta(f, ax, 0.2, I)
     plt.savefig('1contours_02.png', dpi=400)
