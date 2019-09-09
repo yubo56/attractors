@@ -50,7 +50,7 @@ def get_inital_area(ret):
     '''
     n_pts = 200
 
-    t_i, t_f = ret.t_events[0][0], ret.t_events[0][2]
+    t_i, t_f = ret.t_events[-1][0], ret.t_events[-1][2]
     t = np.linspace(t_i, t_f, n_pts)
     x, y, z, _ = ret.sol(t)
     q, phi = to_ang(x, y, z)
@@ -118,8 +118,9 @@ def plot_traj(I, ret, filename, dq):
         eta_c = (a_cross / 16)**2 / np.sin(I)
         mu_f = (eta_c * np.cos(I) + 8 * np.sqrt(eta_c * np.sin(I))) / (2 * np.pi)
         ax.axhline(mu_f, c='r')
-    axs[1].set_ylim([0, 1.5 * mu_f])
+    axs[1].set_ylim([-1.5 * mu_f, 1.5 * mu_f])
 
+    axs[0].set_title(r'$I = %d^\circ$' % np.degrees(I))
     plt.savefig(filename, dpi=400)
     print('Saved', filename)
     plt.clf()
@@ -129,13 +130,81 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3):
     ret = solve_ic_base(I, eps, y0, tf)
     plot_traj(I, ret, filename, dq)
 
+def max_theta_a_crit(I):
+    '''
+    for given I, compute maximum initial mutual inclination such
+    that will encounter separatrix at some point (i.e. 4pi - A3_min)
+    '''
+    area_crit_frac = 1 - (1 + np.tan(np.radians(I))**(2/3))**(-3/2)
+    # area_crit_frac = area / 4pi = 2pi * (1 - cos(q_max)) / 4pi
+    return np.arccos(1 - 2 * area_crit_frac)
+
+def sim_for_dq(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=10, dq=0.3,
+               plot=False):
+    '''
+    for a small dq (dtheta) displacement below CS2, simulate forwards in time
+    for a ring of ICs, look @ final mu values (terminate @ eta = 1e-3)
+    '''
+    eta0 = eta0_mult * get_etac(I)
+    q2, _ = roots(I, eta0)
+    print('Running for', dq)
+
+    # start w/ a ring of constant J_init. calc via eps=0 sim
+    tf = 4 * np.pi / eta0 # 2pi / eta0 = precession about CS2
+    y0_ring = [*to_cart(q2 + dq, 0), eta0]
+    event = lambda t, y: (to_ang(*y[0:3])[1] % 2 * np.pi) - np.pi
+    event.direction = +1
+    ret_ring = solve_ic_base(I, 0, y0_ring, tf, events=[event])
+    t_ring = np.linspace(0, ret_ring.t_events[-1][1], n_pts)
+    y0s = ret_ring.sol(t_ring)
+
+    # run for each traj
+    final_mus = []
+    for y0 in y0s.T:
+        term_event = lambda t, y: y[3] - 1e-5
+        term_event.terminal = True
+        ret = solve_ic_base(I, eps, y0, np.inf, events=[term_event])
+        q, phi = to_ang(*ret.y[0:3])
+        if plot:
+            plt.plot(phi[-1], np.cos(q[-1]), 'go', markersize=0.5)
+            q0, phi0 = to_ang(*y0[0:3])
+            plt.plot(phi0, np.cos(q0), 'ro', markersize=0.5)
+        final_mus.append(np.mean(np.cos(q[-20: ])))
+    if plot:
+        plt.savefig('3single_%d.png' % np.degrees(I))
+        plt.clf()
+        print('Final Mus', final_mus)
+    return final_mus
+
+def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=10, n_dqs=20):
+    I_deg = round(np.degrees(I))
+    # dqs = np.linspace(0.05, 0.99 * max_theta_a_crit(I), n_dqs)
+    dqs = np.linspace(0.05, 0.99 * np.pi / 2, n_dqs)
+    PKL_FN = '3dat%d.pkl' % I_deg
+    filename = '3_ensemble_%d.png' % I_deg
+    title = r'$I = %d^\circ$' % I_deg
+    if not os.path.exists(PKL_FN):
+        p = Pool(4)
+        args = [(I, eps, eta0_mult, etaf, n_pts, dq) for dq in dqs]
+        res_arr = p.starmap(sim_for_dq, args)
+        with open(PKL_FN, 'wb') as f:
+            pickle.dump(res_arr, f)
+    else:
+        with open(PKL_FN, 'rb') as f:
+            res_arr = pickle.load(f)
+    for dq, final_mus in zip(dqs, res_arr):
+        plt.scatter(dq * np.ones_like(final_mus), final_mus)
+    plt.xlabel(r'$\mathrm{d}\theta$')
+    plt.ylabel(r'$\mu_f$')
+    plt.title(title)
+    plt.savefig(filename)
+
 if __name__ == '__main__':
     I = np.radians(5)
     tf = 15000
     eta0 = 10 * get_etac(I)
     q2, _ = roots(I, eta0)
-    dq = 0.3
 
-    # two cases where can end up on either side of the separatrix. Pretty small
-    # used, resulting in very small final mu
-    plot_single(I, -1e-3, tf, eta0, q2, '3testo.png', dq=0.3)
+    # plot_single(I, -1e-3, tf, eta0, q2, '3testo.png', dq=0.3)
+    # sim_for_dq(I, dq=max_theta_a_crit(I), plot=True)
+    sim_for_many(I, n_pts=21, n_dqs=51)

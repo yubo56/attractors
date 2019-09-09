@@ -180,7 +180,7 @@ def solve_ic(I, eps, y0, tf, rtol=1e-6, **kwargs):
 
     return ret
 
-def solve_ic_base(I, eps, y0, tf, rtol=1e-6, **kwargs):
+def solve_ic_base(I, eps, y0, tf, rtol=1e-6, events=[], **kwargs):
     '''
     get dy/dt for (x, y, z, eta)
 
@@ -194,9 +194,9 @@ def solve_ic_base(I, eps, y0, tf, rtol=1e-6, **kwargs):
             eta * y * np.sin(I),
             eps * eta,
         ]
-    event = lambda t, y: y[1]
+    events.append(lambda t, y: y[1])
     ret = solve_ivp(dydt, [0, tf], y0,
-                    rtol=rtol, dense_output=True, events=[event],
+                    rtol=rtol, dense_output=True, events=events,
                     **kwargs)
 
     return ret
