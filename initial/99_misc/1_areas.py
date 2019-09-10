@@ -72,30 +72,6 @@ def plot_areas():
     plt.savefig('1_areas.png', dpi=400)
     plt.clf()
 
-def plot_eps_dist():
-    '''
-    plot final theta as function of initial mutual inclination
-    '''
-    I = np.radians(5)
-    eps_init = np.linspace(0, 20, 101)
-    j_init = 2 * np.pi * (1 - np.cos(np.radians(eps_init)))
-
-    # set j_init = A2 to find eta @ crossing
-    # TODO use ward's formula instead
-    eta_c = (j_init / 16)**2 / np.sin(I)
-    A3 = 2 * np.pi * (1 + eta_c * np.cos(I)) - j_init / 2
-
-    q_f_1 = (j_init + A3 - 2 * np.pi) / (2 * np.pi)
-    q_f_2 = (A3 - 2 * np.pi) / (2 * np.pi)
-    plt.plot(eps_init, np.degrees(np.arccos(q_f_1)), 'r')
-    plt.plot(eps_init, np.degrees(np.arccos(q_f_2)), 'r')
-    plt.xlabel(r'Initial $\epsilon$')
-    plt.ylabel(r'Final $\theta$')
-    plt.title(r'$I = %d^\circ$' % np.degrees(I))
-    plt.savefig('1_eps_dist.png', dpi=400)
-    plt.clf()
-
 if __name__ == '__main__':
     plot_A_crit()
     plot_areas()
-    plot_eps_dist()
