@@ -5,6 +5,7 @@ import os
 import scipy.optimize as opt
 import numpy as np
 from multiprocessing import Pool
+from matplotlib import cm
 
 import matplotlib
 import pickle
@@ -42,7 +43,16 @@ def plot_traj_colors(I, ret, filename):
     print('Saved', filename)
     plt.clf()
 
-def get_areas_2(ret, num_pts=201):
+def get_t_vals(t_i, t_f, int_n_pts=401):
+    ''' uneven t spacing, concentrate @ ends + middle '''
+    t_m = (t_f + t_i) / 2
+    unit = np.linspace(0, 1, int_n_pts // 2 + 1)
+    t1 = np.sin(unit * np.pi / 2)**2 * (t_m - t_i) + t_i
+    t2 = np.sin(unit * np.pi / 2)**2 * (t_f - t_m) + t_m
+    # first/last elements overlap
+    return np.concatenate((t1, t2[1: ]))
+
+def get_areas_2(ret):
     '''
     not get_areas in utils since this that assumes start -> ejection from sep
     '''
@@ -66,7 +76,7 @@ def get_areas_2(ret, num_pts=201):
     # cases
     for t_0_i, t_0_f, t_pi_f in zip(t_0, t_0[1: ], t_pi[1: ]):
         if t_0_f < t_pi_f: # circulating
-            t_vals = np.linspace(t_0_i, t_0_f, num_pts)
+            t_vals = get_t_vals(t_0_i, t_0_f)
             t_areas.append((t_0_f + t_pi_f) / 2)
 
             x, y, z, _ = ret.sol(t_vals)
@@ -82,7 +92,7 @@ def get_areas_2(ret, num_pts=201):
     t_end_lib = max(t_pi) if len(t_0) == 0 else t_0[0]
     t_pi_lib = t_pi[np.where(t_pi < t_end_lib)[0]]
     for t_pi_i, t_pi_f in zip(t_pi_lib[2::2], t_pi_lib[ :-2:2]):
-        t_vals = np.linspace(t_pi_i, t_pi_f, num_pts)
+        t_vals = get_t_vals(t_pi_i, t_pi_f)
         t_areas.append((t_pi_i + t_pi_f) / 2)
 
         x, y, z, _ = ret.sol(t_vals)
@@ -92,7 +102,7 @@ def get_areas_2(ret, num_pts=201):
     # final circ period; note that t_0[0] < t_pi_fin[0] again
     t_pi_fin = t_pi[np.where(t_pi > t_end_lib)[0]]
     for t_0_i, t_0_f, t_pi_f in zip(t_0, t_0[1: ], t_pi_fin[1: ]):
-        t_vals = np.linspace(t_0_i, t_0_f, num_pts)
+        t_vals = get_t_vals(t_0_i, t_0_f)
         t_areas.append((t_0_f + t_pi_f) / 2)
 
         x, y, z, _ = ret.sol(t_vals)
@@ -167,13 +177,15 @@ def plot_traj(I, ret, filename, dq):
         ax.plot(t[idx4s], np.cos(q2s), 'b', label='CS2')
         ax.set_xlabel(r'$t$')
         ax.set_ylabel(r'$\cos\theta$')
-        ax.legend()
 
         # predicted final mu
         ax.axhline(mu_f, c='r')
         ax.axhline(mu_f2, c='r')
-    ax2.set_ylim([-1.5 * mu_f, 1.5 * mu_f])
     ax1.set_title(r'$I = %d^\circ$' % np.degrees(I))
+    ax1.legend()
+    ax2.set_ylim([-2 * mu_f, 2 * mu_f])
+    ax2.set_yticks([0])
+    ax2.set_yticklabels([0])
 
     # plot areas
     t_pre_cross = t_areas[np.where(t_areas < t_end_lib)[0]]
@@ -181,7 +193,7 @@ def plot_traj(I, ret, filename, dq):
     ax3.plot(t_pre_cross, np.full_like(t_pre_cross, a_init_dq), 'r:')
     ax3.plot(t_crossed, np.full_like(t_crossed, a_crossed), 'r:')
     ax3.plot(t_crossed, np.full_like(t_crossed, a_crossed2), 'r:')
-    ax3.set_ylabel('Enclosed Area')
+    ax3.set_ylabel(r'$A$')
     ax3.plot(t_areas, areas, 'bo', markersize=0.3)
 
     plt.savefig(filename, dpi=400)
@@ -230,7 +242,7 @@ def sim_for_dq(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=10, dq=0.3,
             plt.plot(phi0, np.cos(q0), 'ro', markersize=0.5)
         final_mus.append(np.mean(np.cos(q[-20: ])))
     if plot:
-        plt.savefig('3single_%d.png' % np.degrees(I))
+        plt.savefig('3single_%02d.png' % np.degrees(I))
         plt.clf()
         print('Final Mus', final_mus)
     return final_mus
@@ -245,8 +257,9 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51):
     dqs = np.linspace(0.05, 0.99 * np.pi / 2, n_dqs)
     n_pts_float = np.linspace(n_pts // 4, n_pts, n_dqs)
 
-    PKL_FN = '3dat%d.pkl' % I_deg
-    filename = '3_ensemble_%d.png' % I_deg
+    PKL_FN = '3dat%02d.pkl' % I_deg
+    filename = '3_ensemble_%02d.png' % I_deg
+    inits_fn = '3_ensemble_inits%02d.png' % I_deg
     title = r'$I = %d^\circ$' % I_deg
     if not os.path.exists(PKL_FN):
         p = Pool(4)
@@ -270,20 +283,22 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51):
     plt.clf()
 
     # plot all ICs
-    inits_fn = '3_ensemble_inits%d.png' % I_deg
     if not os.path.exists(inits_fn):
-        color_base = np.linspace(0, 1, n_dqs)
         q2, _ = roots(I, eta0)
-        for dq, npts, color_num in zip(dqs, n_pts_float, color_base):
+        norm = cm.colors.Normalize(vmin=min(np.degrees(dqs)),
+                                   vmax=max(np.degrees(dqs)))
+        cmap = cm.RdBu
+        for dq, npts in zip(dqs, n_pts_float):
             y0s = fetch_ring(I, eta0, dq, int(round(npts)))
-            c = [[1 - color_num, 0, color_num]]
             q, phi = to_ang(*y0s[0:3])
-            plt.scatter(phi, np.cos(q), c=c, s=0.5)
+            plt.plot(phi, np.cos(q), c=cmap(norm(np.degrees(dq))),
+                     marker='o', ls='', markersize=0.5)
         plt.xlabel(r'$\phi$')
         plt.ylabel(r'$\cos\theta$')
         plt.xlim([0, 2 * np.pi])
         plt.ylim([-1, 1])
         plt.scatter(np.pi, np.cos(q2), c='g')
+        plt.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap))
         plt.savefig(inits_fn, dpi=400)
         plt.clf()
 
@@ -295,9 +310,9 @@ if __name__ == '__main__':
     q2, _ = roots(I, eta0)
     # first one goes down, second TODO
     # plot_single(I, -3e-4, tf, eta0, q2, '3testo.png', dq=0.3)
-    plot_single(I, -3.1e-4, tf, eta0, q2, '3testo2.png', dq=0.3)
+    # plot_single(I, -3.01e-4, tf, eta0, q2, '3testo2.png', dq=0.3)
 
     # sim_for_dq(I, dq=np.pi / 2, plot=True)
-    # sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
-    # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
-    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)
+    sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
+    sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
+    sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)

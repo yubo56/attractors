@@ -86,7 +86,7 @@ def trajs(I, eta, eps_mult=0, tf=300, n_pts=101, n_t=101, phi_c=None):
     plt.title(r'$I = %d^\circ, \eta = %.2f, \epsilon = %s (%.2f \epsilon_c)$' %
               (np.degrees(I), eta, eps_str, eps_mult))
     plt.savefig('3trajs_%s.png' %
-                ('0' if eps_mult == 0 else
+                ('0_00' if eps_mult == 0 else
                  ('%.2f' % eps_mult).replace('.','_')))
     plt.clf()
 
