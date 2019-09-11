@@ -261,6 +261,8 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51):
     filename = '3_ensemble_%02d.png' % I_deg
     inits_fn = '3_ensemble_inits%02d.png' % I_deg
     title = r'$I = %d^\circ$' % I_deg
+
+    # run/plot sim
     if not os.path.exists(PKL_FN):
         p = Pool(4)
         args = [(I, eps, eta0_mult, etaf, int(round(n_pt)), dq)
@@ -271,10 +273,32 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51):
     else:
         with open(PKL_FN, 'rb') as f:
             res_arr = pickle.load(f)
+
+    # first, plot some analytical curves (data overlaid on top)
+    # 4 curves: A2 -> A3, A2 -> A1, A3 -> A2, A3 -> A1
+    j_init = 2 * np.pi * (1 - np.cos(dqs))
+    # TODO use ward's formula instead
+    eta_c = (j_init / 16)**2 / np.sin(I)
+    A3 = 2 * np.pi * (1 + eta_c * np.cos(I)) - j_init / 2
+    # A2 -> A1, A2 -> A3
+    q_f_21 = np.arccos((
+        2 * np.pi * eta_c * np.cos(I) + 8 * np.sqrt(eta_c * np.sin(I))
+    ) / (2 * np.pi))
+    idx_23 = np.where(2 * np.sqrt(eta_c * np.sin(I)) >
+                            np.pi * eta_c * np.cos(I))[0]
+    eta_23 = eta_c[idx_23]
+    q_f_23 = np.arccos((
+        2 * np.pi * eta_23 * np.cos(I) - 8 * np.sqrt(eta_23 * np.sin(I))
+    ) / (2 * np.pi))
+    plt.plot(np.degrees(dqs), np.degrees(q_f_21), 'r')
+    plt.plot(np.degrees(dqs[idx_23]), np.degrees(q_f_23), 'r')
+
+    # plot data
     for dq, final_mus in zip(dqs, res_arr):
         final_q_deg = np.degrees(np.arccos(final_mus))
         plt.scatter(np.full_like(final_mus, np.degrees(dq)),
                     final_q_deg, c='b', s=0.5)
+
     plt.xlabel(r'$\mathrm{d}\theta$')
     plt.ylabel(r'$\theta_f$')
     plt.ylim([120, 0])
@@ -283,24 +307,23 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51):
     plt.clf()
 
     # plot all ICs
-    if not os.path.exists(inits_fn):
-        q2, _ = roots(I, eta0)
-        norm = cm.colors.Normalize(vmin=min(np.degrees(dqs)),
-                                   vmax=max(np.degrees(dqs)))
-        cmap = cm.RdBu
-        for dq, npts in zip(dqs, n_pts_float):
-            y0s = fetch_ring(I, eta0, dq, int(round(npts)))
-            q, phi = to_ang(*y0s[0:3])
-            plt.plot(phi, np.cos(q), c=cmap(norm(np.degrees(dq))),
-                     marker='o', ls='', markersize=0.5)
-        plt.xlabel(r'$\phi$')
-        plt.ylabel(r'$\cos\theta$')
-        plt.xlim([0, 2 * np.pi])
-        plt.ylim([-1, 1])
-        plt.scatter(np.pi, np.cos(q2), c='g')
-        plt.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap))
-        plt.savefig(inits_fn, dpi=400)
-        plt.clf()
+    q2, _ = roots(I, eta0)
+    norm = cm.colors.Normalize(vmin=min(np.degrees(dqs)),
+                               vmax=max(np.degrees(dqs)))
+    cmap = cm.RdBu
+    for dq, npts in zip(dqs, n_pts_float):
+        y0s = fetch_ring(I, eta0, dq, int(round(npts)))
+        q, phi = to_ang(*y0s[0:3])
+        plt.plot(phi, np.cos(q), c=cmap(norm(np.degrees(dq))),
+                 marker='o', ls='', markersize=0.5)
+    plt.xlabel(r'$\phi$')
+    plt.ylabel(r'$\cos\theta$')
+    plt.xlim([0, 2 * np.pi])
+    plt.ylim([-1, 1])
+    plt.scatter(np.pi, np.cos(q2), c='g')
+    plt.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap))
+    plt.savefig(inits_fn, dpi=400)
+    plt.clf()
 
 if __name__ == '__main__':
     I = np.radians(5)
@@ -314,5 +337,5 @@ if __name__ == '__main__':
 
     # sim_for_dq(I, dq=np.pi / 2, plot=True)
     sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
-    sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
-    sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)
+    # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
+    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)

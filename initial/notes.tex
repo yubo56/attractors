@@ -1471,6 +1471,9 @@ reads $\lambda^2 + b\lambda + c = 0$ and the eigenvalues take form $\p*{-b \pm
 remains forever stable. We can also numerically validate this via
 \lstinline{99_misc/0_stab.py}.
 
+We can illustrate the trajectories at $\phi_{2, \epsilon}$ when turning on
+$\epsilon$ by examining \lstinline{99_misc/3_trajs.py}.
+
 \subsection{Dissipating Disk: $\theta_f$ Distribution}
 
 Consider if $\eta$ crosses $\eta_c$ with $\eta(t = 0) > \eta_c$, and there is no
@@ -1489,10 +1492,38 @@ ejected state are either $J_f = A_2 + A_3 - 2\pi$ or $J_f = A_3 - 2\pi$, when
 integrating $\mu\;\mathrm{d}\phi$. From here, the states will precess uniformly
 at some $\theta_f = J_f / 2\pi$.
 
-We can investigate two behaviors here then, the range of permitted $\theta_f$ as
-a function of $I$ (when $J_i = A_{crit}$), and the values of $\theta_f$ given
-some initial mutual inclination $\hat{s} \cdot \hat{l}_p$ ($J_i = 2\pi\p*{1 -
-\cos \epsilon}$ where $\epsilon$ is the initial mutual inclination).
+We can investigate the values of $\theta_f$ given some initial mutual
+inclination $\hat{s} \cdot \hat{l}_p$ ($J_i = 2\pi\p*{1 - \cos \epsilon}$ where
+$\epsilon$ is the initial mutual inclination). To do this, we need to understand
+what the possible transitions are. When the separatrix first appears to the
+final state, the transitions are $A_2 \to A_3, A_2 \to A_1, A_3 \to A_1, A_3 \to
+A_2 \to A_1, A_3 \to A_3$. Let's reproduce the analytical forms of these three
+areas below:
+
+%   z0 = eta * np.cos(I)
+%   chi = np.sqrt(-np.tan(q4)**3 / np.tan(I) - 1)
+%   rho = chi * np.sin(q4)**2 * np.cos(q4) / (
+%       chi**2 * np.cos(q4)**2 + 1)
+%   T = 2 * chi * np.cos(q4) / (
+%       chi**2 * np.cos(q4)**2 - 1)
+%   A2 = 8 * rho + 4 * np.arctan(T) - 8 * z0 * np.arctan(1 / chi)
+%   A1 = 2 * np.pi * (1 - z0) - A2 / 2
+%   A3 = 2 * np.pi * (1 + z0) - A2 / 2
+\begin{subequations}\label{se:}
+    \begin{align*}
+        z_0 &= \eta\cos I &
+        \chi &= \sqrt{-\frac{\tan^3\theta_4}{\tan I} - 1},\\
+        \rho &= \chi \frac{\sin^2 \theta_4\cos \theta_4}{
+            \chi^2 \cos^2\theta_4 + 1} &
+        T &= 2\chi \frac{\cos \theta_4}{
+            \chi^2 \cos^2\theta_4 - 1},
+    \end{align*}
+    \begin{align}
+        A_2 &= 8\rho + 4\arctan T - 8z_0 \arctan \frac{1}{\chi},\\
+        A_1 &= 2\pi\p*{1 - z_0} - \frac{A_2}{2},\\
+        A_3 &= 2\pi\p*{1 + z_0} - \frac{A_2}{2}.
+    \end{align}
+\end{subequations}
 
 \end{document}
 
