@@ -34,6 +34,13 @@ def sep_areas_exact(I, eta):
     A3 = 2 * np.pi * (1 + z0) - A2 / 2
     return A1, A2, A3
 
+def d_sep_areas(I, eta):
+    ''' numerically compute dA_i/deta '''
+    deta = 1e-5
+    As_i = sep_areas_exact(I, eta - deta)
+    As_f = sep_areas_exact(I, eta + deta)
+    return (np.array(As_f) - np.array(As_i)) / (2 * deta)
+
 def plot_traj_colors(I, ret, filename):
     ''' scatter plot of (phi, mu) w/ colored time '''
     fix, ax1 = plt.subplots(1, 1)
@@ -130,7 +137,7 @@ def get_areas_2(ret):
         areas.append(np.sum(np.cos(q) * dphi))
     return t_end_lib, np.array(t_areas), np.array(areas)
 
-def plot_traj(I, ret, filename, dq):
+def plot_traj(I, ret, filename, dq, plot=True):
     '''
     plot mu(t) and zoomed in for a trajectory
     overplot area conservation
@@ -141,10 +148,13 @@ def plot_traj(I, ret, filename, dq):
     a_init_dq = 2 * np.pi * (1 - np.cos(dq))
     print('Areas (integrated/estimated): ', a_init_int, a_init_dq)
 
-    fig, (ax1, ax3) = plt.subplots(2, 1,
-                            sharex=True,
-                            gridspec_kw={'height_ratios': [3, 2]})
-    fig.subplots_adjust(hspace=0)
+    if plot:
+        fig, (ax1, ax3) = plt.subplots(2, 1,
+                                sharex=True,
+                                gridspec_kw={'height_ratios': [3, 2]})
+        fig.subplots_adjust(hspace=0)
+    else:
+        fig, ax1 = plt.subplots(1, 1)
     t = ret.t
     etas = ret.y[3]
     q, phi = to_ang(*ret.y[0:3])
@@ -203,32 +213,34 @@ def plot_traj(I, ret, filename, dq):
     ax1.set_xlabel(r'$t$')
     ax1.set_ylabel(r'$\cos\theta$')
 
-    # predicted final mu
-    ax1.axhline(mu_f, c='r')
-    ax1.axhline(mu_f2, c='r')
     ax1.set_title(r'$I = %d^\circ$' % np.degrees(I))
     ax1.legend(loc='right')
 
-    # plot areas
-    t_pre_cross = t_areas[np.where(t_areas < t_end_lib)[0]]
-    t_crossed = t_areas[np.where(t_areas > t_end_lib)[0]]
-    ax3.plot(t_pre_cross, np.full_like(t_pre_cross, a_init_int), 'r',
-             label='Th')
-    ax3.plot(t_crossed, np.full_like(t_crossed, a_crossed), 'r')
-    ax3.plot(t_crossed, np.full_like(t_crossed, a_crossed2), 'r')
-    ax3.set_ylabel(r'$A$')
-    ax3.plot(t_areas, areas, 'bo', markersize=0.3, label='Dat')
-    ax3.legend()
+    if plot:
+        # predicted final mu
+        ax1.axhline(mu_f, c='r')
+        ax1.axhline(mu_f2, c='r')
+
+        # plot areas
+        t_pre_cross = t_areas[np.where(t_areas < t_end_lib)[0]]
+        t_crossed = t_areas[np.where(t_areas > t_end_lib)[0]]
+        ax3.plot(t_pre_cross, np.full_like(t_pre_cross, a_init_int), 'r',
+                 label='Th')
+        ax3.plot(t_crossed, np.full_like(t_crossed, a_crossed), 'r')
+        ax3.plot(t_crossed, np.full_like(t_crossed, a_crossed2), 'r')
+        ax3.set_ylabel(r'$A$')
+        ax3.plot(t_areas, areas, 'bo', markersize=0.3, label='Dat')
+        ax3.legend()
 
     plt.savefig(filename, dpi=400)
     print('Saved', filename)
     plt.clf()
 
-def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3):
+def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3, plot=True):
     y0 = [*to_cart(q0 + dq, 0), eta0]
     q2, _ = roots(I, eta0)
     ret = solve_ic_base(I, eps, y0, tf)
-    plot_traj(I, ret, filename, dq)
+    plot_traj(I, ret, filename, dq, plot=plot)
 
 def sim_ring(I, eta, dq):
     q2, _ = roots(I, eta)
@@ -303,11 +315,12 @@ def sim_for_dq(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=10, dq=0.3,
         print('Final Mus', final_mus)
     return final_mus
 
-def plot_anal_qfs(I, dqs, eta0):
+def plot_anal_qfs(I, dqs, eta0, axs):
     '''
     for a given initial mutual inclination array dqs, return a list of tuples to
     plot for analytical location of final qs
     '''
+    ax1, ax2 = axs
     A_sep_crit = 4 * np.pi * (1 - (1 + np.tan(I)**(2/3))**(-3/2))
     get_a2 = lambda eta: -sep_areas_exact(I, eta)[1]
     # if eta_3 < max_A2_eta, will experience double crossing
@@ -327,11 +340,10 @@ def plot_anal_qfs(I, dqs, eta0):
         naive_eta_cross * np.sin(I)) / np.pi
     mu_f_2 = naive_eta_cross * np.cos(I) - 4 * np.sqrt(
         naive_eta_cross * np.sin(I)) / np.pi
-    plt.plot(np.degrees(dqs), np.degrees(np.arccos(mu_f_1)),
+    ax1.plot(np.degrees(dqs), np.degrees(np.arccos(mu_f_1)),
              'k', label='Naive', linewidth=1)
-    plt.plot(np.degrees(dqs), np.degrees(np.arccos(mu_f_2)),
+    ax1.plot(np.degrees(dqs), np.degrees(np.arccos(mu_f_2)),
              'k', linewidth=1)
-    plt.legend()
 
     # get initial areas more exactly
     areas_init = []
@@ -383,17 +395,17 @@ def plot_anal_qfs(I, dqs, eta0):
     eta_23 = eta_2[idx_23]
     q_f_23 = [np.arccos(sep_areas_exact(I, eta)[2] / (2 * np.pi) - 1)
               for eta in eta_2[idx_23]]
-    plt.plot(np.degrees(dqs[idx_23]), np.degrees(q_f_23), 'r', label='23')
+    ax1.plot(np.degrees(dqs[idx_23]), np.degrees(q_f_23), 'r', label='23')
 
     # A2 -> A1, all eta_2s
     q_f_21 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
               for eta in eta_2]
-    plt.plot(np.degrees(dqs[idx_2]), np.degrees(q_f_21), 'c', label='21')
+    ax1.plot(np.degrees(dqs[idx_2]), np.degrees(q_f_21), 'c', label='21')
 
     # A3 -> A1, J_f = A2_star + A3_star
     q_f_31 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
               for eta in eta_3]
-    plt.plot(np.degrees(dqs[idx_3]), np.degrees(q_f_31), 'g', label='31')
+    ax1.plot(np.degrees(dqs[idx_3]), np.degrees(q_f_31), 'g', label='31')
 
     # A3 -> A2 -> A1
     eta_second_cross = []
@@ -408,11 +420,34 @@ def plot_anal_qfs(I, dqs, eta0):
         idx_second_cross.append(idx)
     q_f_321 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
                for eta in eta_second_cross]
-    plt.plot(np.degrees(dqs[idx_3][idx_second_cross]), np.degrees(q_f_321),
+    ax1.plot(np.degrees(dqs[idx_3][idx_second_cross]), np.degrees(q_f_321),
              'm', label='321')
 
     # A3 -> A3 (TODO)
-    # plt.plot(np.degrees(dqs[idx_33]), np.degrees(dqs[idx_33]), 'c')
+    # ax1.plot(np.degrees(dqs[idx_33]), np.degrees(dqs[idx_33]), 'c')
+
+    ax1.legend()
+
+    # plot probabilities
+    # Probability 2 -> 3
+    _, dA2_23, dA3_23 = d_sep_areas(I, eta_23)
+    P_23 = -dA3_23 / dA2_23
+    ax2.plot(np.degrees(dqs[idx_23]), np.minimum(P_23, np.ones_like(P_23)), 'r')
+    # Probability 2 -> 1
+    dA1_21, dA2_21, _ = d_sep_areas(I, eta_2)
+    P_21 = -dA1_21 / dA2_21
+    ax2.plot(np.degrees(dqs[idx_2]), np.minimum(P_21, np.ones_like(P_21)), 'c')
+    # Prob 3 -> 2 -> 1 = 3 -> 2
+    eta_321 = eta_3[np.where(eta_3 > max_A2_eta)[0]]
+    _, dA2_32, dA3_32 = d_sep_areas(I, eta_321)
+    P_32 = -dA2_32 / dA3_32
+    ax2.plot(np.degrees(dqs[idx_3][idx_second_cross]),
+             np.minimum(P_32, np.ones_like(P_32)), 'm')
+    # Prob 3 -> 1
+    dA1_31, _, dA3_31 = d_sep_areas(I, eta_3)
+    P_31 = -dA1_31 / dA3_31
+    ax2.plot(np.degrees(dqs[idx_3]),
+             np.minimum(P_31, np.ones_like(P_31)), 'g')
 
 def plot_ICs(I, eta0, dqs, n_pts_float):
     q2, _ = roots(I, eta0)
@@ -437,20 +472,22 @@ def plot_ICs(I, eta0, dqs, n_pts_float):
     plt.scatter(np.pi, np.cos(q2), c='g')
     plt.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap))
 
-def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51):
+def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
+                 plot=True):
     '''
     variable number of points per ring,
     starting from n_pts/4 to n_pts linearly over dqs
     '''
     I_deg = round(np.degrees(I))
+    eps_log = 10 * (-np.log10(-eps))
     eta0 = eta0_mult * get_etac(I)
     dqs = np.linspace(0.05, 0.99 * np.pi / 2, n_dqs)
     n_pts_float = np.linspace(n_pts // 4, n_pts, n_dqs)
 
-    PKL_FN = '3dat%02d.pkl' % I_deg
-    filename = '3_ensemble_%02d.png' % I_deg
-    inits_fn = '3_ensemble_inits%02d.png' % I_deg
-    title = r'$I = %d^\circ$' % I_deg
+    PKL_FN = '3dat%02d_%02d.pkl' % (I_deg, eps_log)
+    filename = '3_ensemble_%02d_%02d.png' % (I_deg, eps_log)
+    inits_fn = '3_ensemble_inits%02d_%02d.png' % (I_deg, eps_log)
+    title = r'$I = %d^\circ, \epsilon = 10^{-%.1f}$' % (I_deg, eps_log / 10)
 
     # run/plot sim
     if not os.path.exists(PKL_FN):
@@ -464,21 +501,42 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51):
         with open(PKL_FN, 'rb') as f:
             res_arr = pickle.load(f)
 
-    # first, plot some analytical curves (data overlaid on top)
-    plot_anal_qfs(I, dqs, eta0)
+    if plot:
+        # first, plot some analytical curves (data overlaid on top)
+        # then plot data
+        fig, (ax1, ax2) = plt.subplots(2, 1,
+                                sharex=True,
+                                gridspec_kw={'height_ratios': [3, 2]})
+        fig.subplots_adjust(hspace=0)
+        plot_anal_qfs(I, dqs, eta0, [ax1, ax2])
 
-    # plot data
-    for dq, final_mus in zip(dqs, res_arr):
-        final_q_deg = np.degrees(np.arccos(final_mus))
-        plt.scatter(np.full_like(final_mus, np.degrees(dq)),
-                    final_q_deg, c='b', s=0.8)
+        # now plot data
+        for dq, final_mus in zip(dqs, res_arr):
+            final_q_deg = np.degrees(np.arccos(final_mus))
+            ax1.scatter(np.full_like(final_mus, np.degrees(dq)),
+                        final_q_deg, c='b', s=0.8)
 
-    plt.xlabel(r'$\theta_{sp,i}$')
-    plt.ylabel(r'$\theta_{sl,f}$')
-    plt.ylim([120, 0])
-    plt.title(title)
-    plt.savefig(filename, dpi=400)
-    plt.clf()
+        ax1.set_ylabel(r'$\theta_{sl,f}$')
+        ax2.set_xlabel(r'$\theta_{sp,i}$')
+        ax2.set_ylabel('Prob')
+        ax1.set_ylim([120, 0])
+        ax1.set_title(title)
+        plt.savefig(filename, dpi=400)
+        plt.clf()
+
+    else:
+        # just plot data
+        for dq, final_mus in zip(dqs, res_arr):
+            final_q_deg = np.degrees(np.arccos(final_mus))
+            plt.scatter(np.full_like(final_mus, np.degrees(dq)),
+                        final_q_deg, c='b', s=0.8)
+
+        plt.xlabel(r'$\theta_{sp,i}$')
+        plt.ylabel(r'$\theta_{sl,f}$')
+        plt.ylim([120, 0])
+        plt.title(title)
+        plt.savefig(filename, dpi=400)
+        plt.clf()
 
     # plot all ICs
     plot_ICs(I, eta0, dqs, n_pts_float)
@@ -497,8 +555,15 @@ if __name__ == '__main__':
     # plot_single(I, -3.14e-4, 15000, eta0, q2, '3testo321d.png', dq=np.radians(60))
     # plot_single(I, -3.01e-4, 20000, eta0, q2, '3testo31.png',
     #             dq=0.99 * np.pi / 2)
+    plot_single(I, -0.1, 100, eta0, q2, '3testo_nonad.png', dq=0.3,
+                plot=False)
 
+    # testing
     # sim_for_dq(I, dq=np.pi / 2, plot=True)
-    sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
-    sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
-    sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)
+
+    # sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
+    # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
+    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)
+    # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51)
+    # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51)
+    # sim_for_many(I, eps=-0.1, n_pts=101, n_dqs=51, plot=False)
