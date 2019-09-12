@@ -395,17 +395,20 @@ def plot_anal_qfs(I, dqs, eta0, axs):
     eta_23 = eta_2[idx_23]
     q_f_23 = [np.arccos(sep_areas_exact(I, eta)[2] / (2 * np.pi) - 1)
               for eta in eta_2[idx_23]]
-    ax1.plot(np.degrees(dqs[idx_23]), np.degrees(q_f_23), 'r', label='23')
+    ax1.plot(np.degrees(dqs[idx_23]), np.degrees(q_f_23), 'r',
+             label=r'$2\to3$')
 
     # A2 -> A1, all eta_2s
     q_f_21 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
               for eta in eta_2]
-    ax1.plot(np.degrees(dqs[idx_2]), np.degrees(q_f_21), 'c', label='21')
+    ax1.plot(np.degrees(dqs[idx_2]), np.degrees(q_f_21), 'c',
+             label=r'$2\to1$')
 
     # A3 -> A1, J_f = A2_star + A3_star
     q_f_31 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
               for eta in eta_3]
-    ax1.plot(np.degrees(dqs[idx_3]), np.degrees(q_f_31), 'g', label='31')
+    ax1.plot(np.degrees(dqs[idx_3]), np.degrees(q_f_31), 'g',
+             label=r'$3\to1$')
 
     # A3 -> A2 -> A1
     eta_second_cross = []
@@ -421,7 +424,7 @@ def plot_anal_qfs(I, dqs, eta0, axs):
     q_f_321 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
                for eta in eta_second_cross]
     ax1.plot(np.degrees(dqs[idx_3][idx_second_cross]), np.degrees(q_f_321),
-             'm', label='321')
+             'm', label=r'$3\to2\to1$')
 
     # A3 -> A3 (TODO)
     # ax1.plot(np.degrees(dqs[idx_33]), np.degrees(dqs[idx_33]), 'c')
@@ -473,20 +476,25 @@ def plot_ICs(I, eta0, dqs, n_pts_float):
     plt.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap))
 
 def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
-                 plot=True):
+                 plot=True, use_full_pts=False):
     '''
     variable number of points per ring,
     starting from n_pts/4 to n_pts linearly over dqs
+
+    plot sets whether to make a probability plot & overplot all predictions
+    use_full_pts True means to use same number of points @ low theta as high
     '''
     I_deg = round(np.degrees(I))
     eps_log = 10 * (-np.log10(-eps))
     eta0 = eta0_mult * get_etac(I)
     dqs = np.linspace(0.05, 0.99 * np.pi / 2, n_dqs)
-    n_pts_float = np.linspace(n_pts // 4, n_pts, n_dqs)
+    if use_full_pts:
+        n_pts_float = np.full_like(dqs, n_pts)
+    else:
+        n_pts_float = np.linspace(n_pts // 4, n_pts, n_dqs)
 
     PKL_FN = '3dat%02d_%02d.pkl' % (I_deg, eps_log)
     filename = '3_ensemble_%02d_%02d.png' % (I_deg, eps_log)
-    inits_fn = '3_ensemble_inits%02d_%02d.png' % (I_deg, eps_log)
     title = r'$I = %d^\circ, \epsilon = 10^{-%.1f}$' % (I_deg, eps_log / 10)
 
     # run/plot sim
@@ -516,11 +524,19 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
             ax1.scatter(np.full_like(final_mus, np.degrees(dq)),
                         final_q_deg, c='b', s=0.8)
 
+        ax1.set_yticks([0, 45, 90])
+        ax1.set_yticklabels([r'$0$', r'$45$', r'$90$'])
+        ax2.set_xticks([0, 30, 60, 90])
+        ax2.set_xticklabels([r'$0$', r'$30$', r'$60$', r'$90$'])
+        ax2.set_yticks([0, 0.5, 1])
+        ax2.set_yticklabels([r'$0$', r'$0.5$', r'$1$'])
+
         ax1.set_ylabel(r'$\theta_{sl,f}$')
         ax2.set_xlabel(r'$\theta_{sp,i}$')
         ax2.set_ylabel('Prob')
-        ax1.set_ylim([120, 0])
+        ax1.set_ylim(100, 0)
         ax1.set_title(title)
+
         plt.savefig(filename, dpi=400)
         plt.clf()
 
@@ -533,15 +549,18 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
 
         plt.xlabel(r'$\theta_{sp,i}$')
         plt.ylabel(r'$\theta_{sl,f}$')
-        plt.ylim([120, 0])
+        plt.xticks([0, 30, 60, 90], [r'$0$', r'$30$', r'$60$', r'$90$'])
+        plt.yticks([0, 45, 90], [r'$0$', r'$45$', r'$90$'])
+        plt.ylim([100, 0])
         plt.title(title)
         plt.savefig(filename, dpi=400)
         plt.clf()
 
     # plot all ICs
-    plot_ICs(I, eta0, dqs, n_pts_float)
-    plt.savefig(inits_fn, dpi=400)
-    plt.clf()
+    # inits_fn = '3_ensemble_inits%02d_%02d.png' % (I_deg, eps_log)
+    # plot_ICs(I, eta0, dqs, n_pts_float)
+    # plt.savefig(inits_fn, dpi=400)
+    # plt.clf()
 
 if __name__ == '__main__':
     I = np.radians(5)
@@ -555,8 +574,8 @@ if __name__ == '__main__':
     # plot_single(I, -3.14e-4, 15000, eta0, q2, '3testo321d.png', dq=np.radians(60))
     # plot_single(I, -3.01e-4, 20000, eta0, q2, '3testo31.png',
     #             dq=0.99 * np.pi / 2)
-    plot_single(I, -0.1, 100, eta0, q2, '3testo_nonad.png', dq=0.3,
-                plot=False)
+    # plot_single(I, -0.1, 100, eta0, q2, '3testo_nonad.png', dq=0.3,
+    #             plot=False)
 
     # testing
     # sim_for_dq(I, dq=np.pi / 2, plot=True)
@@ -566,4 +585,10 @@ if __name__ == '__main__':
     # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)
     # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51)
     # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51)
-    # sim_for_many(I, eps=-0.1, n_pts=101, n_dqs=51, plot=False)
+
+    sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
+                 plot=False, use_full_pts=True)
+    sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
+                 plot=False, use_full_pts=True)
+    sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101,
+                 plot=False, use_full_pts=True)
