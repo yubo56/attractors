@@ -238,7 +238,6 @@ def plot_traj(I, ret, filename, dq, plot=True):
 
 def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3, plot=True):
     y0 = [*to_cart(q0 + dq, 0), eta0]
-    q2, _ = roots(I, eta0)
     ret = solve_ic_base(I, eps, y0, tf)
     plot_traj(I, ret, filename, dq, plot=plot)
 
@@ -476,7 +475,8 @@ def plot_ICs(I, eta0, dqs, n_pts_float):
     plt.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap))
 
 def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
-                 plot=True, use_full_pts=False):
+                 plot_probs=True, use_full_pts=False,
+                 dqmin=0.05, dqmax = 0.99 * np.pi / 2):
     '''
     variable number of points per ring,
     starting from n_pts/4 to n_pts linearly over dqs
@@ -487,7 +487,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
     I_deg = round(np.degrees(I))
     eps_log = 10 * (-np.log10(-eps))
     eta0 = eta0_mult * get_etac(I)
-    dqs = np.linspace(0.05, 0.99 * np.pi / 2, n_dqs)
+    dqs = np.linspace(dqmin, dqmax, n_dqs)
     if use_full_pts:
         n_pts_float = np.full_like(dqs, n_pts)
     else:
@@ -509,7 +509,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         with open(PKL_FN, 'rb') as f:
             res_arr = pickle.load(f)
 
-    if plot:
+    if plot_probs:
         # first, plot some analytical curves (data overlaid on top)
         # then plot data
         fig, (ax1, ax2) = plt.subplots(2, 1,
@@ -552,7 +552,16 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         plt.xticks([0, 30, 60, 90], [r'$0$', r'$30$', r'$60$', r'$90$'])
         plt.yticks([0, 45, 90], [r'$0$', r'$45$', r'$90$'])
         plt.ylim([100, 0])
-        plt.title(title)
+
+        # overlay average value at smallest dqs
+        avg_final_q_deg = np.degrees(np.arccos(
+            np.mean(np.concatenate(res_arr[ :5]))))
+        plt.axhline(avg_final_q_deg, c='r')
+
+        plt.title(title +
+                  (r',$\langle\theta_{sl,f}\rangle_{\theta_{sp,i} = 0}$ = %.1f'
+                   % avg_final_q_deg))
+
         plt.savefig(filename, dpi=400)
         plt.clf()
 
@@ -562,13 +571,39 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
     # plt.savefig(inits_fn, dpi=400)
     # plt.clf()
 
+def eps_scan(I, filename='3scan.png', dq=0.01, n_pts=201):
+    '''
+    scan for theta_sl,f for small dq @ various epsilons
+    '''
+    eta0 = 10 * get_etac(I)
+    q2, _ = roots(I, eta0)
+    y0 = [*to_cart(q2 + dq, 0), eta0]
+
+    eps_vals = np.exp(np.linspace(np.log(1e0), np.log(1e-2), n_pts))
+    qdeg_finals = []
+    for eps in eps_vals:
+        term_event = lambda t, y: y[3] - 1e-5
+        term_event.terminal = True
+        ret = solve_ic_base(I, -eps, y0, np.inf, events=[term_event])
+        q, phi = to_ang(*ret.y[ :3, -10: ])
+        qdeg_finals.append(np.degrees(np.mean(q)))
+    plt.semilogx(eps_vals, qdeg_finals, 'ko', ms=3, label='Data')
+
+    dong_est_rad = np.sqrt(2 * np.pi / eps_vals) * np.tan(I)
+    plt.semilogx(eps_vals, np.degrees(dong_est_rad), 'r', label='Analytical')
+    plt.xlim([max(eps_vals), min(eps_vals)])
+    plt.ylim([100, 0])
+    plt.xlabel(r'$\epsilon$')
+    plt.ylabel(r'$\theta_{sl, f}$')
+    plt.legend()
+    plt.savefig(filename, dpi=400)
+
 if __name__ == '__main__':
     I = np.radians(5)
 
-    tf = 50000
-    eta0 = 10 * get_etac(I)
-    q2, _ = roots(I, eta0)
-
+    # tf = 50000
+    # eta0 = 10 * get_etac(I)
+    # q2, _ = roots(I, eta0)
     # plot_single(I, -3e-4, tf, eta0, q2, '3testo23.png', dq=0.3)
     # plot_single(I, -3.01e-4, tf, eta0, q2, '3testo21.png', dq=0.3)
     # plot_single(I, -3.14e-4, 15000, eta0, q2, '3testo321d.png', dq=np.radians(60))
@@ -577,18 +612,21 @@ if __name__ == '__main__':
     # plot_single(I, -0.1, 100, eta0, q2, '3testo_nonad.png', dq=0.3,
     #             plot=False)
 
-    # testing
-    # sim_for_dq(I, dq=np.pi / 2, plot=True)
-
     # sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
     # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
     # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)
-    # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51)
     # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51)
+    # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51)
 
-    sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
-                 plot=False, use_full_pts=True)
-    sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
-                 plot=False, use_full_pts=True)
-    sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101,
-                 plot=False, use_full_pts=True)
+    # sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
+    #              plot_probs=False, use_full_pts=True, dqmin=0.01)
+    # sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
+    #              plot_probs=False, use_full_pts=True, dqmin=0.01)
+    # sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
+    #              plot_probs=False, use_full_pts=True, dqmin=0.01)
+    # sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
+    #              plot_probs=False, use_full_pts=True, dqmin=0.01)
+    # sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101,
+    #              plot_probs=False, use_full_pts=True, dqmin=0.01)
+
+    # eps_scan(I)
