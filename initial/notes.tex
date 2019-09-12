@@ -1493,22 +1493,12 @@ integrating $\mu\;\mathrm{d}\phi$. From here, the states will precess uniformly
 at some $\theta_f = J_f / 2\pi$.
 
 We can investigate the values of $\theta_f$ given some initial mutual
-inclination $\hat{s} \cdot \hat{l}_p$ ($J_i = 2\pi\p*{1 - \cos \epsilon}$ where
-$\epsilon$ is the initial mutual inclination). To do this, we need to understand
-what the possible transitions are. When the separatrix first appears to the
-final state, the transitions are $A_2 \to A_3, A_2 \to A_1, A_3 \to A_1, A_3 \to
-A_2 \to A_1, A_3 \to A_3$. Let's reproduce the analytical forms of these three
-areas below:
-
-%   z0 = eta * np.cos(I)
-%   chi = np.sqrt(-np.tan(q4)**3 / np.tan(I) - 1)
-%   rho = chi * np.sin(q4)**2 * np.cos(q4) / (
-%       chi**2 * np.cos(q4)**2 + 1)
-%   T = 2 * chi * np.cos(q4) / (
-%       chi**2 * np.cos(q4)**2 - 1)
-%   A2 = 8 * rho + 4 * np.arctan(T) - 8 * z0 * np.arctan(1 / chi)
-%   A1 = 2 * np.pi * (1 - z0) - A2 / 2
-%   A3 = 2 * np.pi * (1 + z0) - A2 / 2
+inclination $\hat{s} \cdot \hat{l}_p \equiv \theta_{sp, i}$ ($J_i = 2\pi\p*{1 -
+\cos \epsilon}$ where $\epsilon$ is the initial mutual inclination). To do this,
+we need to understand what the possible transitions are. When the separatrix
+first appears to the final state, the transitions are $A_2 \to A_3, A_2 \to A_1,
+A_3 \to A_1, A_3 \to A_2 \to A_1, A_3 \to A_3$. Let's reproduce the analytical
+forms of these three areas below:
 \begin{subequations}\label{se:}
     \begin{align*}
         z_0 &= \eta\cos I &
@@ -1524,6 +1514,79 @@ areas below:
         A_3 &= 2\pi\p*{1 + z_0} - \frac{A_2}{2}.
     \end{align}
 \end{subequations}
+To determine which of the transition histories we fall under (to get an
+analytical prediction for $\cos \theta_f$), we need to determine $\eta_\star$,
+so we know how the enclosed $J$ by the trajectory changes due to separatrix
+encounter. A guess for numerical root-finding can be put together for
+trajectories that encounter from $A_2$ via (inverting the separatrix area
+formula for small $\eta$)
+\begin{equation*}
+    \eta_\star\p*{A_2} = \p*{A_2/16}^2 / \sin I,
+\end{equation*}
+while for trajectories that encounter from $A_3$ we can solve the quadratic $A_3
+= 2\pi \eta \cos I - 8\sqrt{\eta \sin I} = 4\pi - J$ and obtain
+\begin{equation*}
+    \sqrt{\eta_\star} = \frac{4\sqrt{\sin I} + \sqrt{16\sin I + 2\pi \cos I
+        A_3}}{ 2\pi \cos I}.
+\end{equation*}
+This will often run over $\eta_c$, so we guess the smaller of $\eta_\star,
+\eta_c$.
+
+Finally, the $A_3 \to A_2 \to A_1$ pipeline only exists if $ \eta_{A2\max} <
+\eta_\star < \eta_c$, the $\eta$ at which $A_2$ is maximized (this maximization
+behavior is not captured in my linearized formulas, but can be seen in
+\lstinline{99_misc/1_areas.png}). Then, two separatrix crossings occur. Thus, for
+the five possible trajectories, we have the following transitions:
+\begin{itemize}
+    \item $A_2 \to A_3$: This transition happens with probability $\frac{-2\pi
+        \eta_{\star} \cos I + 4\sqrt{\eta_{\star}\sin
+        I}}{8\sqrt{\eta_{\star}\sin I}}$, so for $0 \leq \eta_{\star} \leq
+        \frac{4\sin I}{\pi^2 \cos^2 I}$ this transition is permitted. The
+        approximate $\mu_f$ can be estimated by conservation of adiabatic
+        invariant
+        \begin{align*}
+            \eta_\star &\approx \p*{\frac{2\pi\p*{1 - \cos \theta_{sp,i}}}{
+                        16}}^2 / \sin I&
+                    &\approx \p*{\frac{\pi \theta_{sp, i}^2}{16}}^2/\sin I,\\
+            \mu_{f, 23} &\approx \eta_\star \cos I
+                    - \frac{4\sqrt{\eta_\star \sin I}}{\pi} &
+                &\approx\p*{\frac{\pi \theta_{sp, i}^2}{16}}^2 \cot I
+                    - \frac{\theta_{sp, i}^2}{4}.
+        \end{align*}
+
+    \item $A_2 \to A_1$: This transition happens with probability $\frac{-2\pi
+        \eta_{\star} \cos I + 4\sqrt{\eta_{\star}\sin
+        I}}{8\sqrt{\eta_{\star}\sin I}}$ and can happen so long as $\theta_{sp,
+        i}$ is small enough to fit inside $A_{crit}$ when the separatrix first
+        appears, i.e.\ $2\pi\p*{1 - \cos \theta_{sl, i}} < A_{crit}$ (where
+        $\theta_{sl, i}$ is defined in the $\eta \to \infty$ limit, and since
+        there is no separatrix the enclosed area is conserved as $\eta$
+        approaches $\eta_c$ from above).
+
+        The resulting formulas for $\mu_{f, 21}$ are very similar to those above
+        \begin{align*}
+            \eta_\star &\approx \p*{\frac{2\pi\p*{1 - \cos \theta_{sp,i}}}{
+                        16}}^2 / \sin I&
+                    &\approx \p*{\frac{\pi \theta_{sp, i}^2}{16}}^2/\sin I,\\
+            \mu_{f, 21} &\approx \eta_\star \cos I
+                    + \frac{4\sqrt{\eta_\star \sin I}}{\pi} &
+                &\approx\p*{\frac{\pi \theta_{sp, i}^2}{16}}^2 \cot I
+                    + \frac{\theta_{sp, i}^2}{4}.
+        \end{align*}
+
+    \item $A_3 \to A_3$: This transition occurs if $J_i(\theta_{sl, i}) > 4\pi -
+        A_{3, \min}$. This implies the circulation never undergoes a separatrix
+        encounter at all, so it remains in $A_3$ forever.
+
+    \item $A_3 \to A_1$: This transition occurs when $\theta_{sl, i}$ satisfies
+        $2\pi\p*{1 - \cos \theta_{sl, i}} > A_{crit}$, so the trajectory starts
+        in $A_3$. It then has probability to hop to $A_1$ (TODO).
+
+    \item $A_3 \to A_2 \to A_1$: This transition also occurs when $J_i$ is
+        $> A_{crit}$, but has one further requirement, that $\eta_{\star} >
+        \argmax A_2(\eta)$, such that $A_2$ is expanding during the first
+        separatrix encounter. The bound on this is not exactly analytic though.
+\end{itemize}
 
 \end{document}
 
