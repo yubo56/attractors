@@ -451,13 +451,13 @@ def plot_anal_qfs(I, dqs, eta0, axs):
     ax2.plot(np.degrees(dqs[idx_3]),
              np.minimum(P_31, np.ones_like(P_31)), 'g')
 
-def plot_ICs(I, eta0, dqs, n_pts_float):
+def plot_ICs(I, eta0, dqs, n_pts):
     q2, _ = roots(I, eta0)
     norm = cm.colors.Normalize(vmin=min(np.degrees(dqs)),
                                vmax=max(np.degrees(dqs)))
     cmap = cm.RdBu
-    for dq, npts in zip(dqs, n_pts_float):
-        y0s = fetch_ring(I, eta0, dq, int(round(npts)))
+    for dq in dqs:
+        y0s = fetch_ring(I, eta0, dq, n_pts)
         q, _phi = to_ang(*y0s[0:3])
         phi = np.unwrap(_phi)
         gt_idx = np.where(phi > 2 * np.pi)[0]
@@ -475,23 +475,17 @@ def plot_ICs(I, eta0, dqs, n_pts_float):
     plt.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap))
 
 def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
-                 plot_probs=True, use_full_pts=False,
-                 dqmin=0.05, dqmax = 0.99 * np.pi / 2):
+                 plot_probs=True, dqmin=0.05, dqmax = 0.99 * np.pi / 2):
     '''
     variable number of points per ring,
     starting from n_pts/4 to n_pts linearly over dqs
 
     plot sets whether to make a probability plot & overplot all predictions
-    use_full_pts True means to use same number of points @ low theta as high
     '''
     I_deg = round(np.degrees(I))
     eps_log = 10 * (-np.log10(-eps))
     eta0 = eta0_mult * get_etac(I)
     dqs = np.linspace(dqmin, dqmax, n_dqs)
-    if use_full_pts:
-        n_pts_float = np.full_like(dqs, n_pts)
-    else:
-        n_pts_float = np.linspace(n_pts // 4, n_pts, n_dqs)
 
     PKL_FN = '3dat%02d_%02d.pkl' % (I_deg, eps_log)
     filename = '3_ensemble_%02d_%02d.png' % (I_deg, eps_log)
@@ -500,8 +494,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
     # run/plot sim
     if not os.path.exists(PKL_FN):
         p = Pool(4)
-        args = [(I, eps, eta0_mult, etaf, int(round(n_pt)), dq)
-                for dq, n_pt in zip(dqs, n_pts_float)]
+        args = [(I, eps, eta0_mult, etaf, n_pts, dq) for dq in dqs]
         res_arr = p.starmap(sim_for_dq, args)
         with open(PKL_FN, 'wb') as f:
             pickle.dump(res_arr, f)
@@ -553,50 +546,51 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         plt.yticks([0, 45, 90], [r'$0$', r'$45$', r'$90$'])
         plt.ylim([100, 0])
 
-        # overlay average value at smallest dqs
-        avg_final_q_deg = np.degrees(np.arccos(
-            np.mean(np.concatenate(res_arr[ :5]))))
-        plt.axhline(avg_final_q_deg, c='r')
+        # fit = dong's est +- linear
+        dong_est_deg = np.degrees(np.sqrt(2 * np.pi / (-eps)) * np.tan(I))
+        dqs_d = np.degrees(dqs)
+        plt.plot(dqs_d, dong_est_deg + (dqs_d - min(dqs_d)), 'r:')
+        plt.plot(dqs_d, dong_est_deg - (dqs_d - min(dqs_d)), 'r:')
 
-        plt.title(title +
-                  (r',$\langle\theta_{sl,f}\rangle_{\theta_{sp,i} = 0}$ = %.1f'
-                   % avg_final_q_deg))
-
+        plt.title(title)
         plt.savefig(filename, dpi=400)
         plt.clf()
 
     # plot all ICs
     # inits_fn = '3_ensemble_inits%02d_%02d.png' % (I_deg, eps_log)
-    # plot_ICs(I, eta0, dqs, n_pts_float)
+    # plot_ICs(I, eta0, dqs, n_pts)
     # plt.savefig(inits_fn, dpi=400)
     # plt.clf()
 
-def eps_scan(I, filename='3scan.png', dq=0.01, n_pts=201):
+def eps_scan(I, filename='3scan.png', dq=0.01, n_pts=151, n_pts_ring=13,
+             eps_min=1e-2, eps_max=0.5):
     '''
     scan for theta_sl,f for small dq @ various epsilons
     '''
     eta0 = 10 * get_etac(I)
     q2, _ = roots(I, eta0)
-    y0 = [*to_cart(q2 + dq, 0), eta0]
-
-    eps_vals = np.exp(np.linspace(np.log(1e0), np.log(1e-2), n_pts))
-    qdeg_finals = []
-    for eps in eps_vals:
-        term_event = lambda t, y: y[3] - 1e-5
-        term_event.terminal = True
-        ret = solve_ic_base(I, -eps, y0, np.inf, events=[term_event])
-        q, phi = to_ang(*ret.y[ :3, -10: ])
-        qdeg_finals.append(np.degrees(np.mean(q)))
-    plt.semilogx(eps_vals, qdeg_finals, 'ko', ms=3, label='Data')
+    y0s = fetch_ring(I, eta0, dq, n_pts)
+    pts = []
+    for y0 in y0s.T:
+        eps_vals = np.exp(np.linspace(np.log(eps_max), np.log(eps_min), n_pts))
+        qdeg_finals = []
+        for eps in eps_vals:
+            term_event = lambda t, y: y[3] - 1e-5
+            term_event.terminal = True
+            ret = solve_ic_base(I, -eps, y0, np.inf, events=[term_event])
+            q, phi = to_ang(*ret.y[ :3, -10: ])
+            qdeg_finals.append(np.degrees(np.mean(q)))
+        plt.semilogx(eps_vals, qdeg_finals, 'ko', ms=0.5)
 
     dong_est_rad = np.sqrt(2 * np.pi / eps_vals) * np.tan(I)
     plt.semilogx(eps_vals, np.degrees(dong_est_rad), 'r', label='Analytical')
-    plt.xlim([max(eps_vals), min(eps_vals)])
+    plt.xlim([eps_max, eps_min])
     plt.ylim([100, 0])
     plt.xlabel(r'$\epsilon$')
     plt.ylabel(r'$\theta_{sl, f}$')
     plt.legend()
     plt.savefig(filename, dpi=400)
+    plt.clf()
 
 if __name__ == '__main__':
     I = np.radians(5)
@@ -619,14 +613,15 @@ if __name__ == '__main__':
     # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51)
 
     # sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
-    #              plot_probs=False, use_full_pts=True, dqmin=0.01)
+    #              plot_probs=False, dqmin=0.01)
     # sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
-    #              plot_probs=False, use_full_pts=True, dqmin=0.01)
+    #              plot_probs=False, dqmin=0.01)
     # sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
-    #              plot_probs=False, use_full_pts=True, dqmin=0.01)
+    #              plot_probs=False, dqmin=0.01)
     # sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
-    #              plot_probs=False, use_full_pts=True, dqmin=0.01)
+    #              plot_probs=False, dqmin=0.01)
     # sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101,
-    #              plot_probs=False, use_full_pts=True, dqmin=0.01)
+    #              plot_probs=False, dqmin=0.01)
 
     # eps_scan(I)
+    eps_scan(np.radians(20), eps_max=5, eps_min=1e-1, filename='3scan_20.png')
