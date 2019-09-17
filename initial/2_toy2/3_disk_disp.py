@@ -89,6 +89,7 @@ def get_areas_2(ret):
     t_pi = t_events[idx_pi]
     areas = []
     t_areas = []
+    t_areas_f = []
     # to ease casework, if starts circulating, ensure first event is a t_0
     if t_0[0] < t_pi[1] and t_0[0] > t_pi[0]:
         t_pi = t_pi[1: ]
@@ -101,25 +102,29 @@ def get_areas_2(ret):
     for t_0_i, t_0_f, t_pi_f in zip(t_0, t_0[1: ], t_pi[1: ]):
         if t_0_f < t_pi_f: # circulating
             t_vals = get_t_vals(t_0_i, t_0_f)
-            t_areas.append((t_0_f + t_pi_f) / 2)
+            t_areas.append(t_0_i)
+            t_areas_f.append(t_0_f)
 
             x, y, z, _ = ret.sol(t_vals)
             q, phi = to_ang(x, y, z)
             dphi = np.gradient(np.unwrap(phi))
             areas.append(np.sum((1 - np.cos(q)) * dphi))
+        else:
+            break
     # truncate list of times during initial circulation
-    t_end_circ = t_areas[-1]
-    if t_end_circ > t_0[-1]: # pure circulating traj?
-        return np.inf, np.array(t_areas), np.array(areas)
+    t_end_circ = t_pi_f
+    if t_end_circ >= t_0[-1]: # pure circulating traj?
+        return np.inf, np.array(t_areas), np.array(t_areas_f), np.array(areas)
     if len(areas):
-        t_0 = t_0[np.where(t_0 > t_end_circ)[0][0]: ]
-        t_pi = t_pi[np.where(t_pi > t_end_circ)[0][0]: ]
+        t_0 = t_0[np.where(t_0 >= t_end_circ)[0][0]: ]
+        t_pi = t_pi[np.where(t_pi >= t_end_circ)[0][0]: ]
     # now solve librating period
     t_end_lib = max(t_pi) if len(t_0) == 0 else t_0[0]
     t_pi_lib = t_pi[np.where(t_pi < t_end_lib)[0]]
     for t_pi_i, t_pi_f in zip(t_pi_lib[ :-2:2], t_pi_lib[2::2]):
         t_vals = get_t_vals(t_pi_i, t_pi_f)
-        t_areas.append((t_pi_i + t_pi_f) / 2)
+        t_areas.append(t_pi_i)
+        t_areas_f.append(t_pi_f)
 
         x, y, z, _ = ret.sol(t_vals)
         q, phi = to_ang(x, y, z)
@@ -129,32 +134,44 @@ def get_areas_2(ret):
     t_pi_fin = t_pi[np.where(t_pi > t_end_lib)[0]]
     for t_0_i, t_0_f, t_pi_f in zip(t_0, t_0[1: ], t_pi_fin[1: ]):
         t_vals = get_t_vals(t_0_i, t_0_f)
-        t_areas.append((t_0_f + t_pi_f) / 2)
+        t_areas.append(t_0_i)
+        t_areas_f.append(t_0_f)
 
         x, y, z, _ = ret.sol(t_vals)
         q, phi = to_ang(x, y, z)
         dphi = np.abs(np.gradient(np.unwrap(phi)))
         areas.append(np.sum(np.cos(q) * dphi))
-    return t_end_lib, np.array(t_areas), np.array(areas)
+    return t_end_lib, np.array(t_areas), np.array(t_areas_f), np.array(areas)
 
-def plot_traj(I, ret, filename, dq, plot=True):
+def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
+                num_snapshots=1):
     '''
     plot mu(t) and zoomed in for a trajectory
-    overplot area conservation
+    num_snapshots controls how many points to use for snapshots
     '''
+
+    y0 = [*to_cart(q0 + dq, 0), eta0]
+    ret = solve_ic_base(I, eps, y0, tf)
     # get initial area
-    t_end_lib, t_areas, areas = get_areas_2(ret)
+    t_end_lib, t_areas, t_areas_f, areas = get_areas_2(ret)
+    eta_areas = ret.sol(t_areas)[3]
     a_init_int = areas[0]
     a_init_dq = 2 * np.pi * (1 - np.cos(dq))
     print('Areas (integrated/estimated): ', a_init_int, a_init_dq)
 
-    if plot:
-        fig, (ax1, ax3) = plt.subplots(2, 1,
-                                sharex=True,
-                                gridspec_kw={'height_ratios': [3, 2]})
-        fig.subplots_adjust(hspace=0)
+    # calculate times to plot for snapshots
+    dAreas = abs((areas[1: ] - areas[ :-1]) / areas[1: ])
+    peak_idxs = np.argsort(dAreas)
+    if num_snapshots == 1:
+        # 9/10 of critical time (nothing interesting happens before this)
+        plot_idxs = [1, 9 * peak_idxs[-1] // 10, peak_idxs[-1], -2]
     else:
-        fig, ax1 = plt.subplots(1, 1)
+        plot_idxs = [1, *peak_idxs[-num_snapshots: ], -2]
+
+    fig, (ax1, ax3) = plt.subplots(2, 1,
+                            sharex=True,
+                            gridspec_kw={'height_ratios': [3, 2]})
+    fig.subplots_adjust(hspace=0)
     t = ret.t
     etas = ret.y[3]
     q, phi = to_ang(*ret.y[0:3])
@@ -204,42 +221,98 @@ def plot_traj(I, ret, filename, dq, plot=True):
     mu_f2 = a_crossed2 / (2 * np.pi)
     mu_f_dat = np.cos(q)
 
-    ax1.plot(t, mu_f_dat, 'k', label='Sim')
+    ax1.semilogx(etas, mu_f_dat, c='0.25', label='Sim')
     max_valid_idxs = np.where(mu_max > 0)[0]
-    ax1.plot(t[idx4s][max_valid_idxs], mu_max[max_valid_idxs],
+    ax1.semilogx(etas[idx4s][max_valid_idxs], mu_max[max_valid_idxs],
              'g:', label='Sep')
-    ax1.plot(t[idx4s], mu_min, 'g:')
-    ax1.plot(t[idx4s], np.cos(q2s), 'b', label='CS2')
+    ax1.semilogx(etas[idx4s], mu_min, 'g:')
+    ax1.semilogx(etas[idx4s], np.cos(q2s), 'b', label='CS2')
     ax1.set_xlabel(r'$t$')
     ax1.set_ylabel(r'$\cos\theta$')
 
     ax1.set_title(r'$I = %d^\circ$' % np.degrees(I))
     ax1.legend(loc='right')
 
-    if plot:
-        # predicted final mu
-        ax1.axhline(mu_f, c='r')
-        ax1.axhline(mu_f2, c='r')
+    # predicted final mu
+    ax1.axhline(mu_f, c='r')
+    ax1.axhline(mu_f2, c='r')
 
-        # plot areas
-        t_pre_cross = t_areas[np.where(t_areas < t_end_lib)[0]]
-        t_crossed = t_areas[np.where(t_areas > t_end_lib)[0]]
-        ax3.plot(t_pre_cross, np.full_like(t_pre_cross, a_init_int), 'r',
-                 label='Th')
-        ax3.plot(t_crossed, np.full_like(t_crossed, a_crossed), 'r')
-        ax3.plot(t_crossed, np.full_like(t_crossed, a_crossed2), 'r')
-        ax3.set_ylabel(r'$A$')
-        ax3.plot(t_areas, areas, 'bo', markersize=0.3, label='Dat')
-        ax3.legend()
+    # plot areas
+    etas_pre_cross = eta_areas[np.where(t_areas < t_end_lib)[0]]
+    etas_crossed = eta_areas[np.where(t_areas > t_end_lib)[0]]
+    ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int), 'r',
+             label='Th')
+    ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed), 'r')
+    ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed2), 'r')
+    ax3.set_ylabel(r'$A$')
+    ax3.semilogx(eta_areas, areas, 'bo', markersize=1, label='Dat')
+    ax3.legend()
+
+    for ax in [ax1, ax3]:
+        for plt_idx in plot_idxs:
+            ax.axvline(eta_areas[plt_idx], c='m', lw=0.5)
+
+    # flip axes
+    xlims = ax3.set_xlim()
+    xlims2 = ax3.set_xlim(xlims[::-1])
 
     plt.savefig(filename, dpi=400)
-    print('Saved', filename)
-    plt.clf()
+    plt.close(fig)
 
-def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3, plot=True):
-    y0 = [*to_cart(q0 + dq, 0), eta0]
-    ret = solve_ic_base(I, eps, y0, tf)
-    plot_traj(I, ret, filename, dq, plot=plot)
+    # separately:
+    # plot snapshots @ every jump in areas
+    fig, ((ax1, ax2), (ax3, ax4)) =\
+        plt.subplots(2, 2, sharex=True, sharey='row')
+    fig.subplots_adjust(wspace=0, hspace=0)
+    eta_plots = []
+    for plot_idx, ax in zip(plot_idxs, [ax1, ax2, ax3, ax4]):
+        eta_plot = eta_areas[plot_idx + 1]
+        eta_plots.append(eta_plot)
+        ax.set_xlim([-0.1, 2 * np.pi + 0.1]) # a little bit of spacing
+
+        # for each plot_idx, plot +- 1 cycles centered on it
+        plt_step = 0.05
+        t1 = np.arange(t_areas[plot_idx], t_areas_f[plot_idx], plt_step)
+        t2 = np.arange(t_areas_f[plot_idx], t_areas[plot_idx + 1], plt_step)
+        t3 = np.arange(t_areas[plot_idx + 1], t_areas_f[plot_idx + 1], plt_step)
+        q1, phi1 = to_ang(*ret.sol(t1)[ :3])
+        q3, phi3 = to_ang(*ret.sol(t3)[ :3])
+        ms = 1.0 if len(t1) < 50 else 0.15
+
+        ax.plot(phi1, np.cos(q1), c='0.0', ls='', marker='o', markersize=ms)
+        ax.plot(phi3, np.cos(q3), c='0.25', ls='', marker='o',  markersize=ms)
+
+        if len(t2):
+            q2, phi2 = to_ang(*ret.sol(t2)[ :3])
+            ax.plot(phi2, np.cos(q2), c='0.5', ls='', marker='o', markersize=ms)
+
+        # overplot separatrix + CS2
+        curr_roots = roots(I, eta_plot)
+        q2 = curr_roots[0] if len(curr_roots) == 2 else curr_roots[1]
+        ax.plot(np.pi, np.cos(q2), 'bo', ms=2)
+        if len(curr_roots) == 4:
+            q4 = curr_roots[3]
+            H4 = H(I, eta_plot, q4, 0)
+            grid_pts = 201
+            q_min, q_max = np.arccos(ax.get_ylim())
+            phi_grid, q_grid = np.meshgrid(np.linspace(0, 2 * np.pi, grid_pts),
+                                           np.linspace(q_min, q_max, grid_pts))
+            H_grid = H(I, eta_plot, q_grid, phi_grid)
+            ax.contour(phi_grid, np.cos(q_grid), H_grid, levels=[H4],
+                       colors='g', linewidths=0.3)
+    ax1.set_ylabel(r'$\cos \theta$')
+    ax3.set_ylabel(r'$\cos \theta$')
+    for ax in ax3, ax4:
+        ax.set_xlabel(r'$\phi$')
+        ax.set_xlim([0, 2 * np.pi])
+        ax.set_xticks([0, np.pi, 2 * np.pi])
+        ax.set_xticklabels([r'$0$', r'$\pi$', r'$2\pi$'])
+    plt.suptitle(r'$\log_{10}\eta = %s$' % ', '.join([
+        '%.2f' % np.log10(eta_plot) for eta_plot in eta_plots]))
+
+    plt.savefig(filename + '_subplots', dpi=400)
+    plt.close(fig)
+    print('Saved', filename)
 
 def sim_ring(I, eta, dq):
     q2, _ = roots(I, eta)
@@ -309,7 +382,7 @@ def sim_for_dq(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=10, dq=0.3,
             plt.plot(phi0, np.cos(q0), 'ro', markersize=0.5)
         final_mus.append(np.mean(np.cos(q[-20: ])))
     if plot:
-        plt.savefig('3single_%02d.png' % np.degrees(I))
+        plt.savefig('3single_%02d' % np.degrees(I))
         plt.clf()
         print('Final Mus', final_mus)
     return final_mus
@@ -488,7 +561,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
     dqs = np.linspace(dqmin, dqmax, n_dqs)
 
     PKL_FN = '3dat%02d_%02d.pkl' % (I_deg, eps_log)
-    filename = '3_ensemble_%02d_%02d.png' % (I_deg, eps_log)
+    filename = '3_ensemble_%02d_%02d' % (I_deg, eps_log)
     title = r'$I = %d^\circ, \epsilon = 10^{-%.1f}$' % (I_deg, eps_log / 10)
 
     # run/plot sim
@@ -525,7 +598,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         ax2.set_yticklabels([r'$0$', r'$0.5$', r'$1$'])
 
         ax1.set_ylabel(r'$\theta_{sl,f}$')
-        ax2.set_xlabel(r'$\theta_{sp,i}$')
+        ax2.set_xlabel(r'$\theta_{sd,i}$')
         ax2.set_ylabel('Prob')
         ax1.set_ylim(100, 0)
         ax1.set_title(title)
@@ -540,7 +613,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
             plt.scatter(np.full_like(final_mus, np.degrees(dq)),
                         final_q_deg, c='b', s=0.8)
 
-        plt.xlabel(r'$\theta_{sp,i}$')
+        plt.xlabel(r'$\theta_{sd,i}$')
         plt.ylabel(r'$\theta_{sl,f}$')
         plt.xticks([0, 30, 60, 90], [r'$0$', r'$30$', r'$60$', r'$90$'])
         plt.yticks([0, 45, 90], [r'$0$', r'$45$', r'$90$'])
@@ -557,12 +630,12 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         plt.clf()
 
     # plot all ICs
-    # inits_fn = '3_ensemble_inits%02d_%02d.png' % (I_deg, eps_log)
+    # inits_fn = '3_ensemble_inits%02d_%02d' % (I_deg, eps_log)
     # plot_ICs(I, eta0, dqs, n_pts)
     # plt.savefig(inits_fn, dpi=400)
     # plt.clf()
 
-def eps_scan(I, filename='3scan.png', dq=0.01, n_pts=151, n_pts_ring=13,
+def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=13,
              eps_min=1e-2, eps_max=0.5):
     '''
     scan for theta_sl,f for small dq @ various epsilons
@@ -595,33 +668,32 @@ def eps_scan(I, filename='3scan.png', dq=0.01, n_pts=151, n_pts_ring=13,
 if __name__ == '__main__':
     I = np.radians(5)
 
-    # tf = 50000
-    # eta0 = 10 * get_etac(I)
-    # q2, _ = roots(I, eta0)
-    # plot_single(I, -3e-4, tf, eta0, q2, '3testo23.png', dq=0.3)
-    # plot_single(I, -3.01e-4, tf, eta0, q2, '3testo21.png', dq=0.3)
-    # plot_single(I, -3.14e-4, 15000, eta0, q2, '3testo321d.png', dq=np.radians(60))
-    # plot_single(I, -3.01e-4, 20000, eta0, q2, '3testo31.png',
+    tf = 50000
+    eta0 = 10 * get_etac(I)
+    q2, _ = roots(I, eta0)
+    # plot_single(I, -3e-4, tf, eta0, q2, '3testo23', dq=0.3)
+    # plot_single(I, -3.01e-4, tf, eta0, q2, '3testo21', dq=0.3)
+    # plot_single(I, -3.14e-4, 25000, eta0, q2, '3testo321', dq=np.radians(60),
+    #             num_snapshots=2)
+    # plot_single(I, -3.01e-4, 25000, eta0, q2, '3testo31',
     #             dq=0.99 * np.pi / 2)
-    # plot_single(I, -0.1, 100, eta0, q2, '3testo_nonad.png', dq=0.3,
-    #             plot=False)
+    # plot_single(I, -0.1, 100, eta0, q2, '3testo_nonad', dq=0.3)
 
-    # sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
-    # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
-    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)
-    # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51)
-    # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51)
+    sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
+    sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
+    sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)
+    sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51)
+    sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51)
+    sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101, dqmin=0.01)
 
-    # sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
-    #              plot_probs=False, dqmin=0.01)
-    # sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
-    #              plot_probs=False, dqmin=0.01)
-    # sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
-    #              plot_probs=False, dqmin=0.01)
-    # sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
-    #              plot_probs=False, dqmin=0.01)
-    # sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101,
-    #              plot_probs=False, dqmin=0.01)
+    sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
+                 plot_probs=False, dqmin=0.01)
+    sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
+                 plot_probs=False, dqmin=0.01)
+    sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
+                 plot_probs=False, dqmin=0.01)
+    sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101,
+                 plot_probs=False, dqmin=0.01)
 
     # eps_scan(I)
-    eps_scan(np.radians(20), eps_max=5, eps_min=1e-1, filename='3scan_20.png')
+    # eps_scan(np.radians(20), eps_max=5, eps_min=1e-1, filename='3scan_20')

@@ -30,12 +30,8 @@ def plot_H_for_eta(f, ax, eta, I):
                    colors=['k'],
                    linewidths=1.6)
 
-        title_str = r' $A_{in} = %.3f$' % get_sep_area(eta, I)
-    else:
-        title_str = ''
-
-    ax.set_title(r'$(I, \eta)=(%d^\circ, %.3f)$%s'
-                 % (np.degrees(I), eta, title_str), fontsize=8)
+    ax.set_title(r'$(I, \eta)=(%d^\circ, %.3f)$'
+                 % (np.degrees(I), eta), fontsize=8)
 
     cb = f.colorbar(cset, ax=ax, fraction=0.07, pad=0.05)
     cb.set_ticks([])
@@ -52,12 +48,20 @@ if __name__ == '__main__':
     plt.savefig('1contours.png', dpi=400)
     plt.clf()
 
-    f, ax = plt.subplots(1, 1)
-    ax.set_ylabel(r'$\cos \theta$')
-    ax.set_xlabel(r'$\phi$')
-    ax.set_xticks([0, np.pi, 2 * np.pi])
-    ax.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
-    ax.set_ylabel(r'$\cos \theta$')
-    ax.set_xlabel(r'$\phi$')
-    plot_H_for_eta(f, ax, 0.2, I)
-    plt.savefig('1contours_02.png', dpi=400)
+    f, axs = get_four_subplots()
+    for ax, eta in zip(axs, [2, 0.561, 0.3, 0.1]):
+        plot_H_for_eta(f, ax, eta, I)
+
+    plt.suptitle(r'$\eta_c = %.3f$' % get_etac(I))
+    plt.savefig('1contours_flip.png', dpi=400)
+    plt.clf()
+
+    # f, ax = plt.subplots(1, 1)
+    # ax.set_ylabel(r'$\cos \theta$')
+    # ax.set_xlabel(r'$\phi$')
+    # ax.set_xticks([0, np.pi, 2 * np.pi])
+    # ax.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
+    # ax.set_ylabel(r'$\cos \theta$')
+    # ax.set_xlabel(r'$\phi$')
+    # plot_H_for_eta(f, ax, 0.2, I)
+    # plt.savefig('1contours_02.png', dpi=400)
