@@ -17,6 +17,7 @@ plt.rc('font', family='serif', size=12)
 PLOT_DIR = '1plots'
 from utils import to_cart, to_ang, roots, H, solve_ic_base,\
     get_etac
+dpi = 600
 
 def sep_areas_exact(I, eta):
     mu4 = eta * np.cos(I) / (1 - eta * np.sin(I))
@@ -62,7 +63,7 @@ def plot_traj_colors(I, ret, filename):
     ax1.plot(phi_arr, z4 + sep_diff, 'k', label='Final Sep')
     ax1.plot(phi_arr, z4 - sep_diff, 'k')
     ax1.legend()
-    plt.savefig(filename, dpi=400)
+    plt.savefig(filename, dpi=dpi)
     print('Saved', filename)
     plt.clf()
 
@@ -149,7 +150,7 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     plot mu(t) and zoomed in for a trajectory
     num_snapshots controls how many points to use for snapshots
     '''
-
+    eta_c = get_etac(I)
     y0 = [*to_cart(q0 + dq, 0), eta0]
     ret = solve_ic_base(I, eps, y0, tf)
     # get initial area
@@ -163,10 +164,11 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     dAreas = abs((areas[1: ] - areas[ :-1]) / areas[1: ])
     peak_idxs = np.argsort(dAreas)
     if num_snapshots == 1:
-        # 9/10 of critical time (nothing interesting happens before this)
-        plot_idxs = [1, 9 * peak_idxs[-1] // 10, peak_idxs[-1], -2]
+        # plot @ sep appearance
+        cross_idx = np.where(eta_areas < eta_c)[0][0]
+        plot_idxs = [1, *sorted([cross_idx, peak_idxs[-1]]), -2]
     else:
-        plot_idxs = [1, *peak_idxs[-num_snapshots: ], -2]
+        plot_idxs = [1, *sorted(peak_idxs[-num_snapshots: ]), -2]
 
     fig, (ax1, ax3) = plt.subplots(2, 1,
                             sharex=True,
@@ -210,9 +212,9 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     if a_init_int < A_sep_crit:
         opt_func = lambda eta: sep_areas_exact(I, eta)[1] - a_init_int
         eta_guess = (a_init_int / 16)**2 / np.sin(I)
-        eta_c = opt.newton(opt_func, x0=eta_guess)
-        a_crossed = sum(sep_areas_exact(I, eta_c)[1: ]) - 2 * np.pi
-        a_crossed2 = sep_areas_exact(I, eta_c)[2] - 2 * np.pi
+        eta_cross = opt.newton(opt_func, x0=eta_guess)
+        a_crossed = sum(sep_areas_exact(I, eta_cross)[1: ]) - 2 * np.pi
+        a_crossed2 = sep_areas_exact(I, eta_cross)[2] - 2 * np.pi
     else:
         # TODO, a bit of work on how to do this w/ multiple sep crossings
         a_crossed = a_init_int
@@ -244,6 +246,7 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
              label='Th')
     ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed), 'r')
     ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed2), 'r')
+    ax3.set_xlabel(r'$\eta$')
     ax3.set_ylabel(r'$A$')
     ax3.semilogx(eta_areas, areas, 'bo', markersize=1, label='Dat')
     ax3.legend()
@@ -256,7 +259,7 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     xlims = ax3.set_xlim()
     xlims2 = ax3.set_xlim(xlims[::-1])
 
-    plt.savefig(filename, dpi=400)
+    plt.savefig(filename, dpi=dpi)
     plt.close(fig)
 
     # separately:
@@ -264,12 +267,8 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     fig, ((ax1, ax2), (ax3, ax4)) =\
         plt.subplots(2, 2, sharex=True, sharey='row')
     fig.subplots_adjust(wspace=0, hspace=0)
-    eta_plots = []
     for plot_idx, ax in zip(plot_idxs, [ax1, ax2, ax3, ax4]):
         eta_plot = eta_areas[plot_idx + 1]
-        eta_plots.append(eta_plot)
-        ax.set_xlim([-0.1, 2 * np.pi + 0.1]) # a little bit of spacing
-
         # for each plot_idx, plot +- 1 cycles centered on it
         plt_step = 0.05
         t1 = np.arange(t_areas[plot_idx], t_areas_f[plot_idx], plt_step)
@@ -277,42 +276,42 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
         t3 = np.arange(t_areas[plot_idx + 1], t_areas_f[plot_idx + 1], plt_step)
         q1, phi1 = to_ang(*ret.sol(t1)[ :3])
         q3, phi3 = to_ang(*ret.sol(t3)[ :3])
-        ms = 1.0 if len(t1) < 50 else 0.15
+        ms = 1.0 if len(t1) < 50 else 0.2
 
-        ax.plot(phi1, np.cos(q1), c='0.0', ls='', marker='o', markersize=ms)
-        ax.plot(phi3, np.cos(q3), c='0.25', ls='', marker='o',  markersize=ms)
+        ax.plot(phi1, np.cos(q1), 'ko', fillstyle='full', markersize=ms)
+        ax.plot(phi3, np.cos(q3), 'mo', fillstyle='full', markersize=ms)
 
         if len(t2):
             q2, phi2 = to_ang(*ret.sol(t2)[ :3])
-            ax.plot(phi2, np.cos(q2), c='0.5', ls='', marker='o', markersize=ms)
+            ax.plot(phi2, np.cos(q2), c='0.5', ls='', marker='o',
+                    fillstyle='full', markersize=ms)
 
         # overplot separatrix + CS2
         curr_roots = roots(I, eta_plot)
+        print(eta_plot, eta_c, curr_roots)
         q2 = curr_roots[0] if len(curr_roots) == 2 else curr_roots[1]
         ax.plot(np.pi, np.cos(q2), 'bo', ms=2)
         if len(curr_roots) == 4:
             q4 = curr_roots[3]
             H4 = H(I, eta_plot, q4, 0)
-            grid_pts = 201
-            q_min, q_max = np.arccos(ax.get_ylim())
-            phi_grid, q_grid = np.meshgrid(np.linspace(0, 2 * np.pi, grid_pts),
-                                           np.linspace(q_min, q_max, grid_pts))
+            ylims = ax.get_ylim()
+            phi_grid, q_grid = np.meshgrid(np.linspace(0, 2 * np.pi, 101),
+                                           np.linspace(0, np.pi, 801))
             H_grid = H(I, eta_plot, q_grid, phi_grid)
             ax.contour(phi_grid, np.cos(q_grid), H_grid, levels=[H4],
-                       colors='g', linewidths=0.3)
+                       colors='g', linewidths=0.5)
+            ax.set_ylim(ylims)
     ax1.set_ylabel(r'$\cos \theta$')
     ax3.set_ylabel(r'$\cos \theta$')
     for ax in ax3, ax4:
         ax.set_xlabel(r'$\phi$')
-        ax.set_xlim([0, 2 * np.pi])
+        ax.set_xlim([-0.1, 2 * np.pi + 0.1]) # a little bit of spacing
         ax.set_xticks([0, np.pi, 2 * np.pi])
         ax.set_xticklabels([r'$0$', r'$\pi$', r'$2\pi$'])
-    plt.suptitle(r'$\log_{10}\eta = %s$' % ', '.join([
-        '%.2f' % np.log10(eta_plot) for eta_plot in eta_plots]))
 
-    plt.savefig(filename + '_subplots', dpi=400)
+    plt.savefig(filename + '_subplots', dpi=dpi)
     plt.close(fig)
-    print('Saved', filename)
+    print('Saved', filename, 'eta_c =', eta_c)
 
 def sim_ring(I, eta, dq):
     q2, _ = roots(I, eta)
@@ -603,7 +602,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         ax1.set_ylim(100, 0)
         ax1.set_title(title)
 
-        plt.savefig(filename, dpi=400)
+        plt.savefig(filename, dpi=dpi)
         plt.clf()
 
     else:
@@ -626,13 +625,13 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         plt.plot(dqs_d, dong_est_deg - (dqs_d - min(dqs_d)), 'r:')
 
         plt.title(title)
-        plt.savefig(filename, dpi=400)
+        plt.savefig(filename, dpi=dpi)
         plt.clf()
 
     # plot all ICs
     # inits_fn = '3_ensemble_inits%02d_%02d' % (I_deg, eps_log)
     # plot_ICs(I, eta0, dqs, n_pts)
-    # plt.savefig(inits_fn, dpi=400)
+    # plt.savefig(inits_fn, dpi=dpi)
     # plt.clf()
 
 def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=13,
@@ -662,7 +661,7 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=13,
     plt.xlabel(r'$\epsilon$')
     plt.ylabel(r'$\theta_{sl, f}$')
     plt.legend()
-    plt.savefig(filename, dpi=400)
+    plt.savefig(filename, dpi=dpi)
     plt.clf()
 
 if __name__ == '__main__':
@@ -671,29 +670,29 @@ if __name__ == '__main__':
     tf = 50000
     eta0 = 10 * get_etac(I)
     q2, _ = roots(I, eta0)
-    # plot_single(I, -3e-4, tf, eta0, q2, '3testo23', dq=0.3)
-    # plot_single(I, -3.01e-4, tf, eta0, q2, '3testo21', dq=0.3)
-    # plot_single(I, -3.14e-4, 25000, eta0, q2, '3testo321', dq=np.radians(60),
-    #             num_snapshots=2)
-    # plot_single(I, -3.01e-4, 25000, eta0, q2, '3testo31',
-    #             dq=0.99 * np.pi / 2)
-    # plot_single(I, -0.1, 100, eta0, q2, '3testo_nonad', dq=0.3)
+    plot_single(I, -0.1, 100, eta0, q2, '3testo_nonad', dq=0.3)
+    plot_single(I, -3e-4, tf, eta0, q2, '3testo23', dq=0.3)
+    plot_single(I, -3.01e-4, tf, eta0, q2, '3testo21', dq=0.3)
+    plot_single(I, -3.14e-4, 25000, eta0, q2, '3testo321', dq=np.radians(60),
+                num_snapshots=2)
+    plot_single(I, -3.01e-4, 25000, eta0, q2, '3testo31',
+                dq=0.99 * np.pi / 2)
 
-    sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
-    sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
-    sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)
-    sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51)
-    sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51)
-    sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101, dqmin=0.01)
+    # sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
+    # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
+    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51)
+    # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51)
+    # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51)
+    # sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01)
 
-    sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
-                 plot_probs=False, dqmin=0.01)
-    sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
-                 plot_probs=False, dqmin=0.01)
-    sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
-                 plot_probs=False, dqmin=0.01)
-    sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101,
-                 plot_probs=False, dqmin=0.01)
+    # sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
+    #              plot_probs=False, dqmin=0.01)
+    # sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
+    #              plot_probs=False, dqmin=0.01)
+    # sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
+    #              plot_probs=False, dqmin=0.01)
+    # sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
+    #              plot_probs=False, dqmin=0.01)
 
     # eps_scan(I)
     # eps_scan(np.radians(20), eps_max=5, eps_min=1e-1, filename='3scan_20')
