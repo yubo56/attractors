@@ -145,10 +145,12 @@ def get_areas_2(ret):
     return t_end_lib, np.array(t_areas), np.array(t_areas_f), np.array(areas)
 
 def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
-                num_snapshots=1):
+                num_snapshots=1, plot_line=0):
     '''
     plot mu(t) and zoomed in for a trajectory
     num_snapshots controls how many points to use for snapshots
+    plot_line controls which of the final area predictions to overlay (default
+        none)
     '''
     eta_c = get_etac(I)
     y0 = [*to_cart(q0 + dq, 0), eta0]
@@ -235,21 +237,23 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     ax1.set_title(r'$I = %d^\circ$' % np.degrees(I))
     ax1.legend(loc='right')
 
-    # predicted final mu
-    ax1.axhline(mu_f, c='r')
-    ax1.axhline(mu_f2, c='r')
-
     # plot areas
     etas_pre_cross = eta_areas[np.where(t_areas < t_end_lib)[0]]
     etas_crossed = eta_areas[np.where(t_areas > t_end_lib)[0]]
     ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int), 'r',
              label='Th')
-    ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed), 'r')
-    ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed2), 'r')
     ax3.set_xlabel(r'$\eta$')
     ax3.set_ylabel(r'$A$')
     ax3.semilogx(eta_areas, areas, 'bo', markersize=1, label='Dat')
     ax3.legend()
+
+    # predicted final mus
+    if plot_line == 1:
+        ax1.axhline(mu_f, c='r')
+        ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed), 'r')
+    if plot_line == 2:
+        ax1.axhline(mu_f2, c='r')
+        ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed2), 'r')
 
     for ax in [ax1, ax3]:
         for plt_idx in plot_idxs:
@@ -306,8 +310,8 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     for ax in ax3, ax4:
         ax.set_xlabel(r'$\phi$')
         ax.set_xlim([-0.1, 2 * np.pi + 0.1]) # a little bit of spacing
-        ax.set_xticks([0, np.pi, 2 * np.pi])
-        ax.set_xticklabels([r'$0$', r'$\pi$', r'$2\pi$'])
+    ax3.set_xticks([0, np.pi, 2 * np.pi])
+    ax3.set_xticklabels([r'$0$', r'$\pi$', r'$2\pi$'])
 
     plt.savefig(filename + '_subplots', dpi=dpi)
     plt.close(fig)
@@ -671,8 +675,8 @@ if __name__ == '__main__':
     eta0 = 10 * get_etac(I)
     q2, _ = roots(I, eta0)
     plot_single(I, -0.1, 100, eta0, q2, '3testo_nonad', dq=0.3)
-    plot_single(I, -3e-4, tf, eta0, q2, '3testo23', dq=0.3)
-    plot_single(I, -3.01e-4, tf, eta0, q2, '3testo21', dq=0.3)
+    plot_single(I, -3e-4, tf, eta0, q2, '3testo23', plot_line=2, dq=0.3)
+    plot_single(I, -3.01e-4, tf, eta0, q2, '3testo21', plot_line=1, dq=0.3)
     plot_single(I, -3.14e-4, 25000, eta0, q2, '3testo321', dq=np.radians(60),
                 num_snapshots=2)
     plot_single(I, -3.01e-4, 25000, eta0, q2, '3testo31',
