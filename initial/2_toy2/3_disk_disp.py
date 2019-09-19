@@ -44,11 +44,16 @@ def d_sep_areas(I, eta):
 
 def plot_traj_colors(I, ret, filename):
     ''' scatter plot of (phi, mu) w/ colored time '''
-    fix, ax1 = plt.subplots(1, 1)
-    mu_lim = 0.6
-    first_idx = np.where(abs(np.cos(q)) < mu_lim)[0][0]
+    fig, ax1 = plt.subplots(1, 1)
+    t = ret.t
+    etas = ret.y[3]
+    q, phi = to_ang(*ret.y[ :3])
+    # mu_lim = 0.6
+    # first_idx = np.where(abs(np.cos(q)) < mu_lim)[0][0]
+    first_idx = 0
     scat = ax1.scatter(phi[first_idx: ], np.cos(q[first_idx: ]),
                        c=t[first_idx: ], s=0.3, cmap='Spectral')
+    ylims = ax1.get_ylim()
     fig.colorbar(scat, ax=ax1)
     ax1.set_xlabel(r'$\phi$')
     ax1.set_xlim([0, 2 * np.pi])
@@ -63,6 +68,7 @@ def plot_traj_colors(I, ret, filename):
     ax1.plot(phi_arr, z4 + sep_diff, 'k', label='Final Sep')
     ax1.plot(phi_arr, z4 - sep_diff, 'k')
     ax1.legend()
+    ax1.set_ylim(ylims)
     plt.savefig(filename, dpi=dpi)
     print('Saved', filename)
     plt.clf()
@@ -638,17 +644,17 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
     # plt.savefig(inits_fn, dpi=dpi)
     # plt.clf()
 
-def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=13,
+def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
              eps_min=1e-2, eps_max=0.5):
     '''
     scan for theta_sl,f for small dq @ various epsilons
     '''
     eta0 = 10 * get_etac(I)
     q2, _ = roots(I, eta0)
-    y0s = fetch_ring(I, eta0, dq, n_pts)
+    y0s = fetch_ring(I, eta0, dq, n_pts_ring)
     pts = []
+    eps_vals = np.exp(np.linspace(np.log(eps_max), np.log(eps_min), n_pts))
     for y0 in y0s.T:
-        eps_vals = np.exp(np.linspace(np.log(eps_max), np.log(eps_min), n_pts))
         qdeg_finals = []
         for eps in eps_vals:
             term_event = lambda t, y: y[3] - 1e-5
@@ -658,8 +664,11 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=13,
             qdeg_finals.append(np.degrees(np.mean(q)))
         plt.semilogx(eps_vals, qdeg_finals, 'ko', ms=0.5)
 
-    dong_est_rad = np.sqrt(2 * np.pi / eps_vals) * np.tan(I)
-    plt.semilogx(eps_vals, np.degrees(dong_est_rad), 'r', label='Analytical')
+    s_final = np.sqrt(2 * np.pi / eps_vals) * np.tan(I)
+    plt.semilogx(eps_vals, np.degrees(s_final), 'r', label='Analytical')
+    q_final = np.maximum(np.degrees(s_final * np.cos(I)), np.degrees(q2))
+    plt.semilogx(eps_vals, q_final, 'g', label='Analytical improved')
+    plt.axvline(np.sin(I), c='b')
     plt.xlim([eps_max, eps_min])
     plt.ylim([100, 0])
     plt.xlabel(r'$\epsilon$')
@@ -668,19 +677,64 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=13,
     plt.savefig(filename, dpi=dpi)
     plt.clf()
 
+def I_scan(eps, filename='3Iscan', dq=0.01, n_pts=151, n_pts_ring=21,
+             I_min=np.radians(1), I_max=np.radians(20)):
+    '''
+    scan for theta_sl,f for small dq @ various epsilons
+    '''
+    pts = []
+    I_vals = np.linspace(I_min, I_max, n_pts)
+    I_degs = np.degrees(I_vals)
+    eta_vals = 10 * get_etac(I_vals)
+    q2s = []
+    for I, eta0 in zip(I_vals, eta_vals):
+        q2, _ = roots(I, eta0)
+        q2s.append(q2)
+        y0s = fetch_ring(I, eta0, dq, n_pts_ring)
+        qdeg_finals = []
+        for y0 in y0s.T:
+            term_event = lambda t, y: y[3] - 1e-5
+            term_event.terminal = True
+            ret = solve_ic_base(I, -eps, y0, np.inf, events=[term_event])
+            q, phi = to_ang(*ret.y[ :3, -10: ])
+            qdeg_finals.append(np.degrees(np.mean(q)))
+        plt.plot(np.full_like(qdeg_finals, np.degrees(I)), qdeg_finals,
+                     'ko', ms=0.5)
+
+    s_final = np.sqrt(2 * np.pi / eps) * np.tan(I_vals)
+    plt.plot(I_degs, np.degrees(s_final), 'r', label='Analytical')
+    q_final = np.maximum(np.degrees(s_final * np.cos(I)), np.degrees(q2s))
+    plt.plot(I_degs, q_final, 'b', label='Analytical improved')
+    old_lims = plt.ylim()
+    plt.ylim([old_lims[-1], 0])
+    plt.xlabel(r'$I$')
+    plt.ylabel(r'$\theta_{sl, f}$')
+    plt.legend()
+    plt.savefig(filename, dpi=dpi)
+    print('Saved', filename)
+    plt.clf()
+
 if __name__ == '__main__':
     I = np.radians(5)
 
     tf = 50000
     eta0 = 10 * get_etac(I)
     q2, _ = roots(I, eta0)
-    plot_single(I, -0.1, 100, eta0, q2, '3testo_nonad', dq=0.3)
-    plot_single(I, -3e-4, tf, eta0, q2, '3testo23', plot_line=2, dq=0.3)
-    plot_single(I, -3.01e-4, tf, eta0, q2, '3testo21', plot_line=1, dq=0.3)
-    plot_single(I, -3.14e-4, 25000, eta0, q2, '3testo321', dq=np.radians(60),
-                num_snapshots=2)
-    plot_single(I, -3.01e-4, 25000, eta0, q2, '3testo31',
-                dq=0.99 * np.pi / 2)
+    # plot_single(I, -0.1, 100, eta0, q2, '3testo_nonad', dq=0.3)
+    # plot_single(I, -3e-4, tf, eta0, q2, '3testo23', plot_line=2, dq=0.3)
+    # plot_single(I, -3.01e-4, tf, eta0, q2, '3testo21', plot_line=1, dq=0.3)
+    # plot_single(I, -3.14e-4, 25000, eta0, q2, '3testo321', dq=np.radians(60),
+    #             num_snapshots=2)
+    # plot_single(I, -3.01e-4, 25000, eta0, q2, '3testo31',
+    #             dq=0.99 * np.pi / 2)
+
+    # testing high epsilon
+    # eta_c = get_etac(I)
+    # y0 = [*to_cart(q2 + 0.01, 0), eta0]
+    # term_event = lambda t, y: y[3] - 1e-5
+    # term_event.terminal = True
+    # ret = solve_ic_base(I, -5, y0, np.inf, events=[term_event])
+    # plot_traj_colors(I, ret, '3testo_inf')
 
     # sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
     # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51)
@@ -698,5 +752,8 @@ if __name__ == '__main__':
     # sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
     #              plot_probs=False, dqmin=0.01)
 
-    # eps_scan(I)
-    # eps_scan(np.radians(20), eps_max=5, eps_min=1e-1, filename='3scan_20')
+    eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
+    eps_scan(np.radians(20), eps_max=10, eps_min=5e-2, n_pts=301, filename='3scan_20')
+    # I_scan(5, filename='3Iscan_test', n_pts=31, n_pts_ring=2)
+    # I_scan(1, filename='3Iscan_test_eps1', n_pts=31, n_pts_ring=2)
+    # I_scan(20, filename='3Iscan_test_eps20', n_pts=31, n_pts_ring=2)

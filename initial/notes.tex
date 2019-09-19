@@ -1358,6 +1358,174 @@ This is in agreement with our work from 5.1. Thus, the total expression is
     P_c ={}& \frac{\Delta_+ + \Delta_-}{\Delta_-}.
 \end{align}
 
+\section{Non-adiabatic Regime}
+
+\subsection{Decaying Disk: Dong Notes}
+
+In the non-adiabatic regime, the Hamiltonian is much less useful, so we return
+to EOM in corotating frame (after dividing through by $\Omega_{sl}$ compared to
+Dong's notes)
+\begin{equation}
+    \rd{\hat{s}}{t} = \p*{\hat{s} \cdot \hat{l}}\p*{\hat{s} \times \hat{l}}
+        + \eta \cos I \p*{\hat{l}_d \times \hat{s}}.
+\end{equation}
+We adopt convention where $\Omega_{sl}, \Omega_{lp} > 0, \eta =
+\frac{\Omega_{ld}\cos I}{\Omega_{sl}}$, and time units are really $t \equiv
+\Omega_{sl}t$. In this decaying disk problem, $\eta\p*{-\infty} \gg 1,
+\eta\p*{+\infty} \ll 1$.
+
+Define again $\hat{l} = \hat{z}, \hat{l}_d = \hat{z} \cos I + \hat{x}\sin I$,
+then we go immediately into coordinates
+\begin{equation}
+    \rd{\hat{s}}{t} = \s*{
+        \p*{\eta \cos I - 1}\hat{z} + \eta \sin I \hat{x}} \times \hat{s}.
+\end{equation}
+
+Now, let's assume that $s_z \approx 1$ throughout the evolution of $\hat{s}$
+(maybe this can be relaxed later), which also requires $I \approx 0$. Then let's
+examine the evolution of quantity $S = s_x + is_y$ instead:
+\begin{equation}
+    \rd{S}{t} = i\p*{\eta\cos I - 1}S - i \eta \sin I.\label{eq:nonad_ode}
+\end{equation}
+Now this is a first-order ODE in $S$, albeit complex, which can be solved via
+an integrating factor
+\begin{align}
+    \Phi(t) &\equiv \int_{-\infty}^t \p*{1 - \eta(t') \cos I}
+        \mathrm{d}t',\\
+    \at{S(t) e^{i\Phi(t)}}_{-\infty}^t
+        &= \int\limits_{-\infty}^t e^{i\Phi(t')}
+            \p*{-i\eta(t')\sin I}\;\mathrm{d}t'\label{eq:nonad_int}
+\end{align}
+We now invoke stationary phase, asserting that $e^{i\Phi(t)}$ is dominated by
+its contribution where $\dot{\Phi} = 0$ (the phases add constructively). But
+$\dot{\Phi} = 0$ is where $1 - \eta\cos I = 0$, or where $\eta\cos I = 1$.
+
+Now at this point, let's choose $\eta(0) = 1/\cos I, \at{\rd{\eta}{t}}_{t=0} =
+-\epsilon/\cos I$. Then we expand near $t = 0$ so
+\begin{align*}
+    \Phi(t) &\approx \Phi(0) + \frac{1}{2}\ddot{\Phi}t^2,\\
+        &\approx \Phi(0) + \frac{1}{2}\epsilon t^2,\\
+    \int\limits_{-\infty}^t e^{i\Phi(t')}\eta(t')\;\mathrm{d}t'
+        &\approx
+        \begin{cases}
+            0 & t < 0,\\
+            \frac{1}{\cos I}e^{i\Phi(0)}\int\limits_{-\infty}^\infty
+                \exp\s*{\frac{i}{2}\epsilon t^2}\;\mathrm{d}t
+                & t > 0.
+        \end{cases}\\
+    \int\limits_{-\infty}^\infty
+                \exp\s*{\frac{i}{2}\epsilon t^2}\;\mathrm{d}t
+        &= \int\limits_{-\infty}^\infty e^{-\tau^2}\;\mathrm{d}\tau
+            \sqrt{\frac{2}{i\epsilon}},\\
+        &= \sqrt{\frac{2\pi}{i\epsilon}}.
+\end{align*}
+
+Now, it should be noted that $e^{i\Phi}$ is just a phase; all we really care
+about is $\abs*{S} = \sqrt{1 - s_z^2}$. Thus, taking the absolute value of both
+sides of \autoref{eq:nonad_int} we obtain
+\begin{align}
+    \abs*{S}(t) &= \tan I\sqrt{\frac{2\pi}{\epsilon}}\Theta(t).
+        \label{eq:nonad_dong}
+\end{align}
+It should be noted that $\theta_{sl, f} \approx \abs*{S}(\infty)$, and so we
+recover Dong's result $\theta_f = \sqrt{2\pi/\epsilon}\tan I$.
+
+To compare to data, let's define a few more things: $\theta_{sl, f} = \hat{s}
+\cdot \hat{l}(t \to \infty)$ and $\theta_{sd, i} = \hat{s} \cdot \hat{l}_d(t \to
+-\infty)$ (note that $I \equiv \theta_{ld}$ is constant). In our derivation
+above, we've sort of assumed $I \approx 0$, so $\theta_{sd, i} \approx
+\theta_{sl, i} = 0$ is the effective initial condition above.
+
+Then, for some $\theta_{sd, i} > 0$, we can intuit as follows: $\hat{s}$
+initially librates around $\hat{l}_d$ with oscillation amplitude $\theta_{sd,
+i}$. So if $\theta_{sd, i} = 0$ produces \autoref{eq:nonad_dong}, we might
+expect small deviations of amplitude $\theta_{sd, i}$ about CS2 to be ``frozen
+in'' as the disk dissipates non-adiabatically. Thus, $\theta_{sl, f} \in
+\theta_{sl, f, 0} + \s*{\pm \theta_{sd, i}}$.
+
+More importantly though, we want to find leading order corrections to the above
+result for: nonzero $I$, and somewhat smaller $\epsilon$. The problems with
+Dong's result can be seen in the two figures in \autoref{fig:nonad_scan}, which
+are derived for $\theta_{sd, i} \approx 0$. In this limit, $\theta_{sl, i} = I$,
+which explains why the predictions break down somewhat when $I$ is no longer
+small. Furthermore, for smaller $\epsilon$, the stationary phase approximation
+breaks down. We investigate the effect of these below.
+\begin{figure}[t]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{2_toy2/3scan.png}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{2_toy2/3scan_20.png}
+    \end{subfigure}
+    \caption{$I = 5^\circ, 20^\circ$ distributions vs data. Red lines are the
+    result of Dong's calculation, blue are with my
+    improvements.}\label{fig:nonad_scan}
+\end{figure}
+
+\subsection{Extending Dong's result}
+
+Perhaps the easiest correction to make is, instead of assuming $s_z = 1$, to
+hold it constant at $s_z \approx \cos I$, which just changes the inhomogeneous
+term in \autoref{eq:nonad_ode} to $\p*{-i\eta \sin I \cos I}$; this is a very
+small change since $\cos I \approx 1$ for nearly all physical parameter space,
+but does improve the fit slightly.
+
+One other observation is that the LHS of \autoref{eq:nonad_int} should really be
+$\abs*{S\p*{t}e^{i\Phi(t)} - S\p*{-\infty}e^{i\Phi(-\infty)}}$, but we don't
+really know $e^{i\Phi}$ since it oscillates so quickly. Thus, only when $S\p*{t}
+\gg S\p*{-\infty}$ or $\theta_{sl, f} \gg I$ is the LHS easily evaluated. But at
+the very least we can claim that $\theta_{sl, f} = \max\p*{\abs*{S}, I}$, so
+that at very small $\abs*{S}$ we just use $I$ the approximate location of CS2.
+This seems to be in pretty good agreement if we look at
+\lstinline{2_toy2/3Iscan} plots.
+
+Somewhat surprisingly, using a proper $\theta_{sl, f} = \arccos 1 - S^2$
+actually hurts the fit; this would manifest in the larger $\theta_{sl, f}$
+regime, so it appears increasing adiabiticity dominates this correction.
+
+The other correction to consider is how the nonadiabatic assumption breaks down.
+In the stationary phase integral, we assumed that the phase could be integrated
+as an imaginary Gaussian.
+
+\textbf{Take 1 (fail):} This is only true if the in the
+vicinity of the minimum, $\Phi(t)$ is approximately symmetric. The ``vicinity''
+here is defined as where $\Phi(t) \lesssim \Phi_{\min} + 2\pi$, since that is
+where the phase begins to oscillate quickly again. To simplify, we can write
+$\eta = e^{-\epsilon t}/\cos I$, then we can integrate analytically:
+\begin{equation}
+    \Phi(t) = t + \frac{e^{-\epsilon t}}{\epsilon}
+        \approx \frac{1}{\epsilon} + t - te^{-\epsilon t} + \mathcal{O}(t^2).
+\end{equation}
+can be written down analytically, we can examine how symmetric $\Phi$ is about
+its minimum. It turns out though that $\Phi$ is actually \emph{more} symmetric
+for smaller $\epsilon$, so stationary phase should work \emph{better}. Hm.
+Similar arguments can be constructed for $\Phi$ being symmetric about $\pm
+\sigma \sim 1/\sqrt{\epsilon}$, or for the variation of $\eta$ across $t \in \pm
+1/\sqrt{\epsilon}$, but they all seem to favor smaller $\epsilon$ being more
+accurate.
+
+\textbf{Millholland Non-Adiabiticity:} The criterion for adiabiticity presented
+in Millholland \& Batygin \emph{Primordial Obliquities} is (their Equation 15)
+\begin{equation}
+    \dot{\alpha} - \dot{g} \lesssim \alpha g \sin \theta \sin I.
+\end{equation}
+Noting $\dot{\eta} = \p*{\frac{\dot{g}}{g} - \frac{\dot{\alpha}}{\alpha}}\eta$,
+where $\eta = \frac{g\cos I}{\alpha}$ ($g, \alpha$ follow their definitions),
+and that at crossing they define $g \approx \alpha$, then
+\begin{align*}
+    \frac{\dot{\alpha}}{\alpha} - \frac{\dot{g}}{g}
+        &\lesssim g\sin\theta\sin I,\\
+    -\s*{\frac{\dot{\alpha}}{\alpha} - \frac{\dot{g}}{g}}\cos I = \dot{\eta}
+        = -\epsilon \alpha \eta &\gtrsim -g\sin\theta\sin I\cos I,\\
+    \epsilon &\lesssim \frac{\sin \theta \sin I \cos I}{\eta}
+        \approx \sin\theta \sin I.
+\end{align*}
+This is overplotted in the vertical blue line in \autoref{fig:nonad_scan}.
+
 \section{Misc}
 
 \subsection{Another Set of Canonical Coordinates}

@@ -8,9 +8,47 @@ check 1epsdist numerically, maybe add non-ad + backreaction term s ~ l
 Maybe consider basin of attraction for CS2 w/ nonzero eps?
 
 
-# reach
-See whether can derive non-adiabatic obliquity excitation case
-
 Schlicting high velocity impacts to motivate using large q_sp 1811.11778
 Look up real alpha numbers (kepler papers)
 plot trajectories over time via snapshots w/ separatrix
+
+
+
+Paper notes:
+Pitch as both solving disk problem over larger ICs but also has wide range of
+applications
+Maximum-period orbit to update epsilon criterion?
+Explain coordinate choice somewhere
+Move S 3.3: Quasi-adiabatic/effect of nonadiabiticity (show more than just 12)
+    - delete probs for the rest of these
+S2: need epsilon + values
+
+all figs:
+- solid black line for sep
+- explain choices of epsilon to handle large q_sf, sep crossing factor
+- use integral down to -1 so that 21 transition is A2 -> A2 + A3
+    - take absolute values for simplicity? can't probably, since can't
+      disambiguate between two signs of enclosing north pole
+
+- Fig 1: label CSs
+    - can fewer contours
+    - probably no need for colorbar, just state in text (too small anyways + no
+      numbers), try to make blue = < 0, red = > 0?
+- Fig 1.5: theta(eta) + eta_c, make sure consistent colors
+- Fig 2: change everything else to Roman numerals, probably show for multiple
+  eta
+- Fig 3: label eta_c
+- Fig 4-7: Can label C+- for "sep"? can trunc eta = 1e-3
+    - delete axhline('r') in ax1
+    - don't need to show multiple trajectories in ax2 when not sep cross
+    - change separatrix crossing to before + after, separate panels (like
+      Natalia), make sure separatrix positioning for before/after are good! 5
+      total panels
+    - make bounds [0, 2pi] on fig b
+    - why isn't sep always dashed?
+    - make colorings consistent w/ earlier figs
+    - single caption, should explain what the \Delta As equate to in each case
+****- Fig 4: why not adiabatic at beginning?
+- Fig 8: just theta, not flipped theta
+    - delete naive, or at least rename
+- Fig 12: delete prob plot
