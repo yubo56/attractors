@@ -53,7 +53,8 @@ def plot_areas():
     ''' plot exact area + my old approx '''
     I = np.radians(5)
     eta_c = (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
-    eta = np.linspace(0, eta_c, 101)
+    scale_pow = 3
+    eta = np.linspace(0, eta_c**(1/scale_pow), 101)**scale_pow
 
     A1w, A2w, A3w = get_areas_ward(eta, I)
     A2ys = 16 * np.sqrt(eta * np.sin(I))
@@ -65,10 +66,20 @@ def plot_areas():
     plt.plot(eta, A2w / (4 * np.pi), 'k', label='A2')
     plt.plot(eta, A3ys / (4 * np.pi), 'r:')
     plt.plot(eta, A3w / (4 * np.pi), 'r', label='A3')
-    plt.legend()
+
+    # dotted line continuation to show "analytic" continuation
+    eta_cont = np.linspace(eta_c, 1.2 * eta_c, 21)
+    plt.plot(eta_cont, np.full_like(eta_cont, A1w[-1] / (4 * np.pi)), 'g--')
+    plt.plot(eta_cont, np.full_like(eta_cont, A2w[-1] / (4 * np.pi)), 'k--')
+    plt.plot(eta_cont, np.full_like(eta_cont, A3w[-1] / (4 * np.pi)), 'r--')
+    plt.legend(loc='upper left')
     plt.xlabel(r'$\eta$')
     plt.ylabel(r'$A_{sep} / 4\pi$')
-    plt.title(r'$I = %d^\circ$' % np.degrees(I))
+    plt.xticks([0, 0.3, 0.6, eta_c, 0.9],
+               [r'$0$', r'$0.3$', r'$0.6$', r'$\eta_c$', r'$0.9$'])
+    old_ylims = plt.ylim()
+    plt.ylim([0, old_ylims[1]])
+    plt.title(r'$I = %d^\circ, \eta_c = %.3f$' % (np.degrees(I), eta_c))
     plt.savefig('1_areas.png', dpi=400)
     plt.clf()
 

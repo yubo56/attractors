@@ -86,8 +86,8 @@ The evolution of $\hat{s}$ in this corotating frame is governed by:
         - \abs{g}\p{\hat{s} \times \hat{l}_d}.
         \label{eq:dsdt_base}
 \end{equation}
-$\alpha = \omega_{sd} > 0, g \equiv -\omega_{ld}< 0$ follow traditional sign
-conventions.
+$\alpha = \omega_{sd} > 0, g \equiv -\omega_{ld}\cos I < 0$ follow traditional
+sign conventions.
 
 We divide through by $\alpha$ and define parameter $\eta$ and nondimensionalized
 time $\tau$
@@ -132,6 +132,15 @@ CSs 1, 2, 3 are stable while CS4 is unstable. A contour plot of $H\p{\phi, \cos
     separatrix, which only exists for $\eta < \eta_c$.}\label{fig:eq_1contours}
 \end{figure}
 
+The locations of the $\cos\theta$ of the two/four CSs as a function of $\eta$ is
+provided in
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/99_misc/2_cs_locs.png}
+    \caption{Locations of the Cassini states over time, following the same
+    coloring scheme as \autoref{fig:eq_1contours}.}\label{fig:cs_locs}
+\end{figure}
+
 \subsection{Separatrix}
 
 In the four-CS regime, one of the CSs is a saddle point, conventionally denoted
@@ -139,30 +148,21 @@ Cassini State 4 (CS4). All trajectories are periodic with finite period except
 two critical trajectories asymptotic in the past and future to CS4. Together,
 these two critical trajectories are referred to as the \emph{separatrix} and
 divide phase space into three zones. We use notation described in
-\autoref{fig:eq_3zones}.
-\begin{figure}
-    \centering
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/3zones.png}
-    \caption{Nomenclature of the two legs of the separatrix $\mathcal{C}_{\pm}$
-    and three zones of the domain. For both $\mathcal{C}_{\pm}$, we will take
-    the positive direction to be anti-clockwise.}\label{fig:eq_3zones}
-\end{figure}
+\autoref{fig:eq_1contours}.
 
-The area enclosed by the separatrix is known exactly in literature
+The unsigned area enclosed by the separatrix is known exactly in literature
 \citep{henrard1987,ward2004I}:
 \begin{subequations}\label{se:area_ward}
-    \begin{align*}
-        z_0 &= \eta\cos I &
-        \chi &= \sqrt{-\frac{\tan^3\theta_4}{\tan I} - 1},\\
-        \rho &= \chi \frac{\sin^2 \theta_4\cos \theta_4}{
-            \chi^2 \cos^2\theta_4 + 1} &
-        T &= 2\chi \frac{\cos \theta_4}{
-            \chi^2 \cos^2\theta_4 - 1},
-    \end{align*}
     \begin{align}
-        A_2 &= 8\rho + 4\arctan T - 8z_0 \arctan \frac{1}{\chi},\\
-        A_1 &= 2\pi\p{1 - z_0} - \frac{A_2}{2},\\
-        A_3 &= 2\pi\p{1 + z_0} - \frac{A_2}{2}.
+        z_0 &= \eta\cos I,\nonumber\\
+        \chi &= \sqrt{-\frac{\tan^3\theta_4}{\tan I} - 1},\nonumber\\
+        \rho &= \chi \frac{\sin^2 \theta_4\cos \theta_4}{
+            \chi^2 \cos^2\theta_4 + 1},\nonumber\\
+        T &= 2\chi \frac{\cos \theta_4}{
+            \chi^2 \cos^2\theta_4 - 1},\nonumber\\
+        A_{II} &= 8\rho + 4\arctan T - 8z_0 \arctan \frac{1}{\chi},\\
+        A_I &= 2\pi\p{1 - z_0} - \frac{A_2}{2},\\
+        A_{III} &= 2\pi\p{1 + z_0} - \frac{A_2}{2}.
     \end{align}
 \end{subequations}
 These are plotted as a function of $\eta$ in \autoref{fig:eq_areas}.
@@ -188,27 +188,39 @@ in~\cite{millholland_disk} to be
 
 In the limit $\eta \to 0$, all trajectories circulate with constant
 \begin{equation}
-    \theta_{sl,f} \equiv \s{\arccos \hat{s} \cdot \hat{l}}_{\eta \to 0}.
+    \theta_{f} \equiv \s{\arccos \hat{s} \cdot \hat{l}}_{\eta \to 0}.
 \end{equation}
 We run simulations that terminate at $\eta = 10^{-5}$ and measure
-$\theta_{sl,f}$. We vary the initial
+$\theta_{f}$. We vary the initial
 \begin{equation}
     \theta_{sd, i} \equiv \s{\arccos \hat{s} \cdot \hat{l}_d}_{t=0}.
 \end{equation}
-While complex at first sight, the outcomes of evolutionary
-trajectories are only complicated by interactions with the separatrix (as phase
-space area is conserved otherwise). Adopting the labels in
-\autoref{fig:eq_3zones}, the five dynamical histories we observe in simulations
-are described by their transitions between regions of phase space:
-\begin{itemize}
-    \item $A_2 \to A_1$ --- \autoref{fig:ad_21}.
-    \item $A_2 \to A_3$ --- \autoref{fig:ad_23}.
-    \item $A_3 \to A_1$ --- \autoref{fig:ad_31}.
-    \item $A_3 \to A_2 \to A_1$ --- \autoref{fig:ad_321}.
-    \item $A_3 \to A_3$ --- Trivial case, the initial enclosed area is too large
-        to ever experience a separatrix encounter.
-\end{itemize}
 
+Initially, in the $\eta > \eta_c$ regime, only zones $II, III$ exist.
+Conversely, at the end of the simulation when $\eta \to 0$, only zones $I, III$
+exist. Naively then, one might expect four sequences of transitions
+between zones (``zone transition histories'') to appear during simulations: (i)
+$II \to I$, (ii) $II \to III$, (iii) $III \to I$, and (iv) the trivial $III \to
+III$ where the trajectory never encounters the separatrix. In fact, (v) a fifth
+possible history involving two transitions is observed $III \to II \to I$.
+
+Between zone transitions, the adiabatic invariant $J \equiv \oint \cos\theta
+\;\mathrm{d}\phi$ is conserved. Here, we adopt convention $J$ is a \emph{signed}
+area
+\begin{equation}
+    J = \oint \p{1 - \cos \theta}\;\mathrm{d}\phi.
+\end{equation}
+This has the advantage of (i) having a removable singularity when the trajectory
+crosses $\cos \theta = 1$, and (ii) being easily expressible as combinations of
+the $A_i$ of \autoref{se:area_ward} without $2\pi$ offsets.
+
+Given this definition, the change in $J$ during a separatrix encounter is easily
+understood \citep{henrard1982}. We present in \autoref{fig:ad_21} a fiducial
+simulaiton undergoing the $II \to I$ zone transition. An initial condition in
+zone II with initial adiabatic invariant $J_i > 0$ librates about CS2 until
+$A_{II} = J_i$. At this point, it encounters the separatrix and moves into zone I
+with $J_f = -A_I$. Further simulations illustrating the other zone transition
+histories are depicted in \autoref{s:app_histories}.
 \begin{figure}
     \centering
     \begin{subfigure}{\columnwidth}
@@ -217,7 +229,7 @@ are described by their transitions between regions of phase space:
         \caption{Top: Plot of $\cos \theta(t)$ (grey) over an example
         simulation. Overlaid are the locations of Cassini State 2 (blue), upper
         and lower bounds on the separatrix (dashed green), and value of
-        $\theta_{sl,f}$ predicted in the adiabatic limit (horizontal red line).
+        $\theta_{f}$ predicted in the adiabatic limit (horizontal red line).
         Bottom: Plot of the enclosed separatrix area obtained by integrating the
         simulated trajectory (blue dots) and fully adiabitic theory (red line).
         A small blip in the data area arises when the integration area crosses
@@ -241,6 +253,124 @@ are described by their transitions between regions of phase space:
     \caption{Fiducial simulation following the $A_2 \to A_1$
     transition.}\label{fig:ad_21}
 \end{figure}
+
+\subsection{Dynamical Outcomes}\label{ss:ad_ensemble}
+
+In the adiabatic limit, while separatrix encounters induce discontinuous changes
+in enclosed phase space, the outcomes of these encounters are well understood in
+pioneering work by Henrard \citep{henrard1982,henrard1987}. For a wide range of
+$\theta_{sd, i}$, we run simulations over a ring of initial conditions at each
+$\theta_{sd, i}$ and measure the final $\theta_{ f}$ values. We can also
+predict the values of $\theta_{ f}$ for each of the dynamical histories as
+well as their associated probabilities; refer to \autoref{ss:app_transition} for
+details.
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_35.png}
+    \caption{Top: $\theta_{f}\p{\theta_{sd, i}}$, overlaid with semi-analytic
+    predictions of the $\theta_{ f}$ for each of the four nontrivial
+    dynamical histories in colored lines. Bottom: Semi-analytic probabilities of
+    each of the dynamical histories for each $\theta_{sd,
+    i}$.}\label{fig:ad_ensemble}
+\end{figure}
+
+\section{Nonadiabatic Evolution}\label{s:nonad}
+
+Here, we consider $\epsilon$ sufficiently large to violate the adiabiticity
+constraint \autoref{eq:ad_constr}.
+
+\subsection{Sample Trajectory}
+
+A sample trajectory following in the style of \autoref{fig:ad_21} but for
+$\epsilon = 0.1$ is provided in \autoref{fig:nonad_traj}.
+\begin{figure}
+    \centering
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo_nonad.png}
+    \end{subfigure}
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo_nonad_subplots.png}
+    \end{subfigure}
+    \caption{Same as \autoref{fig:nonad_traj} but for a non-adiabatic $\epsilon =
+    0.1$.}\label{fig:nonad_traj}
+\end{figure}
+
+\subsection{Dynamical Outcomes}
+
+A formula for $\theta_{f}$ assuming $\theta_{sd, i} = 0$ initially can be
+given:
+\begin{equation}
+    \theta_{f}\p{\theta_{sd, i} = 0} = \sqrt{\frac{2\pi \Omega}{\epsilon}}
+        \tan I.\label{eq:nonad_q_f}
+\end{equation}
+We can naively generalize this by recognizing that any nonzero $\theta_{sd, i}$
+manifests as obliquity variations as $\hat{s}$ librates about $\hat{l}_d$, and
+these oscillations are ``frozen in'' when the disk dissipates. Thus,
+\begin{equation}
+    \theta_{f}\p{\theta_{sd, i}} \in \sqrt{\frac{2\pi \Omega}{\epsilon}}
+        \tan I \pm \theta_{sd, i}.\label{eq:nonad_q_f_dist}
+\end{equation}
+
+We present the results of simulations for using $\epsilon = 0.3$ in
+\autoref{fig:nonad_3_ensemeble}.
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_05.png}
+    \caption{$\theta_{ f}\p{\theta_{sd, i}}$ at $\epsilon = 0.3$, firmly in
+    the non-adiabatic regime. Note the clear double-valuedeness has disappeared,
+    as have distinct dynamical histories. The red dotted line presents the
+    analytical prediction given by
+    \autoref{eq:nonad_q_f_dist}.}\label{fig:nonad_3_ensemeble}
+\end{figure}
+
+\subsection{Transition from Adiabaticity}
+
+The agreement of \autoref{eq:nonad_q_f} at fixed $I$ for varying $\epsilon$ is
+shown in \autoref{fig:nonad_3_scan}. Note that $\epsilon \to 0$ recovers the
+adiabatic regime.
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/2_toy2/3scan.png}
+    \caption{Plot of $\theta_{ f}\p{\theta_{sd, i} = 0}$ as a function of
+    $\epsilon$, where $I = 5^\circ$. Overplotted in the red line is
+    \autoref{eq:nonad_q_f}, which is in good agreement for $\epsilon \gtrsim
+    0.1$ the non-adiabatic regime, while $\theta_{ f} \approx 90^\circ$ in
+    the adiabatic regime.}\label{fig:nonad_3_scan}
+\end{figure}
+
+An example of an intermediate value $\epsilon = 10^{-2}$ between
+\autoref{fig:ad_ensemble} and \autoref{fig:nonad_3_ensemeble} is shown in
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_20.png}
+    \caption{Intermediate $\epsilon$ used in between those of
+    \autoref{fig:ad_ensemble} and \autoref{fig:nonad_3_ensemeble}. Noticeable
+    ``freezing-in'' of the obliquity variations over libration cycles is still
+    visible, but the shapes of the adiabatic dynamical trajectories are
+    beginning to appear.}\label{fig:nonad_3_ensemble_20}
+\end{figure}
+
+TODO compare to \autoref{eq:ad_constr}.
+
+\bibliographystyle{mnras}
+\bibliography{Su_sep_cross}
+
+% \clearpage
+% \onecolumn
+\appendix
+
+\section{Dynamical Histories}\label{s:app_histories}
+
+\begin{itemize}
+    \item $A_2 \to A_1$ --- \autoref{fig:ad_21}.
+    \item $A_2 \to A_3$ --- \autoref{fig:ad_23}.
+    \item $A_3 \to A_1$ --- \autoref{fig:ad_31}.
+    \item $A_3 \to A_2 \to A_1$ --- \autoref{fig:ad_321}.
+    \item $A_3 \to A_3$ --- Trivial case, the initial enclosed area is too large
+        to ever experience a separatrix encounter.
+\end{itemize}
 \begin{figure}
     \centering
     \begin{subfigure}{\columnwidth}
@@ -282,113 +412,6 @@ are described by their transitions between regions of phase space:
     separatrix, captures the first of the two separatrix crossings. TODO finish
     final areas plot.}\label{fig:ad_321}
 \end{figure}
-
-\subsection{Dynamical Outcomes}\label{ss:ad_ensemble}
-
-In the adiabatic limit, while separatrix encounters induce discontinuous changes
-in enclosed phase space, the outcomes of these encounters are well understood in
-pioneering work by Henrard \citep{henrard1982,henrard1987}. For a wide range of
-$\theta_{sd, i}$, we run simulations over a ring of initial conditions at each
-$\theta_{sd, i}$ and measure the final $\theta_{sl, f}$ values. We can also
-predict the values of $\theta_{sl, f}$ for each of the dynamical histories as
-well as their associated probabilities; refer to \autoref{ss:app_transition} for
-details.
-\begin{figure}
-    \centering
-    \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_35.png}
-    \caption{Top: $\theta_{sl,f}\p{\theta_{sd, i}}$, overlaid with semi-analytic
-    predictions of the $\theta_{sl, f}$ for each of the four nontrivial
-    dynamical histories in colored lines. Bottom: Semi-analytic probabilities of
-    each of the dynamical histories for each $\theta_{sd,
-    i}$.}\label{fig:ad_ensemble}
-\end{figure}
-
-\section{Nonadiabatic Evolution}\label{s:nonad}
-
-Here, we consider $\epsilon$ sufficiently large to violate the adiabiticity
-constraint \autoref{eq:ad_constr}.
-
-\subsection{Sample Trajectory}
-
-A sample trajectory following in the style of \autoref{fig:ad_21} but for
-$\epsilon = 0.1$ is provided in \autoref{fig:nonad_traj}.
-\begin{figure}
-    \centering
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo_nonad.png}
-    \end{subfigure}
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo_nonad_subplots.png}
-    \end{subfigure}
-    \caption{Same as \autoref{fig:nonad_traj} but for a non-adiabatic $\epsilon =
-    0.1$.}\label{fig:nonad_traj}
-\end{figure}
-
-\subsection{Dynamical Outcomes}
-
-A formula for $\theta_{sl,f}$ assuming $\theta_{sd, i} = 0$ initially can be
-given:
-\begin{equation}
-    \theta_{sl,f}\p{\theta_{sd, i} = 0} = \sqrt{\frac{2\pi \Omega}{\epsilon}}
-        \tan I.\label{eq:nonad_q_f}
-\end{equation}
-We can naively generalize this by recognizing that any nonzero $\theta_{sd, i}$
-manifests as obliquity variations as $\hat{s}$ librates about $\hat{l}_d$, and
-these oscillations are ``frozen in'' when the disk dissipates. Thus,
-\begin{equation}
-    \theta_{sl,f}\p{\theta_{sd, i}} \in \sqrt{\frac{2\pi \Omega}{\epsilon}}
-        \tan I \pm \theta_{sd, i}.\label{eq:nonad_q_f_dist}
-\end{equation}
-
-We present the results of simulations for using $\epsilon = 0.3$ in
-\autoref{fig:nonad_3_ensemeble}.
-\begin{figure}
-    \centering
-    \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_05.png}
-    \caption{$\theta_{sl, f}\p{\theta_{sd, i}}$ at $\epsilon = 0.3$, firmly in
-    the non-adiabatic regime. Note the clear double-valuedeness has disappeared,
-    as have distinct dynamical histories. The red dotted line presents the
-    analytical prediction given by
-    \autoref{eq:nonad_q_f_dist}.}\label{fig:nonad_3_ensemeble}
-\end{figure}
-
-\subsection{Transition from Adiabaticity}
-
-The agreement of \autoref{eq:nonad_q_f} at fixed $I$ for varying $\epsilon$ is
-shown in \autoref{fig:nonad_3_scan}. Note that $\epsilon \to 0$ recovers the
-adiabatic regime.
-\begin{figure}
-    \centering
-    \includegraphics[width=\columnwidth]{../initial/2_toy2/3scan.png}
-    \caption{Plot of $\theta_{sl, f}\p{\theta_{sd, i} = 0}$ as a function of
-    $\epsilon$, where $I = 5^\circ$. Overplotted in the red line is
-    \autoref{eq:nonad_q_f}, which is in good agreement for $\epsilon \gtrsim
-    0.1$ the non-adiabatic regime, while $\theta_{sl, f} \approx 90^\circ$ in
-    the adiabatic regime.}\label{fig:nonad_3_scan}
-\end{figure}
-
-An example of an intermediate value $\epsilon = 10^{-2}$ between
-\autoref{fig:ad_ensemble} and \autoref{fig:nonad_3_ensemeble} is shown in
-\begin{figure}
-    \centering
-    \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_20.png}
-    \caption{Intermediate $\epsilon$ used in between those of
-    \autoref{fig:ad_ensemble} and \autoref{fig:nonad_3_ensemeble}. Noticeable
-    ``freezing-in'' of the obliquity variations over libration cycles is still
-    visible, but the shapes of the adiabatic dynamical trajectories are
-    beginning to appear.}\label{fig:nonad_3_ensemble_20}
-\end{figure}
-
-TODO compare to \autoref{eq:ad_constr}.
-
-\bibliographystyle{mnras}
-\bibliography{Su_sep_cross}
-
-% \clearpage
-% \onecolumn
-\appendix
 
 \section{Variation with $I$}
 

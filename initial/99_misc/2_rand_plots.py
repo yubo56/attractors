@@ -32,7 +32,10 @@ def roots(I, eta):
         roots = []
         inits = [np.pi / 2 - I, -np.pi + I]
         for qi in inits:
-            roots.append(opt.newton(f, qi, fprime=fp))
+            # newton doesn't seem to work very well here @ large eta
+            # roots.append(opt.newton(f, qi, fprime=fp))
+            dq = np.pi / 2
+            roots.append(opt.bisect(f, qi - dq, qi + dq))
         return np.cos(np.array(roots))
 
 def plot_cs(I=np.radians(5)):
@@ -55,10 +58,10 @@ def plot_cs(I=np.radians(5)):
                 cs_lst.append(root_val)
 
     etas_four = etas[np.where(etas < etac)[0]]
-    plt.semilogx(etas_four, cs_vals[0], 'g', label='1')
-    plt.semilogx(etas, cs_vals[1], 'k', label='2')
-    plt.semilogx(etas, cs_vals[2], 'b', label='3')
-    plt.semilogx(etas_four, cs_vals[3], 'r', label='4')
+    plt.semilogx(etas_four, cs_vals[0], 'r', label='1')
+    plt.semilogx(etas, cs_vals[1], 'm', label='2')
+    plt.semilogx(etas, cs_vals[2], 'g', label='3')
+    plt.semilogx(etas_four, cs_vals[3], 'c', label='4')
     plt.xlabel(r'$\eta$')
     plt.ylabel(r'$\cos\theta$')
     plt.legend()
@@ -67,4 +70,4 @@ def plot_cs(I=np.radians(5)):
     plt.savefig('2_cs_locs.png', dpi=400)
 
 if __name__ == '__main__':
-    plot_cs(np.radians(20))
+    plot_cs(np.radians(5))

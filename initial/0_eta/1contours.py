@@ -12,47 +12,93 @@ def plot_H_for_eta(f, ax, eta, I):
     Hamiltonian is H = 1/2 cos^2(theta) + eta * sin(phi)
     canonical variables are (phi, x = cos(theta))
     '''
+    eta_c = get_etac(I)
     x_grid, phi_grid = get_grids()
     H_grid = H(I, eta, x_grid, phi_grid)
     cset = ax.contour(phi_grid, x_grid, H_grid,
-                      cmap='RdBu_r', linewidths=0.8, levels=20)
+                      cmap='RdBu_r', linewidths=0.8, levels=5)
 
     thetas, phis = roots(I, eta)
     colors = ['r', 'm', 'g', 'c'] if len(thetas) == 4 else ['m', 'g']
     for color, theta, phi in zip(colors, thetas, phis):
         plot_point(ax, theta, '%so' % color, markersize=6)
 
+    shade = '0.8' # shade interior of separatrix
+    font_height = 0.05 # ~font height so y loc is center of text, not base
     if len(thetas) == 4:
+        H4 = H(I, eta, np.cos(thetas[3]), phis[3])
         ax.contour(phi_grid,
                    x_grid,
                    H_grid,
-                   levels=[H(I, eta, np.cos(thetas[3]), phis[3])],
+                   levels=[H4],
                    colors=['k'],
-                   linewidths=1.6)
+                   linewidths=1.2,
+                   linestyles='solid')
+        ax.contourf(phi_grid,
+                    x_grid,
+                    H_grid,
+                    levels=[H4, np.max(H_grid)],
+                    colors=[shade])
 
-    ax.set_title(r'$(I, \eta)=(%d^\circ, %.3f)$'
-                 % (np.degrees(I), eta), fontsize=8)
+        if eta < 0.8 * eta_c:
+            # if Zone I is sufficiently large, place it inside zone
+            ax.text(0.3, np.cos(thetas[3]) + 0.4, 'I')
+        else:
+            # else draw an arrow
+            y = (4 * np.cos(thetas[0]) + np.cos(thetas[3])) / 5
+            x = 0.3
+            dx = np.pi / 3
+            ax.arrow(x + dx, y, -dx, 0,
+                     width=0.006, head_width=0.056, head_length=0.08)
+            ax.text(x + dx + 0.1, y - font_height, 'I')
+        ax.text(np.pi / 4, np.cos(thetas[3]) - font_height, 'II')
+        ax.text(0.3, np.cos(thetas[3]) - 0.6, 'III')
+    else:
+        # estimate the location of zone II
+        # fractional area (/4pi) enclosed by separatrix @ appearance
+        area_frac = 1 - (1 + np.tan(np.radians(I))**(2/3))**(-3/2)
+        # estimate location of separatrix curve via 2pi(1 - cos(dq)) = A_crit
+        dq = np.arccos(1 - 2 * area_frac)
+        H_sep = H(I, eta, np.cos(thetas[0] + dq), 0)
+        ax.contour(phi_grid,
+                   x_grid,
+                   H_grid,
+                   levels=[H_sep],
+                   colors=['k'],
+                   linewidths=0.5,
+                   linestyles='dashed')
+        ax.contourf(phi_grid,
+                    x_grid,
+                    H_grid,
+                    levels=[H_sep, np.max(H_grid)],
+                    colors=[shade])
+        ax.text(np.pi / 4, np.cos(thetas[0]) - font_height, 'II')
+        ax.text(0.3, np.cos(thetas[1]) + 0.6, 'III')
+
+    ax.set_title(r'$\eta = %.3f$' % eta, fontsize=8)
 
     cb = f.colorbar(cset, ax=ax, fraction=0.07, pad=0.05)
     cb.set_ticks([])
     cb.set_ticklabels([])
 
+    plt.suptitle(r'$(I, \eta_c) = (%d^\circ, %.3f)$' %
+                 (np.degrees(I), eta_c))
+
 if __name__ == '__main__':
-    f, axs = get_four_subplots()
     I = np.radians(20)
-    # Figures 3b-3e of Kassandra's paper
-    for ax, eta in zip(axs, [0.1, 0.5, 0.561, 2]):
-        plot_H_for_eta(f, ax, eta, I)
+    # f, axs = get_four_subplots()
+    # # Figures 3b-3e of Kassandra's paper
+    # for ax, eta in zip(axs, [0.1, 0.5, 0.561, 2]):
+    #     plot_H_for_eta(f, ax, eta, I)
 
-    plt.suptitle(r'$\eta_c = %.3f$' % get_etac(I))
-    plt.savefig('1contours.png', dpi=400)
-    plt.clf()
+    # plt.suptitle(r'$\eta_c = %.3f$' % get_etac(I))
+    # plt.savefig('1contours.png', dpi=400)
+    # plt.clf()
 
     f, axs = get_four_subplots()
-    for ax, eta in zip(axs, [2, 0.561, 0.3, 0.1]):
+    for ax, eta in zip(axs, [2, 0.53, 0.3, 0.1]):
         plot_H_for_eta(f, ax, eta, I)
 
-    plt.suptitle(r'$\eta_c = %.3f$' % get_etac(I))
     plt.savefig('1contours_flip.png', dpi=400)
     plt.clf()
 
