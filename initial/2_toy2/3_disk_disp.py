@@ -168,10 +168,12 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
         ret = solve_ic_base(I, eps, y0, tf, events=events)
         t_end_lib, t_end_circ, t_areas, t_areas_f, areas = get_areas_2(ret)
         with open(PKL_FN, 'wb') as f:
-            pickle.dump((ret, t_end_lib, t_end_circ, t_areas, t_areas_f, areas), f)
+            pickle.dump((ret, t_end_lib, t_end_circ,
+                         t_areas, t_areas_f, areas), f)
     else:
         with open(PKL_FN, 'rb') as f:
-            ret, t_end_lib, t_end_circ, t_areas, t_areas_f, areas = pickle.load(f)
+            ret, t_end_lib, t_end_circ,\
+                t_areas, t_areas_f, areas = pickle.load(f)
     # get initial area
     eta_areas = ret.sol(t_areas)[3]
     a_init_int = areas[0]
@@ -328,19 +330,29 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
         fig.delaxes(axs[-1])
         del axs[-1]
     fig.subplots_adjust(wspace=0, hspace=0)
-    # let the first iteration set the ylims
+    # plot data to set the ylims
     for plot_idx, ax in zip(plot_idxs, axs):
         plt_step = 0.05
         t1 = np.arange(t_areas[plot_idx], t_areas_f[plot_idx], plt_step)
         q1, phi1 = to_ang(*ret.sol(t1)[ :3])
         ms = 1.0 if len(t1) < 50 else 0.2
         ax.plot(phi1, np.cos(q1), ls='', marker='o', c='y', markersize=ms)
-        # HACK plot q2 just once
+
+        # plot CS2 as well
         curr_roots = roots(I, eta_areas[plot_idx])
         q2 = curr_roots[0] if len(curr_roots) == 2 else curr_roots[1]
         ax.plot(np.pi, np.cos(q2), 'mo', ms=2)
 
-    # now use the ylims to compute the minimal separatrix pts necessary
+        # overplot an arrow
+        arrow_idx = len(t1) // 2
+        width_base = ax.get_ylim()[1] - ax.get_ylim()[0]
+        ax.arrow(phi1[arrow_idx], np.cos(q1[arrow_idx]),
+                 phi1[arrow_idx + 1] - phi1[arrow_idx],
+                 np.cos(q1[arrow_idx + 1]) - np.cos(q1[arrow_idx]),
+                 color='y', width=0,
+                 head_width=0.056 * width_base, head_length=0.12)
+
+    # now use the ylims to compute only the viewable separatrix
     for plot_idx, ax in zip(plot_idxs, axs):
         ylims = ax.get_ylim()
         # overplot separatrix + CS2
@@ -754,14 +766,17 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
         with open(PKL_FN, 'rb') as f:
             qdeg_finals = pickle.load(f)
     for qdeg_per in qdeg_finals:
-        plt.semilogx(eps_vals, qdeg_per, 'ko', ms=0.5)
+        plt.semilogx(eps_vals, qdeg_per, 'bo', ms=0.5)
 
     s_final = np.sqrt(2 * np.pi / eps_vals) * np.tan(I)
     q_final = np.maximum(np.degrees(s_final * np.cos(I)), np.degrees(q2))
-    plt.semilogx(eps_vals, q_final, 'r', label='Analytical')
-    plt.axvline(np.sin(I), c='b')
+    plt.semilogx(eps_vals, q_final, 'r:', label='Analytical')
+    plt.axvline(np.sin(I), c='k')
+    ylim = [100, 0]
+    plt.fill_betweenx(ylim,
+                      np.sin(I), eps_min, color='0.5', alpha=0.5)
     plt.xlim([eps_max, eps_min])
-    plt.ylim([100, 0])
+    plt.ylim(ylim)
     plt.xlabel(r'$\epsilon$')
     plt.ylabel(r'$\theta_{ f}$')
     plt.title(r'$I = %d^\circ$' % np.degrees(I))
@@ -839,7 +854,7 @@ if __name__ == '__main__':
     # ret = solve_ic_base(I, -5, y0, np.inf, events=[term_event])
     # plot_traj_colors(I, ret, '3testo_inf')
 
-    sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
+    # sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
     # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
     #              two_panel=False)
     # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
@@ -858,8 +873,8 @@ if __name__ == '__main__':
     # sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
     #              adiabatic=False, dqmin=0.01)
 
-    # eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
-    # eps_scan(np.radians(20), eps_max=10, eps_min=5e-2, n_pts=301, filename='3scan_20')
+    eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
+    eps_scan(np.radians(20), eps_max=10, eps_min=5e-2, n_pts=301, filename='3scan_20')
     # I_scan(5, filename='3Iscan_test', n_pts=31, n_pts_ring=2)
     # I_scan(1, filename='3Iscan_test_eps1', n_pts=31, n_pts_ring=2)
     # I_scan(20, filename='3Iscan_test_eps20', n_pts=31, n_pts_ring=2)

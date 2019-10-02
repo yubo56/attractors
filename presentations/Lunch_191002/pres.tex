@@ -163,18 +163,28 @@ Dissipating Protoplanetary Disk}
 
     \begin{columns}
         \begin{column}{0.5\textwidth}
-            \begin{figure}
-                \centering
-                \includegraphics[width=\textwidth]{../GM_190913/1millholland_disk.png}
-                \caption{Millholland \& Batygin, 2019. $\eta \equiv \frac{g\cos
-                I}{\alpha}$}
-            \end{figure}
             \begin{equation*}
                 \rd{\hat{s}}{t}
                     = \p{\hat{s} \cdot \hat{l}}
                         \p{\hat{s} \times \hat{l}}
                     - \eta\p{\hat{s} \times \hat{l}_d}
             \end{equation*}
+            \begin{figure}
+                \centering
+                \begin{subfigure}{0.3\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{cs_fig0.png}
+                \end{subfigure}
+                \begin{subfigure}{0.3\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{cs_fig1.png}
+                \end{subfigure}
+                \begin{subfigure}{0.3\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{cs_fig2.png}
+                \end{subfigure}
+                \caption{Henrard \& Murigand 1987.}
+            \end{figure}
         \end{column}
         \begin{column}{0.5\textwidth}
             \begin{figure}
@@ -251,8 +261,12 @@ Dissipating Protoplanetary Disk}
             \end{figure}
         \end{column}
     \end{columns}
-    Thus, $\theta_{sd, i} \equiv \hat{s}(t = 0) \cdot \hat{l}_d \approx 0
-    \Rightarrow \theta_f \approx 90^\circ$.
+    \begin{itemize}
+        \item $\theta_{sd, i} \equiv \hat{s} \cdot \hat{l}_d \approx 0
+              \Rightarrow \theta_f \approx 90^\circ$.
+
+        \item $A \equiv \p*{1 - \oint \cos\theta} \;\mathrm{d}\phi$.
+    \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -279,6 +293,9 @@ Dissipating Protoplanetary Disk}
                         \item $III \to III$
                         \item $\p*{III \to II \to I}$
                     \end{itemize}
+
+                \item $\Pr_{i \Rightarrow j} =
+                    -\left. \pd{A_j}{t} \right/ \pd{A_i}{t}$.
             \end{itemize}
         \end{column}
     \end{columns}
@@ -347,13 +364,11 @@ Dissipating Protoplanetary Disk}
 \begin{frame}
     \frametitle{Adiabatic Dynamics}
     \framesubtitle{Distribution}
-    {\small
     \begin{itemize}
-        \item Zone crossing is \emph{probabilistic}, solved (Henrard 1982).
-        \item $\cos \theta_f \approx \p*{\frac{\pi \theta_{sd,i}^2}{16}}^2 \cot
-            I \pm \frac{\theta_{sd,i}^2}{4}$
+        \item $A$ conservation + probabilities: $\cos \theta_f \approx
+            \p*{\frac{\pi \theta_{sd,i}^2}{16}}^2 \cot I \pm
+            \frac{\theta_{sd,i}^2}{4}$.
     \end{itemize}
-    }
     \begin{figure}[t]
         \centering
         \includegraphics[width=0.65\textwidth]{../../initial/2_toy2/3_ensemble_05_35.png}
@@ -448,22 +463,29 @@ Dissipating Protoplanetary Disk}
 \end{frame}
 
 \begin{frame}
-    \frametitle{Future Work}
+    \frametitle{Summary \& Future Work}
 
     \begin{itemize}
-        \item Stability including dissipative perturbations (tides).
+        \item Summary:
             \begin{itemize}
-                \item At equilibrium: obliquity tides.
-                \item During resonance advection.
+                \item Predictions of \emph{final obliquity after secular
+                    spin-orbit resonance capture} $\theta_f\p*{\theta_{sd, i}}$
+                    in the adiabatic and non-adiabatic limits.
             \end{itemize}
-
-        \item Dynamics including dissipative perturbations.
+        \item Future Work:
             \begin{itemize}
-                \item Weak tidal friction $\rd{\eta}{t}$, \textbf{new}
-                    technique!
+                \item Stability including dissipative perturbations (tides).
+                    \begin{itemize}
+                        \item At equilibrium: obliquity tides.
+                        \item During resonance advection.
+                    \end{itemize}
+
+                \item Dynamics including dissipative perturbations.
+                    \begin{itemize}
+                        \item Weak tidal friction $\rd{\eta}{t}$, new technique!
+                    \end{itemize}
             \end{itemize}
     \end{itemize}
 \end{frame}
 
 \end{document}
-

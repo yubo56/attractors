@@ -61,11 +61,11 @@ def plot_areas():
     A1ys = 2 * np.pi * (1 - eta * np.cos(I)) - A2ys / 2
     A3ys = 2 * np.pi * (1 + eta * np.cos(I)) - A2ys / 2
     plt.plot(eta, A1ys / (4 * np.pi), 'g:')
-    plt.plot(eta, A1w / (4 * np.pi), 'g', label='A1')
+    plt.plot(eta, A1w / (4 * np.pi), 'g', label=r'$A_{I}$')
     plt.plot(eta, A2ys / (4 * np.pi), 'k:')
-    plt.plot(eta, A2w / (4 * np.pi), 'k', label='A2')
+    plt.plot(eta, A2w / (4 * np.pi), 'k', label=r'$A_{II}$')
     plt.plot(eta, A3ys / (4 * np.pi), 'r:')
-    plt.plot(eta, A3w / (4 * np.pi), 'r', label='A3')
+    plt.plot(eta, A3w / (4 * np.pi), 'r', label=r'$A_{III}$')
 
     # dotted line continuation to show "analytic" continuation
     eta_cont = np.linspace(eta_c, 1.2 * eta_c, 21)
