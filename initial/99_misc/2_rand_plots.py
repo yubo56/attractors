@@ -26,7 +26,7 @@ def roots(I, eta):
         inits = [0, np.pi / 2, -np.pi, -np.pi / 2]
         for qi in inits:
             roots.append(opt.newton(f, qi, fprime=fp))
-        return np.cos(np.array(roots))
+        return np.array(roots)
 
     else:
         roots = []
@@ -36,7 +36,7 @@ def roots(I, eta):
             # roots.append(opt.newton(f, qi, fprime=fp))
             dq = np.pi / 2
             roots.append(opt.bisect(f, qi - dq, qi + dq))
-        return np.cos(np.array(roots))
+        return np.array(roots)
 
 def plot_cs(I=np.radians(5)):
     etac = get_etac(I)
@@ -58,15 +58,16 @@ def plot_cs(I=np.radians(5)):
                 cs_lst.append(root_val)
 
     etas_four = etas[np.where(etas < etac)[0]]
-    plt.semilogx(etas_four, cs_vals[0], 'r', label='1')
-    plt.semilogx(etas, cs_vals[1], 'm', label='2')
-    plt.semilogx(etas, cs_vals[2], 'g', label='3')
-    plt.semilogx(etas_four, cs_vals[3], 'c', label='4')
+    plt.semilogx(etas_four, np.degrees(cs_vals[0]), 'r', label='1')
+    plt.semilogx(etas, np.degrees(cs_vals[1]), 'm', label='2')
+    plt.semilogx(etas, np.degrees(cs_vals[2]), 'g', label='3')
+    plt.semilogx(etas_four, np.degrees(cs_vals[3]), 'c', label='4')
     plt.xlabel(r'$\eta$')
-    plt.ylabel(r'$\cos\theta$')
+    plt.ylabel(r'$\theta$')
     plt.legend()
-    plt.xlim([max_eta, min_eta])
-    plt.title(r'$I = %d^\circ$' % np.degrees(I))
+    plt.xlim([min_eta, max_eta])
+    plt.axvline(etac, c='k', lw='0.8', ls='dashed')
+    plt.title(r'$I = %d^\circ, \eta_c = %.3f$' % (np.degrees(I), etac))
     plt.savefig('2_cs_locs.png', dpi=400)
 
 if __name__ == '__main__':

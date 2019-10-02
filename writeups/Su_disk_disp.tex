@@ -66,17 +66,25 @@ planet--star interactions % chktex 8
 Denote $\vec{S}$ spin of planet, $\vec{l}$ angular momentum of planet, and
 $\vec{l}_d$ angular momentum of the surrounding disc. We approximate $S \ll L
 \ll L_d$, so $\vec{l}_d$ is approximately constant. Much of this treatment
-borrows from \citep{anderson2018teeter}. We consider equations in the corotating
-frame
+borrows from \citep{anderson2018teeter}. We consider precession equations
 \begin{align}
     \rd{\hat{s}}{t} &= \omega_{sl} \p{\hat{s} \cdot \hat{l}_d}
-        \p{\hat{s} \times \hat{l}_d},\\
+        \p{\hat{s} \times \hat{l}_d},\label{eq:dsdt}\\
     \rd{\hat{l}}{t} &= \omega_{ld}\p{\hat{l} \cdot \hat{l}_d}
-        \p{\hat{l} \times \hat{l}_d},\\
-    \omega_{sl} &= \frac{3k_q}{2k}\p{\frac{R_1}{a_1}}^3S,\\
-    \omega_{ld} &= \dots.
+        \p{\hat{l} \times \hat{l}_d},\label{eq:dldt}\\
+    \omega_{sl} &\equiv \frac{3k_{qp}}{2k_p} \frac{M_\star}{m_p}
+        \p{\frac{R_p}{a_p}}^3 \Omega_p,\label{eq:wsl}\\
+    \omega_{ld} &\equiv \frac{3M_d}{4M_\star}\p{\frac{a_p}{r_d}}^3 n
+        .\label{eq:wld}
 \end{align}
-(TODO get $\omega_{ld}$ from Millhollard \& Batygin).
+In \autoref{eq:wsl}, $k_{qp}$ and $k_p$ are related to the planet's quadrupole
+moment and moment of inertia respectively \citep[see][]{lai2018}, $M_\star$ is
+the mass of the host star, and $M_p, R_p, a_p, \Omega_p$ are the mass, radius,
+semi-major axis and angular spin frequency of the planet respectively.
+\autoref{eq:wld} is written for a disk of mass $M_d$ located at characteristic
+distance $r_d$ from the host star \citep[see][for a power-law disk
+profile]{millholland_disk}, $n \equiv \sqrt{GM_\star/a_p^3}$ is the planet's
+orbital mean motion.
 
 We go to the corotating frame with $\vec{l}$ such that it is also fixed in time.
 The evolution of $\hat{s}$ in this corotating frame is governed by:
@@ -86,7 +94,7 @@ The evolution of $\hat{s}$ in this corotating frame is governed by:
         - \abs{g}\p{\hat{s} \times \hat{l}_d}.
         \label{eq:dsdt_base}
 \end{equation}
-$\alpha = \omega_{sd} > 0, g \equiv -\omega_{ld}\cos I < 0$ follow traditional
+$\alpha = \omega_{sl} > 0, g \equiv -\omega_{ld}\cos I < 0$ follow traditional
 sign conventions.
 
 We divide through by $\alpha$ and define parameter $\eta$ and nondimensionalized
