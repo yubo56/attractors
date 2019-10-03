@@ -78,10 +78,6 @@ def plot_H_for_eta(f, ax, eta, I):
 
     ax.set_title(r'$\eta = %.2f$' % eta, fontsize=8)
 
-    cb = f.colorbar(cset, ax=ax, fraction=0.07, pad=0.05)
-    cb.set_ticks([])
-    cb.set_ticklabels([])
-
     plt.suptitle(r'$I = %d^\circ, \eta_c = %.3f$' %
                  (np.degrees(I), eta_c))
 

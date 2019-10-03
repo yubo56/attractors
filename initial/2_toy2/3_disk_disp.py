@@ -8,6 +8,7 @@ import scipy.optimize as opt
 import numpy as np
 from multiprocessing import Pool
 from matplotlib import cm
+from scipy.interpolate import interp1d
 
 import matplotlib
 import pickle
@@ -333,28 +334,67 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     # plot data to set the ylims
     for plot_idx, ax in zip(plot_idxs, axs):
         plt_step = 0.05
-        t1 = np.arange(t_areas[plot_idx], t_areas_f[plot_idx], plt_step)
-        q1, phi1 = to_ang(*ret.sol(t1)[ :3])
-        ms = 1.0 if len(t1) < 50 else 0.2
-        ax.plot(phi1, np.cos(q1), ls='', marker='o', c='y', markersize=ms)
+        t_vals = np.arange(t_areas[plot_idx], t_areas_f[plot_idx], plt_step)
+        q_vals, phi_vals = to_ang(*ret.sol(t_vals)[ :3])
+        ms = 1.0 if len(t_vals) < 50 else 0.2
+        ax.plot(phi_vals, np.cos(q_vals), ls='', marker='o', c='y', markersize=ms)
 
         # plot CS2 as well
         curr_roots = roots(I, eta_areas[plot_idx])
         q2 = curr_roots[0] if len(curr_roots) == 2 else curr_roots[1]
         ax.plot(np.pi, np.cos(q2), 'mo', ms=2)
 
-        # overplot an arrow
-        arrow_idx = len(t1) // 2
+        # overplot an arrow to show direction
+        arrow_idx = len(t_vals) // 2
         width_base = ax.get_ylim()[1] - ax.get_ylim()[0]
-        ax.arrow(phi1[arrow_idx], np.cos(q1[arrow_idx]),
-                 phi1[arrow_idx + 1] - phi1[arrow_idx],
-                 np.cos(q1[arrow_idx + 1]) - np.cos(q1[arrow_idx]),
+        ax.arrow(phi_vals[arrow_idx], np.cos(q_vals[arrow_idx]),
+                 phi_vals[arrow_idx + 1] - phi_vals[arrow_idx],
+                 np.cos(q_vals[arrow_idx + 1]) - np.cos(q_vals[arrow_idx]),
                  color='y', width=0,
                  head_width=0.056 * width_base, head_length=0.12)
+
+        # shade the enclosed phase space area
+        ylims = ax.get_ylim()
+        _phi_uw = np.unwrap(phi_vals)
+        # make sure its mean is in [0, 2 * np.pi]
+        phi_uw = _phi_uw - np.median(_phi_uw)\
+            + ((np.median(_phi_uw) + 2 * np.pi) % (2 * np.pi))
+        if abs(phi_uw[-1] - phi_uw[0]) > np.pi:
+            # circulating, shade between mu and +- 1 depending on sign of dphi
+            # if phi is increasing, then shade to +1
+            fill_bound = (
+                ylims[1] if np.sign(np.mean(np.gradient(phi_uw)))
+                    else ylims[0])
+            ax.fill_between(phi_uw, fill_bound, np.cos(q_vals),
+                            color='0.75', alpha=0.5)
+        else:
+            pass
+            # # librating; starts at top of circle, goes to bottom. easier to
+            # # handle if starts on LHS, so shift by 1/4
+            # shift_idx = np.argmin(phi_uw)
+            # phi_rolled = np.roll(phi_uw, -shift_idx) # brings argmin to idx 0
+            # idx_turnaround = np.argmax(phi_rolled)
+            # # interpolate over max/min, but drop endpoints when evaluating to
+            # # avoid out of range errors
+
+            # # contains neither max nor min value
+            # phi_half2 = phi_rolled[idx_turnaround + 1: ]
+            # phi_half1 = phi_rolled[ :idx_turnaround + 1]
+            # mu_half2 = np.cos(q_vals[idx_turnaround + 1: ])
+            # # interpolate containing both max and min val
+            # mu_half1_interp = interp1d(phi_half1,
+            #                            np.cos(q_vals[ :idx_turnaround + 1]))
+            # mu_half1 = mu_half1_interp(phi_half2)
+            # print(phi_half2)
+            # print(mu_half1)
+            # print(mu_half2)
+            # ax.fill_between(phi_half2, mu_half1, mu_half2,
+            #                 color='0.5', alpha=0.5)
 
     # now use the ylims to compute only the viewable separatrix
     for plot_idx, ax in zip(plot_idxs, axs):
         ylims = ax.get_ylim()
+        ax.set_ylim(ylims)
         # overplot separatrix + CS2
         eta_plots = [eta_areas[plot_idx], eta_areas[plot_idx + 1]]
         for eta_plot, style in zip(eta_plots, ['solid', 'dashed']):
@@ -844,7 +884,7 @@ def plot_singles(I):
 
 if __name__ == '__main__':
     I = np.radians(5)
-    # plot_singles(I)
+    plot_singles(I)
 
     # testing high epsilon
     # eta_c = get_etac(I)
@@ -873,8 +913,8 @@ if __name__ == '__main__':
     # sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
     #              adiabatic=False, dqmin=0.01)
 
-    eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
-    eps_scan(np.radians(20), eps_max=10, eps_min=5e-2, n_pts=301, filename='3scan_20')
+    # eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
+    # eps_scan(np.radians(20), eps_max=10, eps_min=5e-2, n_pts=301, filename='3scan_20')
     # I_scan(5, filename='3Iscan_test', n_pts=31, n_pts_ring=2)
     # I_scan(1, filename='3Iscan_test_eps1', n_pts=31, n_pts_ring=2)
     # I_scan(20, filename='3Iscan_test_eps20', n_pts=31, n_pts_ring=2)

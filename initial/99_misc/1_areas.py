@@ -79,6 +79,7 @@ def plot_areas():
                [r'$0$', r'$0.3$', r'$0.6$', r'$\eta_c$', r'$0.9$'])
     old_ylims = plt.ylim()
     plt.ylim([0, old_ylims[1]])
+    plt.xlim([0, 1.2 * eta_c])
     plt.title(r'$I = %d^\circ, \eta_c = %.3f$' % (np.degrees(I), eta_c))
     plt.savefig('1_areas.png', dpi=400)
     plt.clf()

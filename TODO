@@ -23,17 +23,6 @@ Move S 3.3: Quasi-adiabatic/effect of nonadiabiticity (show more than just 12)
     - delete probs for the rest of these
 S2: need epsilon + values
 
-all figs:
-- solid black line for sep
-- explain choices of epsilon to handle large q_sf, sep crossing factor
-- use integral down to -1 so that 21 transition is A2 -> A2 + A3
-    - take absolute values for simplicity? can't probably, since can't
-      disambiguate between two signs of enclosing north pole
-
-- Fig 1: label CSs
-    - can fewer contours
-    - probably no need for colorbar, just state in text (too small anyways + no
-      numbers), try to make blue = < 0, red = > 0?
 - Fig 1.5: theta(eta) + eta_c, make sure consistent colors
 - Fig 2: change everything else to Roman numerals, probably show for multiple
   eta
@@ -51,4 +40,3 @@ all figs:
 ****- Fig 4: why not adiabatic at beginning?
 - Fig 8: just theta, not flipped theta
     - delete naive, or at least rename
-- Fig 12: delete prob plot
