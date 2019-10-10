@@ -200,12 +200,16 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     q, phi = to_ang(*ret.y[0:3])
 
     # calculate separatrix min/max mu @ phi = pi
-    idx4s = np.where(etas < get_etac(I))[0]
-    eta4s = etas[idx4s]
-    q4s, q2s = np.zeros_like(eta4s), np.zeros_like(eta4s)
+    eta4s = etas[np.where(etas < get_etac(I))[0]]
+    eta2s = etas[np.where(etas > get_etac(I))[0]]
+    q4s = np.zeros_like(eta4s)
+    q2s = np.zeros_like(etas)
+    for i, eta in enumerate(eta2s):
+        q2, _ = roots(I, eta)
+        q2s[i] = q2
     for i, eta in enumerate(eta4s):
         _, q2, _, q4 = roots(I, eta)
-        q2s[i] = q2
+        q2s[i + len(eta2s)] = q2
         q4s[i] = q4
     mu4s = np.cos(q4s)
     H4s = H(I, eta4s, q4s, 0)
@@ -242,10 +246,10 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
 
     ax1.semilogx(etas, mu_dat, c='y', label='Sim')
     max_valid_idxs = np.where(mu_max > 0)[0]
-    ax1.semilogx(etas[idx4s][max_valid_idxs], mu_max[max_valid_idxs],
+    ax1.semilogx(eta4s[max_valid_idxs], mu_max[max_valid_idxs],
              'k', label='Sep')
-    ax1.semilogx(etas[idx4s], mu_min, 'k')
-    ax1.semilogx(etas[idx4s], np.cos(q2s), 'm', label='CS2')
+    ax1.semilogx(eta4s, mu_min, 'k')
+    ax1.semilogx(etas, np.cos(q2s), 'm', label='CS2')
     ax1.set_xlabel(r'$t$')
     ax1.set_ylabel(r'$\cos\theta$')
 

@@ -19,12 +19,9 @@ Pitch as both solving disk problem over larger ICs but also has wide range of
 applications
 Maximum-period orbit to update epsilon criterion?
 Explain coordinate choice somewhere
-Move S 3.3: Quasi-adiabatic/effect of nonadiabiticity (show more than just 12)
-    - delete probs for the rest of these
 S2: need epsilon + values
 
 - Fig 4:
-    - describe IC, but also initial theta
-    - subplots need more vertical space
+    - Redo 3-1 transition w/ different dq, not different eps
 - mention canonical mu/phi somewhere
 - get some numbers for eta/eps

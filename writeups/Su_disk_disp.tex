@@ -443,23 +443,24 @@ are:
         \centering
         \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo21_subplots.png}
     \end{subfigure}
-    \caption{Fiducial simulation following the $A_{II} \to A_{I}$ transition.
-    Top plot upper panel: plot of $\cos \theta(t)$ (gold) in an example
-    simulation. Overlaid are the locations of Cassini State 2 (magenta), and
-    upper and lower bounds on the separatrix (black). Note that the trajectory
-    successfully tracks CS2 to a misalignment angle $\theta \approx 90^\circ$.
-    Vertical green lines denote times portrayed in bottom plot. Top plot lower
-    panel: plot of the enclosed separatrix area obtained by integrating the
-    simulated trajectory (blue dots) and adiabatic theory (red line). Lower
-    plot: snapshots in the $\p{\cos \theta, \phi}$ space of the simulation
-    trajectories for the times demarcated in green above, corresponding to the
-    start of the simulation, the appearance of the separatrix, two panels
-    depicting the separatrix crossing process, and a final snapshot at $\eta =
-    10^{-3.5}$. Gold dots denote a full circulation or libration cycle at the
-    selected time, while the separatrix at the start/end of the portrayed cycle
-    are shown in solid/dashed black lines respectively. Also labeled is CS2
-    (magenta). Finally, the enclosed phase space area is shaded in grey ($A >
-    0$) and red ($A < 0$).}\label{fig:ad_21}
+    \caption{Fiducial simulation following the $A_{II} \to A_{I}$ transition. An
+    initial $\theta_{sd, i} = 0.3\;\mathrm{rad} \approx 17.2^\circ$ was used, as
+    well as $\epsilon = 3 \times 10^{-4}$. Top plot upper panel: plot of $\cos
+    \theta(t)$ (gold) in an example simulation. Overlaid are the locations of
+    Cassini State 2 (magenta), and upper and lower bounds on the separatrix
+    (black). Note that the trajectory successfully tracks CS2 to a misalignment
+    angle $\theta \approx 90^\circ$. Vertical green lines denote times portrayed
+    in bottom plot. Top plot lower panel: plot of the enclosed separatrix area
+    obtained by integrating the simulated trajectory (blue dots) and adiabatic
+    theory (red line). Lower plot: snapshots in the $\p{\cos \theta, \phi}$
+    space of the simulation trajectories for the times demarcated in green
+    above, corresponding to the start of the simulation, the appearance of the
+    separatrix, two panels depicting the separatrix crossing process, and a
+    final snapshot at $\eta = 10^{-3.5}$. Gold dots denote a full circulation or
+    libration cycle at the selected time, while the separatrix at the start/end
+    of the portrayed cycle are shown in solid/dashed black lines respectively.
+    Also labeled is CS2 (magenta). Finally, the enclosed phase space area is
+    shaded in grey ($A > 0$) and red ($A < 0$).}\label{fig:ad_21}
 \end{figure}
 \begin{figure}
     \centering
@@ -472,7 +473,8 @@ are:
         \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo23_subplots.png}
     \end{subfigure}
     \caption{Same as \autoref{fig:ad_21} but for the $A_2 \to A_3$ track.
-    }\label{fig:ad_23}
+    $\theta_{sd, i} = 0.3\;\mathrm{rad} \approx 17.2^\circ$, and $\epsilon =
+    3.01 \times 10^{-4}$.}\label{fig:ad_23}
 \end{figure}
 \begin{figure}
     \centering
@@ -485,7 +487,8 @@ are:
         \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo31_subplots.png}
     \end{subfigure}
     \caption{Same as \autoref{fig:ad_21} but for the $A_{III} \to A_I$
-    track.}\label{fig:ad_31}
+    track. $\theta_{sd, i} = 89.1^\circ$, and $\epsilon = 3.01 \times
+    10^{-4}$.}\label{fig:ad_31}
 \end{figure}
 \begin{figure}
     \centering
@@ -498,7 +501,8 @@ are:
         \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo321_subplots.png}
     \end{subfigure}
     \caption{Same as \autoref{fig:ad_21} but for the $A_{III} \to A_{II} \to A_I$
-    track. Two separatrix crossings are shown.}\label{fig:ad_321}
+    track. $\theta_{sd, i} = 60^\circ$, and $\epsilon = 3.14 \times 10^{-4}$.
+    Two separatrix crossings are shown.}\label{fig:ad_321}
 \end{figure}
 
 \subsection{Dynamical Outcomes}\label{ss:ad_ensemble}
@@ -507,8 +511,8 @@ Next, we will consider the evolution of a system with arbitrary $\theta_{sd, i}$
 starting in the $\eta \gg 1$ regime. By evolving such systems until $\eta \ll
 1$, we can measure the final $\theta_f$ values and make comparisons with those
 obtained via the dynamical tracks above. Observe that when $\eta \gg 1$,
-trajectories librate with approximately constant $\theta_{sd}$, meaning they
-enclose phase space area
+trajectories librate about $\hat{l}_d$, or equivalently CS2, with approximately
+constant $\theta_{sd}$, meaning they enclose phase space area
 \begin{equation}
     A_i = 2\pi\p{1 - \cos \theta_{sd, i}}.\label{eq:ai_qsd}
 \end{equation}
@@ -517,11 +521,13 @@ accessible and with what probability following the results of
 \autoref{ss:zone_transitions}.
 
 We run simulations over a ring of initial conditions at each $\theta_{sd, i}$
-and measure the final $\theta_{f}$ values. We use \autoref{eq:ai_qsd} to predict
-the final obliquities $\theta_f$ according to each of the dynamical tracks. The
-agreement of these predictions for $I = 5^\circ, 10^\circ, 20^\circ$ can be seen
-in \autoref{fig:ad_ensemble}, \autoref{fig:3_ensemble_10_35}, and
-\autoref{fig:3_ensemble_20_35}.
+and measure the final $\theta_{f}$ values. Since we start with finite $\eta$, we
+use the angular distance to CS2 as a proxy for $\theta_{sd, i}$, as it is the
+correct quantity to use to make \autoref{eq:ai_qsd} hold exactly. We use
+\autoref{eq:ai_qsd} to predict the final obliquities $\theta_f$ according to
+each of the dynamical tracks. The agreement of these predictions for $I =
+5^\circ, 10^\circ, 20^\circ$ can be seen in \autoref{fig:ad_ensemble},
+\autoref{fig:3_ensemble_10_35}, and \autoref{fig:3_ensemble_20_35}.
 \begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_35.png}
