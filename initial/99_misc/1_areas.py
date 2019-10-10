@@ -7,7 +7,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('font', family='serif', size=12)
+plt.rc('font', family='serif', size=16)
 
 def plot_A_crit():
     '''
@@ -49,9 +49,8 @@ def get_areas_ward(eta, I):
     A3 = 2 * np.pi * (1 + z0) - A2 / 2
     return A1, A2, A3
 
-def plot_areas():
+def plot_areas(I=np.radians(5), filename='1_areas'):
     ''' plot exact area + my old approx '''
-    I = np.radians(5)
     eta_c = (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
     scale_pow = 3
     eta = np.linspace(0, eta_c**(1/scale_pow), 101)**scale_pow
@@ -81,9 +80,10 @@ def plot_areas():
     plt.ylim([0, old_ylims[1]])
     plt.xlim([0, 1.2 * eta_c])
     plt.title(r'$I = %d^\circ, \eta_c = %.3f$' % (np.degrees(I), eta_c))
-    plt.savefig('1_areas.png', dpi=400)
+    plt.savefig(filename, dpi=400)
     plt.clf()
 
 if __name__ == '__main__':
-    plot_A_crit()
-    plot_areas()
+    # plot_A_crit()
+    # plot_areas()
+    plot_areas(I=np.radians(20), filename='1_areas20')

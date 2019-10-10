@@ -15,7 +15,7 @@ import pickle
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('font', family='serif', size=12)
+plt.rc('font', family='serif', size=18)
 
 PLOT_DIR = '1plots'
 from utils import to_cart, to_ang, roots, H, solve_ic_base,\
@@ -193,8 +193,8 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
 
     fig, (ax1, ax3) = plt.subplots(2, 1,
                             sharex=True,
+                            figsize=(6, 5),
                             gridspec_kw={'height_ratios': [3, 2]})
-    fig.subplots_adjust(hspace=0)
     t = ret.t
     etas = ret.y[3]
     q, phi = to_ang(*ret.y[0:3])
@@ -218,13 +218,13 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
                 f = lambda mu: -mu**2 / 2 + eta4s[i] * (
                     mu * np.cos(I) + np.sin(I) * np.sqrt(1 - mu**2))\
                     - H4s[i]
-                # mu_min always exists
+                # mu_min will always be < mu4, mu_max > mu4
                 mu_min[i] = opt.bisect(f, -1, mu4s[i])
-                # mu_max may not always exist
-                guess = mu4s[i] + np.sqrt(4 * eta4s[i] * np.sin(I))
-                res = opt.newton(f, guess)
-                if abs(res - mu_min[i]) > 1e-5: # not the same root
-                    mu_max[i] = res
+                # note mu_max may not exist, so push -1 if not
+                try:
+                    mu_max[i] = opt.bisect(f, mu4s[i], 1)
+                except ValueError:
+                    mu_max[i] = -1
             except:
                 pass
 
@@ -243,8 +243,8 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     ax1.semilogx(etas, mu_dat, c='y', label='Sim')
     max_valid_idxs = np.where(mu_max > 0)[0]
     ax1.semilogx(etas[idx4s][max_valid_idxs], mu_max[max_valid_idxs],
-             'k:', label='Sep')
-    ax1.semilogx(etas[idx4s], mu_min, 'k:')
+             'k', label='Sep')
+    ax1.semilogx(etas[idx4s], mu_min, 'k')
     ax1.semilogx(etas[idx4s], np.cos(q2s), 'm', label='CS2')
     ax1.set_xlabel(r'$t$')
     ax1.set_ylabel(r'$\cos\theta$')
@@ -309,7 +309,11 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     ax3.semilogx(eta_areas, areas, 'bo', markersize=0.3, label='Dat')
     ax3.set_xlabel(r'$\eta$')
     ax3.set_ylabel(r'$A$')
-    ax3.legend()
+    # figure out where to place the legend
+    if areas[-1] > areas[0]:
+        ax3.legend(loc='lower right')
+    else:
+        ax3.legend(loc='upper right')
 
     for ax in [ax1, ax3]:
         for plt_idx in plot_idxs:
@@ -319,32 +323,34 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     xlims = ax3.set_xlim()
     xlims2 = ax3.set_xlim(xlims[::-1])
 
+    plt.tight_layout()
+    fig.subplots_adjust(hspace=0)
     plt.savefig(filename, dpi=dpi)
     plt.close(fig)
 
     # separately:
     # plot snapshots @ every jump in areas
     n_rows = (len(plot_idxs) + 1) // 2
-    fig, axs_nest = plt.subplots(n_rows, 2, sharex=True, sharey='row')
+    fig, axs_nest = plt.subplots(n_rows, 2, sharex=True, sharey='row',
+                                 figsize=(6, 4))
     axs = [ax for sublist in axs_nest for ax in sublist]
     if len(plot_idxs) % 2 == 1:
         fig.delaxes(axs[-1])
         del axs[-1]
-    fig.subplots_adjust(wspace=0, hspace=0)
-    # plot data to set the ylims
+    # cache some values to reuse once ylims are all set
+    vals_arr = []
     for plot_idx, ax in zip(plot_idxs, axs):
-        plt_step = 0.05
-        t_vals = np.arange(t_areas[plot_idx], t_areas_f[plot_idx], plt_step)
+        t_vals = np.linspace(t_areas[plot_idx], t_areas_f[plot_idx], 201)
         q_vals, phi_vals = to_ang(*ret.sol(t_vals)[ :3])
         ms = 1.0 if len(t_vals) < 50 else 0.2
-        ax.plot(phi_vals, np.cos(q_vals), ls='', marker='o', c='y', markersize=ms)
 
         # plot CS2 as well
         curr_roots = roots(I, eta_areas[plot_idx])
         q2 = curr_roots[0] if len(curr_roots) == 2 else curr_roots[1]
         ax.plot(np.pi, np.cos(q2), 'mo', ms=2)
 
-        # overplot an arrow to show direction
+        # plot data + overplot an arrow to show direction
+        ax.plot(phi_vals, np.cos(q_vals), ls='', marker='o', c='y', markersize=ms)
         arrow_idx = len(t_vals) // 2
         width_base = ax.get_ylim()[1] - ax.get_ylim()[0]
         ax.arrow(phi_vals[arrow_idx], np.cos(q_vals[arrow_idx]),
@@ -352,49 +358,53 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
                  np.cos(q_vals[arrow_idx + 1]) - np.cos(q_vals[arrow_idx]),
                  color='y', width=0,
                  head_width=0.056 * width_base, head_length=0.12)
+        vals_arr.append((t_vals, q_vals, phi_vals))
+
+    for plot_idx, ax, vals in zip(plot_idxs, axs, vals_arr):
+        t_vals, q_vals, phi_vals = vals
 
         # shade the enclosed phase space area
         ylims = ax.get_ylim()
+        ax.set_ylim(ylims[0], min(ylims[1], 1)) # max ylim is 1
         _phi_uw = np.unwrap(phi_vals)
-        # make sure its mean is in [0, 2 * np.pi]
+        # make sure its median is in [0, 2 * np.pi]
         phi_uw = _phi_uw - np.median(_phi_uw)\
             + ((np.median(_phi_uw) + 2 * np.pi) % (2 * np.pi))
         if abs(phi_uw[-1] - phi_uw[0]) > np.pi:
-            # circulating, shade between mu and +- 1 depending on sign of dphi
-            # if phi is increasing, then shade to +1
-            fill_bound = (
-                ylims[1] if np.sign(np.mean(np.gradient(phi_uw)))
-                    else ylims[0])
+            # circulating, if phi increasing, shade grey, else red
+            fill_bound = ylims[1]
+            if np.mean(np.gradient(phi_uw)) > 0:
+                c = '0.5'
+                a = 0.5
+            else:
+                c = 'r'
+                a = 0.25
             ax.fill_between(phi_uw, fill_bound, np.cos(q_vals),
-                            color='0.75', alpha=0.5)
+                            color=c, alpha=a)
         else:
-            pass
-            # # librating; starts at top of circle, goes to bottom. easier to
-            # # handle if starts on LHS, so shift by 1/4
-            # shift_idx = np.argmin(phi_uw)
-            # phi_rolled = np.roll(phi_uw, -shift_idx) # brings argmin to idx 0
-            # idx_turnaround = np.argmax(phi_rolled)
-            # # interpolate over max/min, but drop endpoints when evaluating to
-            # # avoid out of range errors
+            # librating; starts at top of circle, goes to bottom. easier to
+            # handle if starts on LHS, so shift by 1/4
+            shift_idx = np.argmin(phi_uw)
+            phi_rolled = np.roll(phi_uw, -shift_idx) # brings argmin to idx 0
+            q_rolled = np.roll(q_vals, -shift_idx)
+            idx_turnaround = np.argmax(phi_rolled)
+            # interpolate over max/min, but drop endpoints when evaluating to
+            # avoid out of range errors
 
-            # # contains neither max nor min value
-            # phi_half2 = phi_rolled[idx_turnaround + 1: ]
-            # phi_half1 = phi_rolled[ :idx_turnaround + 1]
-            # mu_half2 = np.cos(q_vals[idx_turnaround + 1: ])
-            # # interpolate containing both max and min val
-            # mu_half1_interp = interp1d(phi_half1,
-            #                            np.cos(q_vals[ :idx_turnaround + 1]))
-            # mu_half1 = mu_half1_interp(phi_half2)
-            # print(phi_half2)
-            # print(mu_half1)
-            # print(mu_half2)
-            # ax.fill_between(phi_half2, mu_half1, mu_half2,
-            #                 color='0.5', alpha=0.5)
+            # contains neither max nor min value
+            phi_half2 = phi_rolled[idx_turnaround + 1: ]
+            phi_half1 = phi_rolled[ :idx_turnaround + 1]
+            mu_half2 = np.cos(q_rolled[idx_turnaround + 1: ])
+            # interpolate containing both max and min val
+            mu_half1_interp = interp1d(phi_half1,
+                                       np.cos(q_rolled[ :idx_turnaround + 1]))
+            mu_half1 = mu_half1_interp(phi_half2)
+            ax.fill_between(phi_half2, mu_half1, mu_half2,
+                            color='0.5', alpha=0.5)
 
     # now use the ylims to compute only the viewable separatrix
     for plot_idx, ax in zip(plot_idxs, axs):
         ylims = ax.get_ylim()
-        ax.set_ylim(ylims)
         # overplot separatrix + CS2
         eta_plots = [eta_areas[plot_idx], eta_areas[plot_idx + 1]]
         for eta_plot, style in zip(eta_plots, ['solid', 'dashed']):
@@ -408,15 +418,15 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
                 H_grid = H(I, eta_plot, q_grid, phi_grid)
                 ax.contour(phi_grid, np.cos(q_grid), H_grid, levels=[H4],
                            colors='k', linewidths=1.0, linestyles=style)
-    for ax in axs[::2]:
-        ax.set_ylabel(r'$\cos \theta$')
-        ax.set_ylabel(r'$\cos \theta$')
+    axs[0].set_ylabel(r'$\cos \theta$')
+    axs[-2].set_xlabel(r'$\phi$')
     for ax in axs[-2: ]:
-        ax.set_xlabel(r'$\phi$')
         ax.set_xlim([0, 2 * np.pi])
         ax.set_xticks([np.pi])
         ax.set_xticklabels([r'$\pi$'])
 
+    plt.tight_layout()
+    fig.subplots_adjust(wspace=0, hspace=0)
     plt.savefig(filename + '_subplots', dpi=dpi)
     plt.close(fig)
     print('Saved', filename, 'eta_c =', eta_c)
@@ -604,12 +614,16 @@ def plot_anal_qfs(I, dqs, res_arr, eta0, axs, two_panel=True):
         return
 
     # overplot the simplest analytical estimate
-    naive_areas_init = 2 * np.pi * (1 - np.cos(dqs))
-    naive_eta_cross = (naive_areas_init / 16)**2 / np.sin(I)
-    mu_f_1 = naive_eta_cross * np.cos(I) + 4 * np.sqrt(
-        naive_eta_cross * np.sin(I)) / np.pi
-    mu_f_2 = naive_eta_cross * np.cos(I) - 4 * np.sqrt(
-        naive_eta_cross * np.sin(I)) / np.pi
+    # this is the square root motivated one, second simplest
+    # naive_areas_init = 2 * np.pi * (1 - np.cos(dqs))
+    # naive_eta_cross = (naive_areas_init / 16)**2 / np.sin(I)
+    # mu_f_1 = naive_eta_cross * np.cos(I) + 4 * np.sqrt(
+    #     naive_eta_cross * np.sin(I)) / np.pi
+    # mu_f_2 = naive_eta_cross * np.cos(I) - 4 * np.sqrt(
+    #     naive_eta_cross * np.sin(I)) / np.pi
+    # this is the power laws one, absolutely simplest
+    mu_f_1 = (np.pi * dqs**2 / 16)**2 / np.tan(I) + dqs**2 / 4
+    mu_f_2 = (np.pi * dqs**2 / 16)**2 / np.tan(I) - dqs**2 / 4
     ax1.plot(np.degrees(dqs), np.degrees(np.arccos(mu_f_1)),
              'k:', linewidth=0.6)
     ax1.plot(np.degrees(dqs), np.degrees(np.arccos(mu_f_2)),
@@ -717,11 +731,12 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         if two_panel:
             fig, (ax1, ax2) = plt.subplots(2, 1,
                                     sharex=True,
+                                    figsize=(6, 8),
                                     gridspec_kw={'height_ratios': [3, 2]})
             fig.subplots_adjust(hspace=0)
             plot_anal_qfs(I, dqs, res_arr, eta0, [ax1, ax2], two_panel)
         else:
-            fig, ax1 = plt.subplots(1, 1)
+            fig, ax1 = plt.subplots(1, 1, figsize=(6, 6))
             plot_anal_qfs(I, dqs, res_arr, eta0, [ax1], two_panel)
 
         # now plot data
@@ -732,7 +747,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
 
         ax1.set_yticks([0, 45, 90])
         ax1.set_yticklabels([r'$0$', r'$45$', r'$90$'])
-        ax1.set_ylabel(r'$\theta_{f}$')
+        ax1.set_ylabel(r'$\theta_{f}$ (deg)')
         ax1.set_title(title)
 
         if two_panel:
@@ -746,13 +761,12 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
             ax1.set_xticklabels([r'$0$', r'$30$', r'$60$', r'$90$'])
 
             ax1.set_xlabel(r'$\theta_{sd,i}$')
-            ax1.set_ylabel('Prob')
 
     else:
         # just plot data
         fig, ax1 = plt.subplots(1, 1)
         ax1.set_xlabel(r'$\theta_{sd,i}$')
-        ax1.set_ylabel(r'$\theta_{f}$')
+        ax1.set_ylabel(r'$\theta_{f}$ (deg)')
         ax1.set_xticks([0, 30, 60, 90], [r'$0$', r'$30$', r'$60$', r'$90$'])
         ax1.set_yticks([0, 45, 90], [r'$0$', r'$45$', r'$90$'])
         ylims = plt.ylim()
@@ -769,6 +783,8 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         final_q_deg = np.degrees(np.arccos(final_mus))
         ax1.scatter(np.full_like(final_mus, np.degrees(dq)),
                     final_q_deg, c='b', s=0.8)
+    if not two_panel or not adiabatic:
+        plt.tight_layout() # not sure why this is necessary, xlabel cut off
     plt.savefig(filename, dpi=dpi)
     plt.clf()
 
@@ -810,16 +826,17 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
 
     s_final = np.sqrt(2 * np.pi / eps_vals) * np.tan(I)
     q_final = np.maximum(np.degrees(s_final * np.cos(I)), np.degrees(q2))
+    ylims = plt.ylim()
     plt.semilogx(eps_vals, q_final, 'r:', label='Analytical')
     plt.axvline(np.sin(I), c='k')
-    ylim = [100, 0]
-    plt.fill_betweenx(ylim,
+    plt.fill_betweenx(ylims,
                       np.sin(I), eps_min, color='0.5', alpha=0.5)
-    plt.xlim([eps_max, eps_min])
-    plt.ylim(ylim)
+    plt.xlim([eps_min, eps_max])
+    plt.ylim(ylims)
     plt.xlabel(r'$\epsilon$')
     plt.ylabel(r'$\theta_{ f}$')
     plt.title(r'$I = %d^\circ$' % np.degrees(I))
+    plt.tight_layout()
     plt.legend()
     plt.savefig(filename, dpi=dpi)
     plt.clf()
@@ -882,9 +899,30 @@ def plot_singles(I):
     plot_single(I, -3.01e-4, tf, eta0, q2, '3testo31', plot_type='31',
                 dq=0.99 * np.pi / 2, events=events)
 
+def plot_manys(I):
+    sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
+    sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
+                 two_panel=False)
+    sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
+                 two_panel=False)
+    sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
+    sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
+    sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
+                 two_panel=False)
+    sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
+                 two_panel=False, dqmin=0.01)
+
+    sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
+                 adiabatic=False, dqmin=0.01)
+    sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
+                 adiabatic=False, dqmin=0.01)
+    sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
+                 adiabatic=False, dqmin=0.01)
+
 if __name__ == '__main__':
     I = np.radians(5)
-    plot_singles(I)
+    # plot_singles(I)
+    plot_manys(I)
 
     # testing high epsilon
     # eta_c = get_etac(I)
@@ -894,27 +932,9 @@ if __name__ == '__main__':
     # ret = solve_ic_base(I, -5, y0, np.inf, events=[term_event])
     # plot_traj_colors(I, ret, '3testo_inf')
 
-    # sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
-    # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
-    #              two_panel=False)
-    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
-    #              two_panel=False)
-    # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
-    # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
-    # sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
-    #              two_panel=False)
-    # sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
-    #              two_panel=False, dqmin=0.01)
-
-    # sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
-    #              adiabatic=False, dqmin=0.01)
-    # sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
-    #              adiabatic=False, dqmin=0.01)
-    # sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
-    #              adiabatic=False, dqmin=0.01)
-
     # eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
-    # eps_scan(np.radians(20), eps_max=10, eps_min=5e-2, n_pts=301, filename='3scan_20')
+    # eps_scan(np.radians(20), eps_max=10, eps_min=5e-2,
+    #          n_pts=301, filename='3scan_20')
     # I_scan(5, filename='3Iscan_test', n_pts=31, n_pts_ring=2)
     # I_scan(1, filename='3Iscan_test_eps1', n_pts=31, n_pts_ring=2)
     # I_scan(20, filename='3Iscan_test_eps20', n_pts=31, n_pts_ring=2)

@@ -50,6 +50,9 @@ Astronomy, Cornell University, Ithaca, NY 14853, USA
 \renewcommand*{\sectionautorefname}{Section}
 \maketitle
 
+% TODO
+% figure out whether can draw vertical lines on 3testo plots for regimes
+% run simulations up to III -> III (not today)
 
 \begin{abstract}
     Abstract
@@ -68,12 +71,13 @@ The primary result of our paper is \autoref{fig:nonad_3_ensemeble}.
 Denote $\vec{s}$ spin of planet, $\vec{l}$ angular momentum of planet, and
 $\vec{l}_d$ angular momentum of the surrounding disc. We approximate $S \ll L
 \ll L_d$, so $\vec{l}_d$ is approximately constant. Much of this treatment
-borrows from \citep{anderson2018teeter}. We consider precession equations
+borrows from \citealp{anderson2018teeter} and \citealp{millholland_disk}. We
+consider precession equations
 \begin{align}
     \rd{\hat{s}}{t} &= \omega_{sl} \p{\hat{s} \cdot \hat{l}}
         \p{\hat{s} \times \hat{l}}\label{eq:dsdt}\\
     \rd{\hat{l}}{t} &= \omega_{ld}\p{\hat{l} \cdot \hat{l}_d}
-        \p{\hat{l} \times \hat{l}_d},\label{eq:dldt},\\
+        \p{\hat{l} \times \hat{l}_d},\label{eq:dldt}\\
 \end{align}
 where
 \begin{align}
@@ -152,20 +156,7 @@ there are only two; $\eta_c$ is \citep{henrard1987,ward2004I}
 \begin{equation}
     \eta_c \equiv \p{\sin^{2/3}I + \cos^{2/3}I}^{3/2}.
 \end{equation}
-CSs 1, 2, 3 are stable while CS4 is unstable. A contour plot of $H\p{\phi, \cos
-\theta}$ is provided in \autoref{fig:eq_1contours}.
-\begin{figure}
-    \centering
-    \includegraphics[width=\columnwidth]{../initial/0_eta/1contours_flip.png}
-    \caption{Contour plot of $H\p{\phi, \cos \theta}$, where warmer colors
-    denote more positive values. The black solid line is the separatrix, which
-    only exists for $\eta < \eta_c$. The three zones, divided by the separatrix,
-    are labeled. The interior of the separatrix, shaded in grey, is formally
-    only defined for $\eta < \eta_c$, but we may identify the phase space
-    trajectories that flow into zone II when evolved forward in time; this is
-    the shaded region in the top left plot, bounded by the dotted black
-    line.}\label{fig:eq_1contours}
-\end{figure}
+CSs 1, 2, 3 are stable while CS4 is unstable.
 
 The locations of the $\cos\theta$ of the two/four CSs as a function of $\eta$ is
 provided in \autoref{fig:cs_locs}.
@@ -184,8 +175,23 @@ In the four-CS regime, one of the CSs is a saddle point, conventionally denoted
 Cassini State 4 (CS4). All trajectories are periodic with finite period except
 two critical trajectories asymptotic in the past and future to CS4. Together,
 these two critical trajectories are referred to as the \emph{separatrix} and
-divide phase space into three zones. We label these zones as illustrated in
-\autoref{fig:eq_1contours}. As trajectories of constant $\eta$ evolve along
+divide phase space into three zones. The separatrix and three zones are most
+clearly shown via a contour plot of $H\p{\phi, \cos \theta}$ in
+\autoref{fig:eq_1contours}.
+\begin{figure*}
+    \centering
+    \includegraphics[width=0.8\textwidth]{../initial/0_eta/1contours_flip.png}
+    \caption{Contour plot of $H\p{\phi, \cos \theta}$, where warmer colors
+    denote more positive values. The black solid line is the separatrix, which
+    only exists for $\eta < \eta_c$. The three zones, divided by the separatrix,
+    are labeled. The interior of the separatrix, shaded in grey, is formally
+    only defined for $\eta < \eta_c$, but we may identify the phase space
+    trajectories that flow into zone II when evolved forward in time; this is
+    the shaded region in the top left plot, bounded by the dotted black
+    line.}\label{fig:eq_1contours}
+\end{figure*}
+
+As trajectories of constant $\eta$ evolve along
 contours of constant $H$, it can be observed that trajectories in zone II
 librate about CS2 while those in zones I/III circulate.
 
@@ -243,40 +249,190 @@ Note that this is a necessary but not sufficient criterion: the libration period
 is longer for trajectories nearer the separatrix and diverges at the separatrix
 for constant $\eta$.
 
-\subsection{Fiducial Simulation: Zone Transition Histories}\label{ss:ad_fid}
+\subsection{Separatrix Crossing and Evolutionary Tracks
+}\label{ss:zone_transitions}
 
 In the limit $\eta \to 0$, zone II disappears and all trajectories circulate at
 constant final $\theta$ values, notated $\theta_f$. We run simulations that
 terminate at $\eta = 10^{-{-3.5}}$ and measure $\theta_{f}$. We vary the initial
 value of $\theta_{sd}$, notated $\theta_{sd, i}$, among our simulations.
 
-Initially, in the $\eta > \eta_c$ regime, only zones $II, III$ exist.
-Conversely, at the end of the simulation when $\eta \to 0$, only zones $I, III$
-exist. Naively then, one might expect four sequences of transitions
-between zones (we call these dynamical ``tracks'') to appear during simulations:
-(i) $II \to I$, (ii) $II \to III$, (iii) $III \to I$, and (iv) the trivial $III
-\to III$ where the trajectory never encounters the separatrix. In fact, (v) a
-fifth possible track involving two transitions is observed $III \to II \to I$.
-
-Between zone transitions, the enclosed phase space area $A \equiv \oint \cos\theta
-\;\mathrm{d}\phi$ is an adiabatic invariant. Here, we adopt convention $A$ is a
-\emph{signed} area
+In the absence of separatrix encounters, the enclosed phase space area $A \equiv
+\oint \cos\theta \;\mathrm{d}\phi$ is an adiabatic invariant. Here, we adopt
+convention where $A$ is a \emph{signed} area
 \begin{equation}
     A = \oint \p{1 - \cos \theta}\;\mathrm{d}\phi.
 \end{equation}
 This has the advantage of (i) having a removable singularity when the trajectory
 crosses $\cos \theta = 1$, and (ii) being easily expressible as combinations of
 the $A_i$ of \autoref{se:area_ward}. The bounds of the integral are either a
-libration or circulation cycle.
+libration ($\phi$ returns to its original value with the same $\dot{q\phi}$
+sign) or circulation cycle ($\phi$ advances to $\phi \pm 2\pi$). Note lastly
+that $A$ has simple physical interpretation of are enclosed on the unit sphere
+by $\hat{s}$ over one cycle measured relative to $+\hat{z}$:
+\begin{equation*}
+    \int \int\limits_{\cos \theta(\phi)}^1
+        \mathrm{d}\cos\theta\;\mathrm{d}\phi = \int \p{1 - \cos \theta(\phi)}
+            \;\mathrm{d}\phi.
+\end{equation*}
 
-Given this definition, the change in $A$ during a separatrix encounter is easily
-understood \citep{henrard1982}. We present in \autoref{fig:ad_21} a fiducial
-simulation undergoing the $II \to I$ zone transition. An initial condition in
-zone II with initial adiabatic invariant $A_i > 0$ librates about CS2 until
-$A_{II} = A_i$. At this point, it encounters the separatrix and moves into zone
-I and the final enclosed phase space area is $A_f = -(A_{II} + A_{III})$.
-Further simulations illustrating the other tracks are depicted in
-\autoref{ss:app_tracks}.
+When a trajectory encounters the separatrix, $A$ will change discontinuously as
+the trajectory moves between zones, but its change is easily understood
+\citep{henrard1982}. We can classify trajectories by the separatrix encounters
+they undergo. Initially, in the $\eta > \eta_c$ regime, only zones $II, III$
+exist. Conversely, at the end of the simulation when $\eta \to 0$, only zones
+$I, III$ exist. Most simply, one might expect four sequences of transitions
+between zones (we call these dynamical ``tracks'') to manifest: from one of
+$\z{I, III}$ to one of $\z{II, III}$. In addition to these four tracks, a
+fifth track $III \to II \to I$ is observed.
+
+Beyond simply identifying the possible tracks, we may clearly delineate the
+initial conditions for which each track can be encountered. Separatrix crossing
+is a probabilistic process whose outcomes are well understood by
+\citealp{henrard1982,henrard1987}. Their resultss may be simply summarized as
+follows: if a zone $i$ is shrinking and zone $j$ is expanding, the probability
+of transition from zone $i$ to zone $j$ is given
+\begin{equation}
+    \Pr_{i \Rightarrow j} = -\frac{\pd{A_j}{t}}{ \pd{A_i}{t}}
+        = -\frac{\pd{A_j}{\eta}}{ \pd{A_i}{\eta}}\label{eq:henrard_hop}
+\end{equation}
+This can be used directly in conjunction with \autoref{se:area_ward} to
+understand for what initial conditions each track can be observed and with what
+probabilities.
+
+Below, we will describe the evolution of $A$ throughout each of the five tracks,
+as well as determine the initial conditions and probabilities associated with
+each track:
+\begin{itemize}
+    \item $II \to I$ --- This track is depicted in \autoref{fig:ad_21}.
+        $\hat{s}$ starts librating about CS2 in zone II, enclosing some initial
+        phase space area $A_i$. The trajectory is able to librate without
+        separatrix encounter until $A_{II}(\eta_\star) = A_i$. At this point, as
+        the trajectory transitions to a circulating trajectory in zone I
+        immediately bordering the separatrix, it will encompass
+        $-A_I(\eta_\star)$ phase space area. Conservation of phase space area
+        then predicts that as $\eta \to 0$, the final enclosed phase space area
+        will still be $A_f = -A_I$, and the final obliquity $\theta_f$ must be
+        given by
+        \begin{equation}
+            2\pi\p{1 - \cos \theta_f} = A_f. \label{eq:qfaf}
+        \end{equation}
+
+        This transition can only occur when the initial condition begins in zone
+        II, requiring $A_i < A_{II}(\eta_c)$, where $A_{II}(\eta_c)$ is known in
+        closed form \citep{ward2004I}
+        \begin{equation}
+            A_{II}\p{\eta_c} = 4\pi \s{
+                1 - \p{1 + \tan^{2/3}I}^{-3/2}}.
+        \end{equation}
+        Then, at some known $\eta_\star$ satisfying $A_{II}(\eta_\star) = A_i$,
+        the trajectory is ejected from the separatrix and enters zone I with
+        probability
+        \begin{equation}
+            \Pr_{II \to I} = -\at{\frac{\pd{A_I}{\eta}}{\pd{A_{II}}{\eta}}}
+                _{\eta_\star}.
+        \end{equation}
+        Note that since $\pd{A_i}{\eta} < 0$ everywhere, while
+        $\pd{A_{II}}{\eta} > 0$ at all possible $\eta_\star$ for an initial
+        condition starting in zone II, this track always has nonzero
+        probability.
+
+    \item $II \to III$ --- This track is depicted in \autoref{fig:ad_23}. The
+        only difference from the previous track is that, upon separatrix
+        encounter, the trajectory follows the circulating trajectory in zone III
+        bordering the separatrix, upon which it will encompass $A_f =
+        A_I(\eta_\star) + A_{II}(\eta_\star)$. The final obliquity is still
+        given by \autoref{eq:qfaf}.
+
+        Again, this track can only occur when $A_i < A_{II}(\eta_c)$, and enters
+        zone III with probability
+        \begin{equation}
+            \Pr_{II \to III} = -\at{\frac{\pd{A_{III}}{\eta}}
+                {\pd{A_{II}}{\eta}}} _{\eta_\star}.
+        \end{equation}
+        Upon examination of \autoref{fig:eq_areas}, it is clear that
+        $\pd{A_{III}}{\eta} > 0$ for many $\eta$. Call
+        \begin{equation}
+            \eta_{\min, III} \equiv \argmin A_{III}(\eta),
+        \end{equation}
+        then if $\eta_\star > \eta_{\min, III}$ then $\Pr_{II \to III} < 0$.
+        This is interpreted as a forbidden transition, and so $II \to III$ is
+        only a permitted dynamical track if $\eta_\star \in 0, \eta_{\min,
+        III}$.
+
+    \item $III \to I$ --- This track is depicted in \autoref{fig:ad_31}.
+        The trajectory encounters the separatrix when $A_I(\eta_\star) +
+        A_{II}(\eta_\star) = A_i$, upon which it transitions to a zone I
+        trajectory enclosing $A_f = -A_I$.
+
+        This track can only occur if $A_i > A_{II}(\eta_c)$, but is also
+        constrained by requiring its $A_i$ is sufficiently small it will
+        encounter the separatrix at all (if it is too large, it will never
+        encounter the separatrix, which we classify as a $III \to III$
+        transition below). This is written $A_i < \max A_I + A_{II} = 4\pi -
+        \min A_{III}$. Within these constraints, the zone transition occurs with
+        probability
+        \begin{equation}
+            \Pr_{III \to I} = -\at{\frac{\pd{A_I}{\eta}}{\pd{A_{III}}{\eta}}}
+                _{\eta_\star}.
+        \end{equation}
+        Note that since $\pd{A_I}{\eta} < 0$ always while $\pd{A_{III}}{\eta} >
+        0$ for all accessible $\eta_{\star}$, this track is always permitted.
+
+    \item $III \to II \to I$ --- This track is depicted in
+        \autoref{fig:ad_321}. The first separatrix encounter occurs at $\eta_1$
+        when $A_I(\eta_1) + A_{II}(\eta_1) = A_i$, upon which the trajectory
+        moves into zone II enclosing intermediate phase space area $A_m =
+        A_{II}(\eta_1)$. Examining \autoref{fig:eq_areas}, there exist values
+        $A$ for which $A_{II}(\eta) = A$ has multiple solutions. These are the
+        only values for which the $III \to II \to I$ transition is permitted.
+        Thus, as $\eta$ continues to decrease, a second $\eta_2$ value exists
+        for which $A_m = A_II(\eta_2)$, upon which the trajectory is ejected to
+        zone I and $A_f = -A_I(\eta_2)$. The final obliquity again then obeys
+        \autoref{eq:qfaf}.
+
+        Similar to the $III \to I$ track, the $III \to II \to I$ track can only
+        occur over the same $A_{II}(\eta_c) < A_i < \max A_I + A_{II}$ interval.
+        Here, the transition probability for the initial $III \to II$ transition
+        is simply
+        \begin{equation}
+            \Pr_{III \to II} = -\at{\frac{\pd{A_II}{\eta}}{\pd{A_{III}}{\eta}}}
+                _{\eta_1}.
+        \end{equation}
+        It bears noting that this expression is only nonzero for a very small
+        fraction of $A_i$ values, since it requires $\pd{A_{II}}{\eta}$ and
+        $\pd{A_{III}}{\eta}$ to have different signs; this occurs only if
+        $A_{II}\p{\eta_c} < A_i < A_{II, \max}$. Outside of these bounds,
+        $\Pr_{III \to II} < 0$ which is interpreted again as a forbidden
+        transition.
+
+        Then, once a $III \to II$ transition occurs, the second $II \to I$
+        transition occurs for some $\eta_2$ satisfying $A_{II}(\eta_2) =
+        A_{II}(\eta_1), \eta_2 < \eta_1$. Graphical inspection shows that
+        $\pd{A_{II}}{\eta}$ has the same sign as $\pd{A_{III}}{\eta}$ over all
+        possible values, so the second $II \to I$ transition is guaranteed,
+        completing the $III \to II \to I$ track.
+
+    \item $III \to III$ --- This track depicts the trivial case where no
+        separatrix encounter ever occurs, and $A$ is constant throughout the
+        evolution. This constraint equates to $A_i > \max A_I + A_{II}$,
+        whereupon no separatrix encounter occurs at all.
+\end{itemize}
+In summary, the five regimes of track possibilities in increasing order of $A_i$
+are:
+\begin{itemize}
+    \item $II \to III, II \to I$ both possible, $A_i < A_{II}\p{\eta_{\min,
+        III}}$.
+
+    \item $II \to I$ only, $A_{II}\p{\eta_{\min, III}} < A_i < A_{II}(\eta_c)$.
+
+    \item $III \to I, III \to II \to I$ both possible, $A_{II}(\eta_c) < A_i <
+        A_{II, \max}$.
+
+    \item $III \to I$ only, $A_{II, \max} < A_i < \max A_I + A_{II}$.
+
+    \item $III \to III$ only, $A_i > \max A_I + A_{II}$.
+\end{itemize}
 \begin{figure}
     \centering
     \begin{subfigure}{\columnwidth}
@@ -287,10 +443,10 @@ Further simulations illustrating the other tracks are depicted in
         \centering
         \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo21_subplots.png}
     \end{subfigure}
-    \caption{Fiducial simulation following the $A_{II} \to A_{I}$ transition. Top
-    plot upper panel: plot of $\cos \theta(t)$ (gold) in an example simulation.
-    Overlaid are the locations of Cassini State 2 (magenta), and upper and lower
-    bounds on the separatrix (dashed black). Note that the trajectory
+    \caption{Fiducial simulation following the $A_{II} \to A_{I}$ transition.
+    Top plot upper panel: plot of $\cos \theta(t)$ (gold) in an example
+    simulation. Overlaid are the locations of Cassini State 2 (magenta), and
+    upper and lower bounds on the separatrix (black). Note that the trajectory
     successfully tracks CS2 to a misalignment angle $\theta \approx 90^\circ$.
     Vertical green lines denote times portrayed in bottom plot. Top plot lower
     panel: plot of the enclosed separatrix area obtained by integrating the
@@ -302,37 +458,100 @@ Further simulations illustrating the other tracks are depicted in
     10^{-3.5}$. Gold dots denote a full circulation or libration cycle at the
     selected time, while the separatrix at the start/end of the portrayed cycle
     are shown in solid/dashed black lines respectively. Also labeled is CS2
-    (magenta).}\label{fig:ad_21}
+    (magenta). Finally, the enclosed phase space area is shaded in grey ($A >
+    0$) and red ($A < 0$).}\label{fig:ad_21}
+\end{figure}
+\begin{figure}
+    \centering
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo23.png}
+    \end{subfigure}
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo23_subplots.png}
+    \end{subfigure}
+    \caption{Same as \autoref{fig:ad_21} but for the $A_2 \to A_3$ track.
+    }\label{fig:ad_23}
+\end{figure}
+\begin{figure}
+    \centering
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo31.png}
+    \end{subfigure}
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo31_subplots.png}
+    \end{subfigure}
+    \caption{Same as \autoref{fig:ad_21} but for the $A_{III} \to A_I$
+    track.}\label{fig:ad_31}
+\end{figure}
+\begin{figure}
+    \centering
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo321.png}
+    \end{subfigure}
+    \begin{subfigure}{\columnwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo321_subplots.png}
+    \end{subfigure}
+    \caption{Same as \autoref{fig:ad_21} but for the $A_{III} \to A_{II} \to A_I$
+    track. Two separatrix crossings are shown.}\label{fig:ad_321}
 \end{figure}
 
 \subsection{Dynamical Outcomes}\label{ss:ad_ensemble}
 
-In the adiabatic limit, while separatrix encounters induce discontinuous changes
-in enclosed phase space, the outcomes of these encounters are well understood in
-pioneering work by Henrard \citep{henrard1982,henrard1987}. For a wide range of
-$\theta_{sd, i}$, we run simulations over a ring of initial conditions at each
-$\theta_{sd, i}$ and measure the final $\theta_{ f}$ values. We can also
-predict the values of $\theta_{ f}$ for each of the tracks as
-well as their associated probabilities; refer to \autoref{ss:app_transition} for
-details. The comparison of the final obliquities associated with these tracks
-and those obtained via simulation can be seen in \autoref{fig:ad_ensemble}. The
-same plot for $I = 10^\circ, I = 20^\circ$ can be found in
-\autoref{ss:varying_I}.
+Next, we will consider the evolution of a system with arbitrary $\theta_{sd, i}$
+starting in the $\eta \gg 1$ regime. By evolving such systems until $\eta \ll
+1$, we can measure the final $\theta_f$ values and make comparisons with those
+obtained via the dynamical tracks above. Observe that when $\eta \gg 1$,
+trajectories librate with approximately constant $\theta_{sd}$, meaning they
+enclose phase space area
+\begin{equation}
+    A_i = 2\pi\p{1 - \cos \theta_{sd, i}}.\label{eq:ai_qsd}
+\end{equation}
+Thus, for a given $\theta_{sd, i}$, we know immediately which tracks are
+accessible and with what probability following the results of
+\autoref{ss:zone_transitions}.
+
+We run simulations over a ring of initial conditions at each $\theta_{sd, i}$
+and measure the final $\theta_{f}$ values. We use \autoref{eq:ai_qsd} to predict
+the final obliquities $\theta_f$ according to each of the dynamical tracks. The
+agreement of these predictions for $I = 5^\circ, 10^\circ, 20^\circ$ can be seen
+in \autoref{fig:ad_ensemble}, \autoref{fig:3_ensemble_10_35}, and
+\autoref{fig:3_ensemble_20_35}.
 \begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_35.png}
     \caption{Top: $\theta_{f}\p{\theta_{sd, i}}$, overlaid with semi-analytic
     predictions of the $\theta_{ f}$ for each of the four nontrivial
     dynamical tracks in colored lines. Bottom: Semi-analytic probabilities of
-    each of the dynamical tracks for each $\theta_{sd,
-    i}$.}\label{fig:ad_ensemble}
+    each of the dynamical tracks for each $\theta_{sd, i}$. The five regimes of
+    $\theta_{sd, i}$ values correspond to the five regimes of $A_i$ discussed in
+    \autoref{ss:zone_transitions} when using \autoref{eq:ai_qsd} to relate
+    $A_i\p{\theta_{sd, i}}$. }\label{fig:ad_ensemble}
 \end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_10_35.png}
+    \caption{Same as \autoref{fig:ad_ensemble} but for $I =
+    10^\circ$.}\label{fig:3_ensemble_10_35}
+\end{figure}
+\begin{figure}
+    \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_20_35.png}
+    \caption{Same as \autoref{fig:ad_ensemble} but for $I =
+    10^\circ$.}\label{fig:3_ensemble_20_35}
+\end{figure}
+
+\section{Nonadiabatic Effects}\label{s:nonad}
 
 \subsection{Transition to Non-adiabaticity}
 
 To illustrate the transition to non-adiabaticity, we present three simulations
 with increasingly larger values of $\epsilon$ than \autoref{fig:ad_ensemble}
-below in \autoref{fig:transition_to_nonad}.
+below in \autoref{fig:3_ensemble_05_25} and \autoref{fig:3_ensemble_05_15}.
 
 At first non-adiabaticity manifests as a larger scatter of final obliquities
 near the tracks predicted from adiabatic evolution. These scatters first set in
@@ -348,33 +567,23 @@ separatrix crossing no longer being significantly slower than orbit timescales
 and violating the adiabatic assumption.
 \begin{figure}
     \centering
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_25.png}
-    \end{subfigure}
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_15.png}
-    \end{subfigure}
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_10.png}
-    \end{subfigure}
-    \caption{Increasingly larger $\epsilon$ used compared to those in
-    \autoref{fig:ad_ensemble}. The general evolutionary tracks in the adiabatic
-    limit deteriorate as $\epsilon$ is increased. Deviations from the adiabatic
-    predictions seem to be banded structures, which can be attributed to
+    \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_25.png}
+    \caption{Same as \autoref{fig:ad_ensemble} but for $\epsilon = 10^{-2.5}$.
+    A larger spread from the dynamical tracks is observed in the
+    data.}\label{fig:3_ensemble_05_25}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_05_15.png}
+    \caption{Same as \autoref{fig:ad_ensemble} but for $\epsilon = 10^{-1.5}$.
+    Some small semblance of the evolutionary tracks remains, and the deviations
+    appear to have a banded structure. This can be attributed to
     non-adiabaticity ``freezing-in'' the phase of the obliquity variations over
     the final libration/circulation orbit prior to separatrix
-    crossing.}\label{fig:transition_to_nonad}
+    crossing.}\label{fig:3_ensemble_05_15}
 \end{figure}
 
-\section{Nonadiabatic Evolution}\label{s:nonad}
-
-Here, we consider $\epsilon \sim 0.2$ which significantly violates
-\autoref{eq:ad_constr}.
-
-\subsection{Sample Trajectory}
+\subsection{Strongly Nonadiabatic Fiducial Trajectory}
 
 A sample trajectory following in the style of \autoref{fig:ad_21} but for
 $\epsilon = 0.1$ is provided in \autoref{fig:nonad_traj}.
@@ -426,7 +635,10 @@ We present the results of simulations for using $\epsilon = 0.3$ in
 
 The agreement of \autoref{eq:nonad_q_f} at fixed $I$ for varying $\epsilon$ is
 shown in \autoref{fig:nonad_3_scan}. Note that $\epsilon \to 0$ recovers the
-adiabatic regime.
+adiabatic regime. The deviation of $\theta_f$ from the analytical prediction
+within the adiabatic regime is indeed due to adiabatic effects becoming
+dominant; compare to \autoref{fig:nonad_3_scan_20} where little deviation is
+observed until $\theta_f \approx 90^\circ$.
 \begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../initial/2_toy2/3scan.png}
@@ -435,6 +647,14 @@ adiabatic regime.
     \autoref{eq:nonad_q_f}, which is in good agreement for $\epsilon \gtrsim
     0.1$ the non-adiabatic regime, while $\theta_{ f} \approx 90^\circ$ in
     the adiabatic regime.}\label{fig:nonad_3_scan}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/2_toy2/3scan_20.png}
+    \caption{Same as \autoref{fig:nonad_3_scan} but for $I=20^\circ$. Note that
+    the analytical prediction is accurate until $\theta_f \approx 90^\circ$,
+    which occurs before the transition to the adiabatic
+    regime.}\label{fig:nonad_3_scan_20}
 \end{figure}
 
 \bibliographystyle{mnras}
@@ -446,91 +666,17 @@ adiabatic regime.
 
 \section{Adiabatic Evolution}
 
-\subsection{Adiabatic Dynamical Histories}\label{ss:app_tracks}
+\subsection{Analytic $\theta_f$ for small $\theta_{sd,
+i}$}\label{ss:app_transition}
 
-\begin{itemize}
-    \item $A_{II} \to A_{I}$ --- \autoref{fig:ad_21}.
-    \item $A_{II} \to A_{III}$ --- \autoref{fig:ad_23}.
-    \item $A_{III} \to A_{I}$ --- \autoref{fig:ad_31}.
-    \item $A_{III} \to A_{II} \to A_{I}$ --- \autoref{fig:ad_321}.
-    \item $A_{III} \to A_{III}$ --- Trivial case, the initial enclosed area is
-        too large to ever experience a separatrix encounter.
-\end{itemize}
-\begin{figure}
-    \centering
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo23.png}
-    \end{subfigure}
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo23_subplots.png}
-    \end{subfigure}
-    \caption{Same as \autoref{fig:ad_21} but for the $A_2 \to A_3$ track.
-    }\label{fig:ad_23}
-\end{figure}
-\begin{figure}
-    \centering
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo31.png}
-    \end{subfigure}
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo31_subplots.png}
-    \end{subfigure}
-    \caption{Same as \autoref{fig:ad_21} but for the $A_{III} \to A_I$
-    track.}\label{fig:ad_31}
-\end{figure}
-\begin{figure}
-    \centering
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo321.png}
-    \end{subfigure}
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3testo321_subplots.png}
-    \end{subfigure}
-    \caption{Same as \autoref{fig:ad_21} but for the $A_{III} \to A_{II} \to A_I$
-    track. Two separatrix crossings are shown.}\label{fig:ad_321}
-\end{figure}
+In this section, we will use approximations valid for small $\eta$ to derive
+analytic expressions for the final obliquities and associated probabilities for
+the $II \to I, II \to III$ tracks that govern behavior at small $\theta_{sd,
+i}$.
 
-\subsection{Adiabatic Tracks at Varying $I$}\label{ss:varying_I}
-
-See \autoref{fig:varying_i}.
-\begin{figure}
-    \centering
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_10_35.png}
-    \end{subfigure}
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=\columnwidth]{../initial/2_toy2/3_ensemble_20_35.png}
-    \end{subfigure}
-    \caption{Same as \autoref{fig:ad_ensemble} but for $I = 10^\circ$ (top) and
-    $I = 20^\circ$ (bottom).}\label{fig:varying_i}
-\end{figure}
-
-\subsection{$\theta_f$ for Adiabatic Tracks}\label{ss:app_transition}
-
-To understand how trajectories transition between zones, we must recall the
-result from \citep{henrard1982,henrard1987}: if a zone $i$ is shrinking and zone
-$j$ is expanding, the probability of transition from zone $i$ to zone $j$ is
-given
-\begin{equation}
-    \Pr_{i \Rightarrow j} = -\frac{\pd{A_j}{t}}{ \pd{A_i}{t}}
-        = -\frac{\pd{A_j}{\eta}}{ \pd{A_i}{\eta}}\label{eq:henrard_hop}
-\end{equation}
-This can be used directly in conjunction with \autoref{se:area_ward} to generate
-the probabilities in the bottom panel of \autoref{fig:ad_ensemble}.
-
-Next, we will compute an approximate closed form for the final obliquities for
-the initial conditions in zone II (which experience separatrix crossing at
-$\eta_\star \ll 1$), we first seek a simple parameterization for the separatrix.
-We first solve for equilibria of the equation of motion \autoref{eq:dsdt_base}
-to compute the coordinates for Cassini State 4:
+We first seek a simple parameterization for the separatrix. We first solve for
+equilibria of the equation of motion \autoref{eq:dsdt_base} to compute the
+coordinates for Cassini State 4:
 \begin{equation}
     \cos \theta_4 \approx \frac{\mu \cos I}{1 - \eta \sin I}.
 \end{equation}
@@ -580,10 +726,10 @@ $\theta_f\p{\theta_{sd, i}}$ for zone II initial conditions.
         correspond to obliquities
         \begin{align}
             \cos \theta_{f, II \Rightarrow I} &\approx
-                &\approx\p{\frac{\pi \theta_{sp, i}^2}{16}}^2 \cot I
+                \p{\frac{\pi \theta_{sp, i}^2}{16}}^2 \cot I
                     + \frac{\theta_{sp, i}^2}{4},\\
             \cos \theta_{f, II \Rightarrow III} &\approx
-                &\approx\p{\frac{\pi \theta_{sp, i}^2}{16}}^2 \cot I
+                \p{\frac{\pi \theta_{sp, i}^2}{16}}^2 \cot I
                     - \frac{\theta_{sp, i}^2}{4}.
         \end{align}
         These are the black dotted lines overplotted in

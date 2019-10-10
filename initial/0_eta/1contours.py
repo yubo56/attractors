@@ -3,7 +3,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('font', family='serif')
+plt.rc('font', family='serif', size=16)
 from utils import roots, get_four_subplots, plot_point, H, get_grids, get_etac,\
     get_sep_area
 
@@ -24,7 +24,7 @@ def plot_H_for_eta(f, ax, eta, I):
         plot_point(ax, theta, '%so' % color, markersize=6)
 
     shade = '0.8' # shade interior of separatrix
-    font_height = 0.05 # ~font height so y loc is center of text, not base
+    font_height = 0.15 # ~font height so y loc is center of text, not base
     if len(thetas) == 4:
         H4 = H(I, eta, np.cos(thetas[3]), phis[3])
         ax.contour(phi_grid,
@@ -32,7 +32,7 @@ def plot_H_for_eta(f, ax, eta, I):
                    H_grid,
                    levels=[H4],
                    colors=['k'],
-                   linewidths=1.2,
+                   linewidths=2.0,
                    linestyles='solid')
         ax.contourf(phi_grid,
                     x_grid,
@@ -42,7 +42,7 @@ def plot_H_for_eta(f, ax, eta, I):
 
         if eta < 0.8 * eta_c:
             # if Zone I is sufficiently large, place it inside zone
-            ax.text(0.3, np.cos(thetas[3]) + 0.4, 'I')
+            ax.text(0.3, np.cos(thetas[3]) + 0.4 - font_height, 'I')
         else:
             # else draw an arrow
             y = (2 * np.cos(thetas[0]) + np.cos(thetas[3])) / 3
@@ -51,7 +51,7 @@ def plot_H_for_eta(f, ax, eta, I):
             ax.arrow(x + dx, y, -dx, 0,
                      width=0.006, head_width=0.056, head_length=0.08)
             ax.text(x + dx + 0.1, y - font_height, 'I')
-        ax.text(2 * np.pi / 3, np.cos(thetas[3]) - font_height, 'II')
+        ax.text(2 * np.pi / 3, np.cos(thetas[3]) + 0.05 - font_height, 'II')
         ax.text(0.3, np.cos(thetas[3]) - 0.6, 'III')
     else:
         # estimate the location of zone II
@@ -76,7 +76,7 @@ def plot_H_for_eta(f, ax, eta, I):
         ax.text(2 * np.pi / 3, np.cos(thetas[0]) - 0.1 - font_height, 'II')
         ax.text(0.3, np.cos(thetas[1]) + 0.6, 'III')
 
-    ax.set_title(r'$\eta = %.2f$' % eta, fontsize=8)
+    ax.set_title(r'$\eta = %.2f$' % eta, fontsize=14)
 
     plt.suptitle(r'$I = %d^\circ, \eta_c = %.3f$' %
                  (np.degrees(I), eta_c))

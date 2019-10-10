@@ -22,21 +22,3 @@ Explain coordinate choice somewhere
 Move S 3.3: Quasi-adiabatic/effect of nonadiabiticity (show more than just 12)
     - delete probs for the rest of these
 S2: need epsilon + values
-
-- Fig 1.5: theta(eta) + eta_c, make sure consistent colors
-- Fig 2: change everything else to Roman numerals, probably show for multiple
-  eta
-- Fig 3: label eta_c
-- Fig 4-7: Can label C+- for "sep"? can trunc eta = 1e-3
-    - delete axhline('r') in ax1
-    - don't need to show multiple trajectories in ax2 when not sep cross
-    - change separatrix crossing to before + after, separate panels (like
-      Natalia), make sure separatrix positioning for before/after are good! 5
-      total panels
-    - make bounds [0, 2pi] on fig b
-    - why isn't sep always dashed?
-    - make colorings consistent w/ earlier figs
-    - single caption, should explain what the \Delta As equate to in each case
-****- Fig 4: why not adiabatic at beginning?
-- Fig 8: just theta, not flipped theta
-    - delete naive, or at least rename

@@ -8,7 +8,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('font', family='serif', size=12)
+plt.rc('font', family='serif', size=16)
 
 def get_etac(I):
     return (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
@@ -63,11 +63,12 @@ def plot_cs(I=np.radians(5)):
     plt.semilogx(etas, np.degrees(cs_vals[2]), 'g', label='3')
     plt.semilogx(etas_four, np.degrees(cs_vals[3]), 'c', label='4')
     plt.xlabel(r'$\eta$')
-    plt.ylabel(r'$\theta$')
-    plt.legend()
+    plt.ylabel(r'$\theta$ (deg)')
+    plt.legend(loc='lower right')
     plt.xlim([min_eta, max_eta])
     plt.axvline(etac, c='k', lw='0.8', ls='dashed')
     plt.title(r'$I = %d^\circ, \eta_c = %.3f$' % (np.degrees(I), etac))
+    plt.tight_layout()
     plt.savefig('2_cs_locs.png', dpi=400)
 
 if __name__ == '__main__':
