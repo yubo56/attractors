@@ -141,24 +141,48 @@ of study.
 Finally, the Hamiltonian corresponding to the equation of motion
 \autoref{eq:dsdt_base} is
 \begin{equation}
-    H\p{\phi, \theta} = -\frac{1}{2}\p{\hat{s} \cdot \hat{l}}^2
+    \mathcal{H}\p{\theta, \phi} = -\frac{1}{2}\p{\hat{s} \cdot \hat{l}}^2
         + \eta \p{\hat{s} \cdot \hat{l}_d}.\label{eq:H}
 \end{equation}
 Here, we adopt a spherical coordinate system where $\hat{l} = \hat{z}$ and
 $\theta, \phi$ are the polar and azimuthal angle of $\hat{s}$. By convention, we
-choose $\hat{l}_z$ at coordinates $\theta = I, \phi = \pi$.
+choose $\hat{l}_z$ at coordinates $\theta = I, \phi = \pi$, in which case the
+Hamiltonian can be written
+\begin{equation}
+    \mathcal{H} = -\frac{1}{2}\cos^2\theta
+        + \eta \p*{\cos \theta \cos I - \sin I \sin \theta \cos \phi}.
+\end{equation}
+
+Note that $\p{\cos \theta, \phi}$ form a canonically conjugate pair of variables
+describing $\hat{s}$. The equations of motion for these variables can be derived
+by taking derivatives of $\mathcal{H}$ given by \autoref{eq:H} and agree with
+\autoref{eq:dsdt_base}:
+\begin{subequations}\label{se:H_eom}
+    \begin{align}
+        \pd{\phi}{t} = \pd{\mathcal{H}}{(\cos\theta)}
+            &= -\cos\theta + \eta\p{\cos I + \sin I \cot \theta \cos \phi},\\
+        \pd{(\cos \theta)}{t} = -\pd{\mathcal{H}}{\phi}
+            &= -\eta \sin I \sin \theta \sin \phi.
+    \end{align}
+\end{subequations}
+While these equations are numerically stiff owing to the $\cot\theta$ term, they
+are the most intuitive description for analytical work.
 
 \subsection{Cassini States}\label{ss:cs}
 
 Spin states satisfying $\rd{\hat{s}}{t} = 0$ are referred to as \emph{Cassini
-States} (CS). When $\eta < \eta_c$, there are four CSs, and when $\eta > \eta_c$
-there are only two; $\eta_c$ is \citep{henrard1987,ward2004I}
-\begin{equation}
-    \eta_c \equiv \p{\sin^{2/3}I + \cos^{2/3}I}^{3/2}.
-\end{equation}
-CSs 1, 2, 3 are stable while CS4 is unstable.
+States} (CSs). There are either two or four solutions, depending on the values
+of $\eta, I$. Following standard convention and nomenclature (see
+\autoref{fig:cs_locs}), CSs 1, 3, 4 have $\phi = 0, \theta < 0$ and CS2 has
+$\phi = \pi, \theta > 0$. Of these, CSs 1, 2, 3 are stable while CS4 is
+unstable.
 
-The locations of the $\cos\theta$ of the two/four CSs as a function of $\eta$ is
+When $\eta < \eta_c$, where
+\begin{equation}
+    \eta_c \equiv \p{\sin^{2/3}I + \cos^{2/3}I}^{-3/2},
+\end{equation}
+all four CSs exist, and when $\eta > \eta_c$, only CSs 2, 3 exist
+\citep{henrard1987,ward2004I}. The CS obliquities as a function of $\eta$ are
 provided in \autoref{fig:cs_locs}.
 \begin{figure}
     \centering
@@ -171,31 +195,31 @@ provided in \autoref{fig:cs_locs}.
 
 \subsection{Separatrix}
 
-In the four-CS regime, one of the CSs is a saddle point, conventionally denoted
-Cassini State 4 (CS4). All trajectories are periodic with finite period except
-two critical trajectories asymptotic in the past and future to CS4. Together,
-these two critical trajectories are referred to as the \emph{separatrix} and
-divide phase space into three zones. The separatrix and three zones are most
-clearly shown via a contour plot of $H\p{\phi, \cos \theta}$ in
+When $\eta < \eta_c$, CS4 exists and is a saddle point. All trajectories are
+periodic with finite period except two critical trajectories asymptotic in the
+past and future to CS4. Together, these two critical trajectories are referred
+to as the \emph{separatrix} and divide phase space into three zones. The
+separatrix, three zones, and their relations to the CSs are most clearly shown
+via a contour plot of $\mathcal{H}\p{\phi, \cos \theta}$ in
 \autoref{fig:eq_1contours}.
 \begin{figure*}
     \centering
     \includegraphics[width=0.8\textwidth]{../initial/0_eta/1contours_flip.png}
-    \caption{Contour plot of $H\p{\phi, \cos \theta}$, where warmer colors
-    denote more positive values. The black solid line is the separatrix, which
-    only exists for $\eta < \eta_c$. The three zones, divided by the separatrix,
-    are labeled. The interior of the separatrix, shaded in grey, is formally
-    only defined for $\eta < \eta_c$, but we may identify the phase space
-    trajectories that flow into zone II when evolved forward in time; this is
-    the shaded region in the top left plot, bounded by the dotted black
+    \caption{Contour plot of $\mathcal{H}\p{\phi, \cos \theta}$, where warmer
+    colors denote more positive values. The black solid line is the separatrix,
+    which only exists for $\eta < \eta_c$. The three zones, divided by the
+    separatrix, are labeled. The interior of the separatrix, shaded in grey, is
+    formally only defined for $\eta < \eta_c$, but we may identify the phase
+    space trajectories that flow into zone II when evolved forward in time; this
+    is the shaded region in the top left plot, bounded by the dotted black
     line.}\label{fig:eq_1contours}
 \end{figure*}
 
-As trajectories of constant $\eta$ evolve along
-contours of constant $H$, it can be observed that trajectories in zone II
-librate about CS2 while those in zones I/III circulate.
+As trajectories of constant $\eta$ evolve along contours of constant
+$\mathcal{H}$, it can be observed that trajectories in zone II librate about CS2
+while those in zones I/III circulate.
 
-The unsigned areas of the three zones are known exactly in literature
+The unsigned areas of the three zones are known exactly
 \citep{henrard1987,ward2004I}. Defining
 \begin{align*}
     z_0 &= \eta\cos I, &
@@ -238,16 +262,21 @@ sufficiently little during this separatrix-crossing orbit, the evolution of the
 system is considered \emph{adiabatic}. In the truly adiabatic limit, $\epsilon
 \to 0$; we use $\epsilon = 3 \times 10^{-4}$ unless otherwise noted.
 
-One criterion for adiabaticity is that the separatrix crossing timescale be
-longer than the the resonant libration period \citep{ward2004I}. This is
-evaluated in~\cite{millholland_disk}, and in our problem reduces to
-\begin{equation}
-    \at{\rd{\eta}{t}}_{cross} = -\epsilon\eta_\star \gtrsim
-        -\sin\theta \sin I \cos I.\label{eq:ad_constr}
-\end{equation}
+One necessary criterion for adiabaticity is that the separatrix crossing
+timescale be longer than the the resonant libration period \citep{ward2004I}.
+The resonant libration period is just the libration period about CS2, which can
+be found by linearizing \autoref{se:H_eom} about $\phi \approx \pi, \theta
+\approx \theta_2$. The resulting criterion is
+\begin{align}
+    -\at{\frac{1}{\eta}\rd{\eta}{\tau}}_{cross} = \epsilon &\lesssim
+            \frac{2\pi}{T_{lib}},\\
+        &\lesssim \sqrt{\eta_\star\sin\theta \sin I
+            \p{1 + \eta_\star \frac{\sin I}{\sin^3\theta}}}.\label{eq:ad_constr}
+\end{align}
 Note that this is a necessary but not sufficient criterion: the libration period
 is longer for trajectories nearer the separatrix and diverges at the separatrix
-for constant $\eta$.
+for constant $\eta$. This formula also is in slight disagreement with that
+presented in \citealt{millholland_disk}
 
 \subsection{Separatrix Crossing and Evolutionary Tracks
 }\label{ss:zone_transitions}
@@ -687,8 +716,8 @@ coordinates for Cassini State 4:
     \cos \theta_4 \approx \frac{\mu \cos I}{1 - \eta \sin I}.
 \end{equation}
 Note that $\phi_4 = 0$. Then, the separatrix is the level curve of the
-Hamiltonian intersecting CS4, so it satisfies $H\p{\theta_{sep}(\phi), \phi} =
-H\p{\theta_4, \phi_4}$. This solves to be approximately
+Hamiltonian intersecting CS4, so it satisfies $\mathcal{H}\p{\theta_{sep}(\phi),
+\phi} = \mathcal{H}\p{\theta_4, \phi_4}$. This solves to be approximately
 \begin{equation}
     \cos \theta_{sep}(\phi) \approx \cos \theta_4 \pm
         \sqrt{2\eta \sin I\p{1 - \cos \phi}}.

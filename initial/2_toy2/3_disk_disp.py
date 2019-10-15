@@ -702,7 +702,8 @@ def plot_ICs(I, eta0, dqs, n_pts):
 
 def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
                  adiabatic=True, two_panel=True,
-                 dqmin=0.05, dqmax = 0.99 * np.pi / 2):
+                 dqmin=0.05, dqmax = 0.99 * np.pi / 2, dqmax2 = np.pi,
+                 extra_plot=False):
     '''
     variable number of points per ring,
     starting from n_pts/4 to n_pts linearly over dqs
@@ -712,22 +713,36 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
     I_deg = round(np.degrees(I))
     eps_log = 10 * (-np.log10(-eps))
     eta0 = eta0_mult * get_etac(I)
-    dqs = np.linspace(dqmin, dqmax, n_dqs)
+    dqs1 = np.linspace(dqmin, dqmax, n_dqs)
+    dqs2 = np.linspace(dqmax, dqmax2, n_dqs)[1: ]
 
     PKL_FN = '3dat%02d_%02d.pkl' % (I_deg, eps_log)
+    PKL_FN2 = '3dat%02d_%02d_2.pkl' % (I_deg, eps_log)
     filename = '3_ensemble_%02d_%02d' % (I_deg, eps_log)
     title = r'$I = %d^\circ, \epsilon = 10^{-%.1f}$' % (I_deg, eps_log / 10)
 
-    # run/plot sim
+    # run sim (HACK HACK two separate saves since I ran them separately)
     if not os.path.exists(PKL_FN):
         p = Pool(4)
-        args = [(I, eps, eta0_mult, etaf, n_pts, dq) for dq in dqs]
-        res_arr = p.starmap(sim_for_dq, args)
+        args = [(I, eps, eta0_mult, etaf, n_pts, dq) for dq in dqs1]
+        res_arr1 = p.starmap(sim_for_dq, args)
         with open(PKL_FN, 'wb') as f:
-            pickle.dump(res_arr, f)
+            pickle.dump(res_arr1, f)
     else:
         with open(PKL_FN, 'rb') as f:
-            res_arr = pickle.load(f)
+            res_arr1 = pickle.load(f)
+    if extra_plot:
+        if not os.path.exists(PKL_FN2):
+            p = Pool(4)
+            args2 = [(I, eps, eta0_mult, etaf, n_pts, dq) for dq in dqs2]
+            res_arr2 = p.starmap(sim_for_dq, args2)
+            with open(PKL_FN2, 'wb') as f:
+                pickle.dump(res_arr2, f)
+        else:
+            with open(PKL_FN2, 'rb') as f:
+                res_arr2 = pickle.load(f)
+    dqs = np.concatenate((dqs1, dqs2))
+    res_arr = res_arr1 + res_arr2
 
     if adiabatic:
         # first, plot some analytical curves (data overlaid on top)
@@ -738,41 +753,43 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
                                     figsize=(6, 8),
                                     gridspec_kw={'height_ratios': [3, 2]})
             fig.subplots_adjust(hspace=0)
-            plot_anal_qfs(I, dqs, res_arr, eta0, [ax1, ax2], two_panel)
+            # plot_anal_qfs(I, dqs, res_arr, eta0, [ax1, ax2], two_panel)
         else:
             fig, ax1 = plt.subplots(1, 1, figsize=(6, 6))
-            plot_anal_qfs(I, dqs, res_arr, eta0, [ax1], two_panel)
+            # plot_anal_qfs(I, dqs, res_arr, eta0, [ax1], two_panel)
 
         # now plot data
         for dq, final_mus in zip(dqs, res_arr):
             final_q_deg = np.degrees(np.arccos(final_mus))
             ax1.scatter(np.full_like(final_mus, np.degrees(dq)),
                         final_q_deg, c='b', s=0.8)
+        if extra_plot:
+            for dq, final_mus in zip(dqs2, res_arr2):
+                final_q_deg = np.degrees(np.arccos(final_mus))
+                ax1.scatter(np.full_like(final_mus, np.degrees(dq)),
+                            final_q_deg, c='b', s=0.8)
 
-        ax1.set_yticks([0, 45, 90])
-        ax1.set_yticklabels([r'$0$', r'$45$', r'$90$'])
+        ax1.set_yticks([0, 90, 180])
+        ax1.set_yticklabels([r'$0$', r'$90$', r'$180$'])
         ax1.set_ylabel(r'$\theta_{f}$ (deg)')
         ax1.set_title(title)
 
         if two_panel:
-            ax2.set_xticks([0, 30, 60, 90], [r'$0$', r'$30$', r'$60$', r'$90$'])
-            ax2.set_yticks([0, 0.5, 1], [r'$0$', r'$0.5$', r'$1$'])
-
-            ax2.set_xlabel(r'$\theta_{sd,i}$')
+            ax_ticks = ax2
             ax2.set_ylabel('Prob')
         else:
-            ax1.set_xticks([0, 30, 60, 90])
-            ax1.set_xticklabels([r'$0$', r'$30$', r'$60$', r'$90$'])
-
-            ax1.set_xlabel(r'$\theta_{sd,i}$')
+            ax_ticks = ax1
+        ax_ticks.set_xticks([0, 90, 180])
+        ax_ticks.set_xticklabels([r'$0$', r'$90$', r'$180$'])
+        ax_ticks.set_xlabel(r'$\theta_{sd,i}$')
 
     else:
         # just plot data
         fig, ax1 = plt.subplots(1, 1)
         ax1.set_xlabel(r'$\theta_{sd,i}$')
         ax1.set_ylabel(r'$\theta_{f}$ (deg)')
-        ax1.set_xticks([0, 30, 60, 90], [r'$0$', r'$30$', r'$60$', r'$90$'])
-        ax1.set_yticks([0, 45, 90], [r'$0$', r'$45$', r'$90$'])
+        ax1.set_xticks([0, 90, 180], [r'$0$', r'$90$', r'$180$'])
+        ax1.set_yticks([0, 90, 180], [r'$0$', r'$90$', r'$180$'])
         ylims = plt.ylim()
 
         # fit = dong's est +- linear
@@ -832,9 +849,13 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
     q_final = np.maximum(np.degrees(s_final * np.cos(I)), np.degrees(q2))
     ylims = plt.ylim()
     plt.semilogx(eps_vals, q_final, 'r:', label='Analytical')
-    plt.axvline(np.sin(I), c='k')
+    eta_cross = get_etac(I) / 2 # some characteristic value
+    q_x = np.pi / 4 # another ballpark value, crossing theta
+    eps_nonad = np.sqrt(eta_cross * np.sin(I) * np.sin(q_x) * (
+                        eta_cross * np.sin(I) / np.sin(q_x)**3 + 1))
+    plt.axvline(eps_nonad, c='k')
     plt.fill_betweenx(ylims,
-                      np.sin(I), eps_min, color='0.5', alpha=0.5)
+                      eps_nonad, eps_min, color='0.5', alpha=0.5)
     plt.xlim([eps_min, eps_max])
     plt.ylim(ylims)
     plt.xlabel(r'$\epsilon$')
@@ -904,29 +925,29 @@ def plot_singles(I):
                 dq=0.99 * np.pi / 2, events=events)
 
 def plot_manys(I):
-    sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51)
-    sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
-                 two_panel=False)
-    sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
-                 two_panel=False)
-    sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
-    sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
-    sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
-                 two_panel=False)
-    sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
-                 two_panel=False, dqmin=0.01)
+    sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51, extra_plot=True)
+    # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
+    #              two_panel=False, extra_plot=True)
+    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
+    #              two_panel=False, extra_plot=True)
+    # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
+    # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
+    # sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
+    #              two_panel=False)
+    # sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
+    #              two_panel=False, dqmin=0.01)
 
-    sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
-                 adiabatic=False, dqmin=0.01)
-    sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
-                 adiabatic=False, dqmin=0.01)
-    sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
-                 adiabatic=False, dqmin=0.01)
+    # sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
+    #              adiabatic=False, dqmin=0.01)
+    # sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
+    #              adiabatic=False, dqmin=0.01)
+    # sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
+    #              adiabatic=False, dqmin=0.01)
 
 if __name__ == '__main__':
     I = np.radians(5)
     # plot_singles(I)
-    plot_manys(I)
+    # plot_manys(I)
 
     # testing high epsilon
     # eta_c = get_etac(I)
@@ -936,9 +957,9 @@ if __name__ == '__main__':
     # ret = solve_ic_base(I, -5, y0, np.inf, events=[term_event])
     # plot_traj_colors(I, ret, '3testo_inf')
 
-    # eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
-    # eps_scan(np.radians(20), eps_max=10, eps_min=5e-2,
-    #          n_pts=301, filename='3scan_20')
+    eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
+    eps_scan(np.radians(20), eps_max=10, eps_min=5e-2,
+             n_pts=301, filename='3scan_20')
     # I_scan(5, filename='3Iscan_test', n_pts=31, n_pts_ring=2)
     # I_scan(1, filename='3Iscan_test_eps1', n_pts=31, n_pts_ring=2)
     # I_scan(20, filename='3Iscan_test_eps20', n_pts=31, n_pts_ring=2)
