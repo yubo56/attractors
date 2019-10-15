@@ -180,16 +180,19 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     a_init_int = areas[0]
     a_init_dq = 2 * np.pi * (1 - np.cos(dq))
     print('Areas (integrated/estimated): ', a_init_int, a_init_dq)
+    # a_init_int seems to not have the right sign for 33?
+    a_init = a_init_dq
 
     # calculate times to plot for snapshots
     dAreas = abs((areas[1: ] - areas[ :-1]) / areas[1: ])
     peak_idxs = np.argsort(dAreas)
     # plot @ sep appearance
-    cross_idx = np.where(eta_areas < eta_c)[0][0]
-    sep_idxs = peak_idxs[-num_snapshots: ]
-    # 2 plots for every sep_idx
-    plot_idxs = sorted([1, cross_idx, *sep_idxs,
-                        *([i + 1 for i in sep_idxs])]) + [-2]
+    if plot_type != '33':
+        cross_idx = np.where(eta_areas < eta_c)[0][0]
+        sep_idxs = peak_idxs[-num_snapshots: ]
+        # 2 plots for every sep_idx
+        plot_idxs = sorted([1, cross_idx, *sep_idxs,
+                            *([i + 1 for i in sep_idxs])]) + [-2]
 
     fig, (ax1, ax3) = plt.subplots(2, 1,
                             sharex=True,
@@ -234,9 +237,9 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
 
     # plot trajectory's mu, separatrix's min/max mu, CS2
     A_sep_crit = 4 * np.pi * (1 - (1 + np.tan(I)**(2/3))**(-3/2))
-    if a_init_int < A_sep_crit:
-        opt_func = lambda eta: sep_areas_exact(I, eta)[1] - a_init_int
-        eta_guess = (a_init_int / 16)**2 / np.sin(I)
+    if a_init < A_sep_crit:
+        opt_func = lambda eta: sep_areas_exact(I, eta)[1] - a_init
+        eta_guess = (a_init / 16)**2 / np.sin(I)
         eta_cross = opt.newton(opt_func, x0=eta_guess)
         a_crossed21 = -sep_areas_exact(I, eta_cross)[0]
         a_crossed23 = sum(sep_areas_exact(I, eta_cross)[ :2])
@@ -319,9 +322,10 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     else:
         ax3.legend(loc='upper right')
 
-    for ax in [ax1, ax3]:
-        for plt_idx in plot_idxs:
-            ax.axvline(eta_areas[plt_idx], c='g', lw=0.5)
+    if plot_type != '33':
+        for ax in [ax1, ax3]:
+            for plt_idx in plot_idxs:
+                ax.axvline(eta_areas[plt_idx], c='g', lw=0.5)
 
     # flip axes
     xlims = ax3.set_xlim()
@@ -334,6 +338,8 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
 
     # separately:
     # plot snapshots @ every jump in areas
+    if plot_type == '33':
+        return
     n_rows = (len(plot_idxs) + 1) // 2
     fig, axs_nest = plt.subplots(n_rows, 2, sharex=True, sharey='row',
                                  figsize=(6, 4))
@@ -453,8 +459,7 @@ def fetch_ring(I, eta, dq, n_pts):
 def get_ring_area(ret):
     '''
     get the enclosed area for a ring of ICs, 2pi * (1 - cos q) isn't accurate
-    enough For testing purposes, I = 20deg, dq = 80deg, anal area is 5.19212,
-    integrated is 3.61797
+    enough
 
     A third area-getter since I really didn't bother building out good
     abstractions whoops
@@ -476,7 +481,7 @@ def get_ring_area(ret):
         x, y, z, _ = ret.sol(t_vals)
         q, phi = to_ang(x, y, z)
         dphi = np.gradient(np.unwrap(phi))
-        return np.sum(np.cos(q) * dphi)
+        return np.sum((1 - np.cos(q)) * dphi)
 
 def sim_for_dq(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=10, dq=0.3,
                plot=False):
@@ -545,26 +550,20 @@ def plot_anal_qfs(I, dqs, res_arr, eta0, axs, two_panel=True):
             j_init_comp = 4 * np.pi - j_init
             # root find for eta when A3 = 4 * np.pi - j_init
             opt_func = lambda eta: sep_areas_exact(I, eta)[2] - j_init_comp
-            eta_guess = ((
-                4 * np.sqrt(np.sin(I)) + np.sqrt(
-                    16 * np.sin(I) + 2 * np.pi * np.cos(I) * j_init)
-            ) / (2 * np.pi * np.cos(I)))**2
-            # do not guess higher than eta_c, will diverge area
-            eta_guess = min(eta_guess, 0.999 * get_etac(I))
+            eta_max = 0.99999 * get_etac(I)
             try:
-                root = opt.bisect(opt_func, 0, eta_guess)
+                # always search for highest root, bisect above eta_a3_min
+                root = opt.bisect(opt_func, min_A3_eta, eta_max)
                 idx_3.append(idx)
-                # ensure caught highest root
-                try:
-                    higher_root = opt.bisect(opt_func, 1.001 * root, eta_guess)
-                    eta_3.append(higher_root)
-                except:
-                    eta_3.append(root)
+                eta_3.append(root)
             except:
-                print('Could not find crossing eta', j_init, I, min_A3)
                 idx_33.append(idx)
                 continue
         else:
+            # HACK if the area is small but obviously 3->3
+            if dqs[idx] > np.pi / 2:
+                idx_33.append(idx)
+                continue
             # root find for eta when A2 = j_init
             opt_func = lambda eta: sep_areas_exact(I, eta)[1] - j_init
             eta_guess = (j_init / 16)**2 / np.sin(I)
@@ -611,7 +610,7 @@ def plot_anal_qfs(I, dqs, res_arr, eta0, axs, two_panel=True):
              'm', label=r'$3\to2\to1$')
 
     # A3 -> A3 (probably not interesting)
-    # ax1.plot(np.degrees(dqs[idx_33]), np.degrees(dqs[idx_33]), 'c')
+    ax1.plot(np.degrees(dqs[idx_33]), np.degrees(dqs[idx_33]), 'c')
 
     ax1.legend()
     if not two_panel:
@@ -753,10 +752,10 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
                                     figsize=(6, 8),
                                     gridspec_kw={'height_ratios': [3, 2]})
             fig.subplots_adjust(hspace=0)
-            # plot_anal_qfs(I, dqs, res_arr, eta0, [ax1, ax2], two_panel)
+            plot_anal_qfs(I, dqs, res_arr, eta0, [ax1, ax2], two_panel)
         else:
             fig, ax1 = plt.subplots(1, 1, figsize=(6, 6))
-            # plot_anal_qfs(I, dqs, res_arr, eta0, [ax1], two_panel)
+            plot_anal_qfs(I, dqs, res_arr, eta0, [ax1], two_panel)
 
         # now plot data
         for dq, final_mus in zip(dqs, res_arr):
@@ -847,16 +846,19 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
 
     s_final = np.sqrt(2 * np.pi / eps_vals) * np.tan(I)
     q_final = np.maximum(np.degrees(s_final * np.cos(I)), np.degrees(q2))
-    ylims = plt.ylim()
+    ylims = [0, plt.ylim()[1]]
     plt.semilogx(eps_vals, q_final, 'r:', label='Analytical')
-    eta_cross = get_etac(I) / 2 # some characteristic value
-    q_x = np.pi / 4 # another ballpark value, crossing theta
-    eps_nonad = np.sqrt(eta_cross * np.sin(I) * np.sin(q_x) * (
-                        eta_cross * np.sin(I) / np.sin(q_x)**3 + 1))
+    eta_cross = get_etac(I) # some characteristic value
+    q_x = q2 # another ballpark value, crossing theta
+    eps_nonad = np.sqrt(
+        eta_cross * np.sin(I) * np.sin(q_x)
+            * (eta_cross * np.sin(I) / np.sin(q_x)**3 + 1)) / (2 * np.pi)
     plt.axvline(eps_nonad, c='k')
     plt.fill_betweenx(ylims,
                       eps_nonad, eps_min, color='0.5', alpha=0.5)
     plt.xlim([eps_min, eps_max])
+    plt.yticks([np.degrees(I), 90],
+               [r'$%d$' % np.degrees(I), r'$90$'])
     plt.ylim(ylims)
     plt.xlabel(r'$\epsilon$')
     plt.ylabel(r'$\theta_{ f}$')
@@ -913,23 +915,25 @@ def plot_singles(I):
     term_event.terminal = True
     events = [term_event]
 
-    plot_single(I, -0.1, tf, eta0, q2, '3testo_nonad', dq=0.3,
-                events=events)
-    plot_single(I, -3e-4, tf, eta0, q2, '3testo23', plot_type='23', dq=0.3,
-                events=events)
-    plot_single(I, -3.01e-4, tf, eta0, q2, '3testo21', plot_type='21', dq=0.3,
-                events=events)
-    plot_single(I, -3.14e-4, tf, eta0, q2, '3testo321', plot_type='321',
-                dq=np.radians(60), num_snapshots=2, events=events)
-    plot_single(I, -3.01e-4, tf, eta0, q2, '3testo31', plot_type='31',
-                dq=0.99 * np.pi / 2, events=events)
+    # plot_single(I, -0.1, tf, eta0, q2, '3testo_nonad', dq=0.3,
+    #             events=events)
+    # plot_single(I, -3e-4, tf, eta0, q2, '3testo23', plot_type='23', dq=0.3,
+    #             events=events)
+    # plot_single(I, -3.01e-4, tf, eta0, q2, '3testo21', plot_type='21', dq=0.3,
+    #             events=events)
+    # plot_single(I, -3.14e-4, tf, eta0, q2, '3testo321', plot_type='321',
+    #             dq=np.radians(60), num_snapshots=2, events=events)
+    # plot_single(I, -3.01e-4, tf, eta0, q2, '3testo31', plot_type='31',
+    #             dq=0.99 * np.pi / 2, events=events)
+    # plot_single(I, -3e-4, tf, eta0, q2, '3testo33', plot_type='33',
+    #             dq=0.99 * np.pi, events=events)
 
 def plot_manys(I):
     sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51, extra_plot=True)
-    # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
-    #              two_panel=False, extra_plot=True)
-    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
-    #              two_panel=False, extra_plot=True)
+    sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
+                 two_panel=False, extra_plot=True)
+    sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
+                 two_panel=False, extra_plot=True)
     # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
     # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
     # sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
@@ -947,7 +951,7 @@ def plot_manys(I):
 if __name__ == '__main__':
     I = np.radians(5)
     # plot_singles(I)
-    # plot_manys(I)
+    plot_manys(I)
 
     # testing high epsilon
     # eta_c = get_etac(I)
@@ -957,9 +961,9 @@ if __name__ == '__main__':
     # ret = solve_ic_base(I, -5, y0, np.inf, events=[term_event])
     # plot_traj_colors(I, ret, '3testo_inf')
 
-    eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
-    eps_scan(np.radians(20), eps_max=10, eps_min=5e-2,
-             n_pts=301, filename='3scan_20')
+    # eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
+    # eps_scan(np.radians(20), eps_max=10, eps_min=5e-2,
+    #          n_pts=301, filename='3scan_20')
     # I_scan(5, filename='3Iscan_test', n_pts=31, n_pts_ring=2)
     # I_scan(1, filename='3Iscan_test_eps1', n_pts=31, n_pts_ring=2)
     # I_scan(20, filename='3Iscan_test_eps20', n_pts=31, n_pts_ring=2)
