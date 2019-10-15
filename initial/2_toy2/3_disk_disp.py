@@ -171,10 +171,12 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
         with open(PKL_FN, 'wb') as f:
             pickle.dump((ret, t_end_lib, t_end_circ,
                          t_areas, t_areas_f, areas), f)
+        print('Saved %s' % PKL_FN)
     else:
         with open(PKL_FN, 'rb') as f:
             ret, t_end_lib, t_end_circ,\
                 t_areas, t_areas_f, areas = pickle.load(f)
+        print('Loaded %s' % PKL_FN)
     # get initial area
     eta_areas = ret.sol(t_areas)[3]
     a_init_int = areas[0]
@@ -579,19 +581,19 @@ def plot_anal_qfs(I, dqs, res_arr, eta0, axs, two_panel=True):
     q_f_23 = [np.arccos(sep_areas_exact(I, eta)[2] / (2 * np.pi) - 1)
               for eta in eta_2[idx_23]]
     ax1.plot(np.degrees(dqs[idx_23]), np.degrees(q_f_23), 'r',
-             label=r'$2\to3$')
+             label=r'$II \to III$')
 
     # A2 -> A1, all eta_2s
     q_f_21 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
               for eta in eta_2]
     ax1.plot(np.degrees(dqs[idx_2]), np.degrees(q_f_21), 'c',
-             label=r'$2\to1$')
+             label=r'$II \to I$')
 
     # A3 -> A1, J_f = A2_star + A3_star
     q_f_31 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
               for eta in eta_3]
     ax1.plot(np.degrees(dqs[idx_3]), np.degrees(q_f_31), 'g',
-             label=r'$3\to1$')
+             label=r'$III \to I$')
 
     # A3 -> A2 -> A1
     eta_second_cross = []
@@ -607,12 +609,19 @@ def plot_anal_qfs(I, dqs, res_arr, eta0, axs, two_panel=True):
     q_f_321 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
                for eta in eta_second_cross]
     ax1.plot(np.degrees(dqs[idx_3][idx_second_cross]), np.degrees(q_f_321),
-             'm', label=r'$3\to2\to1$')
+             'm', label=r'$III \to II\to I$')
 
-    # A3 -> A3 (probably not interesting)
-    ax1.plot(np.degrees(dqs[idx_33]), np.degrees(dqs[idx_33]), 'c')
+    # A3 -> A3
+    # dq (theta_{sd,i}) does not accurately predict the enclosed area when we
+    # are close to CS3, use angular distance to CS3 instead
+    q2, q3 = roots(I, eta0)
+    _dqs_cs3 = q2 + dqs - q3 % (2 * np.pi) + np.pi
+    # make sure does not exceed 180 degrees (np.pi)
+    dqs_cs3 = np.minimum(_dqs_cs3, 2 * np.pi - _dqs_cs3)
+    ax1.plot(np.degrees(dqs[idx_33]), np.degrees(dqs_cs3[idx_33]), 'k',
+             label=r'$III \to III$')
 
-    ax1.legend()
+    ax1.legend(loc='upper left', prop={'size': 14})
     if not two_panel:
         return
 
@@ -652,6 +661,18 @@ def plot_anal_qfs(I, dqs, res_arr, eta0, axs, two_panel=True):
     P_31 = -dA1_31 / dA3_31
     ax2.plot(np.degrees(dqs[idx_3]),
              np.minimum(P_31, np.ones_like(P_31)), 'g')
+    # Prob 3 -> 3 (trivial)
+    P_33 = np.degrees(dqs[idx_33])
+    ax2.plot(P_33, np.ones_like(P_33), 'k')
+
+    # analytical estimates
+    eta_cross = (np.pi * dqs**2 / 16)**2 / np.sin(I)
+    ax2.plot(np.degrees(dqs),
+             (-2 * np.pi * eta_cross + 4 * np.sqrt(eta_cross * np.sin(I)))
+             / (8 * np.sqrt(eta_cross * np.sin(I))), 'k:', linewidth=0.6)
+    ax2.plot(np.degrees(dqs),
+             (2 * np.pi * eta_cross + 4 * np.sqrt(eta_cross * np.sin(I)))
+             / (8 * np.sqrt(eta_cross * np.sin(I))), 'k:', linewidth=0.6)
 
     # plot data-generated points for probabilities
     for eta, q23, q21, dq, final_mus in\
@@ -675,6 +696,7 @@ def plot_anal_qfs(I, dqs, res_arr, eta0, axs, two_panel=True):
         ax2.scatter(np.degrees(dqs[idx]), count_321 / len(final_mus), c='b', s=0.8)
         ax2.scatter(np.degrees(dqs[idx]), 1 - (count_321 / len(final_mus)),
                     c='b', s=0.8)
+    ax2.set_ylim([-0.1, 1.1])
 
 def plot_ICs(I, eta0, dqs, n_pts):
     q2, _ = roots(I, eta0)
@@ -908,7 +930,7 @@ def I_scan(eps, filename='3Iscan', dq=0.01, n_pts=151, n_pts_ring=21,
 def plot_singles(I):
     tf = np.inf
     eta0 = 10 * get_etac(I)
-    q2, _ = roots(I, eta0)
+    q2, q3 = roots(I, eta0)
 
     eta_f = 3e-4
     term_event = lambda t, y: y[3] - eta_f
@@ -925,8 +947,8 @@ def plot_singles(I):
     #             dq=np.radians(60), num_snapshots=2, events=events)
     # plot_single(I, -3.01e-4, tf, eta0, q2, '3testo31', plot_type='31',
     #             dq=0.99 * np.pi / 2, events=events)
-    # plot_single(I, -3e-4, tf, eta0, q2, '3testo33', plot_type='33',
-    #             dq=0.99 * np.pi, events=events)
+    plot_single(np.radians(20), -3e-4, tf, eta0, q2, '3testo33',
+                plot_type='33', dq=0.99 * np.pi, events=events)
 
 def plot_manys(I):
     sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51, extra_plot=True)
