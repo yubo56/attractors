@@ -53,9 +53,11 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     ''' plot exact area + my old approx '''
     eta_c = (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
     scale_pow = 3
-    eta = np.linspace(0, eta_c**(1/scale_pow), 101)**scale_pow
+    eta = np.linspace(0, eta_c**(1/scale_pow), 1001)**scale_pow
 
     A1w, A2w, A3w = get_areas_ward(eta, I)
+    A_sep_crit = 1 - (1 + (np.tan(I))**(2/3))**(-3/2)
+    print(A2w.max(), A_sep_crit * 4 * np.pi)
     A2ys = 16 * np.sqrt(eta * np.sin(I))
     A1ys = 2 * np.pi * (1 - eta * np.cos(I)) - A2ys / 2
     A3ys = 2 * np.pi * (1 + eta * np.cos(I)) - A2ys / 2
@@ -65,6 +67,7 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     plt.plot(eta, A2w / (4 * np.pi), 'k', label=r'$A_{II}$')
     plt.plot(eta, A3ys / (4 * np.pi), 'r:')
     plt.plot(eta, A3w / (4 * np.pi), 'r', label=r'$A_{III}$')
+    # plt.axhline(A_sep_crit, c='b', lw=0.6)
 
     # dotted line continuation to show "analytic" continuation
     eta_cont = np.linspace(eta_c, 1.2 * eta_c, 21)
@@ -85,5 +88,5 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
 
 if __name__ == '__main__':
     # plot_A_crit()
-    # plot_areas()
+    plot_areas()
     plot_areas(I=np.radians(20), filename='1_areas20')

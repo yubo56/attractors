@@ -18,10 +18,4 @@ Paper notes:
 Pitch as both solving disk problem over larger ICs but also has wide range of
 applications
 Maximum-period orbit to update epsilon criterion?
-Explain coordinate choice somewhere
-S2: need epsilon + values
-
-- Fig 4:
-    - Redo 3-1 transition w/ different dq, not different eps
-- mention canonical mu/phi somewhere
-- get some numbers for eta/eps
+S2: need physical values for everything

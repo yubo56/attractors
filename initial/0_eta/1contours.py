@@ -7,7 +7,8 @@ plt.rc('font', family='serif', size=16)
 from utils import roots, get_four_subplots, plot_point, H, get_grids, get_etac,\
     get_sep_area
 
-def plot_H_for_eta(f, ax, eta, I):
+letters = ['a', 'b', 'c', 'd']
+def plot_H_for_eta(f, ax, eta, I, idx):
     '''
     Hamiltonian is H = 1/2 cos^2(theta) + eta * sin(phi)
     canonical variables are (phi, x = cos(theta))
@@ -19,7 +20,7 @@ def plot_H_for_eta(f, ax, eta, I):
                       cmap='RdBu_r', linewidths=0.8, levels=5)
 
     thetas, phis = roots(I, eta)
-    colors = ['r', 'm', 'g', 'c'] if len(thetas) == 4 else ['m', 'g']
+    colors = ['y', 'r', 'm', 'c'] if len(thetas) == 4 else ['r', 'm']
     for color, theta, phi in zip(colors, thetas, phis):
         plot_point(ax, theta, '%so' % color, markersize=6)
 
@@ -76,7 +77,7 @@ def plot_H_for_eta(f, ax, eta, I):
         ax.text(2 * np.pi / 3, np.cos(thetas[0]) - 0.1 - font_height, 'II')
         ax.text(0.3, np.cos(thetas[1]) + 0.6, 'III')
 
-    ax.set_title(r'$\eta = %.2f$' % eta, fontsize=14)
+    ax.set_title(r'(%s) $\eta = %.2f$' % (letters[idx], eta), fontsize=14)
 
     plt.suptitle(r'$I = %d^\circ, \eta_c = %.3f$' %
                  (np.degrees(I), eta_c))
@@ -93,8 +94,8 @@ if __name__ == '__main__':
     # plt.clf()
 
     f, axs = get_four_subplots()
-    for ax, eta in zip(axs, [2, 0.73, 0.4, 0.1]):
-        plot_H_for_eta(f, ax, eta, I)
+    for idx, (ax, eta) in enumerate(zip(axs, [2, 0.73, 0.4, 0.1])):
+        plot_H_for_eta(f, ax, eta, I, idx)
 
     plt.savefig('1contours_flip.png', dpi=400)
     plt.clf()

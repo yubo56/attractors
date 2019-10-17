@@ -58,14 +58,24 @@ def plot_cs(I=np.radians(5)):
                 cs_lst.append(root_val)
 
     etas_four = etas[np.where(etas < etac)[0]]
-    plt.semilogx(etas_four, np.degrees(cs_vals[0]), 'r', label='1')
-    plt.semilogx(etas, np.degrees(cs_vals[1]), 'm', label='2')
-    plt.semilogx(etas, np.degrees(cs_vals[2]), 'g', label='3')
+    plt.semilogx(etas_four, np.degrees(cs_vals[0]), 'y', label='1')
+    plt.semilogx(etas, np.degrees(cs_vals[1]), 'r', label='2')
+    plt.semilogx(etas, np.degrees(cs_vals[2]), 'm', label='3')
     plt.semilogx(etas_four, np.degrees(cs_vals[3]), 'c', label='4')
     plt.xlabel(r'$\eta$')
     plt.ylabel(r'$\theta$ (deg)')
     plt.legend(loc='lower right')
     plt.xlim([min_eta, max_eta])
+    plt.yticks([-180 + np.degrees(I),
+                -90,
+                np.degrees(I),
+                90],
+               [r'$%d$' % (np.degrees(I) - 180),
+                r'$-90$',
+                r'$%d$' % np.degrees(I),
+                r'$90$'])
+    plt.axhline(np.degrees(I), lw=0.8, c='k', ls='dashed')
+    plt.axhline(-180 + np.degrees(I), lw=0.8, c='k', ls='dashed')
     plt.axvline(etac, c='k', lw='0.8', ls='dashed')
     plt.title(r'$I = %d^\circ, \eta_c = %.3f$' % (np.degrees(I), etac))
     plt.tight_layout()
