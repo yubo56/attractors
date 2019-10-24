@@ -385,7 +385,8 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
         # shade the enclosed phase space area
         ylims = ax.get_ylim()
         # give a small bit of extra space
-        ylims = (max(ylims[0] - 0.05, -1), min(ylims[1] + 0.05, 1))
+        ylims = (max(ylims[0] - 0.1 * abs(ylims[0]), -1),
+                 min(ylims[1] + 0.1 * abs(ylims[1]), 1))
         ax.set_ylim(ylims)
         if abs(phi_uw[-1] - phi_uw[0]) > np.pi:
             # circulating, if phi increasing, shade grey, else red
@@ -1023,7 +1024,7 @@ def plot_manys(I):
 
 if __name__ == '__main__':
     I = np.radians(5)
-    # plot_singles(I)
+    plot_singles(I)
     # plot_manys(I)
 
     # testing high epsilon
