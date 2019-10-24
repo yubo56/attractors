@@ -38,7 +38,8 @@ def roots(I, eta):
             roots.append(opt.bisect(f, qi - dq, qi + dq))
         return np.array(roots)
 
-def plot_cs(I=np.radians(5)):
+def get_cs(I):
+    ''' gets list of cassini states at an uneven grid of etas '''
     etac = get_etac(I)
     eps = 1e-5
     min_eta, max_eta = etac / 30, etac * 30
@@ -56,8 +57,12 @@ def plot_cs(I=np.radians(5)):
         else:
             for cs_lst, root_val in zip(cs_vals, root_vals):
                 cs_lst.append(root_val)
-
     etas_four = etas[np.where(etas < etac)[0]]
+    return etas, cs_vals, etas_four, etac
+
+def plot_cs(I=np.radians(5)):
+    etas, cs_vals, etas_four, etac = get_cs(I)
+
     plt.semilogx(etas_four, np.degrees(cs_vals[0]), 'y', label='1')
     plt.semilogx(etas, np.degrees(cs_vals[1]), 'r', label='2')
     plt.semilogx(etas, np.degrees(cs_vals[2]), 'm', label='3')
@@ -65,7 +70,7 @@ def plot_cs(I=np.radians(5)):
     plt.xlabel(r'$\eta$')
     plt.ylabel(r'$\theta$ (deg)')
     plt.legend(loc='lower right')
-    plt.xlim([min_eta, max_eta])
+    plt.xlim([min(etas), max(etas)])
     plt.yticks([-180 + np.degrees(I),
                 -90,
                 np.degrees(I),
@@ -80,6 +85,44 @@ def plot_cs(I=np.radians(5)):
     plt.title(r'$I = %d^\circ, \eta_c = %.3f$' % (np.degrees(I), etac))
     plt.tight_layout()
     plt.savefig('2_cs_locs.png', dpi=400)
+    plt.clf()
+
+def plot_eigens(I=np.radians(5)):
+    etas, cs_vals, etas_four, etac = get_cs(I)
+    def lambda2(eta, q, sign):
+        # note that the 4 CSs are 0, pi/2, -pi, -pi/2 by convention, which
+        # correspond to sign choices of -1 for all of them.
+        return (
+            (np.sin(q) - sign * eta * np.sin(I) / (np.sin(q)**2)) *
+            (sign * eta * np.sin(I))) / (1 + eta**2)
+    plt.semilogx(etas_four,
+                 [lambda2(e, q, -1)
+                  for e, q in zip(etas_four, cs_vals[0])],
+                  'y', label='1')
+    plt.semilogx(etas,
+                 [lambda2(e, q, -1)
+                  for e, q in zip(etas, cs_vals[1])],
+                  'r', label='2')
+    plt.semilogx(etas,
+                 [lambda2(e, q, -1)
+                  for e, q in zip(etas, cs_vals[2])],
+                  'm', label='3')
+    plt.semilogx(etas_four,
+                 [lambda2(e, q, -1)
+                  for e, q in zip(etas_four, cs_vals[3])],
+                  'c', label='4')
+    # plt.yscale('symlog', linthreshy=1e-5)
+    plt.xlabel(r'$\eta$')
+    plt.ylabel(r'$\lambda^2/ (1 + \eta^2)$')
+    plt.legend(loc='lower right')
+    plt.xlim([min(etas), max(etas)])
+    plt.axhline(0, lw=0.8, c='k', ls='dashed')
+    plt.axvline(etac, c='k', lw='0.8', ls='dashed')
+    plt.title(r'$I = %d^\circ, \eta_c = %.3f$' % (np.degrees(I), etac))
+    plt.tight_layout()
+    plt.savefig('2_lambdas.png', dpi=400)
+    plt.clf()
 
 if __name__ == '__main__':
-    plot_cs(np.radians(5))
+    # plot_cs(np.radians(5))
+    plot_eigens(np.radians(5))
