@@ -84,14 +84,14 @@ def plot_H_for_eta(f, ax, eta, I, idx):
 
 if __name__ == '__main__':
     I = np.radians(5)
-    # f, axs = get_four_subplots()
-    # # Figures 3b-3e of Kassandra's paper
-    # for ax, eta in zip(axs, [0.1, 0.5, 0.561, 2]):
-    #     plot_H_for_eta(f, ax, eta, I)
+    f, axs = get_four_subplots()
+    # Figures 3b-3e of Kassandra's paper
+    for idx, (ax, eta) in enumerate(zip(axs, [0.1, 0.5, 0.561, 2])):
+        plot_H_for_eta(f, ax, eta, I, idx)
 
-    # plt.suptitle(r'$\eta_c = %.3f$' % get_etac(I))
-    # plt.savefig('1contours.png', dpi=400)
-    # plt.clf()
+    plt.suptitle(r'$\eta_c = %.3f$' % get_etac(I))
+    plt.savefig('1contours.png', dpi=400)
+    plt.clf()
 
     f, axs = get_four_subplots()
     for idx, (ax, eta) in enumerate(zip(axs, [2, 0.73, 0.4, 0.1])):
