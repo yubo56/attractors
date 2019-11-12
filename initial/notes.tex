@@ -1411,23 +1411,26 @@ Note that for Jupiter, $k_p \sim 0.27$ while $J_2 \sim \scinot{1.4}{-2}$ giving
 $k_{qp} \sim 0.0467$ since $k_{qp} \frac{\Omega}{\sqrt{GM_p/R_p^3}} = J_2$.
 Consider again the precession frequencies
 \begin{align}
-    \omega_{s1} &= \frac{3k_{qp}}{2k_p}\p*{\frac{R_1}{a_1}}^3s,\\
-        &\approx 0.011\;\mathrm{yr^{-1}}
+    \omega_{s1} &= \frac{3k_{qp}}{2k_p}\frac{M_*}{m_1}
+            \p*{\frac{R_1}{a_1}}^3s,\\
+        &\approx 10\;\mathrm{yr^{-1}}
+            \p*{\frac{M_*/m_1}{300}}
             \p*{\frac{5.5 k_{qp}}{k_p}}\p*{\frac{R_1}{2R_J}}^3
                 \p*{\frac{a_1}{0.05\;\mathrm{AU}}}^{-3}
                 \p*{\frac{s}{2\pi / 10\;\mathrm{hr}}},\\
     \omega_{1p} &= \frac{3m_p}{4m_1} \frac{a_1}{a_p\p*{1 - e_p^2}} \Omega_1,\\
-        &\approx 0.017\;\mathrm{yr^{-1}}
+        &\approx 0.0625\;\mathrm{yr^{-1}}
             \frac{m_p/m_1}{0.003}
-            \p*{\frac{a_1/a_p}{0.01}}
-            \frac{\Omega_1}{2\pi / 3\;\mathrm{days}}
+            \p*{\frac{a_1/a_p}{0.05}}
+            \frac{\Omega_1}{2\pi / 4\;\mathrm{days}}
             \frac{1}{1 - e_p^2}.
 \end{align}
-So with a bit of tweaking, we can barely get $\omega_{1p} \lesssim \omega_{s1}$.
-Recall that $\eta = \frac{\omega_{1p}\cos I}{\omega_{s1}}$, which here $\sim 1$.
-We simulated above for initial conditions $\frac{s_c}{s} = \eta \sim 0.1$, which
-grows as $s$ spins down. This implies $\frac{s_c}{\Omega_1} \sim 1000$
-though\dots
+Let's note that the effective initial $\eta = \frac{\omega_{1p}\cos
+I}{\omega_{s1}} \sim 0.006$. Furthermore, the smallest $\eta$ we can get at
+small final obliquities is just when $s = \Omega_1$, which is roughly a factor
+of $10$ increase so $\eta_f \sim 0.06$. Recall that $\eta = \frac{s_c}{s}
+\approx \frac{s_c}{\Omega_1}0.1$ since $\Omega_1/s \approx 0.1$, then $s_c
+\approx 0.06$ as well.
 
 Let's also evaluate
 \begin{align}

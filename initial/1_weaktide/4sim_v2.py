@@ -353,6 +353,29 @@ def statistics(trajs, I, eps, s_c, s0=10, tf=2500):
     plt.savefig('4_stats%s.png' % s_c_str(s_c), dpi=400)
     plt.close(fig)
 
+def plot_final_dists(trajs, I, eps, s_c, s0=10, tf=2500):
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
+    titles = ['No hop, CS1', 'No hop, CS2', 'Cross to CS1', 'Hop to CS2']
+    for ax, outcome_trajs, title in\
+            zip([ax1, ax2, ax3, ax4], trajs, titles):
+        ax.set_title(title)
+        ax.set_xlabel(r'$s_f$')
+        ax.set_ylabel(r'$\cos \theta_f$')
+        if not outcome_trajs:
+            continue
+        s_f = []
+        mu_f = []
+        for _, _, _, mu_pi, s_pi, _, _, _, _ in outcome_trajs:
+            s_f.append(s_pi[-1])
+            mu_f.append(mu_pi[-1])
+        ax.scatter(s_f, mu_f, s=0.5**2, c='k')
+    plt.suptitle(r'$I = %d^\circ, s_c = %.2f, T_f = %d$' %
+                 (np.degrees(I), s_c, tf))
+    plt.tight_layout()
+    plt.subplots_adjust(top=0.85)
+    plt.savefig('4outcomes%s.png' % s_c_str(s_c), dpi=400)
+    plt.clf()
+
 def cross_times(trajs, I, eps, s_c, s0=10, tf=2500):
     '''
     plot t_cross and s_cross(H_4 - H_0) (H4 > H0 for all these, H4 evaluated at
@@ -566,5 +589,6 @@ if __name__ == '__main__':
 
     for s_c in s_c_vals:
         trajs = run_sim(I, eps, s_c, num_threads=4)
-        statistics(trajs, I, eps, s_c)
-        cross_times(trajs, I, eps, s_c)
+        # statistics(trajs, I, eps, s_c)
+        # cross_times(trajs, I, eps, s_c)
+        plot_final_dists(trajs, I, eps, s_c)
