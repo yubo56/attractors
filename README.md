@@ -30,3 +30,8 @@ On `5outcomes0_60.png`, idx1 make sense as the points that do not undergo sep
 cross, either to CS2 (spin is so low it never sees a sep) or go straight up to
 CS2. idx3 on the other hand:
   - 0.9172209, 2.01255 is an example; think it's just a very late sep encounter?
+
+
+## TODO (11/14)
+- get distribution of CS1/CS2 endpoints cumulative and over the various tracks
+  (did I really have 8???)
