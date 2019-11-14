@@ -15,14 +15,12 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
-    stringify, H, roots, get_H4
+    stringify, H, roots, get_H4, s_c_str
 PKL_FILE = '5dat%s.pkl'
 N_PTS = 1000
+N_THREADS = 4
 TF = 8000
 TIMES = np.exp(np.linspace(0, np.log(TF), 100))
-
-def s_c_str(s_c):
-    return ('%.2f' % s_c).replace('.', '_')
 
 def solve_with_events(I, s_c, eps, mu0, phi0, s0):
     '''
@@ -91,9 +89,9 @@ def _run_sim_thread(I, eps, s_c, s0, num_threads, thread_idx):
         '''
         returns 0-3 describing early stage outcome
         '''
-        args, mu, phi, s = solve_with_events(I, s_c, eps, mu0, phi0, s0)
-        print('(%d-%d/%d) Finished for %.2f, %.3f, %.3f' %
+        print('(%d-%d/%d) Starting for %.2f, %.3f, %.3f' %
               (thread_idx, idx, N_PTS, s_c, mu0, phi0))
+        args, mu, phi, s = solve_with_events(I, s_c, eps, mu0, phi0, s0)
 
         t_cross, _ = get_sep_hop(*args)
         H_f = H(I, s_c, s[-1], mu[-1], phi[-1])
@@ -143,6 +141,7 @@ def run_sim(I, eps, s_c, s0=10, num_threads=1):
         print('Running sims, %s not found' % pkl_fn)
         assert num_threads > 0
 
+        # _run_sim_thread(I, eps, s_c, s0, num_threads, 0)
         p = Pool(num_threads)
         traj_lst = p.starmap(_run_sim_thread, [
             (I, eps, s_c, s0, num_threads, thread_idx)
@@ -188,12 +187,10 @@ def plot_final_dists(I, s_c, s0, trajs):
             ax.scatter(s[-1], mu[-1], c='k', s=2**2)
 
     # set up all labels/bounds
-    for ax in [axes[2], axes[3]]:
-        ax.set_xlabel(r'$s_f$')
-        ax.set_xlim([0, s0])
-    for ax in [axes[0], axes[2]]:
-        ax.set_ylabel(r'$\cos \theta_f$')
-        ax.set_ylim([-1, 1])
+    axes[2].set_xlabel(r'$s_f$')
+    axes[2].set_xlim([0, s0])
+    axes[2].set_ylabel(r'$\cos \theta_f$')
+    axes[2].set_ylim([-1, 1])
     cbar = fig.colorbar(scat, ax=_axes.ravel().tolist())
     cbar.minorticks_off()
     cbar.set_ticks(t_colors)
@@ -211,9 +208,30 @@ if __name__ == '__main__':
     s_c_vals = [
         0.6,
         0.2,
+        0.4,
+        0.5,
+        0.3,
+        0.55,
+        0.45,
+        0.35,
+        # 0.25,
         # 0.06,
     ]
 
+    counts = []
     for s_c in s_c_vals:
-        trajs = run_sim(I, eps, s_c, s0=s0, num_threads=4)
-        plot_final_dists(I, s_c, s0, trajs)
+        trajs = run_sim(I, eps, s_c, s0=s0, num_threads=N_THREADS)
+        count = 0
+        for outcome_trajs in trajs:
+            for traj in outcome_trajs:
+                mu = traj[0]
+                if mu[-1] > 0.85:
+                    count += 1
+        counts.append(count)
+        # plot_final_dists(I, s_c, s0, trajs)
+    plt.plot(s_c_vals, np.array(counts) / (N_THREADS * N_PTS), 'bo')
+    plt.xlabel(r'$s_c / \Omega_1$')
+    plt.ylabel('CS1 Prob')
+    plt.ylim([0, 1])
+    plt.savefig('5probs', dpi=400)
+    plt.clf()

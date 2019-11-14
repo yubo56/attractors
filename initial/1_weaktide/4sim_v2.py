@@ -18,7 +18,7 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
-    stringify, H, roots, get_H4
+    stringify, H, roots, get_H4, s_c_str
 PLOT_DIR = '4plots'
 PKL_FILE = '4dat%s.pkl'
 N_PTS = 100
@@ -29,8 +29,18 @@ ETA_CUTOFF = 0.3
 def get_name(s_c, eps, mu0, phi0):
     return stringify(s_c, mu0, phi0, strf='%.3f').replace('-', 'n')
 
-def s_c_str(s_c):
-    return ('%.2f' % s_c).replace('.', '_')
+def label_outcome_helper(t_cross, H_f, I, s_c, s0):
+    H4 = get_H4(I, s_c, s0)
+    if t_cross == -1: # no sep encounter, either above or below H4
+        if H_f > H4:
+            return 1
+        else:
+            return 0
+    else:
+        if H_f > H4:
+            return 3
+        else:
+            return 2
 
 def solve_with_events(I, s_c, eps, mu0, phi0, s0, tf):
     '''
@@ -91,7 +101,7 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
     single orbits in (phi, mu) for each parameter set
     '''
     filename_no_ext = '%s/%s' % (PLOT_DIR, get_name(s_c, eps, mu0, phi0))
-    title_str = r'$(s_c; s_0, \mu_0, \phi_0) = (%.2f; %d, %.3f, %.2f)$'
+    title_str = r'(%d) $(s_c; s_0, \mu_0, \phi_0) = (%.2f; %d, %.3f, %.2f)$'
     if os.path.exists('%s.png' % filename_no_ext):
         print(filename_no_ext, 'exists!')
         return
@@ -115,11 +125,18 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
     mu4_idx = np.where(mu4 > 0)
     ax.plot(s[mu4_idx], mu4[mu4_idx], 'g:', label=r'$\mu_4$')
 
+    # figure out which label to use
+    t_cross, _ = get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi)
+    x_f, y_f, z_f, s_f = ret.y[:, -1]
+    q_f, phi_f = to_ang(x_f, y_f, z_f)
+    H_f = H(I, s_c, s_f, np.cos(q_f), phi_f)
+    label = label_outcome_helper(t_cross, H_f, I, s_c, s0)
+
     ax.set_xlabel(r'$s$')
     ax.set_ylabel(r'$\mu$')
     ax.set_xlim([0, 1.1 * s0])
     ax.legend(loc='lower right')
-    plt.suptitle(title_str % (s_c, s0, mu0, phi0))
+    plt.suptitle(title_str % (label, s_c, s0, mu0, phi0))
     plt.savefig('%s.png' % filename_no_ext, dpi=400)
     plt.close(fig)
 
@@ -130,7 +147,6 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
     t_plot0 = t_events[0]
     t_plot3 = t_events[-3]
 
-    t_cross, _ = get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi)
     if t_cross == -1:
         t_plot1, t_plot2 = t_plot0 + (
             np.array([1, 2]) / 3 * (t_plot3 - t_plot0))
@@ -191,7 +207,7 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
     ax3.set_ylabel(r'$\mu$')
     ax4.set_xlabel(r'$\phi$')
 
-    plt.suptitle(title_str % (s_c, s0, mu0, phi0))
+    plt.suptitle(title_str % (label, s_c, s0, mu0, phi0))
     plt.savefig('%s_ind.png' % filename_no_ext, dpi=400)
     plt.close(fig)
 
@@ -213,22 +229,22 @@ def plot_individual(I, eps):
     s0 = 10
 
     # s_c = 0.7, strongly attracting, plot above/inside/below respectively
-    plot_traj(I, eps, 0.7, 0.99, 0, s0)
-    plot_traj(I, eps, 0.7, 0.8, 0, s0)
-    plot_traj(I, eps, 0.7, 0.1, 2 * np.pi / 3, s0)
-    plot_traj(I, eps, 0.7, -0.8, 0, s0)
+    plot_traj(I, eps, 0.6, 0.99, 0, s0, tf=8000)
+    plot_traj(I, eps, 0.6, 0.8, 0, s0, tf=8000)
+    plot_traj(I, eps, 0.6, 0.1, 2 * np.pi / 3, s0, tf=8000)
+    plot_traj(I, eps, 0.6, -0.8, 0, s0, tf=8000)
 
     # s_c = 0.2, probabilistic, plot above/inside/below-enter/below-through
-    plot_traj(I, eps, 0.2, 0.3, 0, s0)
-    plot_traj(I, eps, 0.2, 0.05, 2 * np.pi / 3, s0)
-    plot_traj(I, eps, 0.2, -0.8, 0, s0)
-    plot_traj(I, eps, 0.2, -0.81, 0, s0)
-    plot_traj(I, eps, 0.2, -0.99, 0, s0)
+    plot_traj(I, eps, 0.2, 0.3, 0, s0, tf=8000)
+    plot_traj(I, eps, 0.2, 0.05, 2 * np.pi / 3, s0, tf=8000)
+    plot_traj(I, eps, 0.2, -0.8, 0, s0, tf=8000)
+    plot_traj(I, eps, 0.2, -0.81, 0, s0, tf=8000)
+    plot_traj(I, eps, 0.2, -0.99, 0, s0, tf=8000)
 
     # extra case for low-s_c calc
-    plot_traj(I, eps, 0.03, -0.3, 0, s0, tf=1500)
-    plot_traj(I, eps, 0.03, -0.5, 0, s0, tf=1500)
-    plot_traj(I, eps, 0.03, -0.8, 0, s0, tf=1500)
+    # plot_traj(I, eps, 0.03, -0.3, 0, s0, tf=1500)
+    # plot_traj(I, eps, 0.03, -0.5, 0, s0, tf=1500)
+    # plot_traj(I, eps, 0.03, -0.8, 0, s0, tf=1500)
 
 def _run_sim_thread(I, eps, s_c, s0, tf, num_threads, thread_idx):
     '''
@@ -236,7 +252,6 @@ def _run_sim_thread(I, eps, s_c, s0, tf, num_threads, thread_idx):
     '''
     mus = np.linspace(-0.99, 0.99, N_PTS)
     phis = np.linspace(0.1, 2 * np.pi - 0.1, N_PTS)
-    H4 = get_H4(I, s_c, s0)
     trajs = [[], [], [], []]
 
     def get_outcome_for_init(mu0, phi0, thread_idx):
@@ -253,18 +268,7 @@ def _run_sim_thread(I, eps, s_c, s0, tf, num_threads, thread_idx):
         q_f, phi_f = to_ang(x_f, y_f, z_f)
         H_f = H(I, s_c, s_f, np.cos(q_f), phi_f)
         store_tuple = (mu_0, s_0, t_0, mu_pi, s_pi, t_pi, mu0, phi0, shat_f)
-        if t_cross == -1: # no sep encounter, either above or below H4
-            if H_f > H4:
-                return 1, store_tuple
-            else:
-                assert z_f > 0, 'z_f is %f' % z_f
-                return 0, store_tuple
-        else:
-            if H_f > H4:
-                return 3, store_tuple
-            else:
-                assert z_f > 0, 'z_f is %f' % z_f
-                return 2, store_tuple
+        return label_outcome_helper(t_cross, H_f, I, s_c, s0), store_tuple
 
     for mu0 in mus:
         for phi0 in phis[thread_idx::num_threads]:
@@ -579,16 +583,16 @@ if __name__ == '__main__':
 
     plot_individual(I, eps)
 
-    s_c_vals = [
-        0.7,
-        0.2,
-        0.4,
-        0.55, # eta_crit = 0.574 for I = 20
-        0.05,
-    ]
+    # s_c_vals = [
+    #     0.7,
+    #     0.2,
+    #     0.4,
+    #     0.55, # eta_crit = 0.574 for I = 20
+    #     0.05,
+    # ]
 
-    for s_c in s_c_vals:
-        trajs = run_sim(I, eps, s_c, num_threads=4)
-        # statistics(trajs, I, eps, s_c)
-        # cross_times(trajs, I, eps, s_c)
-        plot_final_dists(trajs, I, eps, s_c)
+    # for s_c in s_c_vals:
+    #     trajs = run_sim(I, eps, s_c, num_threads=4)
+    #     statistics(trajs, I, eps, s_c)
+    #     cross_times(trajs, I, eps, s_c)
+    #     # plot_final_dists(trajs, I, eps, s_c)

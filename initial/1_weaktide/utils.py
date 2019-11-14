@@ -58,7 +58,10 @@ def roots(I, s_c, s):
         roots = []
         inits = [np.pi / 2 - I, -np.pi + I]
         for qi in inits:
-            roots.append(opt.newton(f, qi, fprime=fp))
+            # newton doesn't seem to work very well here @ large eta
+            # roots.append(opt.newton(f, qi, fprime=fp))
+            dq = np.pi / 2
+            roots.append(opt.bisect(f, qi - dq, qi + dq))
         return np.array(roots)
 
 def solve_ic(I, s_c, eps, y0, tf, method='RK45', rtol=1e-6, **kwargs):
@@ -241,3 +244,6 @@ def get_dydt_piecewise(I, s_c):
                                 )[close_below_idx]
         return ds, dmu
     return dydt
+
+def s_c_str(s_c):
+    return ('%.2f' % s_c).replace('.', '_')
