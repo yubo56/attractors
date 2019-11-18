@@ -33,5 +33,12 @@ CS2. idx3 on the other hand:
 
 
 ## TODO (11/14)
+- Figure out why small sc gets stuck
+- Plot probabilities of equilibria as function of initial theta (or maybe
+  initial H? That was messy but probably correct)
 - get distribution of CS1/CS2 endpoints cumulative and over the various tracks
-  (did I really have 8???)
+  (did I really have 8 tracks???)
+- Maybe consider basin of attraction for CS2 w/ nonzero eps?
+- Maybe backreaction terms and/or s ~ 1 (Kassandra's paper?)
+- Something later: whether can be trapped in resonance, and whether is stable
+  (stability/fragility)
