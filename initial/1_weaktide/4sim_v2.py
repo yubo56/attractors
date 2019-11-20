@@ -95,12 +95,15 @@ def get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi):
             # no separatrix crossing, even distribution
             return -1, -1
 
-def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
+def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500, plotdir=PLOT_DIR):
     '''
     plots (s, mu_{+-}) trajectory over time (shaded) and a few snapshots of
     single orbits in (phi, mu) for each parameter set
     '''
-    filename_no_ext = '%s/%s' % (PLOT_DIR, get_name(s_c, eps, mu0, phi0))
+    if not os.path.exists(plotdir):
+        os.mkdir(plotdir)
+
+    filename_no_ext = '%s/%s' % (plotdir, get_name(s_c, eps, mu0, phi0))
     title_str = r'(%d) $(s_c; s_0, \mu_0, \phi_0) = (%.2f; %d, %.3f, %.2f)$'
     if os.path.exists('%s.png' % filename_no_ext):
         print(filename_no_ext, 'exists!')
@@ -211,7 +214,7 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500):
     plt.savefig('%s_ind.png' % filename_no_ext, dpi=400)
     plt.close(fig)
 
-def plot_individual(I, eps):
+def plot_individual(I, eps, plotdir=PLOT_DIR):
     '''
     in the terminology of statistics, the below correspond to cases (in order):
     VI (first attracts onto CS1, then kicked into circulating about CS2 at
@@ -229,22 +232,22 @@ def plot_individual(I, eps):
     s0 = 10
 
     # s_c = 0.7, strongly attracting, plot above/inside/below respectively
-    plot_traj(I, eps, 0.6, 0.99, 0, s0, tf=8000)
-    plot_traj(I, eps, 0.6, 0.8, 0, s0, tf=8000)
-    plot_traj(I, eps, 0.6, 0.1, 2 * np.pi / 3, s0, tf=8000)
-    plot_traj(I, eps, 0.6, -0.8, 0, s0, tf=8000)
+    plot_traj(I, eps, 0.6, 0.99, 0, s0, tf=8000, plotdir=plotdir)
+    plot_traj(I, eps, 0.6, 0.8, 0, s0, tf=8000, plotdir=plotdir)
+    plot_traj(I, eps, 0.6, 0.1, 2 * np.pi / 3, s0, tf=8000, plotdir=plotdir)
+    plot_traj(I, eps, 0.6, -0.8, 0, s0, tf=8000, plotdir=plotdir)
 
     # s_c = 0.2, probabilistic, plot above/inside/below-enter/below-through
-    plot_traj(I, eps, 0.2, 0.3, 0, s0, tf=8000)
-    plot_traj(I, eps, 0.2, 0.05, 2 * np.pi / 3, s0, tf=8000)
-    plot_traj(I, eps, 0.2, -0.8, 0, s0, tf=8000)
-    plot_traj(I, eps, 0.2, -0.81, 0, s0, tf=8000)
-    plot_traj(I, eps, 0.2, -0.99, 0, s0, tf=8000)
+    plot_traj(I, eps, 0.2, 0.3, 0, s0, tf=8000, plotdir=plotdir)
+    plot_traj(I, eps, 0.2, 0.05, 2 * np.pi / 3, s0, tf=8000, plotdir=plotdir)
+    plot_traj(I, eps, 0.2, -0.8, 0, s0, tf=8000, plotdir=plotdir)
+    plot_traj(I, eps, 0.2, -0.81, 0, s0, tf=8000, plotdir=plotdir)
+    plot_traj(I, eps, 0.2, -0.99, 0, s0, tf=8000, plotdir=plotdir)
 
     # extra case for low-s_c calc
-    # plot_traj(I, eps, 0.03, -0.3, 0, s0, tf=1500)
-    # plot_traj(I, eps, 0.03, -0.5, 0, s0, tf=1500)
-    # plot_traj(I, eps, 0.03, -0.8, 0, s0, tf=1500)
+    # plot_traj(I, eps, 0.03, -0.3, 0, s0, tf=1500, plotdir=plotdir)
+    # plot_traj(I, eps, 0.03, -0.5, 0, s0, tf=1500, plotdir=plotdir)
+    # plot_traj(I, eps, 0.03, -0.8, 0, s0, tf=1500, plotdir=plotdir)
 
 def _run_sim_thread(I, eps, s_c, s0, tf, num_threads, thread_idx):
     '''
@@ -575,13 +578,11 @@ def cross_times(trajs, I, eps, s_c, s0=10, tf=2500):
     plt.close(fig)
 
 if __name__ == '__main__':
-    if not os.path.exists(PLOT_DIR):
-        os.mkdir(PLOT_DIR)
-
     I = np.radians(20)
     eps = 1e-3
 
-    plot_individual(I, eps)
+    # plot_individual(I, eps)
+    plot_individual(np.radians(5), eps, plotdir='4plots_I5')
 
     # s_c_vals = [
     #     0.7,

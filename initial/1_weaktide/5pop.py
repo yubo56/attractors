@@ -16,8 +16,9 @@ plt.rc('font', family='serif', size=14)
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
     stringify, H, roots, get_H4, s_c_str
-PKL_FILE = '5dat%s.pkl'
+PKL_FILE = '5dat%s_%d.pkl'
 N_PTS = 1000
+# N_PTS = 1 # TEST
 N_THREADS = 4
 TF = 8000
 TIMES = np.exp(np.linspace(0, np.log(TF), 100))
@@ -111,6 +112,11 @@ def _run_sim_thread(I, eps, s_c, s0, num_threads, thread_idx):
     np.random.seed()
     mus = (np.random.rand(N_PTS) * 2) - 1
     phis = np.random.rand(N_PTS) * 2 * np.pi
+    # TEST
+    # mus = [np.cos(2.21700)]
+    # phis = [2.70410]
+    # mus = [0.99]
+    # phis = [0]
     for mu0, phi0, idx in zip(mus, phis, range(N_PTS)):
         outcome, traj = get_outcome_for_init(mu0, phi0, thread_idx, idx)
         trajs[outcome].append(traj)
@@ -135,12 +141,13 @@ def run_sim(I, eps, s_c, s0=10, num_threads=1):
     later outcomes since bifurcation is later than separatrix interactions. So
     we will focus on (s0, mu0, phi0) -> {I, IV} outcome probability
     '''
-    pkl_fn = PKL_FILE % s_c_str(s_c)
+    pkl_fn = PKL_FILE % (s_c_str(s_c), np.degrees(I))
 
     if not os.path.exists(pkl_fn):
         print('Running sims, %s not found' % pkl_fn)
         assert num_threads > 0
 
+        # TEST
         # _run_sim_thread(I, eps, s_c, s0, num_threads, 0)
         p = Pool(num_threads)
         traj_lst = p.starmap(_run_sim_thread, [
@@ -177,7 +184,7 @@ def plot_final_dists(I, s_c, s0, trajs):
         if not outcome_trajs:
             continue
         # mu, s, mu0, phi0
-        for mu, s, _, _ in outcome_trajs:
+        for mu, s, _, _ in outcome_trajs[::20]:
             scat = ax.scatter(s[::stride], mu[::stride],
                               c=t_colors,
                               norm=matplotlib.colors.LogNorm(),
@@ -197,41 +204,99 @@ def plot_final_dists(I, s_c, s0, trajs):
     cbar.set_ticklabels([round(t) for t in t_colors])
     plt.suptitle(r'$I = %d^\circ, s_c = %.2f, T_f = %d$ (NH-1, NH-2, X1, X2)' %
                  (np.degrees(I), s_c, TF))
-    plt.savefig('5outcomes%s.png' % s_c_str(s_c), dpi=400)
+    plt.savefig('5outcomes%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
     plt.clf()
 
-if __name__ == '__main__':
-    I = np.radians(5)
-    eps = 1e-3
-    s0 = 10
+def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
+    fig.subplots_adjust(hspace=0)
+    mu4 = get_mu4(I, s_c, np.array([s0]))[0]
+    mu2 = get_mu2(I, s_c, np.array([s0]))[0]
+    H4 = get_H4(I, s_c, s0)
 
-    s_c_vals = [
-        0.6,
-        0.2,
-        0.4,
-        0.5,
-        0.3,
-        0.55,
-        0.45,
-        0.35,
-        # 0.25,
-        # 0.06,
-    ]
+    # plot hist vs mu0 (significant blending)
+    # mu0_eq1 = [ic[0] for ic in IC_eq1]
+    # mu0_eq2 = [ic[0] for ic in IC_eq2]
+    # ax1.hist(mu0_eq1, bins=60)
+    # ax2.hist(mu0_eq2, bins=60)
 
-    counts = []
-    for s_c in s_c_vals:
-        trajs = run_sim(I, eps, s_c, s0=s0, num_threads=N_THREADS)
-        count = 0
-        for outcome_trajs in trajs:
-            for traj in outcome_trajs:
-                mu = traj[0]
-                if mu[-1] > 0.85:
-                    count += 1
-        counts.append(count)
-        # plot_final_dists(I, s_c, s0, trajs)
+    # try to plot hist vs some scaled form of delta H?
+    # max_H = H_max(I, s_c, s0)[1]
+    # def mapped_H(mu0, phi0):
+    #     ''' maps mu0 > mu4 above center, rescales to truncate tails '''
+    #     return (max_H - H(I, s_c, s0, mu0, phi0)) * np.sign(mu0 - mu4) / \
+    #         (10 + s0 / s_c * mu0**2)
+    # H_eq1 = [mapped_H(mu0, phi0) for mu0, phi0 in IC_eq1]
+    # H_eq2 = [mapped_H(mu0, phi0) for mu0, phi0 in IC_eq2]
+    # ax1.hist(H_eq1, bins=60)
+    # ax2.hist(H_eq2, bins=60)
+
+    # plot hist vs effective mu(phi = pi)
+    def get_mu_eff(mu0, phi0):
+        ''' solve for one of two roots, depending on which side of mu4 is on '''
+        H0 = H(I, s_c, s0, mu0, phi0)
+        def dH(mu):
+            return H0 - H(I, s_c, s0, mu, np.pi)
+        mu_thresh = mu4 if H0 < H4 else mu2
+        if mu0 > mu_thresh:
+            return opt.brentq(dH, mu_thresh, 1)
+        else:
+            return opt.brentq(dH, -1, mu_thresh)
+    mueff_eq1 = [get_mu_eff(mu0, phi0) for mu0, phi0 in IC_eq1]
+    mueff_eq2 = [get_mu_eff(mu0, phi0) for mu0, phi0 in IC_eq2]
+    ax1.hist(mueff_eq1, bins=60)
+    ax2.hist(mueff_eq2, bins=60)
+
+    ax2.set_xlabel(r'$\cos \theta_{eff}$')
+    ax1.set_ylabel('EQ1 Counts')
+    ax2.set_ylabel('EQ2 Counts')
+    plt.savefig('5Hhists%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
+    plt.clf()
+
+def plot_cum_probs(s_c_vals, counts):
     plt.plot(s_c_vals, np.array(counts) / (N_THREADS * N_PTS), 'bo')
     plt.xlabel(r'$s_c / \Omega_1$')
     plt.ylabel('CS1 Prob')
     plt.ylim([0, 1])
-    plt.savefig('5probs', dpi=400)
+    plt.savefig('5probs_%d' % np.degrees(I), dpi=400)
     plt.clf()
+
+if __name__ == '__main__':
+    eps = 1e-3
+    s0 = 10
+
+    s_c_vals = [
+        # 2.0,
+        # 1.2,
+        0.6,
+        0.55,
+        0.5,
+        0.45,
+        0.4,
+        0.35,
+        0.3,
+        0.25,
+        0.2,
+        0.06,
+    ]
+
+    counts = []
+    for I in [
+            np.radians(5),
+            # np.radians(20),
+    ]:
+        for s_c in s_c_vals:
+            IC_eq1 = []
+            IC_eq2 = []
+            trajs = run_sim(I, eps, s_c, s0=s0, num_threads=N_THREADS)
+            count = 0
+            for outcome_trajs in trajs:
+                for mu, s, mu0, phi0 in outcome_trajs:
+                    if mu[-1] > 0.85:
+                        IC_eq1.append((mu0, phi0))
+                    else:
+                        IC_eq2.append((mu0, phi0))
+            counts.append(len(IC_eq1))
+            # plot_final_dists(I, s_c, s0, trajs)
+            plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2)
+        # plot_cum_probs(s_c_vals, counts)

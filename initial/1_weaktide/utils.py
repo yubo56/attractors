@@ -36,6 +36,13 @@ def H(I, s_c, s, mu, phi):
         mu * np.cos(I) -
         np.sqrt(1 - mu**2) * np.sin(I) * np.cos(phi))
 
+def H_max(I, s_c, s):
+    ''' H_max is always at phi=pi '''
+    def minus_H(mu):
+        return -H(I, s_c, s, mu, np.pi)
+    res = opt.minimize_scalar(minus_H, bounds=(-1, 1), method='bounded')
+    return res.x, -res.fun
+
 def roots(I, s_c, s):
     '''
     returns theta roots from EOM, not phi (otherwise same as 0_eta func)
@@ -139,7 +146,7 @@ def get_dydt_0(I, s_c, eps):
         '''
         x, y, z, s = v
         # renormalize, else numerical error accumulates
-        x, y, z = v[ :3] / np.sqrt(np.sum(v[ :3]**2))
+        # x, y, z = v[ :3] / np.sqrt(np.sum(v[ :3]**2))
         tide = eps * 2 / s * (1 - s * z / 2)
         eta_inv = s / s_c
         ret = [
@@ -148,10 +155,14 @@ def get_dydt_0(I, s_c, eps):
             y * np.sin(I) + tide * (1 - z**2),
             2 * eps * (z - s * (1 + z**2) / 2),
         ]
+        # TEST
+        # if t / 100 - int(t / 100) < 1e-4:
+        #     print(t, v, ret)
+        #     # print(t)
 
         # take normal component to s
-        s_hat = np.array([x, y, z])
-        ret[ :3] -= np.dot(ret[ :3], s_hat) * s_hat
+        # s_hat = np.array([x, y, z])
+        # ret[ :3] -= np.dot(ret[ :3], s_hat) * s_hat
         return ret
     return dydt
 
