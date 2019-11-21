@@ -56,7 +56,7 @@ def dmu_mu_plot(s_c, s_val):
     plt.savefig('3diags_loglog%s.png' % stringify(s_c))
     plt.close()
 
-def plot_crits():
+def plot_crits(I=np.radians(20), fn='3crits'):
     '''
     find critical s_c as function of s where dmu/dt above CS4 changes from
     negative to positive
@@ -76,7 +76,7 @@ def plot_crits():
     plt.plot(s, crits)
     plt.xlabel(r'$s$')
     plt.ylabel(r'Critical $s_c$')
-    plt.savefig('3crits.png')
+    plt.savefig(fn)
     plt.close()
 
 def zones(s_c=0.7, s0=7):
@@ -124,4 +124,5 @@ if __name__ == '__main__':
     #     dmu_mu_plot(s_c, s_val)
 
     # plot_crits()
-    zones()
+    plot_crits(I=np.radians(5), fn='3crits5')
+    # zones()

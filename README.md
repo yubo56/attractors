@@ -5,7 +5,8 @@ tides, and maybe some actual attractors. References are in my Dropbox folder
 
 ## 1weaktide notes
 
-Taking some notes here
+Taking some notes here (these are probably outdated/obselete b/c of old work I
+forgot about)
 On sc = 0.06, seems like some states get stuck, e.g. for IC (-0.506, 6.189),
     stuck on t, svec, s = (
     785.7484653150983,
@@ -35,10 +36,14 @@ CS2. idx3 on the other hand:
 
 ## TODO (11/14)
 - Plot probabilities of equilibria as function of mu(eff) for given mu0, phi0
+    - mu(eff) doesn't work exactly at CS1/CS4 librating, but those are small so
+      just bin them all together?
+- seems like track existence is a function of I, unsurprisingly. Most important
+  is s(c) setting whether sep capture from above is possible, can compute
+  analytically!
 
 - get distribution of CS1/CS2 endpoints cumulative and over the various tracks
   (did I really have 8 tracks???)
-- seems like track existence is a function of I, unsurprisingly
 
 - Maybe consider basin of attraction for CS2 w/ nonzero eps?
 - Maybe backreaction terms and/or s ~ 1 (Kassandra's paper?)
