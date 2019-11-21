@@ -272,10 +272,16 @@ def plot_cum_probs(I, s_c_vals, counts):
     ax1.set_ylim([0, 1])
     ax1.set_ylabel('CS1 Prob')
 
-    # calculate locations of equilibria
-    cs1_equil_mu = -np.ones_like(s_c_vals) # -1 = does not exist
-    cs2_equil_mu = np.zeros_like(s_c_vals)
-    for idx, s_c in enumerate(s_c_vals):
+    # calculate locations of equilibria in ~continuous way
+    s_c_crit = get_etac(I) # etac = s_c_crit / (s = 1)
+    s_c_cont = np.concatenate((
+        np.linspace(min(s_c_vals), s_c_crit * 0.8, 30),
+        np.linspace(s_c_crit * 0.8, s_c_crit * 0.99, 30),
+        np.linspace(s_c_crit * 1.01, max(s_c_vals), 30)
+    ))
+    cs1_equil_mu = -np.ones_like(s_c_cont) # -1 = does not exist
+    cs2_equil_mu = np.zeros_like(s_c_cont)
+    for idx, s_c in enumerate(s_c_cont):
         def dmu_cs2_equil(s):
             mu_cs = np.cos(roots(I, s_c, s))
             mu_equil = get_mu_equil(s)
@@ -291,20 +297,20 @@ def plot_cum_probs(I, s_c_vals, counts):
         cs2_equil_mu[idx] = opt.bisect(dmu_cs2_equil, 0.1, 1)
         # if CS1 just before disappearing is below mu_equil, we won't have an
         # intersection
-        s_cs1_disappear = s_c / (0.999 * get_etac(I))
+        s_etac = s_c / (0.9999 * s_c_crit)
         # don't search if won't satisfy s < 1: mu_equil only defined for s < 1
-        if s_cs1_disappear > 1:
+        if s_etac > 1:
             continue
-        cs1_crit_mu = np.cos(roots(I, s_c, s_cs1_disappear)[0])
-        mu_equil_cs1_disappear = get_mu_equil(s_cs1_disappear)
-        if cs1_crit_mu > mu_equil_cs1_disappear:
-            cs1_equil_mu[idx] = opt.bisect(dmu_cs1_equil, s_cs1_disappear, 1)
+        cs1_crit_mu = np.cos(roots(I, s_c, s_etac)[0])
+        mu_equil_etac = get_mu_equil(s_etac)
+        if cs1_crit_mu > mu_equil_etac:
+            cs1_equil_mu[idx] = opt.bisect(dmu_cs1_equil, s_etac, 1)
 
     cs1_idxs = np.where(cs1_equil_mu > -1)[0]
-    ax2.plot(np.array(s_c_vals)[cs1_idxs],
+    ax2.plot(np.array(s_c_cont)[cs1_idxs],
              np.degrees(np.arccos(cs1_equil_mu[cs1_idxs])),
-             'go', label='CS1')
-    ax2.plot(s_c_vals, np.degrees(np.arccos(cs2_equil_mu)), 'bo', label='CS2')
+             'g', label='CS1 Eq')
+    ax2.plot(s_c_cont, np.degrees(np.arccos(cs2_equil_mu)), 'b', label='CS2 Eq')
     ax2.set_ylabel(r'$\theta$')
     ax2.set_xlabel(r'$s_c / \Omega_1$')
     ax2.legend()

@@ -264,4 +264,6 @@ def get_mu_equil(s):
     solve quadratic mu / (1 + mu^2) = s / 2
     assumes s <= 1 everywhere, else will fail
     '''
+    if s > 1:
+        raise ValueError('Cannot get equil mu for s > 1')
     return (2/s - np.sqrt(4 / s**2 - 4)) / 2
