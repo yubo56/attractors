@@ -258,3 +258,10 @@ def get_dydt_piecewise(I, s_c):
 
 def s_c_str(s_c):
     return ('%.2f' % s_c).replace('.', '_')
+
+def get_mu_equil(s):
+    '''
+    solve quadratic mu / (1 + mu^2) = s / 2
+    assumes s <= 1 everywhere, else will fail
+    '''
+    return (2/s - np.sqrt(4 / s**2 - 4)) / 2

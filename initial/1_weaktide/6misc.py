@@ -8,17 +8,7 @@ import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=16)
 
-from utils import roots, s_c_str
-
-# def solve_equils(I, s_c):
-#     cs_qs = roots(I, s_c, s)
-
-def get_mu_equil(s):
-    '''
-    solve quadratic mu / (1 + mu^2) = s / 2
-    assumes s <= 1 everywhere, else will fail
-    '''
-    return (2/s - np.sqrt(4 / s**2 - 4)) / 2
+from utils import roots, s_c_str, get_mu_equil
 
 def get_cs_val(I, s_c, s):
     '''

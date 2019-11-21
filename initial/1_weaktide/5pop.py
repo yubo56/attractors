@@ -15,7 +15,7 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
-    stringify, H, roots, get_H4, s_c_str
+    stringify, H, roots, get_H4, s_c_str, get_mu_equil
 PKL_FILE = '5dat%s_%d.pkl'
 N_PTS = 1000
 # N_PTS = 1 # TEST
@@ -261,11 +261,52 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     plt.savefig('5Hhists%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
     plt.close()
 
-def plot_cum_probs(s_c_vals, counts):
-    plt.plot(s_c_vals, np.array(counts) / (N_THREADS * N_PTS), 'bo')
-    plt.xlabel(r'$s_c / \Omega_1$')
-    plt.ylabel('CS1 Prob')
-    plt.ylim([0, 1])
+def plot_cum_probs(I, s_c_vals, counts):
+    '''
+    plot probabilities of ending up in CS1 and the obliquities of the two
+    '''
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
+    fig.subplots_adjust(hspace=0)
+    ax1.plot(s_c_vals, np.array(counts) / (N_THREADS * N_PTS), 'bo')
+    ax1.set_ylim([0, 1])
+    ax1.set_ylabel('CS1 Prob')
+
+    # calculate locations of equilibria
+    cs1_equil_mu = -np.ones_like(s_c_vals) # -1 = does not exist
+    cs2_equil_mu = np.zeros_like(s_c_vals)
+    for idx, s_c in enumerate(s_c_vals):
+        def dmu_cs2_equil(s):
+            mu_cs = np.cos(roots(I, s_c, s))
+            mu_equil = get_mu_equil(s)
+            if len(mu_cs) == 2:
+                return mu_cs[0] - mu_equil
+            else:
+                return mu_cs[1] - mu_equil
+        def dmu_cs1_equil(s):
+            # does not check eta < etac!
+            mu_cs = np.cos(roots(I, s_c, s))
+            mu_equil = get_mu_equil(s)
+            return mu_cs[0] - mu_equil
+        cs2_equil_mu[idx] = opt.bisect(dmu_cs2_equil, 0.1, 1)
+        # if CS1 just before disappearing is below mu_equil, we won't have an
+        # intersection
+        s_cs1_disappear = s_c / (0.999 * get_etac(I))
+        # don't search if won't satisfy s < 1: mu_equil only defined for s < 1
+        if s_cs1_disappear > 1:
+            continue
+        cs1_crit_mu = np.cos(roots(I, s_c, s_cs1_disappear)[0])
+        mu_equil_cs1_disappear = get_mu_equil(s_cs1_disappear)
+        if cs1_crit_mu > mu_equil_cs1_disappear:
+            cs1_equil_mu[idx] = opt.bisect(dmu_cs1_equil, s_cs1_disappear, 1)
+
+    cs1_idxs = np.where(cs1_equil_mu > -1)[0]
+    ax2.plot(np.array(s_c_vals)[cs1_idxs],
+             np.degrees(np.arccos(cs1_equil_mu[cs1_idxs])),
+             'go', label='CS1')
+    ax2.plot(s_c_vals, np.degrees(np.arccos(cs2_equil_mu)), 'bo', label='CS2')
+    ax2.set_ylabel(r'$\theta$')
+    ax2.set_xlabel(r'$s_c / \Omega_1$')
+    ax2.legend()
     plt.savefig('5probs_%d' % np.degrees(I), dpi=400)
     plt.close()
 
@@ -276,6 +317,9 @@ if __name__ == '__main__':
     s_c_vals = [
         2.0,
         1.2,
+        # 1.0,
+        # 0.7,
+        # 0.65,
         0.6,
         0.55,
         0.5,
@@ -290,8 +334,8 @@ if __name__ == '__main__':
 
     counts = []
     for I in [
-            np.radians(5),
-            # np.radians(20),
+            # np.radians(5),
+            np.radians(20),
     ]:
         for s_c in s_c_vals:
             mu_cs_cache = []
@@ -318,5 +362,5 @@ if __name__ == '__main__':
                         print('Unable to classify (s_f, mu_f):', s[-1], mu_f)
             counts.append(len(IC_eq1))
             # plot_final_dists(I, s_c, s0, trajs)
-            plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2)
-        # plot_cum_probs(s_c_vals, counts)
+            # plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2)
+        plot_cum_probs(I, s_c_vals, counts)
