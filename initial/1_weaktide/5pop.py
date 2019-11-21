@@ -238,10 +238,18 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
         def dH(mu):
             return H0 - H(I, s_c, s0, mu, np.pi)
         mu_thresh = mu4 if H0 < H4 else mu2
+        # try-except since CS1/CS4 librating ICs won't be able to find a
+        # mu_effective, hack for now
         if mu0 > mu_thresh:
-            return opt.brentq(dH, mu_thresh, 1)
+            try:
+                return opt.brentq(dH, mu_thresh, 1)
+            except ValueError:
+                return 1
         else:
-            return opt.brentq(dH, -1, mu_thresh)
+            try:
+                return opt.brentq(dH, -1, mu_thresh)
+            except ValueError:
+                return -1
     mueff_eq1 = [get_mu_eff(mu0, phi0) for mu0, phi0 in IC_eq1]
     mueff_eq2 = [get_mu_eff(mu0, phi0) for mu0, phi0 in IC_eq2]
     ax1.hist(mueff_eq1, bins=60)
@@ -266,8 +274,8 @@ if __name__ == '__main__':
     s0 = 10
 
     s_c_vals = [
-        # 2.0,
-        # 1.2,
+        2.0,
+        1.2,
         0.6,
         0.55,
         0.5,
@@ -286,16 +294,28 @@ if __name__ == '__main__':
             # np.radians(20),
     ]:
         for s_c in s_c_vals:
+            mu_cs_cache = []
             IC_eq1 = []
             IC_eq2 = []
             trajs = run_sim(I, eps, s_c, s0=s0, num_threads=N_THREADS)
             count = 0
             for outcome_trajs in trajs:
                 for mu, s, mu0, phi0 in outcome_trajs:
-                    if mu[-1] > 0.85:
-                        IC_eq1.append((mu0, phi0))
+                    mu_f = mu[-1]
+                    for s_key, mu_cs_cand in mu_cs_cache:
+                        if abs(s_key - s[-1]) < 1e-3:
+                            mu_cs = mu_cs_cand
+                            break
                     else:
+                        mu_cs = np.cos(roots(I, s_c, s[-1]))
+                        mu_cs_cache.append((s[-1], mu_cs))
+                    if len(mu_cs) == 4 and abs(mu_f - mu_cs[0]) < 1e-3:
+                        IC_eq1.append((mu0, phi0))
+                    elif len(mu_cs) == 2 or\
+                        (len(mu_cs) == 4 and abs(mu_f - mu_cs[1]) < 1e-3):
                         IC_eq2.append((mu0, phi0))
+                    else:
+                        print('Unable to classify (s_f, mu_f):', s[-1], mu_f)
             counts.append(len(IC_eq1))
             # plot_final_dists(I, s_c, s0, trajs)
             plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2)

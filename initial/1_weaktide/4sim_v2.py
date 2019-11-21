@@ -231,7 +231,7 @@ def plot_individual(I, eps, plotdir=PLOT_DIR):
     '''
     s0 = 10
 
-    # s_c = 0.7, strongly attracting, plot above/inside/below respectively
+    # s_c = 0.6, strongly attracting, plot above/inside/below respectively
     plot_traj(I, eps, 0.6, 0.99, 0, s0, tf=8000, plotdir=plotdir)
     plot_traj(I, eps, 0.6, 0.8, 0, s0, tf=8000, plotdir=plotdir)
     plot_traj(I, eps, 0.6, 0.1, 2 * np.pi / 3, s0, tf=8000, plotdir=plotdir)
