@@ -17,9 +17,10 @@ plt.rc('font', family='serif', size=14)
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
     stringify, H, roots, get_H4, s_c_str, get_mu_equil
 PKL_FILE = '5dat%s_%d.pkl'
-N_PTS = 1000
 # N_PTS = 1 # TEST
+N_PTS_TOTAL = 4000
 N_THREADS = 4
+N_PTS = N_PTS_TOTAL // N_THREADS
 TF = 8000
 TIMES = np.exp(np.linspace(0, np.log(TF), 100))
 
@@ -55,7 +56,7 @@ def get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi):
     '''
     # two ways to detect a separatrix crossing, either 1) t_0s stop appearing,
     # or 2) mu_pi - mu_0 changes signs
-    if len(t_0) > 0 and t_0[-1] < t_pi[-2]:
+    if len(t_0) and len(t_pi) and t_0[-1] < t_pi[-2]:
         # ends at librating, not circulating solution
 
         # (nb) technically, this could also be a circulating solution after
@@ -314,12 +315,12 @@ if __name__ == '__main__':
     eps = 1e-3
     s0 = 10
 
-    s_c_vals = [
+    s_c_vals_20 = [
         2.0,
         1.2,
-        # 1.0,
-        # 0.7,
-        # 0.65,
+        1.0,
+        0.7,
+        0.65,
         0.6,
         0.55,
         0.5,
@@ -331,12 +332,13 @@ if __name__ == '__main__':
         0.2,
         0.06,
     ]
+    s_c_vals_5 = s_c_vals_20 + [0.85, 0.8, 0.75]
 
-    counts = []
-    for I in [
-            # np.radians(5),
-            np.radians(20),
+    for I, s_c_vals in [
+            [np.radians(5), s_c_vals_5],
+            [np.radians(20), s_c_vals_20],
     ]:
+        counts = []
         for s_c in s_c_vals:
             mu_cs_cache = []
             IC_eq1 = []
