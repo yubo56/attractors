@@ -205,7 +205,7 @@ def plot_final_dists(I, s_c, s0, trajs):
     plt.suptitle(r'$I = %d^\circ, s_c = %.2f, T_f = %d$ (NH-1, NH-2, X1, X2)' %
                  (np.degrees(I), s_c, TF))
     plt.savefig('5outcomes%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
-    plt.clf()
+    plt.close()
 
 def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
@@ -251,7 +251,7 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     ax1.set_ylabel('EQ1 Counts')
     ax2.set_ylabel('EQ2 Counts')
     plt.savefig('5Hhists%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
-    plt.clf()
+    plt.close()
 
 def plot_cum_probs(s_c_vals, counts):
     plt.plot(s_c_vals, np.array(counts) / (N_THREADS * N_PTS), 'bo')
@@ -259,7 +259,7 @@ def plot_cum_probs(s_c_vals, counts):
     plt.ylabel('CS1 Prob')
     plt.ylim([0, 1])
     plt.savefig('5probs_%d' % np.degrees(I), dpi=400)
-    plt.clf()
+    plt.close()
 
 if __name__ == '__main__':
     eps = 1e-3
