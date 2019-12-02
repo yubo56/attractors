@@ -84,7 +84,11 @@ def plot_cs(I=np.radians(5)):
     plt.axvline(etac, c='k', lw='0.8', ls='dashed')
     plt.title(r'$I = %d^\circ, \eta_c = %.3f$' % (np.degrees(I), etac))
     plt.tight_layout()
-    plt.savefig('2_cs_locs.png', dpi=400)
+    plt.savefig('2_cs_locs', dpi=400)
+
+    xlims = plt.xlim()
+    plt.xlim(xlims[1], xlims[0]) # flip
+    plt.savefig('2_cs_locs_flip', dpi=400)
     plt.clf()
 
 def plot_eigens(I=np.radians(5)):
@@ -124,5 +128,5 @@ def plot_eigens(I=np.radians(5)):
     plt.clf()
 
 if __name__ == '__main__':
-    # plot_cs(np.radians(5))
-    plot_eigens(np.radians(5))
+    plot_cs(np.radians(5))
+    # plot_eigens(np.radians(5))

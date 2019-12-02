@@ -720,16 +720,22 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
         ax2.scatter(np.degrees(dq), 1 - (count_21 / len(final_mus)),
                     c='b', s=0.8)
     idxs_321_total = np.arange(len(dqs))[idx_3][idx_second_cross]
-    for eta, q321, q31, final_mus in\
+    # find the 321 idxs in dq_arr, and res_arr correspondingly
+    dq_321_min = min(dqs[idxs_321_total])
+    dq_321_max = max(dqs[idxs_321_total])
+    idx_321 = np.where(np.logical_and(
+        dqs_arr > dq_321_min, dqs_arr < dq_321_max))[0]
+    for eta, q321, q31, res_idx in\
             zip(eta_321[::interp], q_f_321[::interp], q_f_31[::interp],
-                res_arr):
+                idx_321):
+        final_mus = res_arr[res_idx]
         # figure out which of q23, q21 we are closer to
         count_321 = 0
         for final_mu in final_mus:
             if abs(final_mu - np.cos(q321)) < abs(final_mu - np.cos(q31)):
                 count_321 += 1
-        ax2.scatter(np.degrees(dqs[idx]), count_321 / len(final_mus), c='b', s=0.8)
-        ax2.scatter(np.degrees(dqs[idx]), 1 - (count_321 / len(final_mus)),
+        ax2.scatter(np.degrees(dqs_arr[res_idx]), count_321 / len(final_mus), c='b', s=0.8)
+        ax2.scatter(np.degrees(dqs_arr[res_idx]), 1 - (count_321 / len(final_mus)),
                     c='b', s=0.8)
 
 def plot_ICs(I, eta0, dqs, n_pts):
@@ -842,7 +848,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         ax_ticks.set_xlabel(r'$\theta_{sd,i}$')
 
         if dqs.max() > 3 * np.pi / 4:
-            ax1.legend(loc='upper left', prop={'size': 14})
+            ax1.legend(loc='lower right', prop={'size': 14})
             ax1.set_xlim([0, 180])
         else:
             ax1.legend(loc='lower left', prop={'size': 14})
@@ -1004,28 +1010,28 @@ def plot_singles(I):
 
 def plot_manys(I):
     sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51, extra_plot=True)
-    sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
-                 two_panel=False, extra_plot=True)
-    sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
-                 two_panel=False, extra_plot=True)
-    sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
-    sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
-    sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
-                 two_panel=False)
-    sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
-                 two_panel=False, dqmin=0.01)
+    # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
+    #              two_panel=False, extra_plot=True)
+    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
+    #              two_panel=False, extra_plot=True)
+    # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
+    # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
+    # sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
+    #              two_panel=False)
+    # sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
+    #              two_panel=False, dqmin=0.01)
 
-    sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
-                 adiabatic=False, dqmin=0.01)
-    sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
-                 adiabatic=False, dqmin=0.01)
-    sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
-                 adiabatic=False, dqmin=0.01)
+    # sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
+    #              adiabatic=False, dqmin=0.01)
+    # sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
+    #              adiabatic=False, dqmin=0.01)
+    # sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
+    #              adiabatic=False, dqmin=0.01)
 
 if __name__ == '__main__':
     I = np.radians(5)
-    plot_singles(I)
-    # plot_manys(I)
+    # plot_singles(I)
+    plot_manys(I)
 
     # testing high epsilon
     # eta_c = get_etac(I)
