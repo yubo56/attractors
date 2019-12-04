@@ -209,19 +209,64 @@ def plot_final_dists(I, s_c, s0, trajs):
     plt.close()
 
 def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
-    fig.subplots_adjust(hspace=0)
+    '''
+    plot scatter + theta-binned hist
+    '''
+    # set up axes
+    left, width = 0.1, 0.65
+    bottom, height = 0.1, 0.8
+    spacing = 0.005
+    rect_scatter = [left, bottom, width, height]
+    rect_histy = [left + width + spacing, bottom, 0.2, height]
+    plt.figure(figsize=(8, 8))
+    ax_scatter = plt.axes(rect_scatter)
+    ax_scatter.tick_params(direction='in', top=True, right=True)
+    ax_hist = plt.axes(rect_histy)
+    ax_hist.tick_params(direction='in', labelleft=False)
+
+    # plot scatter
+    ms = 3
+    # this is a bit of a stupid unpacking, but avoids having to case on IC*
+    # being zero-length
+    mu1 = [ic[0] for ic in IC_eq1]
+    mu2 = [ic[0] for ic in IC_eq2]
+    phi1 = [ic[1] for ic in IC_eq1]
+    phi2 = [ic[1] for ic in IC_eq2]
+    ax_scatter.scatter(phi1, mu1, c='r', label='EQ1', s=ms)
+    ax_scatter.scatter(phi2, mu2, c='g', label='EQ2', s=ms)
+    ax_scatter.set_xlabel(r'$\phi$')
+    ax_scatter.set_ylabel(r'$\cos \theta$')
+    ax_scatter.legend(loc='lower left')
+    ax_scatter.set_title(r'$s_c = %.2f, I = %d^\circ$' % (s_c, np.degrees(I)))
+    # overplot separatrix
+    lw = 2
+    n_pts = 50
+    phi_sep = np.linspace(0, 2 * np.pi, n_pts) # omit endpoints
+    mu_sep_top, mu_sep_bot = np.zeros_like(phi_sep), np.zeros_like(phi_sep)
     mu4 = get_mu4(I, s_c, np.array([s0]))[0]
-    mu2 = get_mu2(I, s_c, np.array([s0]))[0]
-    H4 = get_H4(I, s_c, s0)
+    for idx, phi in enumerate(phi_sep):
+        if idx == 0 or idx == phi:
+            mu_sep_bot[idx] = mu4
+            mu_sep_top[idx] = mu4
+            continue
+        def dH(mu):
+            return H(I, s_c, s0, mu, phi) - H(I, s_c, s0, mu4, 0)
+        mu_sep_bot[idx] = opt.brentq(dH, -1, mu4)
+        mu_sep_top[idx] = opt.brentq(dH, mu4, 1)
+    ax_scatter.plot(phi_sep, mu_sep_bot, 'k', lw=lw)
+    ax_scatter.plot(phi_sep, mu_sep_top, 'k', lw=lw)
 
     # plot hist vs mu0 (significant blending)
-    # mu0_eq1 = [ic[0] for ic in IC_eq1]
-    # mu0_eq2 = [ic[0] for ic in IC_eq2]
-    # ax1.hist(mu0_eq1, bins=60)
-    # ax2.hist(mu0_eq2, bins=60)
+    ax_hist.hist([mu1, mu2], bins=60, color=['r', 'g'],
+                 orientation='horizontal', stacked=True)
+    ax_hist.set_ylim(ax_scatter.get_ylim())
+
+    # for other two plots
+    # fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
+    # fig.subplots_adjust(hspace=0)
 
     # try to plot hist vs some scaled form of delta H?
+    # mu4 = get_mu4(I, s_c, np.array([s0]))[0]
     # max_H = H_max(I, s_c, s0)[1]
     # def mapped_H(mu0, phi0):
     #     ''' maps mu0 > mu4 above center, rescales to truncate tails '''
@@ -231,34 +276,38 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     # H_eq2 = [mapped_H(mu0, phi0) for mu0, phi0 in IC_eq2]
     # ax1.hist(H_eq1, bins=60)
     # ax2.hist(H_eq2, bins=60)
+    # ax2.set_xlabel(r'$H_{eff}$')
 
     # plot hist vs effective mu(phi = pi)
-    def get_mu_eff(mu0, phi0):
-        ''' solve for one of two roots, depending on which side of mu4 is on '''
-        H0 = H(I, s_c, s0, mu0, phi0)
-        def dH(mu):
-            return H0 - H(I, s_c, s0, mu, np.pi)
-        mu_thresh = mu4 if H0 < H4 else mu2
-        # try-except since CS1/CS4 librating ICs won't be able to find a
-        # mu_effective, hack for now
-        if mu0 > mu_thresh:
-            try:
-                return opt.brentq(dH, mu_thresh, 1)
-            except ValueError:
-                return 1
-        else:
-            try:
-                return opt.brentq(dH, -1, mu_thresh)
-            except ValueError:
-                return -1
-    mueff_eq1 = [get_mu_eff(mu0, phi0) for mu0, phi0 in IC_eq1]
-    mueff_eq2 = [get_mu_eff(mu0, phi0) for mu0, phi0 in IC_eq2]
-    ax1.hist(mueff_eq1, bins=60)
-    ax2.hist(mueff_eq2, bins=60)
+    # mu2 = get_mu2(I, s_c, np.array([s0]))[0]
+    # mu4 = get_mu4(I, s_c, np.array([s0]))[0]
+    # H4 = get_H4(I, s_c, s0)
+    # def get_mu_eff(mu0, phi0):
+    #     ''' solve for one of two roots, depending on which side of mu4 is on '''
+    #     H0 = H(I, s_c, s0, mu0, phi0)
+    #     def dH(mu):
+    #         return H0 - H(I, s_c, s0, mu, np.pi)
+    #     mu_thresh = mu4 if H0 < H4 else mu2
+    #     # try-except since CS1/CS4 librating ICs won't be able to find a
+    #     # mu_effective, hack for now
+    #     if mu0 > mu_thresh:
+    #         try:
+    #             return opt.brentq(dH, mu_thresh, 1)
+    #         except ValueError:
+    #             return 1
+    #     else:
+    #         try:
+    #             return opt.brentq(dH, -1, mu_thresh)
+    #         except ValueError:
+    #             return -1
+    # mueff_eq1 = [get_mu_eff(mu0, phi0) for mu0, phi0 in IC_eq1]
+    # mueff_eq2 = [get_mu_eff(mu0, phi0) for mu0, phi0 in IC_eq2]
+    # ax1.hist(mueff_eq1, bins=60)
+    # ax2.hist(mueff_eq2, bins=60)
+    # ax2.set_xlabel(r'$\cos \theta_{eff}$')
+    # ax1.set_ylabel('EQ1 Counts')
+    # ax2.set_ylabel('EQ2 Counts')
 
-    ax2.set_xlabel(r'$\cos \theta_{eff}$')
-    ax1.set_ylabel('EQ1 Counts')
-    ax2.set_ylabel('EQ2 Counts')
     plt.savefig('5Hhists%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
     plt.close()
 
@@ -370,5 +419,5 @@ if __name__ == '__main__':
                         print('Unable to classify (s_f, mu_f):', s[-1], mu_f)
             counts.append(len(IC_eq1))
             # plot_final_dists(I, s_c, s0, trajs)
-            # plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2)
-        plot_cum_probs(I, s_c_vals, counts)
+            plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2)
+        # plot_cum_probs(I, s_c_vals, counts)
