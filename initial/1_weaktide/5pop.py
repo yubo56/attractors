@@ -18,8 +18,8 @@ from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
     stringify, H, roots, get_H4, s_c_str, get_mu_equil
 PKL_FILE = '5dat%s_%d.pkl'
 # N_PTS = 1 # TEST
-N_PTS_TOTAL = 4000
-N_THREADS = 4
+N_PTS_TOTAL = 20000
+N_THREADS = 50
 N_PTS = N_PTS_TOTAL // N_THREADS
 TF = 8000
 TIMES = np.exp(np.linspace(0, np.log(TF), 100))
@@ -257,7 +257,7 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     ax_scatter.plot(phi_sep, mu_sep_top, 'k', lw=lw)
 
     # plot hist vs mu0 (significant blending)
-    ax_hist.hist([mu1, mu2], bins=60, color=['r', 'g'],
+    ax_hist.hist([mu2, mu1], bins=60, color=['g', 'r'],
                  orientation='horizontal', stacked=True)
     ax_hist.set_ylim(ax_scatter.get_ylim())
 
@@ -420,4 +420,4 @@ if __name__ == '__main__':
             counts.append(len(IC_eq1))
             # plot_final_dists(I, s_c, s0, trajs)
             plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2)
-        # plot_cum_probs(I, s_c_vals, counts)
+        plot_cum_probs(I, s_c_vals, counts)
