@@ -257,8 +257,9 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     ax_scatter.plot(phi_sep, mu_sep_top, 'k', lw=lw)
 
     # plot hist vs mu0 (significant blending)
-    ax_hist.hist([mu2, mu1], bins=60, color=['g', 'r'],
-                 orientation='horizontal', stacked=True)
+    n, bins, _ = ax_hist.hist(
+        [mu2, mu1], bins=60, color=['g', 'r'],
+        orientation='horizontal', stacked=True)
     ax_hist.set_ylim(ax_scatter.get_ylim())
 
     # for other two plots
@@ -310,6 +311,25 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
 
     plt.savefig('5Hhists%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
     plt.close()
+
+    # try to overplot the semi-analytical simulations I ran
+    pkl_fn = '6pc_dist%s.pkl' % s_c_str(s_c)
+    if os.path.exists(pkl_fn):
+        n_mu = 59
+        n_phi = 100
+        mu_vals =  np.linspace(-0.9, 0.9, n_mu)
+        with open(pkl_fn, 'rb') as f:
+            p_caps = pickle.load(f)
+        p_caps = np.minimum(np.maximum(p_caps, np.zeros_like(p_caps)),
+                            np.ones_like(p_caps))
+        tot_probs = np.sum(p_caps / n_phi, axis=1)
+        plt.plot(mu_vals, tot_probs, 'k:')
+
+        bin_cents = (bins[ :-1] + bins[1: ]) / 2
+        bin_probs = np.array(n[0]) / np.array(n[1])
+        plt.plot(bin_cents, bin_probs, 'bo', ms=2)
+        plt.savefig('5pc_fits%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
+        plt.close()
 
 def plot_cum_probs(I, s_c_vals, counts):
     '''
@@ -387,11 +407,31 @@ if __name__ == '__main__':
         0.2,
         0.06,
     ]
-    s_c_vals_5 = s_c_vals_20 + [0.85, 0.8, 0.75]
+
+    s_c_vals_5 = [
+        # 2.0,
+        # 1.2,
+        # 1.0,
+        # 0.85,
+        # 0.8,
+        # 0.75
+        0.7,
+        # 0.65,
+        # 0.6,
+        # 0.55,
+        # 0.5,
+        # 0.45,
+        # 0.4,
+        # 0.35,
+        # 0.3,
+        # 0.25,
+        0.2,
+        # 0.06,
+    ]
 
     for I, s_c_vals in [
             [np.radians(5), s_c_vals_5],
-            [np.radians(20), s_c_vals_20],
+            # [np.radians(20), s_c_vals_20],
     ]:
         counts = []
         for s_c in s_c_vals:
@@ -420,4 +460,4 @@ if __name__ == '__main__':
             counts.append(len(IC_eq1))
             # plot_final_dists(I, s_c, s0, trajs)
             plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2)
-        plot_cum_probs(I, s_c_vals, counts)
+        # plot_cum_probs(I, s_c_vals, counts)
