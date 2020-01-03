@@ -2,6 +2,7 @@
 misc little plots
 '''
 import numpy as np
+from multiprocessing import Pool
 import os
 import pickle
 import matplotlib
@@ -9,6 +10,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=16)
+
+POOL_SIZE = 50
 
 from utils import roots, s_c_str, get_mu_equil, solve_ic, to_cart, to_ang,\
     get_H4, H, get_mu4, get_ps_anal
@@ -84,7 +87,34 @@ def get_anal_caps(I, s_c, cross_dat):
                         np.ones_like(p_caps))
     return p_caps
 
-def plot_equil_dist_anal(I, s_c, s0, eps, tf=3000):
+def get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0):
+    [mu4] = get_mu4(I, s_c, np.array([s0]))
+
+    H4_0 = get_H4(I, s_c, s0)
+    H_0 = H(I, s_c, s0, mu0, phi0)
+    if H_0 > H4_0:
+        print('Inside separatrix for', mu0, phi0)
+        return [-1, 0]
+
+    # stop sim when H = H4
+    print('Running for', mu0, phi0)
+    init = [*to_cart(np.arccos(mu0), phi0), s0]
+    def event(t, y):
+        x, y, z, s = y
+        _, phi = to_ang(x, y, z)
+        H4 = get_H4(I, s_c, s)
+        H_curr = H(I, s_c, s, z, phi)
+        return H_curr - H4
+    event.terminal = True
+    _, _, s, ret = solve_ic(I, s_c, eps, init, tf,
+                               rtol=1e-4,
+                               events=[event])
+    if ret.t_events[0].size > 0:
+        return [s[-1], mu0 - mu4]
+    else:
+        return [-2, 0]
+
+def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
     pkl_fn = '6pc_dist%s.pkl' % s_c_str(s_c)
     n_mu = 101
     n_phi = 60
@@ -92,47 +122,21 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=3000):
     phi_vals = np.linspace(0, 2 * np.pi, n_phi, endpoint=False)
 
     if not os.path.exists(pkl_fn):
-        [mu4] = get_mu4(I, s_c, np.array([s0]))
-        def get_s_cross(mu0, phi0):
-            init = [*to_cart(np.arccos(mu0), phi0), s0]
-
-            # stop sim when H = H4
-            def event(t, y):
-                x, y, z, s = y
-                _, phi = to_ang(x, y, z)
-                H4 = get_H4(I, s_c, s)
-                H_curr = H(I, s_c, s, z, phi)
-                return H_curr - H4
-            event.terminal = True
-            _, _, s, ret = solve_ic(I, s_c, eps, init, tf,
-                                       rtol=1e-4,
-                                       events=[event])
-            if ret.t_events[0].size > 0:
-                return s[-1]
-            else:
-                return None
-
         # store tuple (s_cross, mu0 - mu4)
         # s_cross convention: -1 = inside separatrix (pcap = 1),
         # -2 = no encounter (pcap = 0)
         cross_dat = np.zeros((n_mu, n_phi, 2), dtype=np.float64)
 
+        # build arguments array up from scratch
+        args = []
         for idx, mu0 in enumerate(mu_vals):
             for idx2, phi0 in enumerate(phi_vals):
-                # if inside separatrix, guaranteed
-                H4_0 = get_H4(I, s_c, s0)
-                H_0 = H(I, s_c, s0, mu0, phi0)
-                if H_0 > H4_0:
-                    print('Inside separatrix for', mu0, phi0)
-                    cross_dat[idx, idx2] = [-1, 0]
-                    continue
-
-                print('Running for', mu0, phi0)
-                s_cross = get_s_cross(mu0, phi0)
-                if s_cross is None:
-                    cross_dat[idx, idx2] = [-2, 0]
-                    continue
-                cross_dat[idx, idx2] = [s_cross, mu0 - mu4]
+                args.append((I, s_c, s0, eps, tf, mu0, phi0))
+                # cross_dat[idx, idx2] = get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0)
+        print('len(args)', len(args))
+        p = Pool(POOL_SIZE)
+        res = p.starmap(get_cross_dat, args)
+        cross_dat = np.reshape(np.array(res), (n_mu, n_phi, 2))
         with open(pkl_fn, 'wb') as f:
             pickle.dump(cross_dat, f)
     else:
@@ -153,6 +157,6 @@ if __name__ == '__main__':
     # plot_equils(I, 0.2)
     # plot_equils(I, 0.6)
     # plot_phop(I, 0.2)
-    # plot_equil_dist_anal(I, 0.06, 10, eps)
+    plot_equil_dist_anal(I, 0.06, 10, eps)
     plot_equil_dist_anal(I, 0.2, 10, eps)
-    # plot_equil_dist_anal(I, 0.7, 10, eps)
+    plot_equil_dist_anal(I, 0.7, 10, eps)
