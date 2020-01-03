@@ -267,3 +267,51 @@ def get_mu_equil(s):
     if s > 1:
         raise ValueError('Cannot get equil mu for s > 1')
     return (2/s - np.sqrt(4 / s**2 - 4)) / 2
+
+def get_ps_anal(I, s_c, s):
+    eta = s_c / s
+    def get_top():
+        return s_c / s**2 * (
+            -2 * np.cos(I) * (
+                2 * np.pi * eta * np.cos(I)
+                + (8 * np.sqrt(eta * np.sin(I)))
+            )
+            + s * np.cos(I) * 2 * np.pi
+
+            + (eta * np.cos(I)) * (
+                -8 * np.sqrt(np.sin(I) / eta)
+            )
+            + (s / 2) * (8 * np.sqrt(np.sin(I) / eta))
+
+            - 4 * np.pi * np.sin(I)
+        ) + 2 / s * ( # second term
+            -2 * np.pi * (1 - 2 * eta * np.sin(I))
+                - (16 * np.cos(I) * eta) * np.sqrt(eta * np.sin(I))
+        ) + (
+            8 * np.sqrt(eta * np.sin(I))
+            + 2 * np.pi * eta * np.cos(I)
+            - 64/3 * (eta * np.sin(I))**(3/2)
+        )
+    def get_bot():
+        return s_c / s**2 * (
+            -2 * np.cos(I) * (
+                -2 * np.pi * eta * np.cos(I)
+                + (8 * np.sqrt(eta * np.sin(I)))
+            )
+            - s * np.cos(I) * 2 * np.pi
+
+            + (eta * np.cos(I)) * (
+                -8 * np.sqrt(np.sin(I) / eta)
+            )
+            + (s / 2) * (8 * np.sqrt(np.sin(I) / eta))
+
+            + 4 * np.pi * np.sin(I)
+        ) + 2 / s * ( # second term
+            +2 * np.pi * (1 - 2 * eta * np.sin(I))
+                - (16 * np.cos(I) * eta) * np.sqrt(eta * np.sin(I))
+        ) + (
+            8 * np.sqrt(eta * np.sin(I))
+            - 2 * np.pi * eta * np.cos(I)
+            - 64/3 * (eta * np.sin(I))**(3/2)
+        )
+    return get_top(), get_bot()
