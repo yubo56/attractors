@@ -14,7 +14,7 @@ plt.rc('font', family='serif', size=16)
 POOL_SIZE = 50
 
 from utils import roots, s_c_str, get_mu_equil, solve_ic, to_cart, to_ang,\
-    get_H4, H, get_mu4, get_ps_anal
+    get_H4, H, get_mu4, get_ps_anal, get_anal_caps
 
 def get_cs_val(I, s_c, s):
     '''
@@ -69,25 +69,6 @@ def plot_phop(I, s_c):
     plt.plot(s, p_caps12, label=r'$I \to II$')
     plt.legend()
     plt.savefig('6pc%s' % s_c_str(s_c), dpi=400)
-
-def get_anal_caps(I, s_c, cross_dat):
-    s_crosses = cross_dat[:, :, 0]
-    p_caps = np.zeros(np.shape(s_crosses), dtype=np.float64)
-    # where s_crosses == -2 (no encounter) is already zero, don't set
-
-    # compute pc for actual crossing spins
-    for idx, row in enumerate(s_crosses):
-        cross_idxs = np.where(row > 0)[0]
-        real_crosses = row[cross_idxs]
-        top, bot = get_ps_anal(I, s_c, real_crosses)
-        d_mu = cross_dat[idx, cross_idxs, 1]
-
-        p_caps[idx, np.where(row == -1)[0]] = 1
-        p_caps[idx, np.where(d_mu < 0)[0]] = ((top + bot) / bot)[np.where(d_mu < 0)[0]]
-        p_caps[idx, np.where(d_mu > 0)[0]] = ((top + bot) / top)[np.where(d_mu > 0)[0]]
-    p_caps = np.minimum(np.maximum(p_caps, np.zeros_like(p_caps)),
-                        np.ones_like(p_caps))
-    return p_caps
 
 def get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0):
     [mu4] = get_mu4(I, s_c, np.array([s0]))
@@ -145,7 +126,6 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
         print('Loading %s' % pkl_fn)
         with open(pkl_fn, 'rb') as f:
             cross_dat = pickle.load(f)
-    print(cross_dat[48, 0])
     p_caps = get_anal_caps(I, s_c, cross_dat)
     tot_probs = np.sum(p_caps / n_phi, axis=1)
     plt.plot(mu_vals, tot_probs, 'bo', ms=2)
@@ -161,5 +141,5 @@ if __name__ == '__main__':
     # plot_equils(I, 0.6)
     # plot_phop(I, 0.2)
     plot_equil_dist_anal(I, 0.06, 10, eps)
-    plot_equil_dist_anal(I, 0.2, 10, eps)
-    plot_equil_dist_anal(I, 0.7, 10, eps)
+    # plot_equil_dist_anal(I, 0.2, 10, eps)
+    # plot_equil_dist_anal(I, 0.7, 10, eps)

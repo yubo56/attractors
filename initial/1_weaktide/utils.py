@@ -315,3 +315,22 @@ def get_ps_anal(I, s_c, s):
             - 64/3 * (eta * np.sin(I))**(3/2)
         )
     return get_top(), get_bot()
+
+def get_anal_caps(I, s_c, cross_dat):
+    s_crosses = cross_dat[:, :, 0]
+    p_caps = np.zeros(np.shape(s_crosses), dtype=np.float64)
+    # where s_crosses == -2 (no encounter) is already zero, don't set
+
+    # compute pc for actual crossing spins
+    for idx, row in enumerate(s_crosses):
+        cross_idxs = np.where(row > 0)[0]
+        real_crosses = row[cross_idxs]
+        top, bot = get_ps_anal(I, s_c, real_crosses)
+        d_mu = cross_dat[idx, cross_idxs, 1]
+
+        p_caps[idx, np.where(row == -1)[0]] = 1
+        p_caps[idx, np.where(d_mu < 0)[0]] = ((top + bot) / bot)[np.where(d_mu < 0)[0]]
+        p_caps[idx, np.where(d_mu > 0)[0]] = ((top + bot) / top)[np.where(d_mu > 0)[0]]
+    p_caps = np.minimum(np.maximum(p_caps, np.zeros_like(p_caps)),
+                        np.ones_like(p_caps))
+    return p_caps
