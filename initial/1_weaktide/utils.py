@@ -16,7 +16,7 @@ def to_cart(q, phi):
 def to_ang(x, y, z):
     r = np.sqrt(x**2 + y**2 + z**2)
     q = np.arccos(z / r)
-    phi = (np.arctan2(y / np.sin(q), x / np.sin(q)) + np.pi)\
+    phi = (np.arctan2(y / np.sin(q), x / np.sin(q)) + 2 * np.pi)\
         % (2 * np.pi)
     return q, phi
 
@@ -36,7 +36,7 @@ def H(I, s_c, s, mu, phi):
         mu * np.cos(I) -
         np.sqrt(1 - mu**2) * np.sin(I) * np.cos(phi))
 
-def H_max(I, s_c, s):
+def H_max(I, s_reviewers_c, s):
     ''' H_max is always at phi=pi '''
     def minus_H(mu):
         return -H(I, s_c, s, mu, np.pi)

@@ -315,8 +315,8 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     # try to overplot the semi-analytical simulations I ran
     pkl_fn = '6pc_dist%s.pkl' % s_c_str(s_c)
     if os.path.exists(pkl_fn):
-        n_mu = 59
-        n_phi = 100
+        n_mu = 101
+        n_phi = 60
         mu_vals =  np.linspace(-0.9, 0.9, n_mu)
         with open(pkl_fn, 'rb') as f:
             p_caps = pickle.load(f)
@@ -415,7 +415,7 @@ if __name__ == '__main__':
         # 0.85,
         # 0.8,
         # 0.75
-        0.7,
+        # 0.7,
         # 0.65,
         # 0.6,
         # 0.55,
