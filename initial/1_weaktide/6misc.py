@@ -94,7 +94,6 @@ def get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0):
 
     H4_0 = get_H4(I, s_c, s0)
     H_0 = H(I, s_c, s0, mu0, phi0)
-    print(H_0, H4_0)
     if H_0 > H4_0:
         print('Inside separatrix for', mu0, phi0)
         return [-1, 0]
@@ -107,7 +106,6 @@ def get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0):
         _, phi = to_ang(x, y, z)
         H4 = get_H4(I, s_c, s)
         H_curr = H(I, s_c, s, z, phi)
-        print(H_curr, H4)
         return H_curr - H4
     event.terminal = True
     _, _, s, ret = solve_ic(I, s_c, eps, init, tf,
@@ -124,10 +122,6 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
     n_phi = 60
     mu_vals =  np.linspace(-0.9, 0.9, n_mu)
     phi_vals = np.linspace(0, 2 * np.pi, n_phi, endpoint=False)
-
-    print(mu_vals[48], phi_vals[0])
-    get_cross_dat(I, s_c, s0, eps, tf, mu_vals[48], phi_vals[0])
-    return
 
     if not os.path.exists(pkl_fn):
         # store tuple (s_cross, mu0 - mu4)
@@ -167,5 +161,5 @@ if __name__ == '__main__':
     # plot_equils(I, 0.6)
     # plot_phop(I, 0.2)
     plot_equil_dist_anal(I, 0.06, 10, eps)
-    # plot_equil_dist_anal(I, 0.2, 10, eps)
-    # plot_equil_dist_anal(I, 0.7, 10, eps)
+    plot_equil_dist_anal(I, 0.2, 10, eps)
+    plot_equil_dist_anal(I, 0.7, 10, eps)
