@@ -116,7 +116,6 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
             for idx2, phi0 in enumerate(phi_vals):
                 args.append((I, s_c, s0, eps, tf, mu0, phi0))
                 # cross_dat[idx, idx2] = get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0)
-        print('len(args)', len(args))
         p = Pool(POOL_SIZE)
         res = p.starmap(get_cross_dat, args)
         cross_dat = np.reshape(np.array(res), (n_mu, n_phi, 2))
@@ -141,5 +140,5 @@ if __name__ == '__main__':
     # plot_equils(I, 0.6)
     # plot_phop(I, 0.2)
     plot_equil_dist_anal(I, 0.06, 10, eps)
-    # plot_equil_dist_anal(I, 0.2, 10, eps)
-    # plot_equil_dist_anal(I, 0.7, 10, eps)
+    plot_equil_dist_anal(I, 0.2, 10, eps)
+    plot_equil_dist_anal(I, 0.7, 10, eps)

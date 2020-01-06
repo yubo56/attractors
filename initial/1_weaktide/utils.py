@@ -329,8 +329,11 @@ def get_anal_caps(I, s_c, cross_dat):
         d_mu = cross_dat[idx, cross_idxs, 1]
 
         p_caps[idx, np.where(row == -1)[0]] = 1
-        p_caps[idx, np.where(d_mu < 0)[0]] = ((top + bot) / bot)[np.where(d_mu < 0)[0]]
-        p_caps[idx, np.where(d_mu > 0)[0]] = ((top + bot) / top)[np.where(d_mu > 0)[0]]
+        # all the dmus are shared per row (same mu value)
+        if len(np.where(d_mu < 0)[0]) > 0:
+            p_caps[idx, cross_idxs] = ((top + bot) / bot)
+        else:
+            p_caps[idx, cross_idxs] = ((top + bot) / top)
     p_caps = np.minimum(np.maximum(p_caps, np.zeros_like(p_caps)),
                         np.ones_like(p_caps))
     return p_caps
