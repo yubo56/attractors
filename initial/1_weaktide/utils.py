@@ -1,5 +1,7 @@
 import numpy as np
 from scipy.integrate import solve_ivp
+from scipy.interpolate import interp1d
+from scipy import integrate
 import scipy.optimize as opt
 
 ###################################
@@ -268,7 +270,9 @@ def get_mu_equil(s):
         raise ValueError('Cannot get equil mu for s > 1')
     return (2/s - np.sqrt(4 / s**2 - 4)) / 2
 
+ETA_CUTOFF = 0.3
 def get_ps_anal(I, s_c, s):
+    ''' analytical capture probabilities '''
     eta = s_c / s
     def get_top():
         return s_c / s**2 * (
@@ -316,16 +320,66 @@ def get_ps_anal(I, s_c, s):
         )
     return get_top(), get_bot()
 
-def get_anal_caps(I, s_c, cross_dat):
+def get_ps_numerical(I, s_c, s_arr):
+    ''' numerical capture probabilities '''
+    def getter(s):
+        ''' gets probability for a single spin s '''
+        eta = s_c / s
+        if eta > ETA_CUTOFF:
+            return 1, 1
+        [mu4] = get_mu4(I, s_c, np.array([s]))
+
+        def mu_up(phi):
+            def dH(mu):
+                return H(I, s_c, s, mu, phi) - H(I, s_c, s, mu4, 0)
+            return opt.brentq(dH, mu4, 1)
+        def mu_down(phi):
+            def dH(mu):
+                return H(I, s_c, s, mu, phi) - H(I, s_c, s, mu4, 0)
+            return opt.brentq(dH, -1, mu4)
+
+        def arg_top(phi):
+            m = mu_up(phi)
+            return (
+                2 * (m - s / 2) * s_c / (2 * s**2) * (
+                    m / eta + np.cos(I))
+                + (1 - m**2) * (2 / s - m)
+            )
+        def arg_bot(phi):
+            m = mu_down(phi)
+            return (
+                2 * (m - s * (1 + m**2) / 2) * s_c / (2 * s**2) * (
+                    m / eta + np.cos(I)) +
+                (1 - m**2) * (2 / s - m)
+            )
+
+        eps = 0.2 # don't integrate too close to edges, hard to find separatrix
+        top = -integrate.quad(arg_top, eps, 2 * np.pi - eps)[0]
+        bot = integrate.quad(arg_bot, eps, 2 * np.pi - eps)[0]
+        return top, bot
+    # 6000 integrations is too many, just use interpolation
+    # n_pts = 30
+    # s_vals = np.linspace(s_arr.min(), s_arr.max(), n_pts)
+    # all_probs = np.array([getter(s) for s in s_vals])
+    # top_interp = interp1d(s_vals, all_probs[:, 0])
+    # bot_interp = interp1d(s_vals, all_probs[:, 1])
+    # return top_interp(s_arr), bot_interp(s_arr)
+    if len(s_arr) == 0:
+        return np.array([]), np.array([])
+    all_probs = np.array([getter(s) for s in s_arr])
+    return all_probs[:, 0], all_probs[:, 1]
+
+def _get_caps(I, s_c, cross_dat, get_ps=get_ps_anal):
     s_crosses = cross_dat[:, :, 0]
     p_caps = np.zeros(np.shape(s_crosses), dtype=np.float64)
     # where s_crosses == -2 (no encounter) is already zero, don't set
 
     # compute pc for actual crossing spins
     for idx, row in enumerate(s_crosses):
+        print('=====utils.py=====', 'Getting for idx', idx)
         cross_idxs = np.where(row > 0)[0]
         real_crosses = row[cross_idxs]
-        top, bot = get_ps_anal(I, s_c, real_crosses)
+        top, bot = get_ps(I, s_c, real_crosses)
         d_mu = cross_dat[idx, cross_idxs, 1]
 
         p_caps[idx, np.where(row == -1)[0]] = 1
@@ -337,3 +391,9 @@ def get_anal_caps(I, s_c, cross_dat):
     p_caps = np.minimum(np.maximum(p_caps, np.zeros_like(p_caps)),
                         np.ones_like(p_caps))
     return p_caps
+
+def get_anal_caps(I, s_c, cross_dat):
+    return _get_caps(I, s_c, cross_dat, get_ps=get_ps_anal)
+
+def get_num_caps(I, s_c, cross_dat):
+    return _get_caps(I, s_c, cross_dat, get_ps=get_ps_numerical)

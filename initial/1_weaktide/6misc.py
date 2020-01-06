@@ -14,7 +14,7 @@ plt.rc('font', family='serif', size=16)
 POOL_SIZE = 50
 
 from utils import roots, s_c_str, get_mu_equil, solve_ic, to_cart, to_ang,\
-    get_H4, H, get_mu4, get_ps_anal, get_anal_caps
+    get_H4, H, get_mu4, get_ps_anal, get_anal_caps, get_num_caps
 
 def get_cs_val(I, s_c, s):
     '''
@@ -125,10 +125,14 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
         print('Loading %s' % pkl_fn)
         with open(pkl_fn, 'rb') as f:
             cross_dat = pickle.load(f)
-    p_caps = get_anal_caps(I, s_c, cross_dat)
+    p_caps_anal = get_anal_caps(I, s_c, cross_dat)
+    p_caps = get_num_caps(I, s_c, cross_dat)
+    tot_probs_anal = np.sum(p_caps_anal / n_phi, axis=1)
     tot_probs = np.sum(p_caps / n_phi, axis=1)
-    plt.plot(mu_vals, tot_probs, 'bo', ms=2)
+    plt.plot(mu_vals, tot_probs_anal, 'ro', ms=2, label='Anal')
+    plt.plot(mu_vals, tot_probs, 'bo', ms=2, label='Num')
     plt.ylim([0, 1])
+    plt.legend()
     plt.savefig('6pc_dist%s' % s_c_str(s_c), dpi=400)
     plt.clf()
 
