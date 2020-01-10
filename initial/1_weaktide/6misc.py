@@ -95,7 +95,7 @@ def get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0):
     if ret.t_events[0].size > 0:
         return [s[-1], mu0 - mu4]
     else:
-        return [-2, 0]
+        return [-s[-1], 0]
 
 def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
     pkl_fn = '6pc_dist%s.pkl' % s_c_str(s_c)
@@ -107,7 +107,7 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
     if not os.path.exists(pkl_fn):
         # store tuple (s_cross, mu0 - mu4)
         # s_cross convention: -1 = inside separatrix (pcap = 1),
-        # -2 = no encounter (pcap = 0)
+        # negative = - s_final (see which equilibrium ends up at)
         cross_dat = np.zeros((n_mu, n_phi, 2), dtype=np.float64)
 
         # build arguments array up from scratch
@@ -125,16 +125,19 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
         print('Loading %s' % pkl_fn)
         with open(pkl_fn, 'rb') as f:
             cross_dat = pickle.load(f)
-    p_caps_anal = get_anal_caps(I, s_c, cross_dat)
-    p_caps = get_num_caps(I, s_c, cross_dat)
-    tot_probs_anal = np.sum(p_caps_anal / n_phi, axis=1)
-    tot_probs = np.sum(p_caps / n_phi, axis=1)
-    plt.plot(mu_vals, tot_probs_anal, 'ro', ms=2, label='Anal')
-    plt.plot(mu_vals, tot_probs, 'bo', ms=2, label='Num')
-    plt.ylim([0, 1])
-    plt.legend()
-    plt.savefig('6pc_dist%s' % s_c_str(s_c), dpi=400)
-    plt.clf()
+    try:
+        p_caps_anal = get_anal_caps(I, s_c, cross_dat)
+        p_caps = get_num_caps(I, s_c, cross_dat)
+        tot_probs_anal = np.sum(p_caps_anal / n_phi, axis=1)
+        tot_probs = np.sum(p_caps / n_phi, axis=1)
+        plt.plot(mu_vals, tot_probs_anal, 'ro', ms=2, label='Anal')
+        plt.plot(mu_vals, tot_probs, 'bo', ms=2, label='Num')
+        plt.ylim([0, 1])
+        plt.legend()
+        plt.savefig('6pc_dist%s' % s_c_str(s_c), dpi=400)
+        plt.clf()
+    except: # on remote, can't plot, just return
+        return
 
 if __name__ == '__main__':
     eps = 1e-3

@@ -320,7 +320,7 @@ def get_ps_anal(I, s_c, s):
         )
     return get_top(), get_bot()
 
-def get_ps_numerical(I, s_c, s_arr):
+def get_ps_numinterp(I, s_c, s_arr):
     ''' numerical capture probabilities '''
     def getter(s):
         ''' gets probability for a single spin s '''
@@ -357,29 +357,19 @@ def get_ps_numerical(I, s_c, s_arr):
         top = -integrate.quad(arg_top, eps, 2 * np.pi - eps)[0]
         bot = integrate.quad(arg_bot, eps, 2 * np.pi - eps)[0]
         return top, bot
-    # 6000 integrations is too many, just use interpolation
-    # n_pts = 30
-    # s_vals = np.linspace(s_arr.min(), s_arr.max(), n_pts)
-    # all_probs = np.array([getter(s) for s in s_vals])
-    # top_interp = interp1d(s_vals, all_probs[:, 0])
-    # bot_interp = interp1d(s_vals, all_probs[:, 1])
-    # return top_interp(s_arr), bot_interp(s_arr)
-    if len(s_arr) == 0:
-        return np.array([]), np.array([])
     all_probs = np.array([getter(s) for s in s_arr])
-    return all_probs[:, 0], all_probs[:, 1]
+    return interp1d(s_arr, all_probs[:, 0]), interp1d(s_arr, all_probs[:, 1])
 
-def _get_caps(I, s_c, cross_dat, get_ps=get_ps_anal):
+def get_anal_caps(I, s_c, cross_dat):
     s_crosses = cross_dat[:, :, 0]
     p_caps = np.zeros(np.shape(s_crosses), dtype=np.float64)
     # where s_crosses == -2 (no encounter) is already zero, don't set
 
     # compute pc for actual crossing spins
     for idx, row in enumerate(s_crosses):
-        print('=====utils.py=====', 'Getting for idx', idx)
         cross_idxs = np.where(row > 0)[0]
         real_crosses = row[cross_idxs]
-        top, bot = get_ps(I, s_c, real_crosses)
+        top, bot = get_ps_anal(I, s_c, real_crosses)
         d_mu = cross_dat[idx, cross_idxs, 1]
 
         p_caps[idx, np.where(row == -1)[0]] = 1
@@ -388,12 +378,37 @@ def _get_caps(I, s_c, cross_dat, get_ps=get_ps_anal):
             p_caps[idx, cross_idxs] = ((top + bot) / bot)
         else:
             p_caps[idx, cross_idxs] = ((top + bot) / top)
+
+        eta_c = get_etac(I)
+        print(eta_c, s_c / real_crosses, real_crosses)
+        no_sep_idx = np.where(s_c / real_crosses > eta_c)[0]
+        p_caps[idx, no_sep_idx] = 1
     p_caps = np.minimum(np.maximum(p_caps, np.zeros_like(p_caps)),
                         np.ones_like(p_caps))
     return p_caps
 
-def get_anal_caps(I, s_c, cross_dat):
-    return _get_caps(I, s_c, cross_dat, get_ps=get_ps_anal)
-
 def get_num_caps(I, s_c, cross_dat):
-    return _get_caps(I, s_c, cross_dat, get_ps=get_ps_numerical)
+    s_crosses = cross_dat[:, :, 0]
+    p_caps = np.zeros(np.shape(s_crosses), dtype=np.float64)
+    # where s_crosses == -2 (no encounter) is already zero, don't set
+
+    min_s_cross = np.abs(s_crosses).min()
+    s_interp = np.linspace(min_s_cross, s_crosses.max(), 100)
+    top_interp, bot_interp = get_ps_numinterp(I, s_c, s_interp)
+    # compute pc for actual crossing spins
+    for idx, row in enumerate(s_crosses):
+        cross_idxs = np.where(row > 0)[0]
+        real_crosses = row[cross_idxs]
+        top = top_interp(real_crosses)
+        bot = bot_interp(real_crosses)
+        d_mu = cross_dat[idx, cross_idxs, 1]
+
+        p_caps[idx, np.where(row == -1)[0]] = 1
+        # all the dmus are shared per row (same mu value)
+        if len(np.where(d_mu < 0)[0]) > 0:
+            p_caps[idx, cross_idxs] = (top + bot) / bot
+        else:
+            p_caps[idx, cross_idxs] = (top + bot) / top
+    p_caps = np.minimum(np.maximum(p_caps, np.zeros_like(p_caps)),
+                        np.ones_like(p_caps))
+    return p_caps
