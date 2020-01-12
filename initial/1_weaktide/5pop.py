@@ -15,7 +15,8 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
-    stringify, H, roots, get_H4, s_c_str, get_mu_equil, get_anal_caps
+    stringify, H, roots, get_H4, s_c_str, get_mu_equil, get_anal_caps,\
+    get_num_caps
 PKL_FILE = '5dat%s_%d.pkl'
 # N_PTS = 1 # TEST
 N_PTS_TOTAL = 20000
@@ -320,9 +321,8 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
         mu_vals =  np.linspace(-0.9, 0.9, n_mu)
         with open(pkl_fn, 'rb') as f:
             cross_dat = pickle.load(f)
-        p_caps = get_anal_caps(I, s_c, cross_dat)
-        # p_caps = np.minimum(np.maximum(p_caps, np.zeros_like(p_caps)),
-        #                     np.ones_like(p_caps))
+        # p_caps = get_anal_caps(I, s_c, cross_dat, mu_vals)
+        p_caps = get_num_caps(I, s_c, cross_dat, mu_vals)
         tot_probs = np.sum(p_caps / n_phi, axis=1)
         plt.plot(mu_vals, tot_probs, 'k:')
 
@@ -352,29 +352,10 @@ def plot_cum_probs(I, s_c_vals, counts):
     cs1_equil_mu = -np.ones_like(s_c_cont) # -1 = does not exist
     cs2_equil_mu = np.zeros_like(s_c_cont)
     for idx, s_c in enumerate(s_c_cont):
-        def dmu_cs2_equil(s):
-            mu_cs = np.cos(roots(I, s_c, s))
-            mu_equil = get_mu_equil(s)
-            if len(mu_cs) == 2:
-                return mu_cs[0] - mu_equil
-            else:
-                return mu_cs[1] - mu_equil
-        def dmu_cs1_equil(s):
-            # does not check eta < etac!
-            mu_cs = np.cos(roots(I, s_c, s))
-            mu_equil = get_mu_equil(s)
-            return mu_cs[0] - mu_equil
-        cs2_equil_mu[idx] = opt.bisect(dmu_cs2_equil, 0.1, 1)
-        # if CS1 just before disappearing is below mu_equil, we won't have an
-        # intersection
-        s_etac = s_c / (0.9999 * s_c_crit)
-        # don't search if won't satisfy s < 1: mu_equil only defined for s < 1
-        if s_etac > 1:
-            continue
-        cs1_crit_mu = np.cos(roots(I, s_c, s_etac)[0])
-        mu_equil_etac = get_mu_equil(s_etac)
-        if cs1_crit_mu > mu_equil_etac:
-            cs1_equil_mu[idx] = opt.bisect(dmu_cs1_equil, s_etac, 1)
+        cs1_crit_mu, cs2_crit_mu = get_crit_mus
+        cs2_equil_mu[idx] = cs2_crit_mu
+        if cs1_crit_mu is not None:
+            cs1_equil_mu = cs1_crit_mu
 
     cs1_idxs = np.where(cs1_equil_mu > -1)[0]
     ax2.plot(np.array(s_c_cont)[cs1_idxs],

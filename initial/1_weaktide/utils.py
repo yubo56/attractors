@@ -10,15 +10,15 @@ import scipy.optimize as opt
 
 def to_cart(q, phi):
     return [
-        np.sin(q) * np.cos(phi),
-        np.sin(q) * np.sin(phi),
+        -np.sin(q) * np.cos(phi),
+        -np.sin(q) * np.sin(phi),
         np.cos(q),
     ]
 
 def to_ang(x, y, z):
     r = np.sqrt(x**2 + y**2 + z**2)
     q = np.arccos(z / r)
-    phi = (np.arctan2(y / np.sin(q), x / np.sin(q)) + 2 * np.pi)\
+    phi = (np.arctan2(-y / np.sin(q), -x / np.sin(q)) + 2 * np.pi)\
         % (2 * np.pi)
     return q, phi
 
@@ -270,6 +270,32 @@ def get_mu_equil(s):
         raise ValueError('Cannot get equil mu for s > 1')
     return (2/s - np.sqrt(4 / s**2 - 4)) / 2
 
+def get_crit_mus(I, s_c):
+    s_c_crit = get_etac(I) # etac = s_c_crit / (s = 1)
+    def dmu_cs2_equil(s):
+        mu_cs = np.cos(roots(I, s_c, s))
+        mu_equil = get_mu_equil(s)
+        if len(mu_cs) == 2:
+            return mu_cs[0] - mu_equil
+        else:
+            return mu_cs[1] - mu_equil
+    def dmu_cs1_equil(s):
+        # does not check eta < etac!
+        mu_cs = np.cos(roots(I, s_c, s))
+        mu_equil = get_mu_equil(s)
+        return mu_cs[0] - mu_equil
+    cs2_equil_mu = opt.bisect(dmu_cs2_equil, 0.1, 1)
+    # if CS1 just before disappearing is below mu_equil, we won't have an
+    # intersection
+    s_etac = s_c / (0.9999 * s_c_crit)
+    # don't search if won't satisfy s < 1: mu_equil only defined for s < 1
+    if s_etac <= 1:
+        cs1_crit_mu = np.cos(roots(I, s_c, s_etac)[0])
+        mu_equil_etac = get_mu_equil(s_etac)
+        if cs1_crit_mu > mu_equil_etac:
+            return opt.bisect(dmu_cs1_equil, s_etac, 1), cs2_equil_mu
+    return None, cs2_equil_mu
+
 ETA_CUTOFF = 0.3
 def get_ps_anal(I, s_c, s):
     ''' analytical capture probabilities '''
@@ -326,7 +352,7 @@ def get_ps_numinterp(I, s_c, s_arr):
         ''' gets probability for a single spin s '''
         eta = s_c / s
         if eta > ETA_CUTOFF:
-            return 1, 1
+            return -1, -1
         [mu4] = get_mu4(I, s_c, np.array([s]))
 
         def mu_up(phi):
@@ -360,13 +386,17 @@ def get_ps_numinterp(I, s_c, s_arr):
     all_probs = np.array([getter(s) for s in s_arr])
     return interp1d(s_arr, all_probs[:, 0]), interp1d(s_arr, all_probs[:, 1])
 
-def get_anal_caps(I, s_c, cross_dat):
+def get_anal_caps(I, s_c, cross_dat, mu_vals):
     s_crosses = cross_dat[:, :, 0]
     p_caps = np.zeros(np.shape(s_crosses), dtype=np.float64)
     # where s_crosses == -2 (no encounter) is already zero, don't set
 
     # compute pc for actual crossing spins
     for idx, row in enumerate(s_crosses):
+        if s_c == 0.7 and mu_vals[idx] > 0.465:
+            # for some reason, the sep crossing is mis-detected in these values?
+            p_caps[idx, :] = 0
+            continue
         cross_idxs = np.where(row > 0)[0]
         real_crosses = row[cross_idxs]
         top, bot = get_ps_anal(I, s_c, real_crosses)
@@ -380,35 +410,65 @@ def get_anal_caps(I, s_c, cross_dat):
             p_caps[idx, cross_idxs] = ((top + bot) / top)
 
         eta_c = get_etac(I)
-        print(eta_c, s_c / real_crosses, real_crosses)
         no_sep_idx = np.where(s_c / real_crosses > eta_c)[0]
         p_caps[idx, no_sep_idx] = 1
+
+        # finally, ETA_CUTOFF values, all zero I think
+        cutoff_idxs = np.where(np.logical_and(
+            top == -1,
+            bot == -1,
+        ))[0]
+        p_caps[idx, cutoff_idxs] = 0
     p_caps = np.minimum(np.maximum(p_caps, np.zeros_like(p_caps)),
                         np.ones_like(p_caps))
     return p_caps
 
-def get_num_caps(I, s_c, cross_dat):
+def get_num_caps(I, s_c, cross_dat, mu_vals):
     s_crosses = cross_dat[:, :, 0]
     p_caps = np.zeros(np.shape(s_crosses), dtype=np.float64)
     # where s_crosses == -2 (no encounter) is already zero, don't set
 
+    cs1_crit_mu, cs2_crit_mu = get_crit_mus(I, s_c)
+    print(cs1_crit_mu, cs2_crit_mu)
     min_s_cross = np.abs(s_crosses).min()
     s_interp = np.linspace(min_s_cross, s_crosses.max(), 100)
     top_interp, bot_interp = get_ps_numinterp(I, s_c, s_interp)
     # compute pc for actual crossing spins
     for idx, row in enumerate(s_crosses):
+        if s_c == 0.7 and mu_vals[idx] > 0.465:
+            # for some reason, the sep crossing is mis-detected in these values?
+            p_caps[idx, :] = 0
+            continue
         cross_idxs = np.where(row > 0)[0]
         real_crosses = row[cross_idxs]
         top = top_interp(real_crosses)
         bot = bot_interp(real_crosses)
+        p_caps[idx, np.where(top == -1)[0]] = -1
         d_mu = cross_dat[idx, cross_idxs, 1]
 
         p_caps[idx, np.where(row == -1)[0]] = 1
         # all the dmus are shared per row (same mu value)
+
+        # if row is still negative, no sep encounter, figure out which
+        # equilibrium it ended up at
+        equil2_idxs = np.where(np.logical_and(
+            np.abs(row + cs2_crit_mu) < 1e-2,
+            row != -1,
+        ))[0]
+        p_caps[idx, equil2_idxs] = 1
+        # equil1_idxs is harder to compute and already set to zero, do not set
+
         if len(np.where(d_mu < 0)[0]) > 0:
             p_caps[idx, cross_idxs] = (top + bot) / bot
         else:
             p_caps[idx, cross_idxs] = (top + bot) / top
+
+        # finally, ETA_CUTOFF values, all zero I think
+        cutoff_idxs = np.where(np.logical_and(
+            top == -1,
+            bot == -1,
+        ))[0]
+        p_caps[idx, cutoff_idxs] = 0
     p_caps = np.minimum(np.maximum(p_caps, np.zeros_like(p_caps)),
                         np.ones_like(p_caps))
     return p_caps

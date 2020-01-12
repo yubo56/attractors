@@ -87,13 +87,19 @@ def get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0):
         _, phi = to_ang(x, y, z)
         H4 = get_H4(I, s_c, s)
         H_curr = H(I, s_c, s, z, phi)
-        return H_curr - H4
-    event.terminal = True
+        dH = H_curr - H4
+        # print(dH)
+        return dH
+    # event.terminal = True
     _, _, s, ret = solve_ic(I, s_c, eps, init, tf,
-                               rtol=1e-4,
+                               rtol=1e-4, dense_output=True,
                                events=[event])
+    plt.plot(ret.y[2, :])
+    plt.savefig('/tmp/foo.png')
+    plt.clf()
+    print(s[-1])
     if ret.t_events[0].size > 0:
-        return [s[-1], mu0 - mu4]
+        return [ret.sol(ret.t_events[0][0])[3], mu0 - mu4]
     else:
         return [-s[-1], 0]
 
@@ -126,17 +132,25 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
         with open(pkl_fn, 'rb') as f:
             cross_dat = pickle.load(f)
     try:
-        p_caps_anal = get_anal_caps(I, s_c, cross_dat)
-        p_caps = get_num_caps(I, s_c, cross_dat)
+        p_caps_anal = get_anal_caps(I, s_c, cross_dat, mu_vals)
+        p_caps = get_num_caps(I, s_c, cross_dat, mu_vals)
         tot_probs_anal = np.sum(p_caps_anal / n_phi, axis=1)
         tot_probs = np.sum(p_caps / n_phi, axis=1)
+        # print(cross_dat[76, 10])
+        # return
+        # for idx, (i, j) in enumerate(zip(p_caps[76, :], phi_vals)):
+        #     print(mu_vals[76], idx, i, j)
+        # 76, 77, 82, 83 seem to be funky
+        # for idx, (i, j) in enumerate(zip(mu_vals, tot_probs)):
+        #     print(idx, i, j)
         plt.plot(mu_vals, tot_probs_anal, 'ro', ms=2, label='Anal')
         plt.plot(mu_vals, tot_probs, 'bo', ms=2, label='Num')
         plt.ylim([0, 1])
         plt.legend()
         plt.savefig('6pc_dist%s' % s_c_str(s_c), dpi=400)
         plt.clf()
-    except: # on remote, can't plot, just return
+    except Exception as e: # on remote, can't plot, just return
+        print(e)
         return
 
 if __name__ == '__main__':
@@ -149,3 +163,16 @@ if __name__ == '__main__':
     plot_equil_dist_anal(I, 0.06, 10, eps)
     plot_equil_dist_anal(I, 0.2, 10, eps)
     plot_equil_dist_anal(I, 0.7, 10, eps)
+
+    # test cases
+    # print(get_cross_dat(I, 0.7, 10, 1e-3, 8000, 0.9, np.pi)) # no cross
+    # print(get_cross_dat(I, 0.7, 10, 1e-3, 8000, 0, np.pi)) # in sep
+    # print(get_cross_dat(I, 0.7, 10, 1e-3, 8000, 0, 0)) # fast cross
+    # for mu in [0.4, 0.45, 0.5]:
+    # for mu in [0.5]:
+    #     cross_dat = get_cross_dat(I, 0.7, 10, 1e-3, 8000, mu, np.pi)
+    #     print(cross_dat)
+    #     print(get_num_caps(I, 0.7, np.reshape(np.array(cross_dat), (1, 1, 2))))
+    # cross_dat = get_cross_dat(I, 0.7, 10, 1e-3, 8000, 0.468, 1.0471975511965976)
+    # print(cross_dat)
+    # print(get_num_caps(I, 0.7, np.reshape(np.array(cross_dat), (1, 1, 2))))
