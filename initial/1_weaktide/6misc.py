@@ -14,7 +14,7 @@ plt.rc('font', family='serif', size=16)
 POOL_SIZE = 50
 
 from utils import roots, s_c_str, get_mu_equil, solve_ic, to_cart, to_ang,\
-    get_H4, H, get_mu4, get_ps_anal, get_anal_caps, get_num_caps
+    get_H4, H, get_mu4, get_ps_anal, get_anal_caps, get_num_caps, get_etac
 
 def get_cs_val(I, s_c, s):
     '''
@@ -88,18 +88,14 @@ def get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0):
         H4 = get_H4(I, s_c, s)
         H_curr = H(I, s_c, s, z, phi)
         dH = H_curr - H4
-        # print(dH)
         return dH
-    # event.terminal = True
+    event.terminal = True
     _, _, s, ret = solve_ic(I, s_c, eps, init, tf,
-                               rtol=1e-4, dense_output=True,
+                               rtol=1e-4,
+                               dense_output=True,
                                events=[event])
-    plt.plot(ret.y[2, :])
-    plt.savefig('/tmp/foo.png')
-    plt.clf()
-    print(s[-1])
     if ret.t_events[0].size > 0:
-        return [ret.sol(ret.t_events[0][0])[3], mu0 - mu4]
+        return [s[-1], mu0 - mu4]
     else:
         return [-s[-1], 0]
 
@@ -107,13 +103,13 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
     pkl_fn = '6pc_dist%s.pkl' % s_c_str(s_c)
     n_mu = 101
     n_phi = 60
-    mu_vals =  np.linspace(-0.9, 0.9, n_mu)
+    mu_vals =  np.linspace(-0.99, 0.99, n_mu)
     phi_vals = np.linspace(0, 2 * np.pi, n_phi, endpoint=False)
 
     if not os.path.exists(pkl_fn):
         # store tuple (s_cross, mu0 - mu4)
         # s_cross convention: -1 = inside separatrix (pcap = 1),
-        # negative = - s_final (see which equilibrium ends up at)
+        # negative = - s_final (no encounter; s_f currently unused)
         cross_dat = np.zeros((n_mu, n_phi, 2), dtype=np.float64)
 
         # build arguments array up from scratch
@@ -136,16 +132,10 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
         p_caps = get_num_caps(I, s_c, cross_dat, mu_vals)
         tot_probs_anal = np.sum(p_caps_anal / n_phi, axis=1)
         tot_probs = np.sum(p_caps / n_phi, axis=1)
-        # print(cross_dat[76, 10])
-        # return
-        # for idx, (i, j) in enumerate(zip(p_caps[76, :], phi_vals)):
-        #     print(mu_vals[76], idx, i, j)
-        # 76, 77, 82, 83 seem to be funky
-        # for idx, (i, j) in enumerate(zip(mu_vals, tot_probs)):
-        #     print(idx, i, j)
         plt.plot(mu_vals, tot_probs_anal, 'ro', ms=2, label='Anal')
         plt.plot(mu_vals, tot_probs, 'bo', ms=2, label='Num')
         plt.ylim([0, 1])
+        plt.xticks([-1, -0.5, 0, 0.5, 1])
         plt.legend()
         plt.savefig('6pc_dist%s' % s_c_str(s_c), dpi=400)
         plt.clf()
@@ -168,6 +158,15 @@ if __name__ == '__main__':
     # print(get_cross_dat(I, 0.7, 10, 1e-3, 8000, 0.9, np.pi)) # no cross
     # print(get_cross_dat(I, 0.7, 10, 1e-3, 8000, 0, np.pi)) # in sep
     # print(get_cross_dat(I, 0.7, 10, 1e-3, 8000, 0, 0)) # fast cross
+
+    # mu = -0.91
+    # phi = np.pi / 2
+    # mu_vals = np.array([mu])
+    # cross_dat = get_cross_dat(I, 0.7, 10, 1e-3, 8000, mu, phi)
+    # print(cross_dat)
+    # cross_dat_re = np.reshape(np.array(cross_dat), (1, 1, 2))
+    # print(get_num_caps(I, 0.7, cross_dat_re, mu_vals))
+
     # for mu in [0.4, 0.45, 0.5]:
     # for mu in [0.5]:
     #     cross_dat = get_cross_dat(I, 0.7, 10, 1e-3, 8000, mu, np.pi)

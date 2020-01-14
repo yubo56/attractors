@@ -157,11 +157,6 @@ def get_dydt_0(I, s_c, eps):
             y * np.sin(I) + tide * (1 - z**2),
             2 * eps * (z - s * (1 + z**2) / 2),
         ]
-        # TEST
-        # if t / 100 - int(t / 100) < 1e-4:
-        #     print(t, v, ret)
-        #     # print(t)
-
         # take normal component to s
         # s_hat = np.array([x, y, z])
         # ret[ :3] -= np.dot(ret[ :3], s_hat) * s_hat
@@ -296,8 +291,8 @@ def get_crit_mus(I, s_c):
             return opt.bisect(dmu_cs1_equil, s_etac, 1), cs2_equil_mu
     return None, cs2_equil_mu
 
-ETA_CUTOFF = 0.3
-def get_ps_anal(I, s_c, s):
+ETA_CUTOFF = 0.65
+def get_ps_anal(I, s_c, s, *args):
     ''' analytical capture probabilities '''
     eta = s_c / s
     def get_top():
@@ -344,7 +339,11 @@ def get_ps_anal(I, s_c, s):
             - 2 * np.pi * eta * np.cos(I)
             - 64/3 * (eta * np.sin(I))**(3/2)
         )
-    return get_top(), get_bot()
+    top = get_top()
+    bot = get_bot()
+    top[np.where(eta > ETA_CUTOFF)[0]] = -1
+    bot[np.where(eta > ETA_CUTOFF)[0]] = -1
+    return top, bot
 
 def get_ps_numinterp(I, s_c, s_arr):
     ''' numerical capture probabilities '''
@@ -379,57 +378,24 @@ def get_ps_numinterp(I, s_c, s_arr):
                 (1 - m**2) * (2 / s - m)
             )
 
-        eps = 0.2 # don't integrate too close to edges, hard to find separatrix
+        eps = 0.01 # don't integrate too close to edges, hard to find separatrix
         top = -integrate.quad(arg_top, eps, 2 * np.pi - eps)[0]
         bot = integrate.quad(arg_bot, eps, 2 * np.pi - eps)[0]
         return top, bot
     all_probs = np.array([getter(s) for s in s_arr])
     return interp1d(s_arr, all_probs[:, 0]), interp1d(s_arr, all_probs[:, 1])
 
-def get_anal_caps(I, s_c, cross_dat, mu_vals):
-    s_crosses = cross_dat[:, :, 0]
-    p_caps = np.zeros(np.shape(s_crosses), dtype=np.float64)
-    # where s_crosses == -2 (no encounter) is already zero, don't set
+def get_ps_num(I, s_c, real_crosses, top_interp, bot_interp):
+    return top_interp(real_crosses), bot_interp(real_crosses)
 
-    # compute pc for actual crossing spins
-    for idx, row in enumerate(s_crosses):
-        if s_c == 0.7 and mu_vals[idx] > 0.465:
-            # for some reason, the sep crossing is mis-detected in these values?
-            p_caps[idx, :] = 0
-            continue
-        cross_idxs = np.where(row > 0)[0]
-        real_crosses = row[cross_idxs]
-        top, bot = get_ps_anal(I, s_c, real_crosses)
-        d_mu = cross_dat[idx, cross_idxs, 1]
-
-        p_caps[idx, np.where(row == -1)[0]] = 1
-        # all the dmus are shared per row (same mu value)
-        if len(np.where(d_mu < 0)[0]) > 0:
-            p_caps[idx, cross_idxs] = ((top + bot) / bot)
-        else:
-            p_caps[idx, cross_idxs] = ((top + bot) / top)
-
-        eta_c = get_etac(I)
-        no_sep_idx = np.where(s_c / real_crosses > eta_c)[0]
-        p_caps[idx, no_sep_idx] = 1
-
-        # finally, ETA_CUTOFF values, all zero I think
-        cutoff_idxs = np.where(np.logical_and(
-            top == -1,
-            bot == -1,
-        ))[0]
-        p_caps[idx, cutoff_idxs] = 0
-    p_caps = np.minimum(np.maximum(p_caps, np.zeros_like(p_caps)),
-                        np.ones_like(p_caps))
-    return p_caps
-
-def get_num_caps(I, s_c, cross_dat, mu_vals):
+def get_anal_caps(I, s_c, cross_dat, mu_vals,
+                  getter=get_ps_anal):
+    eta_c = get_etac(I)
     s_crosses = cross_dat[:, :, 0]
     p_caps = np.zeros(np.shape(s_crosses), dtype=np.float64)
     # where s_crosses == -2 (no encounter) is already zero, don't set
 
     cs1_crit_mu, cs2_crit_mu = get_crit_mus(I, s_c)
-    print(cs1_crit_mu, cs2_crit_mu)
     min_s_cross = np.abs(s_crosses).min()
     s_interp = np.linspace(min_s_cross, s_crosses.max(), 100)
     top_interp, bot_interp = get_ps_numinterp(I, s_c, s_interp)
@@ -441,34 +407,33 @@ def get_num_caps(I, s_c, cross_dat, mu_vals):
             continue
         cross_idxs = np.where(row > 0)[0]
         real_crosses = row[cross_idxs]
-        top = top_interp(real_crosses)
-        bot = bot_interp(real_crosses)
-        p_caps[idx, np.where(top == -1)[0]] = -1
+        top, bot = getter(I, s_c, real_crosses, top_interp, bot_interp)
         d_mu = cross_dat[idx, cross_idxs, 1]
 
         p_caps[idx, np.where(row == -1)[0]] = 1
+
         # all the dmus are shared per row (same mu value)
-
-        # if row is still negative, no sep encounter, figure out which
-        # equilibrium it ended up at
-        equil2_idxs = np.where(np.logical_and(
-            np.abs(row + cs2_crit_mu) < 1e-2,
-            row != -1,
-        ))[0]
-        p_caps[idx, equil2_idxs] = 1
-        # equil1_idxs is harder to compute and already set to zero, do not set
-
         if len(np.where(d_mu < 0)[0]) > 0:
             p_caps[idx, cross_idxs] = (top + bot) / bot
         else:
             p_caps[idx, cross_idxs] = (top + bot) / top
 
-        # finally, ETA_CUTOFF values, all zero I think
-        cutoff_idxs = np.where(np.logical_and(
-            top == -1,
-            bot == -1,
+        # ETA_CUTOFF values above sep are zero
+        cutoff_expr = np.logical_and(top == -1, bot == -1)
+        cutoff_idxs_above = np.where(np.logical_and(
+            cutoff_expr,
+            d_mu > 0,
         ))[0]
-        p_caps[idx, cutoff_idxs] = 0
+        p_caps[idx, cutoff_idxs_above] = 0
+
+        # finally, if the crossing spin ~ eta_critical, always CS2
+        sep_vanish_cross_idx = np.where(
+            np.abs(real_crosses - s_c / eta_c) < 1e-2)[0]
+        p_caps[idx, sep_vanish_cross_idx] = 1
+
     p_caps = np.minimum(np.maximum(p_caps, np.zeros_like(p_caps)),
                         np.ones_like(p_caps))
     return p_caps
+
+def get_num_caps(I, s_c, cross_dat, mu_vals):
+    return get_anal_caps(I, s_c, cross_dat, mu_vals, getter=get_ps_num)
