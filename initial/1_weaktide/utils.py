@@ -347,6 +347,7 @@ def get_ps_anal(I, s_c, s, *args):
 
 def get_ps_numinterp(I, s_c, s_arr):
     ''' numerical capture probabilities '''
+    eps = 1e-5
     def getter(s):
         ''' gets probability for a single spin s '''
         eta = s_c / s
@@ -357,16 +358,16 @@ def get_ps_numinterp(I, s_c, s_arr):
         def mu_up(phi):
             def dH(mu):
                 return H(I, s_c, s, mu, phi) - H(I, s_c, s, mu4, 0)
-            return opt.brentq(dH, mu4, 1)
+            return opt.brentq(dH, mu4 - eps, 1)
         def mu_down(phi):
             def dH(mu):
                 return H(I, s_c, s, mu, phi) - H(I, s_c, s, mu4, 0)
-            return opt.brentq(dH, -1, mu4)
+            return opt.brentq(dH, -1, mu4 + eps)
 
         def arg_top(phi):
             m = mu_up(phi)
             return (
-                2 * (m - s / 2) * s_c / (2 * s**2) * (
+                2 * (m - s * (1 + m**2) / 2) * s_c / (2 * s**2) * (
                     m / eta + np.cos(I))
                 + (1 - m**2) * (2 / s - m)
             )
@@ -378,9 +379,8 @@ def get_ps_numinterp(I, s_c, s_arr):
                 (1 - m**2) * (2 / s - m)
             )
 
-        eps = 0.01 # don't integrate too close to edges, hard to find separatrix
-        top = -integrate.quad(arg_top, eps, 2 * np.pi - eps)[0]
-        bot = integrate.quad(arg_bot, eps, 2 * np.pi - eps)[0]
+        top = -integrate.quad(arg_top, 0, 2 * np.pi)[0]
+        bot = integrate.quad(arg_bot, 0, 2 * np.pi)[0]
         return top, bot
     all_probs = np.array([getter(s) for s in s_arr])
     return interp1d(s_arr, all_probs[:, 0]), interp1d(s_arr, all_probs[:, 1])
