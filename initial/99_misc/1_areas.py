@@ -78,7 +78,7 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     ax1.plot(eta_cont, np.full_like(eta_cont, A3w[-1] / (4 * np.pi)), 'r--')
     ax1.legend(loc='upper left')
     ax1.set_xlabel(r'$\eta$')
-    ax1.set_ylabel(r'$A_{sep} / 4\pi$')
+    ax1.set_ylabel(r'$A / 4\pi$')
     ax1.set_xticks([0, 0.3, 0.6, 0.9])
     ax1.set_xticklabels([r'$0$', r'$0.3$', r'$0.6$', r'$0.9$'])
     old_ylims = ax1.get_ylim()

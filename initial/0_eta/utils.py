@@ -93,7 +93,7 @@ def get_four_subplots():
     for ax in axs:
         ax.set_xlim([0, 2 * np.pi])
         ax.set_ylim([-1, 1])
-    f.subplots_adjust(wspace=0.07)
+    f.subplots_adjust(wspace=0.15)
     ax1.set_ylabel(r'$\cos \theta$')
     ax3.set_xlabel(r'$\phi$')
     ax.set_xticks([0, np.pi, 2 * np.pi])

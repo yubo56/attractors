@@ -48,8 +48,6 @@ Astronomy, Cornell University, Ithaca, NY 14853, USA
 
 \begin{document}\label{firstpage}
 \pagerange{\pageref{firstpage}--\pageref{lastpage}}
-\renewcommand*{\sectionautorefname}{Section}
-% \renewcommand*{\subsectionautorefname}{Subsection}
 \maketitle
 
 \begin{abstract}
@@ -126,25 +124,25 @@ possible behavior. While we solve a specific dynamics problem, our analysis
 is general and has a wide range of applicability to general resonance
 encounters.
 
-The paper is organized as follows. In \autoref{s:eq}, we review relevant
+The paper is organized as follows. In Section~\ref{s:eq}, we review relevant
 spin-orbit dynamics and present the equations studied in the rest of the paper.
-In \autoref{s:ad} and \autoref{s:nonad}, we study the evolution of the system
+In Sections~\ref{s:ad} and~\ref{s:nonad}, we study the evolution of the system
 when the disk either dissipates adiabatically or non-adiabatically respectively.
 Exhaustive yet simple analytical arguments are able to explain completely the
 numerical results in both limits. We discuss potential consequences in
-\autoref{s:disc}. Our primary physical results consist of
-\autoref{fig:ad_ensemble} in the adiabatic limit and
-\autoref{fig:3_ensemble_05_15} in the non-adiabatic limit. Longer mathematical
+Section~\ref{s:disc}. Our primary physical results consist of
+Fig.~\ref{fig:ad_ensemble} in the adiabatic limit and
+Fig.~\ref{fig:3_ensemble_05_15} in the non-adiabatic limit. Longer mathematical
 calculations are relegated to the appendicies, including a leading-order
 estimate of final planetary obliquities given small initial spin-disk
-misalignment angles in \autoref{s:ad_approx}.
+misalignment angles in Appendix~\ref{s:ad_approx}.
 
 \section{Theory}\label{s:eq}
 
 \subsection{Equations of Motion}
 
 Much of this treatment parallels that of \citet{anderson2018teeter} and
-\citet{millholland_disk}. We consider an oblate star of mass $M_\star$ hosting a
+\citet{millholland_disk}. We consider a star of mass $M_\star$ hosting an oblate
 planet of mass $M_{\rm p}$, radius $R_{\rm p}$, at semimajor axis $a_{\rm p}$,
 and with spin angular frequency $\Omega_{\rm p}$, and a protoplanetary disk of
 mass $M_{\rm d}$ at some characteristic distance $r_{\rm d}$ from the host star
@@ -152,48 +150,57 @@ mass $M_{\rm d}$ at some characteristic distance $r_{\rm d}$ from the host star
 \equiv \bm{S} / S$ spin unit vector of planet, $\hat{l} \equiv \bm{L} / L$
 orbital angular momentum unit vector of planet, and $\hat{l}_{\rm d} \equiv
 \bm{L}_{\rm d} / L_{\rm d}$ angular momentum of the surrounding disc. We
-approximate $S \ll L \ll L_{\rm d}$, so $\hat{l}_{\rm d}$ is approximately
-constant and $\hat{l}$ experiences negligible backreaction torque from
-$\hat{s}$. The quadrupole-order secular equations of motion for $\hat{s}$,
-$\hat{l}$ and $\hat{l}_{\rm d}$ then become very simple
+assume $S \ll L \ll L_{\rm d}$, so $\vec{l}_{\rm d}$ is approximately
+constant and $\vec{l}$ experiences negligible backreaction torque from
+$\hat{s}$. The equations of motion for $\hat{s}$, $\hat{l}$ and $\hat{l}_{\rm
+d}$ are
 \begin{align}
     \rd{\hat{s}}{t} &= \omega_{\rm sl} \p{\hat{s} \cdot \hat{l}}
-        \p{\hat{s} \times \hat{l}},\label{eq:dsdt}\\
+            \p{\hat{s} \times \hat{l}}
+        \equiv \alpha \p{\hat{s} \cdot \hat{l}}
+            \p{\hat{s} \times \hat{l}},\label{eq:dsdt}\\
     \rd{\hat{l}}{t} &= \omega_{\rm ld}\p{\hat{l} \cdot \hat{l}_{\rm d}}
-        \p{\hat{l} \times \hat{l}_{\rm d}}\label{eq:dldt}.
+            \p{\hat{l} \times \hat{l}_{\rm d}}
+        \equiv -g\p{\hat{l} \times \hat{l}_{\rm d}},
+            \label{eq:dldt}
 \end{align}
 where
 \begin{align}
-    \omega_{\rm sl} &\equiv \frac{3k_{\rm qp}}{2k_{\rm p}} \frac{M_\star}{m_{\rm
+    \omega_{\rm sl} &= \frac{3k_{\rm qp}}{2k_{\rm p}} \frac{M_\star}{m_{\rm
         p}} \p{\frac{R_{\rm p}}{a_{\rm p}}}^3 \Omega_{\rm p},\label{eq:wsl}\\
-    \omega_{\rm ld} &\equiv \frac{3M_{\rm d}}{4M_\star}\p{\frac{a_{\rm
+    \omega_{\rm ld} &= \frac{3M_{\rm d}}{4M_\star}\p{\frac{a_{\rm
         p}}{r_{\rm d}}}^3 n .\label{eq:wld}
 \end{align}
 % = 1/(152600 yr) (kp = 6kqp, Mstar = msun, mp = mJ, Rp = RJ, ap = AU, Wp = 2pi
 % / (10 days))
 % = 1 / (573362 yr) (Md/Mstar = 0.01, ap/rd = 1/30)
-In \autoref{eq:wsl}, $k_{\rm qp}$ and $k_{\rm }$ are related to the planet's
-quadrupole moment and moment of inertia respectively \citep[see][]{lai2018}, and
-$n \equiv \sqrt{GM_\star/a_{\rm p}^3}$ is the planet's orbital mean motion. The
-three angles formed by the three vectors are denoted
+In Eq.~\eqref{eq:wsl}, $k_{\rm qp}$ and $k_{\rm p}$ are related to the planet's
+rotation-induced quadrupole moment and moment of inertia respectively
+\citep[see][]{lai2018}, and $n \equiv \sqrt{GM_\star/a_{\rm p}^3}$ is the
+planet's orbital mean motion. The three angles formed by the three vectors are
+denoted
 \begin{align}
     \theta &\equiv \arccos \hat{s} \cdot \hat{l},\\
     \theta_{\rm sd} &\equiv \arccos \hat{s} \cdot \hat{l}_{\rm d},\\
     I &\equiv \arccos \hat{l} \cdot \hat{l}_{\rm d}.
 \end{align}
+Following standard notation \citep[e.g.][]{colombo1966,peale1969,ward_jupiter},
+we have defined $\alpha \equiv \omega_{\rm sl}$ and $g = -\omega_{\rm ld}\cos
+I$.
 
-Let us transform to frame rotating about $\hat{l}_{\rm p}$ with frequency $g
-\equiv -\omega_{\rm ld}\cos I < 0$, then $\hat{l}$ is fixed. In this frame,
-$\hat{l}_{\rm p}$ also remains fixed and $\hat{s}$ evolves as:
+We can combine Eqs.~\eqref{eq:dsdt}--\eqref{eq:dldt} into a single equation by
+transforming into a frame rotating about $\hat{l}_{\rm d}$ with frequency $g$.
+In this frame, $\hat{l}_{\rm d}$ and $\hat{l}$ are fixed, and $\hat{s}$ evolves
+as:
 \begin{equation}
-    \rd{\hat{s}}{t} = \alpha \p{\hat{s} \cdot \hat{l}}
+    \at{\rd{\hat{s}}{t}}_{\rm rot} = \alpha \p{\hat{s} \cdot \hat{l}}
             \p{\hat{s} \times \hat{l}}
-        + g\p{\hat{s} \times \hat{l}_{\rm d}},
+        + g\p{\hat{s} \times \hat{l}_{\rm d}}.\label{eq:dsdt_rot}
 \end{equation}
-where $\alpha \equiv \omega_{\rm sl} > 0$ follows standard notation. By defining
-$\eta$ and nondimensionalized time $\tau$ as
+
+We define the frequency ratio $\eta$ and dimensionless time $\tau$ as
 \begin{align}
-    \eta \equiv{}& \frac{\abs{g}}{\alpha}\label{eq:eta},\\
+    \eta \equiv{}& -\frac{g}{\alpha}\label{eq:eta},\\
         ={}& 3.75 \p{\frac{k_{\rm p}}{6k_{\rm qp}}}
             \p{\frac{m_{\rm p}}{0.001 M_\odot}}
             \p{\frac{R_{\rm p}}{R_J}}^{-3}
@@ -202,22 +209,30 @@ $\eta$ and nondimensionalized time $\tau$ as
             \p{\frac{r_{\rm d}}{30 \;\mathrm{AU}}}^{-3}
             \p{\frac{M_\star}{1M_{\odot}}}^{-3/2}
             \cos I,\\
-    \tau \equiv{}& \alpha t,
+    \tau \equiv{}& \alpha t.
 \end{align}
-we can non-dimensionalize the equation of motion as
+Then Eq.~\eqref{eq:dsdt_rot} becomes
 \begin{equation}
-    \rd{\hat{s}}{\tau} = \p{\hat{s} \cdot \hat{l}}
+    \at{\rd{\hat{s}}{t}}_{\rm rot} = \p{\hat{s} \cdot \hat{l}}
             \p{\hat{s} \times \hat{l}}
         - \eta\p{\hat{s} \times \hat{l}_{\rm d}}. \label{eq:dsdt_base}
 \end{equation}
 
-Following~\cite{millholland_disk}, we allow $g$ to vary in time owing to a
-disk with decaying mass
+Throughout this paper, we consider $\alpha$ constant, but allow $g$ to vary in
+time. In the dispersing disk scenario of \citet{millholland_disk}, $\abs{g}$
+decreases in time due to the decreasing disk mass. We consider a simple
+exponential decay model
 \begin{equation}
-    M_{\rm d}(t) = M_{\rm d}(0)e^{-t/t_{\rm d}}.
+    M_{\rm d}(t) = M_{\rm d}(0)e^{-t/t_{\rm d}},
 \end{equation}
-As $\alpha$ is held constant, this equates to $\eta$ decaying as $\rd{\eta}{t} =
--\frac{\eta}{t_{\rm d}}$ as well. We nondimensionalize:
+with $t_d$ constant.
+
+Tihs implies $\rd{\eta}{t} = -\frac{\eta}{t_{\rm d}}$. In dimenisonless units,
+we have
+\begin{equation}
+    \rd{\eta}{\tau} = -\epsilon \eta\label{eq:deta_dt},
+\end{equation}
+where
 \begin{align}
     \epsilon \equiv{}& \frac{1}{\alpha t_{\rm d}},\\
         ={}& 0.015 \p{\frac{k_{\rm p}}{6k_{\rm qp}}}
@@ -225,71 +240,79 @@ As $\alpha$ is held constant, this equates to $\eta$ decaying as $\rd{\eta}{t} =
             \p{\frac{a_{\rm p}}{1\;\mathrm{AU}}}^3\nonumber\\
         &\p{\frac{R_{\rm p}}{R_J}}^{-3}
             \p{\frac{\Omega_{\rm p}}{2\pi/\p{10\;\mathrm{days}}}}
-            \p{\frac{t_{\rm d}}{10\;\mathrm{Myr}}}^{-1},\\
-    \rd{\eta}{\tau} ={}& -\epsilon \eta.\label{eq:deta_dt}
+            \p{\frac{t_{\rm d}}{10\;\mathrm{Myr}}}^{-1}.
 \end{align}
-\autoref{eq:dsdt_base} and \autoref{eq:deta_dt} together constitute our system
+Eqs.~\eqref{eq:dsdt_base} and~\eqref{eq:deta_dt} together constitute our system
 of study.
 
-In the next two subsections, we further discuss theoretical background relevant
-to our analysis of the evolution of this system. They are not essential to
-reproducing the results of \autoref{s:ad} and \autoref{s:nonad}.
+In the next two subsections, we discuss and review the theoretical background
+relevant to our analysis of the evolution of the system.
 
 \subsection{Cassini States}\label{ss:cs}
 
-Spin states satisfying $\rd{\hat{s}}{t} = 0$ are referred to as \emph{Cassini
-States} (CSs). There are either two or four solutions, depending on the values
-of $\eta, I$. Following standard convention and nomenclature (see
-\autoref{fig:cs_locs}), CSs 1, 3, 4 have $\phi = 0, \theta < 0$ and CS2 has
-$\phi = \pi, \theta > 0$. Of these, CSs 1, 2, 3 are stable while CS4 is unstable
-(see \autoref{s:local_dynamics}). When $\eta < \eta_{\rm c}$, where
+Spin states satisfying $\at{\rd{\hat{s}}{t}}_{\rm rot} = 0$ are referred to as
+\emph{Cassini States} (CSs). They require that $\hat{s}$, $\hat{l}$, and
+$\hat{l}_{\rm d}$ be coplanar. There are either two or four solutions, depending
+on the values of $\eta, I$. They are specified by the obliquity $\theta$ and the
+precessional phase of $\hat{s}$ around $\hat{l}$, denoted $\phi$. Following
+standard convention and nomenclature (see Fig.~\ref{fig:cs_locs}), CSs 1, 3, 4
+have $\phi = 0$ and $\theta < 0$, corresponding to $\hat{s}$ and $\hat{l}_{\rm
+d}$ being on opposite sides of $\hat{l}$, while CS2 has $\phi = \pi$ and $\theta
+> 0$, corresponding to $\hat{s}$ and $\hat{l}_{\rm d}$ being on the same side of
+$\hat{l}$. When $\eta < \eta_{\rm c}$, where
 \begin{equation}
     \eta_{\rm c} \equiv \p{\sin^{2/3}I + \cos^{2/3}I}^{-3/2},
 \end{equation}
-all four CSs exist, and when $\eta > \eta_{\rm c}$, only CSs 2, 3 exist
-\citep{henrard1987,ward2004I}. The CS obliquities as a function of $\eta$ are
-shown in \autoref{fig:cs_locs}.
+all four CSs exist, and when $\eta > \eta_{\rm c}$, only CSs 2, 3 exist. The CS
+obliquities as a function of $\eta$ are shown in Fig.~\ref{fig:cs_locs}.
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{../initial/99_misc/2_cs_locs.png}
-    \caption{Cassini state obliquities as a function of $\eta$. Note that
-    $\theta \in [-\pi, \pi]$ is the traditional definition of the polar angle
-    \citep[see e.g.][]{colombo1966,peale1969,henrard1987}. The vertical dashed
-    line indicates $\eta_{\rm c}$, where CS1 and CS4 merge and annihilate, and the
-    horizontal dashed lines indicate $\theta = I, 180^\circ - I$ the asymptotic
-    behavior for CS2, 3 for $\eta \gg \eta_{\rm c}$.}\label{fig:cs_locs}
+    \caption{Cassini state obliquities as a function of $\eta$ at $I = 5^\circ$.
+    Note that $\theta \in [-\pi, \pi]$ is the traditional definition of the
+    polar angle. The vertical dashed line indicates $\eta_{\rm c}$, where CS1
+    and CS4 merge and annihilate, and the horizontal dashed lines indicate
+    $\theta = I$ and $180^\circ - I$, the asymptotic behavior for CSs 2 and 3
+    for $\eta \gg \eta_{\rm c}$.}\label{fig:cs_locs}
 \end{figure}
+
+Of the four CSs, 1, 2, 3 are stable while 4 is unstable.
+Appendix~\ref{s:local_dynamics} gives the libration frequencies and growth rates
+respectively near these CSs.
 
 \subsection{Separatrix}
 
-When $\eta < \eta_{\rm c}$, CS4 exists and is a saddle point. The two trajectories
-originating and ending at CS4 are the only two infinite-period orbits in phase
-space. Together, these two critical trajectories are referred to as the
-\emph{separatrix} and divide phase space into three zones. In
-\autoref{fig:eq_1contours}, we show the separatrix, the three zones, and their
+When $\eta < \eta_{\rm c}$, CS4 exists and is a saddle point. The two
+trajectories originating and ending at CS4 are the only two infinite-period
+orbits in the phase space. Together, these two critical trajectories are
+referred to as the \emph{separatrix} and divide phase space into three zones. In
+Eq.~\eqref{fig:eq_1contours}, we show the separatrix, the three zones, and their
 relations to the CSs via a contour plot of the Hamiltonian of the system
-\begin{equation}
-    \mathcal{H} = -\frac{1}{2}\p{\hat{s} \cdot \hat{l}}^2
-            + \eta \p{\hat{s} \cdot \hat{l}_{\rm d}}.\label{eq:H}
-\end{equation}
+\begin{align}
+    \mathcal{H} &= -\frac{1}{2}\p{\hat{s} \cdot \hat{l}}^2
+            + \eta \p{\hat{s} \cdot \hat{l}_{\rm d}},\label{eq:H}\\
+        &= -\frac{1}{2}\cos^2\theta
+            + \eta \p*{\cos \theta \cos I - \sin I \sin \theta \cos \phi}.
+\end{align}
 Note that trajectories in zone $II$ librate about CS2 while those in zones
-$I$/$III$ circulate.
+$I$ and $III$ circulate.
 \begin{figure*}
     \centering
     \includegraphics[width=0.8\textwidth]{../initial/0_eta/1contours_flip.png}
     \caption{Contour plot of $\mathcal{H}\p{\phi, \cos \theta}$ as given in
-    \autoref{eq:H}, where warmer colors denote more positive values. The black
+    Eq.~\eqref{eq:H}, where warmer colors denote more positive values. The black
     solid line is the separatrix, which only exists for $\eta < \eta_{\rm c}$.
     The three zones, divided by the separatrix, are labeled. The Cassini states
-    are labeled and have the same colors as \autoref{fig:cs_locs}. The interior
-    of the separatrix, shaded in grey, is formally only defined for $\eta <
-    \eta_{\rm c}$, but we may identify the points in phase space that flow into
-    zone $II$ when evolved forward in time; this is the shaded region in the top
-    left plot, bounded by the dotted black line.}\label{fig:eq_1contours}
+    are labeled and have the same colors as in Fig.~\ref{fig:cs_locs}. The
+    interior of the separatrix, shaded in grey, is formally only defined for
+    $\eta < \eta_{\rm c}$, but we may identify the points in phase space that
+    flow into zone $II$ when evolved forward in time (decreasing $\eta$
+    adiabatically); this is the shaded region in the top left panel, bounded by
+    the black dotted line.}\label{fig:eq_1contours}
 \end{figure*}
 
-The unsigned areas of the three zones are known exactly
-\citep{henrard1987,ward2004I}. Defining
+The unsigned areas $\p{\abs{\int \cos \theta \;\mathrm{d}\phi}}$ of the three
+zones can be computed analytically \citep{henrard1987,ward2004I}. Defining
 \begin{subequations}
     \begin{align}
         z_0 &= \eta\cos I, &
@@ -308,24 +331,24 @@ the areas for $\eta < \eta_{\rm c}$ are given by
         A_{\rm III} &= 2\pi\p{1 + z_0} - \frac{A_2}{2}.
     \end{align}
 \end{subequations}
-These are plotted as a function of $\eta$ in \autoref{fig:eq_areas}. Note that
-the zones are not formally defined for $\eta > \eta_{\rm c}$, but a natural
-extension exists: evolve an initial point $p$ under adiabatic decrease of $\eta$
-until the separatrix appears at $\eta = \eta_{\rm c}$, then identify $p$ with
-the zone it is in at $\eta_{\rm c}$. Since phase space area is conserved under
-adiabatic evolution, this implies $A_i\p{\eta > \eta_{\rm c}} = A_i(\eta_{\rm
-c})$. The boundary between these extended zones is denoted by the dashed black
-line in the top left panel of \autoref{fig:eq_1contours}, where otherwise no
-separatrix should exist since $\eta > \eta_{\rm c}$.
+These are plotted as a function of $\eta$ in Fig.~\ref{fig:eq_areas}. Note that
+the zones are not formally defined for $\eta > \eta_{\rm c}$ since the
+separatrix disappears, but a natural extension exists: evolve an initial phase
+space point $p$ under adiabatic decrease of $\eta$ until the separatrix appears
+at $\eta = \eta_{\rm c}$, then identify $p$ with the zone it is in at $\eta_{\rm
+c}$. Since phase space area is conserved under adiabatic evolution, this implies
+$A_i\p{\eta > \eta_{\rm c}} = A_i(\eta_{\rm c})$. The boundary between these
+extended zones is denoted by the dashed black line in the top left panel of
+Fig.~\ref{fig:eq_1contours}, where otherwise no separatrix exists.
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{../initial/99_misc/1_areas.png}
     \caption{Plot of fractional areas of each of the zones $A_{\rm i}(\eta) /
-    4\pi$ as given by \autoref{se:area_ward}. Dotted lines correspond to small
-    $\eta$ approximations discussed in \autoref{s:ad_approx}. Dashed lines for
-    $\eta > \eta_{\rm c}$ effective values of $A_{\rm II}, A_{\rm III}$ for
-    $\eta > \eta_{\rm c}$, denoting the area of points that would flow into
-    either area under adiabatic decrease of $\eta$ from $\eta > \eta_{\rm
+    4\pi$ as given by Eqs.~\eqref{se:area_ward}. Dotted lines correspond to
+    small $\eta$ approximations discussed in Appendix~\ref{s:ad_approx}. Dashed
+    lines for $\eta > \eta_{\rm c}$ effective values of $A_{\rm II}, A_{\rm
+    III}$ for $\eta > \eta_{\rm c}$, denoting the area of points that would flow
+    into either area under adiabatic decrease of $\eta$ from $\eta > \eta_{\rm
     c}$.}\label{fig:eq_areas}
 \end{figure}
 
@@ -349,7 +372,7 @@ system. If this criterion is satisfied, then a given trajectory will be
 adiabatic for almost all of its evolution save one or two separatrix-crossing
 orbits.
 
-As is shown in \autoref{ss:eigens}, the libration frequency about CS2 is slower
+As is shown in Appendix~\ref{ss:eigens}, the libration frequency about CS2 is slower
 than that about CS1 or CS3. As such, it is the slowest characteristic frequency
 in the system. The weak adiabaticity criterion can be recast as requiring that
 $\eta$ vary more slowly than this libration period; this is exactly the
@@ -370,7 +393,7 @@ For $I = 5^\circ$, $\eta \sim \eta_c$ we compute $\epsilon \lesssim 0.085$ is
 the requirement for weak adiabaticity. Since our criterion is only a weak
 constraint on adiabaticity, we use $\epsilon = 3 \times 10^{-4}$ in our
 ``adiabatic'' simulations. We explore the consequences of increasingly
-nonadiabatic evolution in \autoref{ss:transition}.
+nonadiabatic evolution in Section~\ref{ss:transition}.
 
 \subsection{Adiabatic Evolution Outcomes}\label{ss:ad_ensemble}
 
@@ -387,14 +410,14 @@ ring fixed by $\theta_{\rm sd, i}$\footnote{For each $\theta_{\rm sd, i}$ we
 choose an initial condition on the libration cycle going through $\p{\theta_2 +
 \theta_{\rm sd, i}, \phi_2}$ (where $\p{\theta_2, \phi_2}$ are the coordinates
 of CS2), such that all initial conditions for a given $\theta_{\rm sd, i}$
-enclose the same initial phase space; see \autoref{sss:a_evo}.}. To be concrete,
+enclose the same initial phase space; see Section~\ref{sss:a_evo}.}. To be concrete,
 we choose $\eta_i = 10\eta_{\rm c}$. For each initial condition, we evolve
 Equations~\ref{eq:dsdt_base} and~\ref{eq:deta_dt} until $\eta = 10^{-5}$. For
 such small $\eta$, $\hat{s}$ precesses about $\hat{l}$ with uniform final
 obliquity $\theta_{\rm f}$. This transfer function $\theta_{\rm f}\p{\theta_{\rm
 sd, i}}$ is our primary result, and is shown for $I = 5^\circ, 10^\circ,
-20^\circ$ in \autoref{fig:ad_ensemble}, \autoref{fig:3_ensemble_10_35}, and
-\autoref{fig:3_ensemble_20_35} respectively. The blue dots represent the results
+20^\circ$ in Figs.~\ref{fig:ad_ensemble},~\ref{fig:3_ensemble_10_35},
+and~\ref{fig:3_ensemble_20_35} respectively. The blue dots represent the results
 of the simulation, which are in excellent agreement with the colored tracks.
 These colored tracks are calculated semi-analytically using methods explained in
 the following section.
@@ -405,24 +428,23 @@ the following section.
     \caption{Top: $\theta_{\rm f}\p{\theta_{\rm sd, i}}$, overlaid with
     semi-analytic predictions of the $\theta_{\rm  f}$ for each of the four
     nontrivial dynamical tracks in colored lines. Black dotted lines correspond
-    to small-$\theta_{\rm sd, i}$ predictions derived in \autoref{s:ad_approx}.
-    Bottom: Semi-analytic probabilities of each of the dynamical tracks for each
-    $\theta_{\rm sd, i}$. The five regimes of $\theta_{\rm sd, i}$ values
-    demarcated by the vertical dashed black lines correspond to the five regimes
-    of $A_i$ calculated in \autoref{ss:zone_transitions}. Black dotted lines
-    correspond to simple analytic estimates given in
-    \autoref{s:ad_approx}.}\label{fig:ad_ensemble}
+    to small-$\theta_{\rm sd, i}$ predictions derived in
+    Appendix~\ref{s:ad_approx}. Bottom: Semi-analytic probabilities of each of
+    the dynamical tracks for each $\theta_{\rm sd, i}$. The five regimes of
+    $\theta_{\rm sd, i}$ values demarcated by the vertical dashed black lines
+    correspond to the five regimes of $A_i$ calculated in
+    Section~\ref{ss:zone_transitions}.}\label{fig:ad_ensemble}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{../initial/2_toy2/3_ensemble_10_35.png}
-    \caption{Same as \autoref{fig:ad_ensemble} but for $I =
+    \caption{Same as Fig.~\ref{fig:ad_ensemble} but for $I =
     10^\circ$ and with fewer annotations.}\label{fig:3_ensemble_10_35}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{../initial/2_toy2/3_ensemble_20_35.png}
-    \caption{Same as \autoref{fig:3_ensemble_10_35} but for $I = 20^\circ$. The
+    \caption{Same as Fig.~\ref{fig:3_ensemble_10_35} but for $I = 20^\circ$. The
     $III \to II \to I$ track is very short since the maximum $A_{\rm II}$ is very
     near $\eta_{\rm c}$ for $I = 20^\circ$.}\label{fig:3_ensemble_20_35}
 \end{figure}
@@ -447,7 +469,7 @@ particular, we adopt convention where
 \end{equation}
 This definition of $A$ has the advantage of (i) being continuous at $\cos \theta
 = 1$, and (ii) being easily expressible as combinations of the $A_i$ of
-\autoref{se:area_ward}. The bounds of the integral are either a libration
+Eqs.~\eqref{se:area_ward}. The bounds of the integral are either a libration
 ($\phi$ returns to its original value with the same $\dot{q\phi}$ sign) or
 circulation cycle ($\phi$ advances to $\phi \pm 2\pi$). Note lastly that $A$ has
 simple physical interpretation of are enclosed on the unit sphere by $\hat{s}$
@@ -466,9 +488,9 @@ with constant $\theta_{\rm sd}$, meaning they enclose initial phase space area
 \end{equation}
 Complications arise when considering finite $\eta_i$, as trajectories near CS2
 or CS3 librate about these equilibria respectively, rather than $\hat{l}_{\rm
-d}$, and \autoref{eq:ai_qsd} is no longer exact. In practice,
-\autoref{eq:ai_qsd} holds very well when defining $\theta_{\rm sd, i}$ as the
-angular distance to CS2; an exception is discussed in \autoref{sss:evol_traj}.
+d}$, and Eq.~\eqref{eq:ai_qsd} is no longer exact. In practice,
+Eq.~\eqref{eq:ai_qsd} holds very well when defining $\theta_{\rm sd, i}$ as the
+angular distance to CS2; an exception is discussed in Section~\ref{sss:evol_traj}.
 
 Beginning at the last separatrix crossing, the final enclosed phase space area
 $A_f$ will be conserved for all time. As $\eta \to 0$, trajectories circulate at
@@ -477,13 +499,13 @@ constant obliquity $\theta_{\rm f}$, related to $A_f$ by
     2\pi\p{1 - \cos \theta_{\rm f}} = A_f. \label{eq:qfaf}
 \end{equation}
 
-$A$ is not conserved when the trajectory encounters the separatrix. Howover,
-its change is easily understood \citep{henrard1982}. In essence, when the
-trajectory crosses the separatrix, it continues to evolve adjacent to the
-separatrix. So if a separatrix crossing results in a zone I trajectory, the
-resultant $A$ can be approximated by integrating \autoref{eq:a_oint} along the
-upper leg of the separatrix. Pictorally, this can be seen in the bottom plots of
-\autoref{fig:ad_21}.
+$A$ is not conserved when the trajectory encounters the separatrix. Howover, its
+change is easily understood \citep{henrard1982}. In essence, when the trajectory
+crosses the separatrix, it continues to evolve adjacent to the separatrix. So if
+a separatrix crossing results in a zone I trajectory, the resultant $A$ can be
+approximated by integrating Eq.~\eqref{eq:a_oint} along the upper leg of the
+separatrix. Pictorally, this can be seen in the bottom plots of
+Fig.~\ref{fig:ad_21}.
 
 \subsubsection{Governing Principles: Probabilistic Separatrix Crossing}
 
@@ -500,11 +522,11 @@ zone $i$ to zone $j$ is given
         = -\frac{\pd{A_k}{\eta}}{ \pd{A_i}{\eta}}.\label{eq:henrard_hop}
 \end{align}
 Note that $\Pr \p{i \to j} + \Pr\p{i \to k} = 1$. This can be used directly in
-conjunction with \autoref{se:area_ward} to understand for what initial
+conjunction with Eqs.~\eqref{se:area_ward} to understand for what initial
 conditions each track can be observed and with what probabilities.
 
 As a particular example, consider a system in zone $II$ in panel (d) of
-\autoref{fig:eq_1contours}. As $\eta$ decreases, zone $II$ will shrink while
+Fig.~\ref{fig:eq_1contours}. As $\eta$ decreases, zone $II$ will shrink while
 zones $I$ and $III$ will expand until the trajectory. Suppose the trajectory
 exits zone $II$ at some $\eta_\star$, then the probability of a $II \to I$
 transition is $\Pr\p{II \to I} = -\frac{\dot{A}_{\rm I}}{\dot{A}_{\rm II}}$,
@@ -525,15 +547,15 @@ evolution of $A$ throughout each of the five tracks, as well as determine the
 initial conditions and probabilities associated with each track:
 \begin{enumerate}
     \item $II \to I$ --- An example trajectory following this track is depicted
-        in \autoref{fig:ad_21}. $\hat{s}$ starts librating about CS2 in zone
+        in Fig.~\ref{fig:ad_21}. $\hat{s}$ starts librating about CS2 in zone
         $II$, enclosing some initial phase space area $A_i$. The trajectory is
         able to librate without separatrix encounter until $A_{\rm
         II}(\eta_\star) = A_i$. As the trajectory transitions to a circulating
         trajectory in zone $I$ immediately bordering the separatrix, it will
         encompass $-A_{\rm I}(\eta_\star)$ phase space area. The final
-        $\theta_{\rm f}$ is then given by \autoref{eq:qfaf}. An analytical
-        approximation to $\theta_{\rm f}$ is derived in \autoref{s:ad_approx}
-        and is
+        $\theta_{\rm f}$ is then given by Eq.~\eqref{eq:qfaf}. An analytical
+        approximation to $\theta_{\rm f}$ is derived in
+        Appendix~\ref{s:ad_approx} and is
         \begin{equation}
             \cos \theta_{\rm f, II \Rightarrow I} \approx
                 \p{\frac{\pi \theta_{\rm sp, i}^2}{16}}^2 \cot I
@@ -545,19 +567,19 @@ initial conditions and probabilities associated with each track:
         given in closed form in \citet{ward2004I} but appears to be incorrect.
         Then, at some known $\eta_\star$ satisfying $A_{\rm II}(\eta_\star) =
         A_i$, the trajectory is ejected from the separatrix following
-        \autoref{eq:henrard_hop}. Note that since $\pd{A_i}{\eta} < 0$
+        Eq.~\eqref{eq:henrard_hop}. Note that since $\pd{A_i}{\eta} < 0$
         everywhere, while $\pd{A_{\rm II}}{\eta} > 0$ at all possible
         $\eta_\star$ for an initial condition starting in zone $II$, this track
         always has nonzero probability.
 
     \item $II \to III$ --- An example trajectory following this track is
-        depicted in \autoref{fig:ad_23}. The only difference from the previous
+        depicted in Fig.~\ref{fig:ad_23}. The only difference from the previous
         track is that, upon separatrix encounter, the trajectory follows the
         circulating trajectory in zone $III$ bordering the separatrix, upon
         which it will encompass $A_f = A_{\rm I}(\eta_\star) + A_{\rm
         II}(\eta_\star)$. The final obliquity is still given by
-        \autoref{eq:qfaf}, and the analytical approximation derived in
-        \autoref{s:ad_approx} is
+        Eq.~\eqref{eq:qfaf}, and the analytical approximation derived in
+        Appendix~\ref{s:ad_approx} is
         \begin{equation}
             \cos \theta_{\rm f, II \Rightarrow III} \approx
                 \p{\frac{\pi \theta_{\rm sp, i}^2}{16}}^2 \cot I
@@ -566,22 +588,22 @@ initial conditions and probabilities associated with each track:
 
         Again, this track can only occur when $A_i < A_{\rm II}(\eta_{\rm c})$, but a
         further constraint arises when we consider the transition probability
-        given by \autoref{eq:henrard_hop}. Upon examination of
-        \autoref{fig:eq_areas}, it is clear that $\pd{A_{\rm III}}{\eta} > 0$ for
+        given by Eq.~\eqref{eq:henrard_hop}. Upon examination of
+        Fig.~\ref{fig:eq_areas}, it is clear that $\pd{A_{\rm III}}{\eta} > 0$ for
         many $\eta$. Call
         \begin{equation}
             \eta_{\min, III} \equiv \argmin A_{\rm III}(\eta),
         \end{equation}
-        which is labeled in \autoref{fig:eq_areas}, then if $\eta_\star >
+        which is labeled in Fig.~\ref{fig:eq_areas}, then if $\eta_\star >
         \eta_{\rm \min, III}$ then $\Pr_{\rm II \to III} < 0$. This is understood as a
         forbidden transition, and so $II \to III$ is only a permitted dynamical
         track if $\eta_\star <, \eta_{\rm \min, III}$.
 
-    \item $III \to I$ --- This track is depicted in \autoref{fig:ad_31}.
+    \item $III \to I$ --- This track is depicted in Fig.~\ref{fig:ad_31}.
         The trajectory encounters the separatrix when $A_{\rm I}(\eta_\star) +
         A_{\rm II}(\eta_\star) = A_i$, upon which it transitions to a zone $I$
         trajectory enclosing $A_f = -A_{\rm I}$. Then, as always, the final
-        obliquity is given by \autoref{eq:qfaf}.
+        obliquity is given by Eq.~\eqref{eq:qfaf}.
 
         This track can only occur if $A_i > A_{\rm II}(\eta_{\rm c})$, but is also
         constrained by requiring its $A_i$ is sufficiently small it will
@@ -593,18 +615,18 @@ initial conditions and probabilities associated with each track:
         III}}{\eta} > 0$ for all accessible $\eta_{\star}$, this track is always
         permitted.
 
-    \item $III \to II \to I$ --- This track is depicted in \autoref{fig:ad_321}.
+    \item $III \to II \to I$ --- This track is depicted in Fig.~\ref{fig:ad_321}.
         The first separatrix encounter occurs at $\eta_1$ when $A_{\rm
         I}(\eta_1) + A_{\rm II}(\eta_1) = A_i$, upon which the trajectory moves
         into zone $II$ enclosing intermediate phase space area $A_m = A_{\rm
-        II}(\eta_1)$. Examining \autoref{fig:eq_areas}, there exist values $A$
+        II}(\eta_1)$. Examining Fig.~\ref{fig:eq_areas}, there exist values $A$
         for which $A_{\rm II}(\eta) = A$ has multiple solutions, and $\eta_1 >
         \eta_{\rm II, \max}$ as labeled. These are the only values for which the
         $III \to II \to I$ transition is permitted. Thus, as $\eta$ continues to
         decrease, a second $\eta_2$ value exists for which $A_m = A_{\rm
         II}(\eta_2)$, upon which the trajectory is ejected to zone $I$ and $A_f
         = -A_{\rm I}(\eta_2)$. The final obliquity again then obeys
-        \autoref{eq:qfaf}.
+        Eq.~\eqref{eq:qfaf}.
 
         Similar to the $III \to I$ track, the $III \to II \to I$ track can only
         occur over the same $A_{\rm II}(\eta_{\rm c}) < A_i < \max A_{\rm I} + A_{\rm
@@ -631,14 +653,14 @@ initial conditions and probabilities associated with each track:
         \theta_{\rm sd, i}$.
 
         Note that a small deviation from $\theta = \theta_{\rm sd, i}$ occurs
-        because we use finite $\eta_i$, as hinted at in \autoref{sss:a_evo}.
+        because we use finite $\eta_i$, as hinted at in Section~\ref{sss:a_evo}.
         This is because for $\theta_{\rm sd, i} \gtrsim \pi/2$, trajectories are
         better described as librating about CS3. Nevertheless, we can still
         approximate $A_i$ to good accuracy as the solid angle enclosed by
         libration about CS3 with polar angle $2\pi + \theta_3 - \theta_2 -
         \theta_{\rm sd, i}$. This recovers the correct transfer function
         $\theta_{\rm f}\p{\theta_{\rm sd, i}}$ for the $III \to III$ regime, as
-        can be seen visibly in \autoref{fig:3_ensemble_20_35}.
+        can be seen visibly in Fig.~\ref{fig:3_ensemble_20_35}.
 \end{enumerate}
 In summary, the five regimes of track possibilities in increasing order of $A_i$
 are:
@@ -658,8 +680,8 @@ are:
     \item $A_i > \max A_{\rm I} + A_{\rm II}$ --- $III \to III$ only.
 \end{enumerate}
 The corresponding ranges for for $\theta_{\rm sd,i}$ can be computed via
-\autoref{eq:ai_qsd}. The boundaries between these ranges are overplotted in
-\autoref{fig:ad_ensemble}, where they can be seen to agree well with numerical
+Eq.~\eqref{eq:ai_qsd}. The boundaries between these ranges are overplotted in
+Fig.~\ref{fig:ad_ensemble}, where they can be seen to agree well with numerical
 results.
 \begin{figure}
     \centering
@@ -703,7 +725,7 @@ results.
         \centering
         \includegraphics[width=0.5\textwidth]{../initial/2_toy2/3testo23_subplots.png}
     \end{subfigure}
-    \caption{Same as \autoref{fig:ad_21} but for the $A_2 \to A_3$ track.
+    \caption{Same as Fig.~\ref{fig:ad_21} but for the $A_2 \to A_3$ track.
     $\theta_{\rm sd, i} = 0.3\;\mathrm{rad}$ and $\epsilon = 3.01 \times
     10^{-4}$.}\label{fig:ad_23}
 \end{figure}
@@ -717,7 +739,7 @@ results.
         \centering
         \includegraphics[width=0.5\textwidth]{../initial/2_toy2/3testo31_subplots.png}
     \end{subfigure}
-    \caption{Same as \autoref{fig:ad_21} but for the $A_{\rm III} \to A_{\rm I}$
+    \caption{Same as Fig.~\ref{fig:ad_21} but for the $A_{\rm III} \to A_{\rm I}$
     track. $\theta_{\rm sd, i} = 89.1^\circ$, and $\epsilon = 3 \times
     10^{-4}$.}\label{fig:ad_31}
 \end{figure}
@@ -731,7 +753,7 @@ results.
         \centering
         \includegraphics[width=0.5\textwidth]{../initial/2_toy2/3testo321_subplots.png}
     \end{subfigure}
-    \caption{Same as \autoref{fig:ad_21} but for the $A_{\rm III} \to A_{\rm II}
+    \caption{Same as Fig.~\ref{fig:ad_21} but for the $A_{\rm III} \to A_{\rm II}
     \to A_{\rm I}$ track. $\theta_{\rm sd, i} = 60^\circ$, and $\epsilon = 3.14
     \times 10^{-4}$. Two separatrix crossings are shown.}\label{fig:ad_321}
 \end{figure}
@@ -740,15 +762,15 @@ results.
 
 \subsection{Transition to Non-adiabaticity}\label{ss:transition}
 
-To illustrate the transition to non-adiabaticity, we present two simulations
-with increasingly larger values of $\epsilon$ than \autoref{fig:ad_ensemble}
-below in \autoref{fig:3_ensemble_05_25} and \autoref{fig:3_ensemble_05_15}.
+To illustrate the transition to non-adiabaticity, we present below two
+simulations with larger $\epsilon$ than used for Fig.~\ref{fig:ad_ensemble} in
+Figs.~\ref{fig:3_ensemble_05_25} and~\ref{fig:3_ensemble_05_15}.
 
 At first non-adiabaticity manifests as a larger scatter of final obliquities
 near the tracks predicted from adiabatic evolution. These scatters first set in
 for trajectories starting in zone $III$, as these cross the separatrix at higher
 values of $\theta$ and have a stricter adiabaticity criterion (see
-\autoref{eq:ad_constr}).
+Eq.~\eqref{eq:ad_constr}).
 
 Later, these large scatters take on band-like structures that seem to persist
 across values of $\theta_{\rm sd, i}$; we attribute these to the separatrix
@@ -760,14 +782,14 @@ which only compares $\eta$ evolution to dynamics far from the separatrix.
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{../initial/2_toy2/3_ensemble_05_25.png}
-    \caption{Same as \autoref{fig:ad_ensemble} but for $\epsilon = 10^{-2.5}$,
+    \caption{Same as Fig.~\ref{fig:ad_ensemble} but for $\epsilon = 10^{-2.5}$,
     and restricting $\theta_{\rm sd, i} < 90^\circ$. A larger spread from the
     dynamical tracks is observed in the data.}\label{fig:3_ensemble_05_25}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{../initial/2_toy2/3_ensemble_05_15.png}
-    \caption{Same as \autoref{fig:3_ensemble_05_25} but for $\epsilon =
+    \caption{Same as Fig.~\ref{fig:3_ensemble_05_25} but for $\epsilon =
     10^{-1.5}$. Some small semblance of the evolutionary tracks remains, and the
     deviations appear to have a banded structure. This can be attributed to
     non-adiabaticity ``freezing-in'' the phase of the obliquity variations over
@@ -775,9 +797,9 @@ which only compares $\eta$ evolution to dynamics far from the separatrix.
     crossing.}\label{fig:3_ensemble_05_15}
 \end{figure}
 
-A sample trajectory following in the style of \autoref{fig:ad_21} but for
+A sample trajectory following in the style of Fig.~\ref{fig:ad_21} but for
 $\epsilon = 0.3$ (violating even weak adiabaticity) is provided in
-\autoref{fig:nonad_traj}. It is clear the trajectory does not track level curves
+Fig.~\ref{fig:nonad_traj}. It is clear the trajectory does not track level curves
 of the Hamiltonian during each individual snapshot (e.g.\ the third snapshot).
 This manifests when CS2 migrates more quickly than the trajectory can librate
 about CS2, precisely a violation of the weak adiabaticity criterion.
@@ -791,7 +813,7 @@ about CS2, precisely a violation of the weak adiabaticity criterion.
         \centering
         \includegraphics[width=0.5\textwidth]{../initial/2_toy2/3testo_nonad_subplots.png}
     \end{subfigure}
-    \caption{Same as \autoref{fig:ad_21} but for a non-adiabatic $\epsilon =
+    \caption{Same as Fig.~\ref{fig:ad_21} but for a non-adiabatic $\epsilon =
     0.3$. In the top panel of the top plot, it is evident that the libration
     cycle about CS2 is unable to keep up with the swift motion of CS2 as $\eta$
     changes, decreasing the obliquity jump. In the bottom plot, we can see that
@@ -803,7 +825,7 @@ about CS2, precisely a violation of the weak adiabaticity criterion.
 \subsection{Non-adiabatic Evolution Outcomes}
 
 We now consider the general problem of how a state evolves when $\eta$ changes
-non-adiabatically. In \autoref{s:ad_approx}, we derive a formula for
+non-adiabatically. In Appendix~\ref{s:ad_approx}, we derive a formula for
 $\theta_{\rm f}$ assuming no initial spin-disk misalignment:
 \begin{equation}
     \theta_{\rm f}\p{\theta_{\rm sd, i} = 0} = \sqrt{\frac{2\pi}{\epsilon}} \tan
@@ -819,7 +841,7 @@ obliquity to vary over the same range as the initial obliquity, or,
         I\cos I\in \s{-\theta_{\rm sd, i}, \theta_{\rm sd,i}}
         .\label{eq:nonad_q_f_dist}
 \end{equation}
-In \autoref{fig:nonad_3_ensemeble}, we show that this proves a remarkably
+In Fig.~\ref{fig:nonad_3_ensemeble}, we show that this proves a remarkably
 accurate when taking $\epsilon = 0.3$.
 \begin{figure}
     \centering
@@ -828,14 +850,14 @@ accurate when taking $\epsilon = 0.3$.
     in the non-adiabatic regime. Note the clear double-valuedeness has
     disappeared, as have distinct dynamical tracks. The red dotted line presents
     the analytical prediction given by
-    \autoref{eq:nonad_q_f_dist}.}\label{fig:nonad_3_ensemeble}
+    Eq.~\eqref{eq:nonad_q_f_dist}.}\label{fig:nonad_3_ensemeble}
 \end{figure}
 
-The agreement of \autoref{eq:nonad_q_f} at fixed $I$ for varying $\epsilon$ is
-shown in \autoref{fig:nonad_3_scan}. Note that $\epsilon \to 0$ recovers the
+The agreement of Eq.~\eqref{eq:nonad_q_f} at fixed $I$ for varying $\epsilon$ is
+shown in Fig.~\ref{fig:nonad_3_scan}. Note that $\epsilon \to 0$ recovers the
 adiabatic regime. The deviation of $\theta_{\rm f}$ from the analytical
 prediction within the adiabatic regime is indeed due to adiabatic effects
-becoming dominant; compare to \autoref{fig:nonad_3_scan_20} where little
+becoming dominant; compare to Fig.~\ref{fig:nonad_3_scan_20} where little
 deviation is observed until $\theta_{\rm f} \approx 90^\circ$.
 \begin{figure}
     \centering
@@ -843,19 +865,19 @@ deviation is observed until $\theta_{\rm f} \approx 90^\circ$.
     \caption{Plot of $\theta_{\rm  f}\p{\theta_{\rm sd, i} = 0}$ as a function
     of $\epsilon$, where $I = 5^\circ$. The shaded area, bordered by the black
     line, corresponds to the adiabatic regime estimated by
-    \autoref{eq:ad_constr}. Overplotted in the red line is
-    \autoref{eq:nonad_q_f}, which is in good agreement for $\epsilon \gtrsim
+    Eq.~\eqref{eq:ad_constr}. Overplotted in the red line is
+    Eq.~\eqref{eq:nonad_q_f}, which is in good agreement for $\epsilon \gtrsim
     0.1$ the non-adiabatic regime, while $\theta_{\rm f} \approx 90^\circ$ in
     the adiabatic regime.}\label{fig:nonad_3_scan}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{../initial/2_toy2/3scan_20.png}
-    \caption{Same as \autoref{fig:nonad_3_scan} but for $I=20^\circ$. Note that
-    \autoref{eq:nonad_q_f} is accurate until $\theta_{\rm f} \approx 90^\circ$,
+    \caption{Same as Fig.~\ref{fig:nonad_3_scan} but for $I=20^\circ$. Note that
+    Eq.~\eqref{eq:nonad_q_f} is accurate until $\theta_{\rm f} \approx 90^\circ$,
     which is much closer to the transition to adiabaticity. Comparison with
-    \autoref{fig:nonad_3_scan} suggests that the breakdown of
-    \autoref{eq:nonad_q_f} indeed is caused by the breakdown of the
+    Fig.~\ref{fig:nonad_3_scan} suggests that the breakdown of
+    Eq.~\eqref{eq:nonad_q_f} indeed is caused by the breakdown of the
     non-adiabatic assumption.}\label{fig:nonad_3_scan_20}
 \end{figure}
 
@@ -875,22 +897,22 @@ limits:
         $\theta(0) \approx 90^\circ$ \citep{millholland_disk}. We demonstrate
         via numerical simulation the dual-valued behavior of $\theta$ as nonzero
         values of $\theta_{\rm sd, i}$ are permitted (see
-        \autoref{fig:ad_ensemble}). We are able to capture both the exact final
+        Fig.~\ref{fig:ad_ensemble}). We are able to capture both the exact final
         $\theta$ values and the probabilities of observing each value via
         careful accounting of enclosed phase space area and separatrix crossing
         dynamics \citep{henrard1982,henrard1987}.
 
     \item As the system transitions more abruptly, the adiabatic prediction
-        breaks down when criterion \autoref{eq:ad_constr} is violated. We find a
+        breaks down when criterion Eq.~\eqref{eq:ad_constr} is violated. We find a
         broad range of $\theta$ values can be excited for a given $\theta_{\rm
-        sd, i}$ (see \autoref{fig:nonad_3_ensemeble}). We provide an analytical
+        sd, i}$ (see Fig.~\ref{fig:nonad_3_ensemeble}). We provide an analytical
         expression of the bounds on $\theta_{\rm f}\p{\theta_{\rm sd, i}}$ in
-        \autoref{eq:nonad_q_f_dist}.
+        Eq.~\eqref{eq:nonad_q_f_dist}.
 \end{enumerate}
 
 It is of interest to note the leading order behavior of $\theta$ in the small
-$\theta_{\rm sd, i}$ limit given by \autoref{eq:qf_21_approx} and
-\autoref{eq:qf_23_approx}. Therefore, if $\theta_{\rm sd, i}$ is generally
+$\theta_{\rm sd, i}$ limit given by Eq.~\eqref{eq:qf_21_approx} and
+Eq.~\eqref{eq:qf_23_approx}. Therefore, if $\theta_{\rm sd, i}$ is generally
 small, as might be expected for planets that do not experience strong collisions
 or scattering, resonance capture induced by an adiabatically dissipating
 protoplanetary disk is expected to significantly narrow the final $\theta$
@@ -915,14 +937,14 @@ For analytical work, we adopt spherical coordinate system where $\hat{l} =
 convention, we choose $\hat{l}_z$ at coordinates $\theta = I, \phi = \pi$.
 Note that $\p{\cos \theta, \phi}$ form a canonically conjugate pair of variables
 describing $\hat{s}$. To derive equations of motion for these canonical
-coordinates, we rewrite \autoref{eq:H}
+coordinates, we rewrite Eq.~\eqref{eq:H}
 \begin{equation}
     \mathcal{H}\p{\theta, \phi} = -\frac{1}{2}\cos^2\theta
             + \eta \p{\cos \theta \cos I - \sin I \sin \theta \cos \phi}.
 \end{equation}
 
 The equations of motion follow by taking derivatives of $\mathcal{H}$ and agree
-with \autoref{eq:dsdt_base}:
+with Eq.~\eqref{eq:dsdt_base}:
 \begin{subequations}\label{se:H_eom}
     \begin{align}
         \rd{\phi}{t} = \pd{\mathcal{H}}{(\cos\theta)}
@@ -938,11 +960,11 @@ are the most intuitive description for analytical work.
 
 We next develop some approximate forms for the CS obliquities that will be
 useful for guiding later discussion. Denote $\theta_{\rm cs}$ the obliquity of
-some Cassini State (fixed point of \autoref{se:H_eom}).
+some Cassini State (fixed point of Eqs.~\eqref{se:H_eom}).
 \begin{enumerate}
     \item $\eta \ll 1, \cos \theta_{\rm cs} \ll 1$ --- This is the limiting case
         for CS2 and CS4 when $\eta \ll \eta_{\rm c}$. We examine
-        \autoref{seq:H_eom_phi_t} and approximate $\cot \theta \approx \cos
+        Eqs.~\eqref{seq:H_eom_phi_t} and approximate $\cot \theta \approx \cos
         \theta$ to find
         \begin{equation}
             \cos \theta_{\rm cs} \approx \frac{\eta \cos I}
@@ -954,7 +976,8 @@ some Cassini State (fixed point of \autoref{se:H_eom}).
     \item $\sin \theta_{\rm cs} \ll 1$ --- The $\eta \ll 1, \eta \gg 1$ cases
         can be solved together, and are the limiting cases both for CS1 and CS3
         when $\eta \ll \eta_{\rm c}$, and for CS2 and CS3 when $\eta \gg
-        \eta_{\rm c}$. It proves easiest to rewrite \autoref{seq:H_eom_phi_t} as
+        \eta_{\rm c}$. It proves easiest to rewrite Eqs.~\eqref{seq:H_eom_phi_t}
+        as
         \begin{equation}
             0 = \cos \theta_{\rm cs}\p{-1 + 2\eta
                 \frac{\sin \p{I \pm \theta_{\rm cs}}}{\sin \p{2\theta_{\rm
@@ -972,14 +995,14 @@ some Cassini State (fixed point of \autoref{se:H_eom}).
         describe CS2 and CS3.
 \end{enumerate}
 Note that the $\theta_{\rm cs}$ values derived here do not follow the same
-convention as \autoref{fig:cs_locs}, because the previous $\theta$ conventions
+convention as Fig.~\ref{fig:cs_locs}, because the previous $\theta$ conventions
 presume $\cos \phi = -1$ for all states and let $-\pi \leq \theta < \pi$.
 
 \subsection{Stability and Frequency of Local Oscillations}\label{ss:eigens}
 
 To examine stability of each CS, it proves very easy to handle them generally.
 We linearize about an equilibrium located at $\phi_{\rm cs} = 0, \pi$ but
-arbitrary $\theta_{\rm cs}$. Linearizing \autoref{se:H_eom} about $\phi =
+arbitrary $\theta_{\rm cs}$. Linearizing Eqs.~\eqref{se:H_eom} about $\phi =
 \phi_{\rm cs} + \delta \phi, \theta = \theta_{\rm cs} + \delta \theta$ gives
 \begin{subequations}\label{se:H_eom_lin}
     \begin{align}
@@ -996,7 +1019,7 @@ $\delta \theta$ gives
             \phi,\\
         &\equiv \lambda^2\delta \phi.\label{eq:lambda2}
 \end{align}
-A plot of $\lambda^2$ for each of the CSs is given in \autoref{fig:lambda2}.
+A plot of $\lambda^2$ for each of the CSs is given in Fig.~\ref{fig:lambda2}.
 From the plot, it is clear that only CS4 is a saddle point, while the other
 three are centers (stable). The local libration frequency for these points is
 just
@@ -1010,7 +1033,7 @@ lib}}$.
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.5\textwidth]{../initial/99_misc/2_lambdas.png}
-    \caption{Plot of $\lambda^2$ per \autoref{eq:lambda2} evaluated at each
+    \caption{Plot of $\lambda^2$ per Eq.~\eqref{eq:lambda2} evaluated at each
     of the Cassini States. The vertical axis is rescaled to limit the vertical
     extent of the plot. Note that CS4 is a saddle point ($\lambda^2 > 0$) when
     it exists while all others are centers ($\lambda^2 < 0$). The horizontal
@@ -1032,7 +1055,7 @@ associated probabilities for the $II \to I, II \to III$ tracks that are
 accessible.
 
 We first seek a simple parameterization for the separatrix. We first solve for
-equilibria of the equation of motion \autoref{eq:dsdt_base} to compute the
+equilibria of the equation of motion Eq.~\eqref{eq:dsdt_base} to compute the
 coordinates for Cassini State 4:
 \begin{equation}
     \cos \theta_4 \approx \frac{\mu \cos I}{1 - \eta \sin I}.
@@ -1050,7 +1073,7 @@ yields
 \begin{equation}
     A_{\rm II}(\eta) \approx 16\sqrt{\eta \sin I}.\label{eq:a_approx}
 \end{equation}
-This, in conjunction with \autoref{eq:henrard_hop}, is sufficient to compute
+This, in conjunction with Eq.~\eqref{eq:henrard_hop}, is sufficient to compute
 $\theta_{\rm f}\p{\theta_{\rm sd, i}}$ for zone $II$ initial conditions.
 
 \begin{enumerate}
@@ -1067,7 +1090,7 @@ $\theta_{\rm f}\p{\theta_{\rm sd, i}}$ for zone $II$ initial conditions.
 
     \item Upon separatrix encounter, a transition to either zone $I$ or zone
         $III$ occurs. These can be calculated to have associated probabilities
-        (using the approximate area \autoref{eq:a_approx})
+        (using the approximate area Eq.~\eqref{eq:a_approx})
         \begin{subequations}
             \begin{align}
                 \Pr_{\rm II \Rightarrow I} &\approx \frac{2\pi
@@ -1095,13 +1118,13 @@ $\theta_{\rm f}\p{\theta_{\rm sd, i}}$ for zone $II$ initial conditions.
             \end{align}
         \end{subequations}
         These are the black dotted lines overplotted in
-        \autoref{fig:ad_ensemble}.
+        Fig.~\ref{fig:ad_ensemble}.
 \end{enumerate}
 
 \section{Derivation of Nonadiabatic Evolution}\label{s:nonad_app}
 
-We present a single result, the derivation of \autoref{eq:nonad_q_f}. We take
-\autoref{eq:dsdt_base} and choose coordinate axes such that $\hat{l} = \hat{z},
+We present a single result, the derivation of Eq.~\eqref{eq:nonad_q_f}. We take
+Eq.~\eqref{eq:dsdt_base} and choose coordinate axes such that $\hat{l} = \hat{z},
 \hat{l}_{\rm d} = \hat{z} \cos I + \hat{x}\sin I$, then we obtain
 \begin{equation}
     \rd{\hat{s}}{t} = \s{
@@ -1149,7 +1172,7 @@ Now at this point, let's choose $\eta(0) = 1/\cos I, \at{\rd{\eta}{t}}_{t=0} =
 
 Now, it should be noted that $e^{i\Phi}$ is just a phase; all we really care
 about is $\abs{S} = \sqrt{1 - s_z^2}$. Thus, taking the absolute value of both
-sides of \autoref{eq:nonad_int}, assuming $S\p{-\infty} \ll S\p{+\infty}$ and
+sides of Eq.~\eqref{eq:nonad_int}, assuming $S\p{-\infty} \ll S\p{+\infty}$ and
 noting $\theta_{\rm f} \approx \abs{S}(+\infty)$, we obtain
 \begin{equation}
     \theta_{\rm f} = \tan I\cos I\sqrt{\frac{2\pi}{\epsilon}}.
@@ -1165,12 +1188,12 @@ It should be noted that this calculation breaks down in two ways:
         is this calculation valid.
 
     \item If $\abs{S\p{-\infty}} \sim \abs{S\p{+\infty}}$, then taking the
-        absolute value of both sides of \autoref{eq:nonad_int} no longer simply
-        yields $\abs{S}\p{+\infty}$. This corresponds to the extreme limit
-        where $\eta$ changes so suddenly that $\hat{s}$ has no time to respond
-        and remains roughly unchanged as $\eta \to 0$. This is accommodated by
-        noting $\theta_{\rm f} \geq \theta_{\rm sd, i}$, so the correct estimate can be
-        roughly amended
+        absolute value of both sides of Eq.~\eqref{eq:nonad_int} no longer
+        simply yields $\abs{S}\p{+\infty}$. This corresponds to the extreme
+        limit where $\eta$ changes so suddenly that $\hat{s}$ has no time to
+        respond and remains roughly unchanged as $\eta \to 0$. This is
+        accommodated by noting $\theta_{\rm f} \geq \theta_{\rm sd, i}$, so the
+        correct estimate can be roughly amended
         \begin{equation}
             \theta_{\rm f} \simeq \min\p{\tan I\cos
                 I\sqrt{\frac{2\pi}{\epsilon}}, \theta_{\rm sd, i}}.
