@@ -411,14 +411,28 @@ adiabatically (see above).
 
 To obtain the distribution of the final obliquities $\theta_{\rm f}$, we evenly
 sample $101$ values of $\theta_{\rm sd, i}$, and for each $\theta_{\rm sd, i}$
-value, we pick $101$ $\hat{s}$ initial conditions approximately on the ring
-fixed by $\theta_{\rm sd, i}$%
+value, we pick $101$ $\hat{s}$ approximately from the ring of initial conditions
+having angular distance $\theta_{\rm sd, i}$ to $\hat{l}_{\rm d}$%
 %
-\footnote{For each $\theta_{\rm sd, i}$ we choose an initial condition on the
-libration cycle going through $\p{\theta_2 + \theta_{\rm sd, i}, \phi_2}$ (where
-$\p{\theta_2, \phi_2}$ are the coordinates of CS2), such that all initial
-conditions for a given $\theta_{\rm sd, i}$ enclose the same initial phase
-space; see Section~\ref{sss:a_evo}.}.
+\footnote{
+The procedure we adopted for choosing initial conditions is the natural
+extension of this for finite $\eta_{\rm i}$. Note that the center of $\hat{s}$'s
+libration is CS2, which, since $\eta_{\rm i}$ is finite, is different than
+$\hat{l}_{\rm d}$. Furthermore, the libration is not exactly circular. Thus,
+initial conditions on the circular ring of points having angular distance
+$\theta_{\rm sd, i}$ from $\hat{l}_{\rm d}$ do not lie \emph{exactly} along each
+others' trajectories, and will each enclose slightly different initial phase
+space areas $A_{\rm i}$. Since our analytical theory assumes exact conservation
+of phase space area $A_{\rm i}$ derived from $\theta_{\rm sd, i}$ (see
+Section~\ref{ss:zone_transitions}), this discrepancy introduces an extra
+deviation from the analytical prediction. To guarantee all points for a
+particular $\theta_{\rm sd, i}$ have the same $A_{\rm i}$, we instead choose
+initial conditions on the libration cycle going through $\p{\theta_2 +
+\theta_{\rm sd, i}, \phi_2}$ (where $\p{\theta_2, \phi_2}$ are the coordinates
+of CS2). This ensures that all initial conditions for a given $\theta_{\rm sd,
+i}$ enclose the same initial $A_{\rm i}$. Note that as $\eta_{\rm i} \to
+\infty$, CS2 becomes coincident with $\hat{l}_{\rm d}$ and the libration cycle
+becomes exactly circular, recovering the procedure given in the text.}.
 %
 To be concrete, we choose $\eta_{\rm i} = 10\eta_{\rm c}$ where $\eta_{\rm c}$
 is given by Eq.~\eqref{eq:etac} and evolve Equations~\ref{eq:dsdt_base}

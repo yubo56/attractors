@@ -21,6 +21,8 @@ PLOT_DIR = '1plots'
 from utils import to_cart, to_ang, roots, H, solve_ic_base,\
     get_etac
 dpi = 600
+my_ms = 4.0
+my_lw = 4.0
 
 def sep_areas_exact(I, eta):
     mu4 = eta * np.cos(I) / (1 - eta * np.sin(I))
@@ -268,26 +270,25 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     etas_pre_cross = eta_areas[np.where(t_areas < t_end_lib)[0]]
     etas_crossed = eta_areas[np.where(t_areas >= t_end_lib)[0]]
     # theory
-    lw = 2
     if plot_type == '23':
         ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int),
-                     'r', label='Th', lw=lw)
+                     'r', label='Th', lw=my_lw)
         ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed23), 'r',
-                     lw=lw)
+                     lw=my_lw)
     elif plot_type == '21':
         ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int),
-                     'r', label='Th', lw=lw)
+                     'r', label='Th', lw=my_lw)
         ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed21), 'r',
-                     lw=lw)
+                     lw=my_lw)
     elif plot_type == '31':
         ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int),
-                     'r', label='Th', lw=lw)
+                     'r', label='Th', lw=my_lw)
         opt_func = lambda eta: sum(sep_areas_exact(I, eta)[ :2]) - a_init_int
         eta_guess = 0.1 # whatever, easy to find
         eta_cross = opt.newton(opt_func, x0=eta_guess)
         a_crossed31 = -sep_areas_exact(I, eta_cross)[0]
         ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed31), 'r',
-                     lw=lw)
+                     lw=my_lw)
     elif plot_type == '321':
         # It's a bit trickier to find both crossings, so we will seed
         # the search using plot_idxs, which gives the two jumps in areas
@@ -311,10 +312,10 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
             t_areas >= t_end_circ))[0]]
         # etas21 = etas_crossed
         ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int),
-                     'r', label='Th', lw=lw)
-        ax3.semilogx(etas_32, np.full_like(etas_32, a_crossed32), 'r', lw=lw)
+                     'r', label='Th', lw=my_lw)
+        ax3.semilogx(etas_32, np.full_like(etas_32, a_crossed32), 'r', lw=my_lw)
         ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed21), 'r',
-                     lw=lw)
+                     lw=my_lw)
 
     # data
     ax3.semilogx(eta_areas, areas, 'bo', markersize=0.3, label='Dat')
@@ -329,14 +330,14 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     if plot_type != '33':
         for ax in [ax1, ax3]:
             for plt_idx in plot_idxs:
-                ax.axvline(eta_areas[plt_idx], c='b', lw=0.5)
+                ax.axvline(eta_areas[plt_idx], c='b', lw=my_lw)
 
     # flip axes
     xlims = ax3.set_xlim()
     xlims2 = ax3.set_xlim(xlims[::-1])
 
     plt.tight_layout()
-    fig.subplots_adjust(hspace=0)
+    # fig.subplots_adjust(hspace=0)
     plt.savefig(filename, dpi=dpi)
     plt.close(fig)
 
@@ -366,7 +367,7 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
         # plot CS2 as well
         curr_roots = roots(I, eta_areas[plot_idx])
         q2 = curr_roots[0] if len(curr_roots) == 2 else curr_roots[1]
-        ax.plot(np.pi, np.cos(q2), 'mo', ms=2)
+        ax.plot(np.pi, np.cos(q2), 'mo', ms=my_ms)
 
         # plot data + overplot an arrow to show direction
         ax.plot(phi_uw, np.cos(q_vals), 'g', lw=ms)
@@ -435,7 +436,7 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
                     np.arccos(np.linspace(ylims[0], ylims[1], 801)))
                 H_grid = H(I, eta_plot, q_grid, phi_grid)
                 ax.contour(phi_grid, np.cos(q_grid), H_grid, levels=[H4],
-                           colors='k', linewidths=1.0, linestyles=style)
+                           colors='k', linewidths=my_lw, linestyles=style)
     axs[0].set_ylabel(r'$\cos \theta$')
     axs[-1].set_xlabel(r'$\phi$')
     for ax in axs[-2: ]:
@@ -608,19 +609,19 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
     q_f_23 = [np.arccos(sep_areas_exact(I, eta)[2] / (2 * np.pi) - 1)
               for eta in eta_2[idx_23]]
     ax1.plot(np.degrees(dqs[idx_23]), np.degrees(q_f_23), 'r',
-             label=r'$II \to III$')
+             label=r'$II \to III$', lw=my_lw, zorder=1)
 
     # A2 -> A1, all eta_2s
     q_f_21 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
               for eta in eta_2]
     ax1.plot(np.degrees(dqs[idx_2]), np.degrees(q_f_21), 'c',
-             label=r'$II \to I$')
+             label=r'$II \to I$', lw=my_lw, zorder=1)
 
     # A3 -> A1, J_f = A2_star + A3_star
     q_f_31 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
               for eta in eta_3]
     ax1.plot(np.degrees(dqs[idx_3]), np.degrees(q_f_31), 'g',
-             label=r'$III \to I$')
+             label=r'$III \to I$', lw=my_lw, zorder=1)
 
     # A3 -> A2 -> A1
     eta_second_cross = []
@@ -636,7 +637,7 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
     q_f_321 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
                for eta in eta_second_cross]
     ax1.plot(np.degrees(dqs[idx_3][idx_second_cross]), np.degrees(q_f_321),
-             'm', label=r'$III \to II\to I$')
+             'm', label=r'$III \to II\to I$', lw=my_lw, zorder=1)
 
     # A3 -> A3
     # dq (theta_{sd,i}) does not accurately predict the enclosed area when we
@@ -646,7 +647,7 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
     # make sure does not exceed 180 degrees (np.pi)
     dqs_cs3 = np.minimum(_dqs_cs3, 2 * np.pi - _dqs_cs3)
     ax1.plot(np.degrees(dqs[idx_33]), np.degrees(dqs_cs3[idx_33]), 'k',
-             label=r'$III \to III$')
+             label=r'$III \to III$', lw=my_lw, zorder=1)
 
     # overplot 4 vertical lines delineating the regimes
     # invert A = 2pi * (1 - cos(q))
@@ -654,8 +655,8 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
         return
     if I == np.radians(5):
         for q_b in q_bounds:
-            ax1.axvline(q_b, c='k', ls='dashed', lw=0.8)
-            ax2.axvline(q_b, c='k', ls='dashed', lw=0.8)
+            ax1.axvline(q_b, c='k', ls='dashed', lw=0.2 * my_lw)
+            ax2.axvline(q_b, c='k', ls='dashed', lw=0.2 * my_lw)
 
     # overplot the simplest analytical estimate
     # this is the square root motivated one, second simplest
@@ -669,42 +670,48 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
     mu_f_1 = (np.pi * dqs**2 / 16)**2 / np.tan(I) + dqs**2 / 4
     mu_f_2 = (np.pi * dqs**2 / 16)**2 / np.tan(I) - dqs**2 / 4
     ax1.plot(np.degrees(dqs), np.degrees(np.arccos(mu_f_1)),
-             'k:', linewidth=0.6)
+             'k:', linewidth=0.4 * my_lw, zorder=1)
     ax1.plot(np.degrees(dqs), np.degrees(np.arccos(mu_f_2)),
-             'k:', linewidth=0.6)
+             'k:', linewidth=0.4 * my_lw, zorder=1)
 
     # plot probabilities
     # Probability 2 -> 3
     _, dA2_23, dA3_23 = d_sep_areas(I, eta_23)
     P_23 = -dA3_23 / dA2_23
-    ax2.plot(np.degrees(dqs[idx_23]), np.minimum(P_23, np.ones_like(P_23)), 'r')
+    ax2.plot(np.degrees(dqs[idx_23]), np.minimum(P_23, np.ones_like(P_23)),
+             'r', lw=my_lw, zorder=1)
     # Probability 2 -> 1
     dA1_21, dA2_21, _ = d_sep_areas(I, eta_2)
     P_21 = -dA1_21 / dA2_21
-    ax2.plot(np.degrees(dqs[idx_2]), np.minimum(P_21, np.ones_like(P_21)), 'c')
+    ax2.plot(np.degrees(dqs[idx_2]), np.minimum(P_21, np.ones_like(P_21)),
+             'c', lw=my_lw, zorder=1)
     # Prob 3 -> 2 -> 1 = 3 -> 2
     eta_321 = eta_3[np.where(eta_3 > max_A2_eta)[0]]
     _, dA2_32, dA3_32 = d_sep_areas(I, eta_321)
     P_32 = -dA2_32 / dA3_32
     ax2.plot(np.degrees(dqs[idx_3][idx_second_cross]),
-             np.minimum(P_32, np.ones_like(P_32)), 'm')
+             np.minimum(P_32, np.ones_like(P_32)),
+             'm', lw=my_lw, zorder=1)
     # Prob 3 -> 1
     dA1_31, _, dA3_31 = d_sep_areas(I, eta_3)
     P_31 = -dA1_31 / dA3_31
     ax2.plot(np.degrees(dqs[idx_3]),
-             np.minimum(P_31, np.ones_like(P_31)), 'g')
+             np.minimum(P_31, np.ones_like(P_31)),
+             'g', lw=my_lw, zorder=1)
     # Prob 3 -> 3 (trivial)
     P_33 = np.degrees(dqs[idx_33])
-    ax2.plot(P_33, np.ones_like(P_33), 'k')
+    ax2.plot(P_33, np.ones_like(P_33), 'k', lw=my_lw)
 
     # analytical estimates
     eta_cross = (np.pi * dqs**2 / 16)**2 / np.sin(I)
     ax2.plot(np.degrees(dqs),
              (-2 * np.pi * eta_cross + 4 * np.sqrt(eta_cross * np.sin(I)))
-             / (8 * np.sqrt(eta_cross * np.sin(I))), 'k:', linewidth=0.6)
+             / (8 * np.sqrt(eta_cross * np.sin(I))),
+             'k:', linewidth=0.4 * my_lw, zorder=1)
     ax2.plot(np.degrees(dqs),
              (2 * np.pi * eta_cross + 4 * np.sqrt(eta_cross * np.sin(I)))
-             / (8 * np.sqrt(eta_cross * np.sin(I))), 'k:', linewidth=0.6)
+             / (8 * np.sqrt(eta_cross * np.sin(I))), 'k:',
+             linewidth=0.4 * my_lw, zorder=1)
 
     # plot data-generated points for probabilities
     ax2.set_ylim([-0.1, 1.1])
@@ -716,9 +723,10 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
         for final_mu in final_mus:
             if abs(final_mu - np.cos(q21)) < abs(final_mu - np.cos(q23)):
                 count_21 += 1
-        ax2.scatter(np.degrees(dq), count_21 / len(final_mus), c='b', s=0.8)
+        ax2.scatter(np.degrees(dq), count_21 / len(final_mus),
+                    c='b', s=my_ms, zorder=2)
         ax2.scatter(np.degrees(dq), 1 - (count_21 / len(final_mus)),
-                    c='b', s=0.8)
+                    c='b', s=my_ms, zorder=2)
     idxs_321_total = np.arange(len(dqs))[idx_3][idx_second_cross]
     # find the 321 idxs in dq_arr, and res_arr correspondingly
     dq_321_min = min(dqs[idxs_321_total])
@@ -734,9 +742,11 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
         for final_mu in final_mus:
             if abs(final_mu - np.cos(q321)) < abs(final_mu - np.cos(q31)):
                 count_321 += 1
-        ax2.scatter(np.degrees(dqs_arr[res_idx]), count_321 / len(final_mus), c='b', s=0.8)
-        ax2.scatter(np.degrees(dqs_arr[res_idx]), 1 - (count_321 / len(final_mus)),
-                    c='b', s=0.8)
+        ax2.scatter(np.degrees(dqs_arr[res_idx]), count_321 / len(final_mus),
+                    c='b', s=my_ms, zorder=2)
+        ax2.scatter(np.degrees(dqs_arr[res_idx]),
+                    1 - (count_321 / len(final_mus)),
+                    c='b', s=my_ms, zorder=2)
 
 def plot_ICs(I, eta0, dqs, n_pts):
     q2, _ = roots(I, eta0)
@@ -782,14 +792,15 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
     filename = '3_ensemble_%02d_%02d' % (I_deg, eps_log)
     title = r'$I = %d^\circ, \epsilon = 10^{-%.1f}$' % (I_deg, eps_log / 10)
 
-    # run sim (HACK HACK two separate saves since I ran them separately)
     if not os.path.exists(PKL_FN):
+        print('running', PKL_FN)
         p = Pool(4)
         args = [(I, eps, eta0_mult, etaf, n_pts, dq) for dq in dqs1]
         res_arr1 = p.starmap(sim_for_dq, args)
         with open(PKL_FN, 'wb') as f:
             pickle.dump(res_arr1, f)
     else:
+        print('loading', PKL_FN)
         with open(PKL_FN, 'rb') as f:
             res_arr1 = pickle.load(f)
     if extra_plot:
@@ -816,7 +827,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
                                     sharex=True,
                                     figsize=(6, 8),
                                     gridspec_kw={'height_ratios': [3, 2]})
-            fig.subplots_adjust(hspace=0)
+            # fig.subplots_adjust(hspace=0)
             plot_anal_qfs(I, dqs, res_arr, eta0, [ax1, ax2], two_panel)
         else:
             fig, ax1 = plt.subplots(1, 1, figsize=(6, 6))
@@ -826,16 +837,16 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         for dq, final_mus in zip(dqs, res_arr):
             final_q_deg = np.degrees(np.arccos(final_mus))
             ax1.scatter(np.full_like(final_mus, np.degrees(dq)),
-                        final_q_deg, c='b', s=0.8)
+                        final_q_deg, c='b', s=my_ms, zorder=2)
         if extra_plot:
             for dq, final_mus in zip(dqs2, res_arr2):
                 final_q_deg = np.degrees(np.arccos(final_mus))
                 ax1.scatter(np.full_like(final_mus, np.degrees(dq)),
-                            final_q_deg, c='b', s=0.8)
+                            final_q_deg, c='b', s=my_ms, zorder=2)
 
         ax1.set_yticks([0, 90, 180])
         ax1.set_yticklabels([r'$0$', r'$90$', r'$180$'])
-        ax1.set_ylabel(r'$\theta_{f}$ (deg)')
+        ax1.set_ylabel(r'$\theta_{\rm f}$ (deg)')
         ax1.set_title(title)
 
         if two_panel:
@@ -845,7 +856,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
             ax_ticks = ax1
         ax_ticks.set_xticks([0, 90, 180])
         ax_ticks.set_xticklabels([r'$0$', r'$90$', r'$180$'])
-        ax_ticks.set_xlabel(r'$\theta_{sd,i}$')
+        ax_ticks.set_xlabel(r'$\theta_{\rm sd,i}$')
 
         if dqs.max() > 3 * np.pi / 4:
             ax1.legend(loc='lower right', prop={'size': 14})
@@ -857,8 +868,8 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
     else:
         # just plot data
         fig, ax1 = plt.subplots(1, 1)
-        ax1.set_xlabel(r'$\theta_{sd,i}$')
-        ax1.set_ylabel(r'$\theta_{f}$ (deg)')
+        ax1.set_xlabel(r'$\theta_{\rm sd,i}$')
+        ax1.set_ylabel(r'$\theta_{\rm f}$ (deg)')
         ax1.set_xticks([0, 90, 180])
         ax1.set_xticklabels([r'$0$', r'$90$', r'$180$'])
         ax1.set_yticks([0, 90, 180])
@@ -877,9 +888,10 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
     for dq, final_mus in zip(dqs, res_arr):
         final_q_deg = np.degrees(np.arccos(final_mus))
         ax1.scatter(np.full_like(final_mus, np.degrees(dq)),
-                    final_q_deg, c='b', s=0.8)
-    if not two_panel or not adiabatic:
-        plt.tight_layout() # not sure why this is necessary, xlabel cut off
+                    final_q_deg, c='b', s=my_ms, zorder=2)
+    # if not two_panel or not adiabatic:
+    #     print('tight')
+    plt.tight_layout() # not sure why this is necessary, xlabel cut off
     plt.savefig(filename, dpi=dpi)
     plt.clf()
 
@@ -917,7 +929,7 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
         with open(PKL_FN, 'rb') as f:
             qdeg_finals = pickle.load(f)
     for qdeg_per in qdeg_finals:
-        plt.semilogx(eps_vals, qdeg_per, 'bo', ms=0.5)
+        plt.semilogx(eps_vals, qdeg_per, 'bo', ms=my_ms)
 
     s_final = np.sqrt(2 * np.pi / eps_vals) * np.tan(I)
     q_final = np.maximum(np.degrees(s_final * np.cos(I)), np.degrees(q2))
@@ -936,7 +948,7 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
                [r'$%d$' % np.degrees(I), r'$90$'])
     plt.ylim(ylims)
     plt.xlabel(r'$\epsilon$')
-    plt.ylabel(r'$\theta_{ f}$')
+    plt.ylabel(r'$\theta_{\rm f}$')
     plt.title(r'$I = %d^\circ$' % np.degrees(I))
     plt.tight_layout()
     plt.legend()
@@ -965,7 +977,7 @@ def I_scan(eps, filename='3Iscan', dq=0.01, n_pts=151, n_pts_ring=21,
             q, phi = to_ang(*ret.y[ :3, -10: ])
             qdeg_finals.append(np.degrees(np.mean(q)))
         plt.plot(np.full_like(qdeg_finals, np.degrees(I)), qdeg_finals,
-                     'ko', ms=0.5)
+                     'ko', ms=my_ms)
 
     s_final = np.sqrt(2 * np.pi / eps) * np.tan(I_vals)
     plt.plot(I_degs, np.degrees(s_final), 'r', label='Analytical')
@@ -974,7 +986,7 @@ def I_scan(eps, filename='3Iscan', dq=0.01, n_pts=151, n_pts_ring=21,
     old_lims = plt.ylim()
     plt.ylim([old_lims[-1], 0])
     plt.xlabel(r'$I$')
-    plt.ylabel(r'$\theta_{f}$')
+    plt.ylabel(r'$\theta_{\rm f}$')
     plt.legend()
     plt.savefig(filename, dpi=dpi)
     print('Saved', filename)
@@ -1010,23 +1022,23 @@ def plot_singles(I):
 
 def plot_manys(I):
     sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51, extra_plot=True)
-    # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
-    #              two_panel=False, extra_plot=True)
-    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
-    #              two_panel=False, extra_plot=True)
-    # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
-    # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
-    # sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
-    #              two_panel=False)
-    # sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
-    #              two_panel=False, dqmin=0.01)
+    sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
+                 two_panel=False, extra_plot=True)
+    sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
+                 two_panel=False, extra_plot=True)
+    sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
+    sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
+    sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
+                 two_panel=False)
+    sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
+                 two_panel=False, dqmin=0.01)
 
-    # sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
-    #              adiabatic=False, dqmin=0.01)
-    # sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
-    #              adiabatic=False, dqmin=0.01)
-    # sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
-    #              adiabatic=False, dqmin=0.01)
+    sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
+                 adiabatic=False, dqmin=0.01)
+    sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
+                 adiabatic=False, dqmin=0.01)
+    sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
+                 adiabatic=False, dqmin=0.01)
 
 if __name__ == '__main__':
     I = np.radians(5)
