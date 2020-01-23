@@ -16,7 +16,7 @@ plt.rc('font', family='serif', size=14)
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
     stringify, H, roots, get_H4, s_c_str, get_mu_equil, get_anal_caps,\
-    get_num_caps
+    get_num_caps, get_crit_mus
 PKL_FILE = '5dat%s_%d.pkl'
 # N_PTS = 1 # TEST
 N_PTS_TOTAL = 20000
@@ -303,10 +303,10 @@ def plot_cum_probs(I, s_c_vals, counts):
     cs1_equil_mu = -np.ones_like(s_c_cont) # -1 = does not exist
     cs2_equil_mu = np.zeros_like(s_c_cont)
     for idx, s_c in enumerate(s_c_cont):
-        cs1_crit_mu, cs2_crit_mu = get_crit_mus
+        cs1_crit_mu, cs2_crit_mu = get_crit_mus(I, s_c)
         cs2_equil_mu[idx] = cs2_crit_mu
         if cs1_crit_mu is not None:
-            cs1_equil_mu = cs1_crit_mu
+            cs1_equil_mu[idx] = cs1_crit_mu
 
     cs1_idxs = np.where(cs1_equil_mu > -1)[0]
     ax2.plot(np.array(s_c_cont)[cs1_idxs],
@@ -342,29 +342,29 @@ def run():
     ]
 
     s_c_vals_5 = [
-        # 2.0,
-        # 1.2,
-        # 1.0,
-        # 0.85,
-        # 0.8,
-        # 0.75
+        2.0,
+        1.2,
+        1.0,
+        0.85,
+        0.8,
+        0.75,
         0.7,
-        # 0.65,
-        # 0.6,
-        # 0.55,
-        # 0.5,
-        # 0.45,
-        # 0.4,
-        # 0.35,
-        # 0.3,
-        # 0.25,
+        0.65,
+        0.6,
+        0.55,
+        0.5,
+        0.45,
+        0.4,
+        0.35,
+        0.3,
+        0.25,
         0.2,
         0.06,
     ]
 
     for I, s_c_vals in [
             [np.radians(5), s_c_vals_5],
-            # [np.radians(20), s_c_vals_20],
+            [np.radians(20), s_c_vals_20],
     ]:
         counts = []
         for s_c in s_c_vals:
@@ -393,11 +393,12 @@ def run():
             counts.append(len(IC_eq1))
             # plot_final_dists(I, s_c, s0, trajs)
             plot_eq_dists(I, s_c, s0, np.array(IC_eq1), np.array(IC_eq2))
-        # plot_cum_probs(I, s_c_vals, counts)
+        plot_cum_probs(I, s_c_vals, counts)
 
 if __name__ == '__main__':
     run()
 
+    # bunch of debugging cases...
     # seems to be the "top edge too close to 1 case", cannot integrate well
     # I = np.radians(5)
     # s_c = 0.7

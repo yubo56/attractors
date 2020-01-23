@@ -7,7 +7,7 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
 from utils import get_inf_avg_sol, stringify, get_mu4, dmu_ds_nocs, dydt_nocs,\
-    get_dydt_num_avg, get_dydt_piecewise
+    get_dydt_num_avg, get_dydt_piecewise, get_mu_equil, roots
 
 N_PTS = 50
 
@@ -15,10 +15,11 @@ def plot_portrait(I=np.radians(20), s_c=1.5):
     '''
     plot phase portrait of cos(q), s in weak tide limit
     '''
-    smax = 10
+    smin = 0.5
+    smax = 5
     eps = 1e-4
     _mu = np.linspace(-1, 1, N_PTS)
-    _s = np.linspace(0.5, smax, N_PTS)
+    _s = np.linspace(smin, smax, N_PTS)
     quiv_scale = 100
 
     # for integrated flow portraits, mu bound where mu4 disappears
@@ -31,18 +32,41 @@ def plot_portrait(I=np.radians(20), s_c=1.5):
         ''' few lines are shared on phase portrait and quiver'''
 
         if plot_all:
+            # use custom s arrays for better resolution
+            s_below = np.linspace(smin, 1, N_PTS)
+            s_above = np.linspace(2, smax, 2 * N_PTS)
+
             # plot where dmu changes signs
-            plt.plot(_s, 2 / _s, 'r', label=r'$d\mu = 0$')
+            plt.plot(s_above, 2 / s_above, 'r', label=r'$d\mu = 0$')
 
             # plot bounding (t -> -\infty, mu = 0, s = infty)
             # mu, s, _ = get_inf_avg_sol(smax)
             # plt.plot(s, mu, 'b', label=r'$(\mu_0, s_0) = (0, \infty)$')
 
-        # plot mu_4 for a fiducial s_c
-        mu4 = get_mu4(I, s_c, s_arr)
-        idx4 = np.where(mu4 > 0)[0]
-        plt.plot(s_arr[idx4], mu4[idx4], 'g', label=r'$\mu_4$')
-        return mu4, idx4
+            # plot where ds changes signs
+            mu_equil = [get_mu_equil(s) for s in s_below]
+            plt.plot(s_below, mu_equil, 'b', label=r'$ds = 0$')
+
+        # plot mu2, mu1 locations
+        mu1 = []
+        mu2 = []
+        mu4 = []
+        for s in s_arr:
+            cs_mus = roots(I, s_c, s)
+            if len(cs_mus) == 4:
+                mu1.append(np.cos(cs_mus[0]))
+                mu2.append(np.cos(cs_mus[1]))
+                mu4.append(np.cos(cs_mus[3]))
+            else:
+                mu1.append(-1)
+                mu2.append(np.cos(cs_mus[0]))
+                mu4.append(-1)
+        print(mu1)
+        mu1 = np.array(mu1)
+        idx1 = np.where(mu1 > 0)[0]
+        plt.plot(s_arr[idx1], mu1[idx1], 'g', label=r'$\mu_1$')
+        plt.plot(s_arr, mu2, 'k', label=r'$\mu_2$')
+        return mu4, idx1
 
     s, mu = np.meshgrid(_s[::2], _mu[::2])
 
@@ -53,13 +77,14 @@ def plot_portrait(I=np.radians(20), s_c=1.5):
 
         plt.xlabel(r'$s$')
         plt.ylabel(r'$\mu$')
-        plt.title(r'$s_c=%.1f$ ($\mu(\phi) = \mu(0)$)' % s_c)
         mu4, idx4 = plot_shareds()
-        cass_width = np.sqrt(s_c / _s[idx4] * np.cos(I))
         plt.xlim(0, smax)
         plt.ylim(-1.1, 1.1)
         plt.legend(loc='lower left')
+        plt.title(r'$I = %d^\circ$, $s_c = %.1f\Omega_1$' %
+                  (np.degrees(I), s_c))
         plt.savefig('2quiver%s.png' % stringify(s_c), dpi=400)
+        # cass_width = np.sqrt(s_c / _s[idx4] * np.cos(I))
         # plt.fill_between(_s[idx4],
         #                  mu4[idx4] + cass_width, mu4[idx4] - cass_width,
         #                  color='m', alpha=0.3)
@@ -221,6 +246,8 @@ def plot_portrait(I=np.radians(20), s_c=1.5):
 
 if __name__ == '__main__':
     # plot_portrait(s_c=1.0)
-    plot_portrait(s_c=0.7)
+    # plot_portrait(s_c=0.7)
     # plot_portrait(s_c=0.3)
     # plot_portrait(s_c=0.1)
+
+    plot_portrait(I=np.radians(5), s_c=0.2)

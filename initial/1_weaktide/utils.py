@@ -291,7 +291,16 @@ def get_crit_mus(I, s_c):
             return opt.bisect(dmu_cs1_equil, s_etac, 1), cs2_equil_mu
     return None, cs2_equil_mu
 
-ETA_CUTOFF = 0.65
+def get_eta_cutoff(I):
+    '''
+    if the separatrix isn't double valued for phi (i.e. it touches (np.pi, +1)),
+    then the calculations of the probabilities is somewhat different; above this
+    eta, finding the separatrix to integrate is somewhat tricky. We will ad-hoc
+    this cutoff since we only use two I values...
+    '''
+    if I > np.radians(10):
+        return 0.4
+    return 0.65
 def get_ps_anal(I, s_c, s, *args):
     ''' analytical capture probabilities '''
     eta = s_c / s
@@ -341,8 +350,8 @@ def get_ps_anal(I, s_c, s, *args):
         )
     top = get_top()
     bot = get_bot()
-    top[np.where(eta > ETA_CUTOFF)[0]] = -1
-    bot[np.where(eta > ETA_CUTOFF)[0]] = -1
+    top[np.where(eta > get_eta_cutoff(I))[0]] = -1
+    bot[np.where(eta > get_eta_cutoff(I))[0]] = -1
     return top, bot
 
 def get_ps_numinterp(I, s_c, s_arr):
@@ -351,7 +360,7 @@ def get_ps_numinterp(I, s_c, s_arr):
     def getter(s):
         ''' gets probability for a single spin s '''
         eta = s_c / s
-        if eta > ETA_CUTOFF:
+        if eta > get_eta_cutoff(I):
             return -1, -1
         [mu4] = get_mu4(I, s_c, np.array([s]))
 
@@ -418,7 +427,7 @@ def get_anal_caps(I, s_c, cross_dat, mu_vals,
         else:
             p_caps[idx, cross_idxs] = (top + bot) / top
 
-        # ETA_CUTOFF values above sep are zero
+        # eta cutoff values above sep are zero
         cutoff_expr = np.logical_and(top == -1, bot == -1)
         cutoff_idxs_above = np.where(np.logical_and(
             cutoff_expr,
