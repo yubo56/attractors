@@ -16,7 +16,7 @@ plt.rc('font', family='serif', size=14)
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
     stringify, H, roots, get_H4, s_c_str, get_mu_equil, get_anal_caps,\
-    get_num_caps, get_crit_mus
+    get_num_caps, get_crit_mus, get_areas_ward
 PKL_FILE = '5dat%s_%d.pkl'
 # N_PTS = 1 # TEST
 N_PTS_TOTAL = 20000
@@ -283,15 +283,18 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
         plt.savefig('5pc_fits%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
         plt.close()
 
-def plot_cum_probs(I, s_c_vals, counts):
+def plot_cum_probs(I, s_c_vals, s0, counts):
     '''
-    plot probabilities of ending up in CS1 and the obliquities of the two
+    plot probabilities of ending up in tCS2 and the obliquities of the two
     '''
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
-    fig.subplots_adjust(hspace=0)
+    # fig.subplots_adjust(hspace=0)
     ax1.plot(s_c_vals, np.array(counts) / (N_THREADS * N_PTS), 'bo')
     ax1.set_ylim([0, 1])
-    ax1.set_ylabel('CS1 Prob')
+    ax1.set_ylabel('tCS2 Probability')
+    s_c_dense = np.linspace(min(s_c_vals), max(s_c_vals), 200)
+    A2s = np.array([get_areas_ward(I, s_c, s0)[1] for s_c in s_c_dense])
+    ax1.plot(s_c_dense, A2s / (4 * np.pi), 'r')
 
     # calculate locations of equilibria in ~continuous way
     s_c_crit = get_etac(I) # etac = s_c_crit / (s = 1)
@@ -311,11 +314,12 @@ def plot_cum_probs(I, s_c_vals, counts):
     cs1_idxs = np.where(cs1_equil_mu > -1)[0]
     ax2.plot(np.array(s_c_cont)[cs1_idxs],
              np.degrees(np.arccos(cs1_equil_mu[cs1_idxs])),
-             'g', label='CS1 Eq')
-    ax2.plot(s_c_cont, np.degrees(np.arccos(cs2_equil_mu)), 'b', label='CS2 Eq')
+             'g', label='tCS1')
+    ax2.plot(s_c_cont, np.degrees(np.arccos(cs2_equil_mu)), 'b', label='tCS2')
     ax2.set_ylabel(r'$\theta$')
     ax2.set_xlabel(r'$s_c / \Omega_1$')
     ax2.legend()
+    plt.tight_layout()
     plt.savefig('5probs_%d' % np.degrees(I), dpi=400)
     plt.close()
 
@@ -390,10 +394,10 @@ def run():
                         IC_eq2.append((mu0, phi0))
                     else:
                         print('Unable to classify (s_f, mu_f):', s[-1], mu_f)
-            counts.append(len(IC_eq1))
+            counts.append(len(IC_eq2))
             # plot_final_dists(I, s_c, s0, trajs)
-            plot_eq_dists(I, s_c, s0, np.array(IC_eq1), np.array(IC_eq2))
-        plot_cum_probs(I, s_c_vals, counts)
+            # plot_eq_dists(I, s_c, s0, np.array(IC_eq1), np.array(IC_eq2))
+        plot_cum_probs(I, s_c_vals, s0, counts)
 
 if __name__ == '__main__':
     run()

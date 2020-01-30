@@ -33,6 +33,7 @@ def get_cs_val(I, s_c, s):
     return cs1_qs, cs2_qs
 
 def plot_equils(I, s_c):
+    ''' plot in (s, mu) space showing how the tCS arise '''
     s_lt = np.linspace(s_c / 10, 1, 200) # max eta = 10
     s_gt = np.linspace(1, 3, 200) # other interesting part of the interval
     s_tot = np.concatenate((s_lt, s_gt))
@@ -42,11 +43,20 @@ def plot_equils(I, s_c):
     plt.plot(s_tot, np.degrees(cs2_qs), 'r', label='CS2')
     plt.plot(s_tot[cs1_exist_idx], np.degrees(-cs1_qs[cs1_exist_idx]),
              'g', label='CS1')
-    plt.plot(s_lt, np.degrees(np.arccos(get_mu_equil(s_lt))),
-             'k:', label='ds=0')
+    mu_equil_lt = [np.degrees(np.arccos(get_mu_equil(s))) for s in s_lt]
+    plt.plot(s_lt, mu_equil_lt, 'k:', label='ds=0')
 
     s_dq = np.linspace(2, 3, 200)
     plt.plot(s_dq, np.degrees(np.arccos(2 / s_dq)), 'b:', label='dq=0')
+
+    # overplot where CS2 gets destroyed by tides? Just do for a representative
+    # epsilon, want to see the scaling
+    eta_crit = lambda eps_val: (
+        np.sin(I) + np.sqrt(np.sin(I)**2 + 4 * eps_val**2 * np.cos(I)**2)
+    ) / (2 * eps_val * np.cos(I)**2)
+    plt.axvline(s_c / eta_crit(1e-3), c='r', ls=':', lw=0.6)
+    plt.axvline(s_c / eta_crit(1e-2), c='r', ls=':', lw=0.6)
+    plt.axvline(s_c / eta_crit(1e-1), c='r', ls=':', lw=0.6)
 
     plt.xlabel(r'$s / \Omega_1$')
     plt.ylabel(r'$\theta$')
@@ -146,13 +156,13 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
 if __name__ == '__main__':
     eps = 1e-3
     I = np.radians(5)
-    # plot_equils(I, 0.06)
-    # plot_equils(I, 0.2)
-    # plot_equils(I, 0.6)
+    plot_equils(I, 0.06)
+    plot_equils(I, 0.2)
+    plot_equils(I, 0.6)
     # plot_phop(I, 0.2)
-    plot_equil_dist_anal(I, 0.06, 10, eps)
-    plot_equil_dist_anal(I, 0.2, 10, eps)
-    plot_equil_dist_anal(I, 0.7, 10, eps)
+    # plot_equil_dist_anal(I, 0.06, 10, eps)
+    # plot_equil_dist_anal(I, 0.2, 10, eps)
+    # plot_equil_dist_anal(I, 0.7, 10, eps)
 
     # test cases
     # print(get_cross_dat(I, 0.7, 10, 1e-3, 8000, 0.9, np.pi)) # no cross

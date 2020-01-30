@@ -446,3 +446,20 @@ def get_anal_caps(I, s_c, cross_dat, mu_vals,
 
 def get_num_caps(I, s_c, cross_dat, mu_vals):
     return get_anal_caps(I, s_c, cross_dat, mu_vals, getter=get_ps_num)
+
+def get_areas_ward(I, s_c, s):
+    eta = s_c / s
+    mu4 = eta * np.cos(I) / (1 - eta * np.sin(I))
+    q4 = -np.arccos(mu4)
+
+    # WH2004 eq 11-13
+    z0 = eta * np.cos(I)
+    chi = np.sqrt(-np.tan(q4)**3 / np.tan(I) - 1)
+    rho = chi * np.sin(q4)**2 * np.cos(q4) / (
+        chi**2 * np.cos(q4)**2 + 1)
+    T = 2 * chi * np.cos(q4) / (
+        chi**2 * np.cos(q4)**2 - 1)
+    A2 = 8 * rho + 4 * np.arctan(T) - 8 * z0 * np.arctan(1 / chi)
+    A1 = 2 * np.pi * (1 - z0) - A2 / 2
+    A3 = 2 * np.pi * (1 + z0) - A2 / 2
+    return A1, A2, A3
