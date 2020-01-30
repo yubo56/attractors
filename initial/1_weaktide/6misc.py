@@ -52,16 +52,19 @@ def plot_equils(I, s_c):
     # overplot where CS2 gets destroyed by tides? Just do for a representative
     # epsilon, want to see the scaling
     eta_crit = lambda eps_val: (
-        np.sin(I) + np.sqrt(np.sin(I)**2 + 4 * eps_val**2 * np.cos(I)**2)
+        -np.sin(I) + np.sqrt(np.sin(I)**2 + 4 * eps_val**2 * np.cos(I)**2)
     ) / (2 * eps_val * np.cos(I)**2)
-    plt.axvline(s_c / eta_crit(1e-3), c='r', ls=':', lw=0.6)
-    plt.axvline(s_c / eta_crit(1e-2), c='r', ls=':', lw=0.6)
-    plt.axvline(s_c / eta_crit(1e-1), c='r', ls=':', lw=0.6)
 
     plt.xlabel(r'$s / \Omega_1$')
     plt.ylabel(r'$\theta$')
     plt.ylim([0, 90])
-    plt.legend(loc='upper right')
+    xlims = plt.xlim()
+    plt.axvline(s_c / eta_crit(1e-2), c='r', ls=':', lw=0.6,
+                label=r'$s_{\max}(10^{-2})$')
+    plt.axvline(s_c / eta_crit(1e-1), c='r', ls='--', lw=0.6,
+                label=r'$s_{\max}(10^{-1})$')
+    plt.xlim(xlims)
+    plt.legend(loc='upper right', fontsize=10, ncol=2)
     plt.savefig('6equils%s' % s_c_str(s_c), dpi=400)
     plt.clf()
 
