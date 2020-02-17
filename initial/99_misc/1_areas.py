@@ -7,6 +7,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
+plt.rc('lines', lw=3.0)
 plt.rc('font', family='serif', size=16)
 
 def plot_A_crit():
@@ -28,8 +29,7 @@ def plot_A_crit():
     ax2.set_ylabel(r'$\theta$')
 
     lns = l1 + l2
-    ax2.legend(lns, [l.get_label() for l in lns],
-               loc='upper left', fontsize=8)
+    ax2.legend(lns, [l.get_label() for l in lns], loc='upper left', fontsize=8)
     plt.savefig('1_Acrit.png', dpi=400)
     plt.clf()
 
@@ -65,18 +65,20 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     ax3 = ax1.twinx()
     ax4 = ax1.twiny()
     ax1.plot(eta, A1ys / (4 * np.pi), 'g:')
-    ax1.plot(eta, A1w / (4 * np.pi), 'g', label=r'$A_{I}$')
+    ax1.plot(eta, A1w / (4 * np.pi), 'g', label=r'$A_{\rm I}$')
     ax1.plot(eta, A2ys / (4 * np.pi), 'k:')
-    ax1.plot(eta, A2w / (4 * np.pi), 'k', label=r'$A_{II}$')
+    ax1.plot(eta, A2w / (4 * np.pi), 'k', label=r'$A_{\rm II}$')
     ax1.plot(eta, A3ys / (4 * np.pi), 'r:')
-    ax1.plot(eta, A3w / (4 * np.pi), 'r', label=r'$A_{III}$')
+    ax1.plot(eta, A3w / (4 * np.pi), 'r', label=r'$A_{\rm III}$')
 
     # dotted line continuation to show "analytic" continuation
     eta_cont = np.linspace(eta_c, 1.2 * eta_c, 21)
     ax1.plot(eta_cont, np.full_like(eta_cont, A1w[-1] / (4 * np.pi)), 'g--')
     ax1.plot(eta_cont, np.full_like(eta_cont, A2w[-1] / (4 * np.pi)), 'k--')
     ax1.plot(eta_cont, np.full_like(eta_cont, A3w[-1] / (4 * np.pi)), 'r--')
-    ax1.legend(loc='upper left')
+    xlims = ax1.get_xlim()
+    ax1.legend(loc='upper left', fontsize=14,
+               bbox_to_anchor=(0.05, xlims[1] + 0.035))
     ax1.set_xlabel(r'$\eta$')
     ax1.set_ylabel(r'$A / 4\pi$')
     ax1.set_xticks([0, 0.3, 0.6, 0.9])
@@ -90,20 +92,20 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     # plot critical values
     crit_vals_y = [A_sep_crit]
     for val in crit_vals_y:
-        ax3.axhline(val, c='k', lw=0.6, ls='dashed')
+        ax3.axhline(val, c='k', lw=2.0, ls='dashed')
     ax3.set_yticks(crit_vals_y)
-    ax3.set_yticklabels([r'$A_{II}(\eta_c)$'])
+    ax3.set_yticklabels([r'$A_{\rm II}(\eta_c)$'])
     eta_2_max = eta[np.argmax(A2w)]
     eta_3_min = eta[np.argmin(A3w)]
     crit_vals_x = [eta_c, eta_2_max, eta_3_min]
     for val in crit_vals_x:
-        ax4.axvline(val, c='k', lw=0.6, ls='dashed')
+        ax4.axvline(val, c='k', lw=2.0, ls='dashed')
     ax4.set_xticks(crit_vals_x)
     ax4.set_xticklabels([r'$\eta_c$',
                          r'$\eta_{\max,II}$',
                          r'$\eta_{\min,III}$'])
 
-    plt.title(r'$I = %d^\circ, \eta_c = %.3f$' % (np.degrees(I), eta_c))
+    plt.title(r'$I = %d^\circ$' % np.degrees(I))
     plt.tight_layout()
     plt.savefig(filename, dpi=400)
     plt.clf()
