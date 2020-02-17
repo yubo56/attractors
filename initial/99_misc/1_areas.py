@@ -66,8 +66,8 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     ax4 = ax1.twiny()
     ax1.plot(eta, A1ys / (4 * np.pi), 'g:')
     ax1.plot(eta, A1w / (4 * np.pi), 'g', label=r'$A_{\rm I}$')
-    ax1.plot(eta, A2ys / (4 * np.pi), 'k:')
-    ax1.plot(eta, A2w / (4 * np.pi), 'k', label=r'$A_{\rm II}$')
+    ax1.plot(eta, A2ys / (4 * np.pi), 'b:')
+    ax1.plot(eta, A2w / (4 * np.pi), 'b', label=r'$A_{\rm II}$')
     ax1.plot(eta, A3ys / (4 * np.pi), 'r:')
     ax1.plot(eta, A3w / (4 * np.pi), 'r', label=r'$A_{\rm III}$')
 
