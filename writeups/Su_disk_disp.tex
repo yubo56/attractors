@@ -25,6 +25,7 @@
     \newcommand*{\abs}[1]{\left|#1\right|}
     \newcommand*{\ev}[1]{\langle#1\rangle}
     \newcommand*{\bm}[1]{\boldsymbol{\mathbf{#1}}}
+    \newcommand*{\uv}[1]{\hat{\bm{#1}}}
     \newcommand*{\p}[1]{\left(#1\right)}
     \newcommand*{\s}[1]{\left[#1\right]}
     \newcommand*{\z}[1]{\left\{#1\right\}}
@@ -141,27 +142,29 @@ misalignment angles in Appendix~\ref{s:ad_approx}.
 
 \subsection{Equations of Motion}
 
-Much of this treatment parallels that of \citet{anderson2018teeter} and
-\citet{millholland_disk}. We consider a star of mass $M_\star$ hosting an oblate
-planet of mass $M_{\rm p}$, radius $R_{\rm p}$, at semimajor axis $a_{\rm p}$,
-and with spin angular frequency $\Omega_{\rm p}$, and a protoplanetary disk of
-mass $M_{\rm d}$ at some characteristic distance $r_{\rm d}$ from the host star
-\citep[see][for a power-law disk profile]{millholland_disk}. Denote $\hat{s}
-\equiv \bm{S} / S$ spin unit vector of planet, $\hat{l} \equiv \bm{L} / L$
-orbital angular momentum unit vector of planet, and $\hat{l}_{\rm d} \equiv
-\bm{L}_{\rm d} / L_{\rm d}$ angular momentum of the surrounding disc. We
-assume $S \ll L \ll L_{\rm d}$, so $\vec{l}_{\rm d}$ is approximately
-constant and $\vec{l}$ experiences negligible backreaction torque from
-$\hat{s}$. The equations of motion for $\hat{s}$, $\hat{l}$ and $\hat{l}_{\rm
-d}$ are
+We consider a star of mass $M_\star$ hosting an oblate planet of mass $M_{\rm
+p}$, radius $R_{\rm p}$, at semimajor axis $a_{\rm p}$, and with spin angular
+frequency $\Omega_{\rm p}$, and a protoplanetary disk of mass $M_{\rm d}$. For
+simplicity, we treat the disk as a ring of radius $r_d$, but it is simple to
+generalize to a disk with finite extent \citep[see][]{millholland_disk}.
+Denote $\bm{S}$ the spin angular momentum and $\bm{L}$ the orbital angular
+momentum of the planet, and $\bm{L}_{\rm d}$ the angular momentum of the disk.
+The corresponding unit vectors are $\uv{s} \equiv \bm{S} / S$,
+$\uv{l} \equiv \bm{L} / L$, and $\uv{l}_{\rm d} \equiv \bm{L}_{\rm
+d} / L_d$.
+
+We assume $S \ll L \ll L_{\rm d}$, so $\uv{l}_{\rm d}$ is approximately
+constant and $\uv{l}$ experiences negligible backreaction torque from
+$\uv{s}$. The equations of motion for $\uv{s}$ and $\uv{l}$
+are
 \begin{align}
-    \rd{\hat{s}}{t} &= \omega_{\rm sl} \p{\hat{s} \cdot \hat{l}}
-            \p{\hat{s} \times \hat{l}}
-        \equiv \alpha \p{\hat{s} \cdot \hat{l}}
-            \p{\hat{s} \times \hat{l}},\label{eq:dsdt}\\
-    \rd{\hat{l}}{t} &= \omega_{\rm ld}\p{\hat{l} \cdot \hat{l}_{\rm d}}
-            \p{\hat{l} \times \hat{l}_{\rm d}}
-        \equiv -g\p{\hat{l} \times \hat{l}_{\rm d}},
+    \rd{\uv{s}}{t} &= \omega_{\rm sl} \p{\uv{s} \cdot \uv{l}}
+            \p{\uv{s} \times \uv{l}}
+        \equiv \alpha \p{\uv{s} \cdot \uv{l}}
+            \p{\uv{s} \times \uv{l}},\label{eq:dsdt}\\
+    \rd{\uv{l}}{t} &= \omega_{\rm ld}\p{\uv{l} \cdot \uv{l}_{\rm d}}
+            \p{\uv{l} \times \uv{l}_{\rm d}}
+        \equiv -g\p{\uv{l} \times \uv{l}_{\rm d}},
             \label{eq:dldt}
 \end{align}
 where
@@ -180,42 +183,44 @@ rotation-induced quadrupole moment and moment of inertia respectively
 planet's orbital mean motion. The three angles formed by the three vectors are
 denoted
 \begin{align}
-    \theta &\equiv \arccos \hat{s} \cdot \hat{l},\\
-    \theta_{\rm sd} &\equiv \arccos \hat{s} \cdot \hat{l}_{\rm d},\\
-    I &\equiv \arccos \hat{l} \cdot \hat{l}_{\rm d}.
+    \theta &\equiv \arccos \p{\uv{s} \cdot \uv{l}},\\
+    \theta_{\rm sd} &\equiv \arccos \p{\uv{s} \cdot \uv{l}_{\rm d}},\\
+    I &\equiv \arccos \p{\uv{l} \cdot \uv{l}_{\rm d}}.
 \end{align}
 Following standard notation \citep[e.g.][]{colombo1966,peale1969,ward_jupiter},
-we have defined $\alpha \equiv \omega_{\rm sl}$ and $g = -\omega_{\rm ld}\cos
-I$.
+we have defined $\alpha \equiv \omega_{\rm sl}$ and $g \equiv -\omega_{\rm
+ld}\cos I$.
 
-We can combine Eqs.~\eqref{eq:dsdt}--\eqref{eq:dldt} into a single equation by
-transforming into a frame rotating about $\hat{l}_{\rm d}$ with frequency $g$.
-In this frame, $\hat{l}_{\rm d}$ and $\hat{l}$ are fixed, and $\hat{s}$ evolves
-as:
+We can combine Eqs.~\eqref{eq:dsdt} and~\eqref{eq:dldt} into a single equation
+by transforming into a frame rotating about $\uv{l}_{\rm d}$ with
+frequency $(-g)$. In this frame, $\uv{l}_{\rm d}$ and $\uv{l}$ are fixed, and
+$\uv{s}$ evolves as:
 \begin{equation}
-    \at{\rd{\hat{s}}{t}}_{\rm rot} = \alpha \p{\hat{s} \cdot \hat{l}}
-            \p{\hat{s} \times \hat{l}}
-        + g\p{\hat{s} \times \hat{l}_{\rm d}}.\label{eq:dsdt_rot}
+    \p{\rd{\uv{s}}{t}}_{\rm rot} = \alpha \p{\uv{s} \cdot \uv{l}}
+            \p{\uv{s} \times \uv{l}}
+        + g\p{\uv{s} \times \uv{l}_{\rm d}}.\label{eq:dsdt_rot}
 \end{equation}
 
 We define the frequency ratio $\eta$ and dimensionless time $\tau$ as
 \begin{align}
-    \eta \equiv{}& -\frac{g}{\alpha}\label{eq:eta},\\
+    \eta \equiv{}& -\frac{g}{\alpha}\nonumber\\
         ={}& 3.75 \p{\frac{k_{\rm p}}{6k_{\rm qp}}}
             \p{\frac{m_{\rm p}}{0.001 M_\odot}}
-            \p{\frac{R_{\rm p}}{R_{\rm J}}}^{-3}
-        &\p{\frac{M_{\rm d}}{0.01 M_{\odot}}}
+            \p{\frac{R_{\rm p}}{R_{\rm J}}}^{-3}\nonumber\\
+        &\times \p{\frac{M_{\rm d}}{0.01 M_{\odot}}}
             \p{\frac{a_{\rm p}}{1\;\mathrm{AU}}}^{9/2}
             \p{\frac{r_{\rm d}}{30 \;\mathrm{AU}}}^{-3}
             \p{\frac{M_\star}{1M_{\odot}}}^{-3/2}
-            \cos I,\\
+            \cos I,\label{eq:eta}\\
     \tau \equiv{}& \alpha t.
 \end{align}
-Then Eq.~\eqref{eq:dsdt_rot} becomes
+In Eq.~\eqref{eq:eta}, we have introduced the fiducial values of variable
+parameters for the appciation considered in this paper. Eq.~\eqref{eq:dsdt_rot}
+then becomes
 \begin{equation}
-    \at{\rd{\hat{s}}{t}}_{\rm rot} = \p{\hat{s} \cdot \hat{l}}
-            \p{\hat{s} \times \hat{l}}
-        - \eta\p{\hat{s} \times \hat{l}_{\rm d}}. \label{eq:dsdt_base}
+    \p{\rd{\uv{s}}{\tau}}_{\rm rot} = \p{\uv{s} \cdot \uv{l}}
+            \p{\uv{s} \times \uv{l}}
+        - \eta\p{\uv{s} \times \uv{l}_{\rm d}}. \label{eq:dsdt_base}
 \end{equation}
 
 Throughout this paper, we consider $\alpha$ constant, but allow $g$ to vary in
@@ -225,10 +230,8 @@ exponential decay model
 \begin{equation}
     M_{\rm d}(t) = M_{\rm d}(0)e^{-t/t_{\rm d}},\label{eq:dmd_dt}
 \end{equation}
-with $t_{\rm d}$ constant.
-
-Tihs implies $\rd{\eta}{t} = -\frac{\eta}{t_{\rm d}}$. In dimenisonless units,
-we have
+with $t_{\rm d}$ constant. This implies $\mathrm{d}\eta / \mathrm{d}t = -\eta /
+t_{\rm d}$. In dimensionless units, we have
 \begin{equation}
     \rd{\eta}{\tau} = -\epsilon \eta\label{eq:deta_dt},
 \end{equation}
@@ -238,28 +241,28 @@ where
         ={}& 0.015 \p{\frac{k_{\rm p}}{6k_{\rm qp}}}
             \p{\frac{m_{\rm p}/M_\star}{0.001}}
             \p{\frac{a_{\rm p}}{1\;\mathrm{AU}}}^3\nonumber\\
-        &\p{\frac{R_{\rm p}}{R_{\rm J}}}^{-3}
+        &\times \p{\frac{R_{\rm p}}{R_{\rm J}}}^{-3}
             \p{\frac{\Omega_{\rm p}}{2\pi/\p{10\;\mathrm{days}}}}
             \p{\frac{t_{\rm d}}{10\;\mathrm{Myr}}}^{-1}.
 \end{align}
 Eqs.~\eqref{eq:dsdt_base} and~\eqref{eq:deta_dt} together constitute our system
 of study.
 
-In the next two subsections, we discuss and review the theoretical background
-relevant to our analysis of the evolution of the system.
+In the next two subsections, we summarize the theoretical background relevant to
+our analysis of the evolution of the system.
 
 \subsection{Cassini States}\label{ss:cs}
 
-Spin states satisfying $\at{\rd{\hat{s}}{t}}_{\rm rot} = 0$ are referred to as
-\emph{Cassini States} (CSs). They require that $\hat{s}$, $\hat{l}$, and
-$\hat{l}_{\rm d}$ be coplanar. There are either two or four solutions, depending
-on the values of $\eta, I$. They are specified by the obliquity $\theta$ and the
-precessional phase of $\hat{s}$ around $\hat{l}$, denoted $\phi$. Following
-standard convention and nomenclature (see Fig.~\ref{fig:cs_locs}), CSs 1, 3, 4
-have $\phi = 0$ and $\theta < 0$, corresponding to $\hat{s}$ and $\hat{l}_{\rm
-d}$ being on opposite sides of $\hat{l}$, while CS2 has $\phi = \pi$ and $\theta
-> 0$, corresponding to $\hat{s}$ and $\hat{l}_{\rm d}$ being on the same side of
-$\hat{l}$. When $\eta < \eta_{\rm c}$, where
+Spin states satisfying $\p{\rd{\uv{s}}{t}}_{\rm rot} = 0$ are referred to as
+\emph{Cassini States} (CSs). They require that $\uv{s}$, $\uv{l}$, and
+$\uv{l}_{\rm d}$ be coplanar. There are either two or four CSs, depending
+on the values of $\eta$. They are specified by the obliquity $\theta$ and the
+precessional phase of $\uv{s}$ around $\uv{l}$, denoted by $\phi$. Following
+the standard convention and nomenclature (see Fig.~\ref{fig:cs_locs}), CSs 1, 3, 4
+have $\phi = 0$ and $\theta < 0$, corresponding to $\uv{s}$ and $\uv{l}_{\rm
+d}$ being on opposite sides of $\uv{l}$, while CS2 has $\phi = \pi$ and $\theta
+> 0$, corresponding to $\uv{s}$ and $\uv{l}_{\rm d}$ being on the same side of
+$\uv{l}$. When $\eta < \eta_{\rm c}$, where
 \begin{equation}
     \eta_{\rm c} \equiv \p{\sin^{2/3}I + \cos^{2/3}I}^{-3/2},\label{eq:etac}
 \end{equation}
@@ -268,12 +271,13 @@ obliquities as a function of $\eta$ are shown in Fig.~\ref{fig:cs_locs}.
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{../initial/99_misc/2_cs_locs.png}
-    \caption{Cassini state obliquities as a function of $\eta$ at $I = 5^\circ$.
-    Note that $\theta \in [-\pi, \pi]$ is the traditional definition of the
-    polar angle. The vertical dashed line indicates $\eta_{\rm c}$, where CS1
-    and CS4 merge and annihilate, and the horizontal dashed lines indicate
-    $\theta = I$ and $180^\circ - I$, the asymptotic behavior for CSs 2 and 3
-    for $\eta \gg \eta_{\rm c}$.}\label{fig:cs_locs}
+    \caption{Cassini state obliquities as a function of $\eta$ for $I =
+    5^\circ$. Note that $\theta \in [-\pi, \pi]$ is the traditional definition
+    of the polar angle. The vertical dashed line indicates $\eta_{\rm c}$ ($=
+    0.766$ for $I = 5^\circ$), where CS1 and CS4 merge and annihilate, and the
+    horizontal dashed lines indicate $\theta = I$ and $I - 180^\circ$, the
+    asymptotic values for CSs 2 and 3 for $\eta \gg \eta_{\rm
+    c}$.}\label{fig:cs_locs}
 \end{figure}
 
 Of the four CSs, 1, 2, 3 are stable while 4 is unstable.
@@ -284,10 +288,11 @@ respectively near these CSs.
 
 The Hamiltonian (in the rotating frame) of the system is
 \begin{align}
-    \mathcal{H} &= -\frac{1}{2}\p{\hat{s} \cdot \hat{l}}^2
-            + \eta \p{\hat{s} \cdot \hat{l}_{\rm d}}\label{eq:H}\nonumber\\
+    \mathcal{H} &= -\frac{1}{2}\p{\uv{s} \cdot \uv{l}}^2
+            + \eta \p{\uv{s} \cdot \uv{l}_{\rm d}}\nonumber\\
         &= -\frac{1}{2}\cos^2\theta
-            + \eta \p{\cos \theta \cos I - \sin I \sin \theta \cos \phi}.
+            + \eta \p{\cos \theta \cos I - \sin I \sin \theta \cos \phi}
+                \label{eq:H}.
 \end{align}
 Trajectories in the phase space $\p{\phi, \cos \theta}$ satisfy $H = $ constant
 (see Fig.~\autoref{fig:eq_1contours}).
@@ -414,8 +419,8 @@ We consider the evolution of a system with arbitrary initial spin-disk
 misalignment angle $\theta_{\rm sd, i}$ and initial $\eta_{\rm i} \gg 1$. We are
 interested in the final spin obliquities $\theta_{\rm f}$ after $\eta$ gradually
 decreases to $\eta_{\rm f} \ll 1$ (i.e.\ after the disk has dissipated to a
-negligible mass). Note that when $\eta_{\rm i} \gg 1$, $\hat{l}$ precesses
-around $\hat{l}_{\rm d}$ much faster than the spin-orbit precession
+negligible mass). Note that when $\eta_{\rm i} \gg 1$, $\uv{l}$ precesses
+around $\uv{l}_{\rm d}$ much faster than the spin-orbit precession
 ($\abs{\omega_{\rm ld}} \gg \abs{\omega_{\rm sl}}$), and the spin obliquity
 $\theta$ is not well defined. So it is more appropriate to use $\theta_{\rm sd}$
 rather than $\theta$ to specify the initial spin orientation.
@@ -426,16 +431,16 @@ adiabatically (see above).
 
 To obtain the distribution of the final obliquities $\theta_{\rm f}$, we evenly
 sample $101$ values of $\theta_{\rm sd, i}$, and for each $\theta_{\rm sd, i}$
-value, we pick $101$ $\hat{s}$ approximately from the ring of initial conditions
-having angular distance $\theta_{\rm sd, i}$ to $\hat{l}_{\rm d}$%
+value, we pick $101$ $\uv{s}$ approximately from the ring of initial conditions
+having angular distance $\theta_{\rm sd, i}$ to $\uv{l}_{\rm d}$%
 %
 \footnote{
 The procedure we adopted for choosing initial conditions is the natural
-extension of this for finite $\eta_{\rm i}$. Note that the center of $\hat{s}$'s
+extension of this for finite $\eta_{\rm i}$. Note that the center of $\uv{s}$'s
 libration is CS2, which, since $\eta_{\rm i}$ is finite, is different than
-$\hat{l}_{\rm d}$. Furthermore, the libration is not exactly circular. Thus,
+$\uv{l}_{\rm d}$. Furthermore, the libration is not exactly circular. Thus,
 initial conditions on the circular ring of points having angular distance
-$\theta_{\rm sd, i}$ from $\hat{l}_{\rm d}$ do not lie \emph{exactly} along each
+$\theta_{\rm sd, i}$ from $\uv{l}_{\rm d}$ do not lie \emph{exactly} along each
 others' trajectories, and will each enclose slightly different initial phase
 space areas $A_{\rm i}$. Since our analytical theory assumes exact conservation
 of phase space area $A_{\rm i}$ derived from $\theta_{\rm sd, i}$ (see
@@ -446,13 +451,13 @@ initial conditions on the libration cycle going through $\p{\theta_2 +
 \theta_{\rm sd, i}, \phi_2}$ (where $\p{\theta_2, \phi_2}$ are the coordinates
 of CS2). This ensures that all initial conditions for a given $\theta_{\rm sd,
 i}$ enclose the same initial $A_{\rm i}$. Note that as $\eta_{\rm i} \to
-\infty$, CS2 becomes coincident with $\hat{l}_{\rm d}$ and the libration cycle
+\infty$, CS2 becomes coincident with $\uv{l}_{\rm d}$ and the libration cycle
 becomes exactly circular, recovering the procedure given in the text.}.
 %
 To be concrete, we choose $\eta_{\rm i} = 10\eta_{\rm c}$ where $\eta_{\rm c}$
 is given by Eq.~\eqref{eq:etac} and evolve Equations~\ref{eq:dsdt_base}
 and~\ref{eq:deta_dt} until $\eta$ reaches its final value $10^{-5}$. At such a
-small $\eta$, $\hat{s}$ is strongly coupled to $\hat{l}$ and the final obliquity
+small $\eta$, $\uv{s}$ is strongly coupled to $\uv{l}$ and the final obliquity
 $\theta_{rm f}$ is frozen. The mapping between $\theta_{\rm sd, i}$ and
 $\theta_{\rm f}$ is our primary result, and is shown for $I = 5^\circ, 10^\circ,
 20^\circ$ in Figs.~\ref{fig:ad_ensemble},~\ref{fig:3_ensemble_10_35},
@@ -492,9 +497,6 @@ semi-analytically using the method discussed in the following subsection.
     \centering
     \includegraphics[width=0.5\textwidth]{../initial/2_toy2/3_ensemble_20_35.png}
     \caption{Same as Fig.~\ref{fig:3_ensemble_10_35} but for $I = 20^\circ$.
-    % Note that the $III \to II \to I$ track is very short since the maximum
-    % $A_{\rm II}$ is very near $\eta_{\rm c}$ for $I = 20^\circ$. (not a
-    % clear/useful observation - yubo)
     }\label{fig:3_ensemble_20_35}
 \end{figure}
 
@@ -521,22 +523,22 @@ This definition of $A$ has the advantage of (i) being continuous at $\cos \theta
 Eqs.~\eqref{se:area_ward}. The bounds of the integral are either a libration
 ($\phi$ returns to its original value with the same $\dot{q\phi}$ sign) or
 circulation cycle ($\phi$ advances to $\phi \pm 2\pi$). Note lastly that $A$ has
-simple physical interpretation of are enclosed on the unit sphere by $\hat{s}$
-over one cycle measured relative to $+\hat{z}$:
+simple physical interpretation of are enclosed on the unit sphere by $\uv{s}$
+over one cycle measured relative to $+\uv{z}$:
 \begin{equation}
     \int \int\limits_{\cos \theta(\phi)}^1
         \mathrm{d}\cos\theta\;\mathrm{d}\phi = \int \p{1 - \cos \theta(\phi)}
             \;\mathrm{d}\phi.
 \end{equation}
 
-Observe that when $\eta_{\rm i} \gg 1$, trajectories librate about $\hat{l}_{\rm d}$
+Observe that when $\eta_{\rm i} \gg 1$, trajectories librate about $\uv{l}_{\rm d}$
 with constant $\theta_{\rm sd}$, meaning they enclose initial phase space area
 \begin{equation}
     A_{\rm i} \equiv \at{A}_{t = 0}
         = 2\pi\p{1 - \cos \theta_{\rm sd, i}}.\label{eq:ai_qsd}
 \end{equation}
 Complications arise when considering finite $\eta_{\rm i}$, as trajectories near CS2
-or CS3 librate about these equilibria respectively, rather than $\hat{l}_{\rm
+or CS3 librate about these equilibria respectively, rather than $\uv{l}_{\rm
 d}$, and Eq.~\eqref{eq:ai_qsd} is no longer exact. In practice,
 Eq.~\eqref{eq:ai_qsd} holds very well when defining $\theta_{\rm sd, i}$ as the
 angular distance to CS2; an exception is discussed in Section~\ref{sss:evol_traj}.
@@ -584,7 +586,7 @@ while a II $\to$ III transition occurs with probability $\Pr\p{\rm II \to III} =
 
 \subsubsection{Evolutionary Trajectories}\label{sss:evol_traj}
 
-Returning to the evolution of $\hat{s}$, we can classify trajectories by the
+Returning to the evolution of $\uv{s}$, we can classify trajectories by the
 separatrix encounters experienced. Initially, in the $\eta > \eta_{\rm c}$ regime,
 only zones II and III exist. Conversely, at the end of the simulation when $\eta
 \to 0$, only zones I and III exist. Most simply, one might expect four sequences
@@ -596,12 +598,12 @@ evolution of $A$ throughout each of the five tracks, as well as determine the
 initial conditions and probabilities associated with each track:
 \begin{enumerate}
     \item II $\to$ I --- An example trajectory following this track is depicted
-        in Fig.~\ref{fig:ad_21}. $\hat{s}$ starts librating about CS2 in zone
-        II, enclosing some initial phase space area $A_{\rm i}$. The trajectory is
+        in Fig.~\ref{fig:ad_21}. $\uv{s}$ starts librating about CS2 in zone II,
+        enclosing some initial phase space area $A_{\rm i}$. The trajectory is
         able to librate without separatrix encounter until $A_{\rm
-        II}(\eta_\star) = A_{\rm i}$. As the trajectory transitions to a circulating
-        trajectory in zone I immediately bordering the separatrix, it will
-        encompass $-A_{\rm I}(\eta_\star)$ phase space area. The final
+        II}(\eta_\star) = A_{\rm i}$. As the trajectory transitions to a
+        circulating trajectory in zone I immediately bordering the separatrix,
+        it will encompass $-A_{\rm I}(\eta_\star)$ phase space area. The final
         $\theta_{\rm f}$ is then given by Eq.~\eqref{eq:qfaf}. An analytical
         approximation to $\theta_{\rm f}$ is derived in
         Appendix~\ref{s:ad_approx} and is
@@ -887,8 +889,8 @@ $\theta_{\rm f}$ assuming no initial spin-disk misalignment:
 \end{equation}
 
 An intuitive guess at generalizing this assumes that any nonzero $\theta_{\rm
-sd, i}$ manifests as obliquity variations as $\hat{s}$ librates about
-$\hat{l}_{\rm d}$. These can be accounted for by simply allowing the final
+sd, i}$ manifests as obliquity variations as $\uv{s}$ librates about
+$\uv{l}_{\rm d}$. These can be accounted for by simply allowing the final
 obliquity to vary over the same range as the initial obliquity, or,
 \begin{equation}
     \theta_{\rm f}\p{\theta_{\rm sd, i}} - \sqrt{\frac{2\pi}{\epsilon}} \tan
@@ -986,11 +988,11 @@ stability of each CS and, when stable, the local libration frequencies.
 
 \subsection{Canonical Equations of Motion and Solutions}
 
-For analytical work, we adopt spherical coordinate system where $\hat{l} =
-\hat{z}$ and $\theta, \phi$ are the polar and azimuthal angle of $\hat{s}$. By
-convention, we choose $\hat{l}_{\rm z}$ at coordinates $\theta = I, \phi = \pi$.
+For analytical work, we adopt spherical coordinate system where $\uv{l} =
+\uv{z}$ and $\theta, \phi$ are the polar and azimuthal angle of $\uv{s}$. By
+convention, we choose $\uv{l}_{\rm z}$ at coordinates $\theta = I, \phi = \pi$.
 Note that $\p{\cos \theta, \phi}$ form a canonically conjugate pair of variables
-describing $\hat{s}$. To derive equations of motion for these canonical
+describing $\uv{s}$. To derive equations of motion for these canonical
 coordinates, we rewrite Eq.~\eqref{eq:H}
 \begin{equation}
     \mathcal{H}\p{\theta, \phi} = -\frac{1}{2}\cos^2\theta
@@ -1132,7 +1134,7 @@ $\theta_{\rm f}\p{\theta_{\rm sd, i}}$ for zone II initial conditions.
 
 \begin{enumerate}
     \item For a given $\theta_{\rm sd, i}$, we know that if $\eta \to \infty$
-        then the trajectory executes simple libration about $\hat{l}_{\rm d}$,
+        then the trajectory executes simple libration about $\uv{l}_{\rm d}$,
         and so $A = 2\pi\p{1 - \cos \theta_{\rm sd, i}} \approx \pi \theta_{\rm
         sd, i}^2$. This then implies $\eta_\star$ must be the solution to
         $A_{\rm II}(\eta_\star) = A$, or
@@ -1178,15 +1180,15 @@ $\theta_{\rm f}\p{\theta_{\rm sd, i}}$ for zone II initial conditions.
 \section{Derivation of Nonadiabatic Evolution}\label{s:nonad_app}
 
 We present a single result, the derivation of Eq.~\eqref{eq:nonad_q_f}. We take
-Eq.~\eqref{eq:dsdt_base} and choose coordinate axes such that $\hat{l} = \hat{z},
-\hat{l}_{\rm d} = \hat{z} \cos I + \hat{x}\sin I$, then we obtain
+Eq.~\eqref{eq:dsdt_base} and choose coordinate axes such that $\uv{l} = \uv{z},
+\uv{l}_{\rm d} = \uv{z} \cos I + \uv{x}\sin I$, then we obtain
 \begin{equation}
-    \rd{\hat{s}}{t} = \s{
-        \p{\eta \cos I - 1}\hat{z} + \eta \sin I \hat{x}} \times \hat{s}.
+    \rd{\uv{s}}{t} = \s{
+        \p{\eta \cos I - 1}\uv{z} + \eta \sin I \uv{x}} \times \uv{s}.
 \end{equation}
 
 Now, let's assume that $s_{\rm z} \approx \cos I$ throughout the evolution of
-$\hat{s}$ (note that $\theta_{\rm sd, i} = 0$ implies the initial $s_{\rm z} = \cos
+$\uv{s}$ (note that $\theta_{\rm sd, i} = 0$ implies the initial $s_{\rm z} = \cos
 I$). Then let's examine the evolution of quantity $S = s_{\rm x} + is_{\rm y}$ instead:
 \begin{equation}
     \rd{S}{t} = i\p{\eta\cos I - 1}S - i \eta \sin I\cos I.\label{eq:nonad_ode}
@@ -1240,7 +1242,7 @@ different calculation.
 
 It should be noted that this result breaks down in two ways:
 \begin{enumerate}
-    \item If the evolution of $\hat{s}$ is adiabatic, then it is invalid to
+    \item If the evolution of $\uv{s}$ is adiabatic, then it is invalid to
         assume $s_{\rm z}$ is approximately constant in time, as many
         circulation/libration orbits can ensue. Only when the driving is
         sufficiently impulsive that the evolution dominates the change in
@@ -1250,7 +1252,7 @@ It should be noted that this result breaks down in two ways:
     \item If $\abs{S\p{-\infty}} \sim \abs{S\p{+\infty}}$, then taking the
         absolute value of both sides of Eq.~\eqref{eq:nonad_int} no longer
         simply yields $\abs{S}\p{+\infty}$. This corresponds to the extreme
-        limit where $\eta$ changes so suddenly that $\hat{s}$ has no time to
+        limit where $\eta$ changes so suddenly that $\uv{s}$ has no time to
         respond and remains roughly unchanged as $\eta \to 0$. This is
         accommodated by noting $\theta_{\rm f} \geq \theta_{\rm sd, i}$, so the
         correct estimate can be roughly amended
