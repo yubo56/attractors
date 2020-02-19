@@ -8,7 +8,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('lines', lw=3.0)
-plt.rc('font', family='serif', size=16)
+plt.rc('font', family='serif', size=20)
 
 def plot_A_crit():
     '''
@@ -74,7 +74,7 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     # dotted line continuation to show "analytic" continuation
     eta_cont = np.linspace(eta_c, 1.2 * eta_c, 21)
     ax1.plot(eta_cont, np.full_like(eta_cont, A1w[-1] / (4 * np.pi)), 'g--')
-    ax1.plot(eta_cont, np.full_like(eta_cont, A2w[-1] / (4 * np.pi)), 'k--')
+    ax1.plot(eta_cont, np.full_like(eta_cont, A2w[-1] / (4 * np.pi)), 'b--')
     ax1.plot(eta_cont, np.full_like(eta_cont, A3w[-1] / (4 * np.pi)), 'r--')
     xlims = ax1.get_xlim()
     ax1.legend(loc='upper left', fontsize=14,
@@ -91,8 +91,8 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
 
     # plot critical values
     crit_vals_y = [A_sep_crit]
-    for val in crit_vals_y:
-        ax3.axhline(val, c='k', lw=2.0, ls='dashed')
+    # for val in crit_vals_y:
+    #     ax3.axhline(val, c='k', lw=2.0, ls='dashed')
     ax3.set_yticks(crit_vals_y)
     ax3.set_yticklabels([r'$A_{\rm II}(\eta_c)$'])
     eta_2_max = eta[np.argmax(A2w)]
