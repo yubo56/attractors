@@ -507,40 +507,31 @@ understood using the principle of adiabatic invariance, combined with (i) how
 the enclosed phase space area by the trajectory evolves across each separatrix
 crossing, and (ii) the associated probabilities with each separatrix crossing.
 
-\subsubsection{Governing Principles: Evolution of Enclosed Phase Space
+\subsubsection{Governing Principle: Evolution of Enclosed Phase Space
 Area}\label{sss:a_evo}
 
 First, we consider how the enclosed phase space area by a trajectory evolves
 over time. In the absence of separatrix encounters, the enclosed phase space
-area $\oint \cos\theta \;\mathrm{d}\phi$ is an adiabatic invariant. In
-particular, we adopt convention where
+area $\oint \cos\theta \;\mathrm{d}\phi$ is an adiabatic invariant. We adopt
+convention where
 \begin{equation}
     A \equiv \oint \p{1 - \cos \theta}\;\mathrm{d}\phi.\label{eq:a_oint}
 \end{equation}
-This definition of $A$ has the advantage of (i) being continuous at $\cos \theta
-= 1$, and (ii) being easily expressible as combinations of the $A_{\rm i}$ of
-Eqs.~\eqref{se:area_ward}. The bounds of the integral are either a libration
-($\phi$ returns to its original value with the same $\dot{q\phi}$ sign) or
-circulation cycle ($\phi$ advances to $\phi \pm 2\pi$). Note lastly that $A$ has
-simple physical interpretation of are enclosed on the unit sphere by $\uv{s}$
-over one cycle measured relative to $+\uv{z}$:
+This definition of $A$ has the advantage of (i) being continuous across
+transitions from circulating to librating that cross the North pole
+($\cos \theta = 1$), and (ii) being easily expressible as combinations of the
+$A_{\rm i}$ of Eqs.~\eqref{se:area_ward}. The bounds of the integral are either
+a libration or circulation cycle. Note that when $\eta_{\rm i} \gg 1$,
+trajectories librate about $\uv{l}_{\rm d}$ with constant $\theta_{\rm sd}$,
+meaning they enclose initial phase space area
 \begin{equation}
-    \int \int\limits_{\cos \theta(\phi)}^1
-        \mathrm{d}\cos\theta\;\mathrm{d}\phi = \int \p{1 - \cos \theta(\phi)}
-            \;\mathrm{d}\phi.
+    A_{\rm i} = 2\pi\p{1 - \cos \theta_{\rm sd, i}}.\label{eq:ai_qsd}
 \end{equation}
-
-Observe that when $\eta_{\rm i} \gg 1$, trajectories librate about $\uv{l}_{\rm d}$
-with constant $\theta_{\rm sd}$, meaning they enclose initial phase space area
-\begin{equation}
-    A_{\rm i} \equiv \at{A}_{t = 0}
-        = 2\pi\p{1 - \cos \theta_{\rm sd, i}}.\label{eq:ai_qsd}
-\end{equation}
-Complications arise when considering finite $\eta_{\rm i}$, as trajectories near CS2
-or CS3 librate about these equilibria respectively, rather than $\uv{l}_{\rm
-d}$, and Eq.~\eqref{eq:ai_qsd} is no longer exact. In practice,
-Eq.~\eqref{eq:ai_qsd} holds very well when defining $\theta_{\rm sd, i}$ as the
-angular distance to CS2; an exception is discussed in Section~\ref{sss:evol_traj}.
+Complications arise when considering finite $\eta_{\rm i}$, as trajectories near
+CS2 or CS3 librate about these equilibria, rather than $\uv{l}_{\rm d}$, and
+Eq.~\eqref{eq:ai_qsd} is no longer exact. In practice, Eq.~\eqref{eq:ai_qsd}
+holds very well when defining $\theta_{\rm sd, i}$ as the angular distance to
+CS2; an exception is discussed in Section~\ref{sss:evol_traj}.
 
 Beginning at the last separatrix crossing, the final enclosed phase space area
 $A_{\rm f}$ will be conserved for all time. As $\eta \to 0$, trajectories circulate at
