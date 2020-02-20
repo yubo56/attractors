@@ -86,7 +86,7 @@ if __name__ == '__main__':
     I = np.radians(5)
     f, axs = get_four_subplots()
     # Figures 3b-3e of Kassandra's paper
-    for idx, (ax, eta) in enumerate(zip(axs, [0.1, 0.5, 0.561, 2])):
+    for idx, (ax, eta) in enumerate(zip(axs, [0.1, 0.5, 0.75, 2])):
         plot_H_for_eta(f, ax, eta, I, idx)
 
     plt.suptitle(r'$\eta_c = %.3f$' % get_etac(I))

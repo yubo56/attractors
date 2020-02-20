@@ -1,3 +1,5 @@
+% label C_\pm on fig 2
+% unify 3 & 4, choose consistent q/cos q
     \documentclass[
         fleqn,
         usenatbib,
@@ -145,22 +147,22 @@ satisfy $\dot{s} = 0$ under weak tidal friction. These are stable as $\epsilon
 \to 0$, see Appendix~\ref{app:cs_stab}. On Fig.~\ref{fig:quiver}, these are the
 intersection of the locations of CS1 and CS2 with the line $\dot{s} = 0$. It is
 clear that the locations of these equilibria depend on the value of $s_c$. Call
-these generalized equilibria \emph{tidal Cassini States} (tCS), and number them
-tCS1 and tCS2 depending on whether they are CS1 or CS2 states. Shown
+these generalized equilibria \emph{tidal Cassini Equilibria} (tCE), and number
+them tCE1 and tCE2 depending on whether they are CS1 or CS2 states. Shown
 \begin{figure}
     \centering
     \includegraphics[width=0.6\textwidth]{../initial/1_weaktide/6equils0_06.png}
-    \caption{Location of tCS\@. Vertical line is spin rate below which tCS is
+    \caption{Location of tCE\@. Vertical line is spin rate below which tCE is
     destroyed.}\label{fig:6equils}
 \end{figure}
 
-Furthermore, if tides are too strong (large $\epsilon$), tCS2 can become
-unstable (cite Fabrycky). The required $\epsilon$ for stability of tCS2 is given
+Furthermore, if tides are too strong (large $\epsilon$), tCE2 can become
+unstable (cite Fabrycky). The required $\epsilon$ for stability of tCE2 is given
 by
 \begin{equation}
     \epsilon \leq \frac{\eta_2 \sin I}{1 - \mu_2^2},
 \end{equation}
-where $\eta_2$ and $\mu_2$ are evaluated at tCS2.
+where $\eta_2$ and $\mu_2$ are evaluated at tCE2.
 
 \section{Probability Distribution of Outcomes}\label{s:sim}
 
@@ -173,7 +175,7 @@ spin $\hat{s}$ in Section~\ref{ss:s_c_dist}.
 
 \subsection{Distribution As a Function of $\theta$}\label{ss:q_dist}
 
-As a result of \autoref{ss:tidal_eqs}, the tCS are the only possible final
+As a result of \autoref{ss:tidal_eqs}, the tCE are the only possible final
 outcomes. We generate initial spin vectors $\hat{s}$ for isotropic initial
 distribution $\p{\cos \theta, \phi}$, and marginalize over $\phi$ (which
 generally cannot be fixed by any formation mechanism) in histograms. This gives
@@ -182,18 +184,18 @@ histograms in Figs.~\ref{fig:Hhists_0_06,fig:Hhists_0_20,fig:Hhists_0_70}
     \centering
     \includegraphics[width=0.6\textwidth]{../initial/1_weaktide/5Hhists0_06_5.png}
     \caption{$s_c = 0.06$. Note that it is difficult to reach
-    tCS2.}\label{fig:Hhists_0_06}
+    tCE2.}\label{fig:Hhists_0_06}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics[width=0.6\textwidth]{../initial/1_weaktide/5Hhists0_20_5.png}
-    \caption{$s_c = 0.2$. Note that tCS2 is both reached with substantial
+    \caption{$s_c = 0.2$. Note that tCE2 is both reached with substantial
     probability and has substantial obliquity.}\label{fig:Hhists_0_20}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics[width=0.6\textwidth]{../initial/1_weaktide/5Hhists0_60_5.png}
-    \caption{$s_c = 0.6$. Note that tCS2 becomes attracting over tCS1, but will
+    \caption{$s_c = 0.6$. Note that tCE2 becomes attracting over tCE1, but will
     have obliquity $\approx I$ and is uninteresting.}\label{fig:Hhists_0_70}
 \end{figure}
 
@@ -222,19 +224,19 @@ in Figs.~\ref{fig:pc_fits_0_06,fig:pc_fits_0_20,fig:pc_fits_0_70}.
 \subsection{Distribution As a Function of $s_c$}\label{ss:s_c_dist}
 
 Assuming that $\hat{s}$ is drawn from an isotropic distribution, we may then
-calculate the probabilities of going to either tCS as a function of $s_c$. This
+calculate the probabilities of going to either tCE as a function of $s_c$. This
 is shown below for $I = 5^\circ$
 \begin{figure}
     \centering
     \includegraphics[width=0.6\textwidth]{../initial/1_weaktide/5probs_5.png}
-    \caption{Top: total probability of ending up in tCS2 (blue dots) and the
+    \caption{Top: total probability of ending up in tCE2 (blue dots) and the
     prediction ignoring separatrix capture (red line). Bottom:
-    obliquities of the tCSs.}\label{fig:probs}
+    obliquities of the tCEs.}\label{fig:probs}
 \end{figure}
 
 Note that while only the results for an isotropic distribution of initial
 $\hat{s}$ are shown, in principle arbitrary distributions $P\p{\theta_i}$ can be
-convolved against the $P_{tCS2}\p{\theta_i}$ distributions shown in
+convolved against the $P_{tCE2}\p{\theta_i}$ distributions shown in
 \autoref{ss:q_dist}.
 
 \section{Summary and Discussion}\label{s:summary}
