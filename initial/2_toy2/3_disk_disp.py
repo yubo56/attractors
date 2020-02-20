@@ -21,8 +21,9 @@ PLOT_DIR = '1plots'
 from utils import to_cart, to_ang, roots, H, solve_ic_base,\
     get_etac
 dpi = 600
-my_ms = 4.0
-my_lw = 4.0
+my_ms = 3.5
+my_lw = 3.5
+my_alpha = 0.7
 
 def sep_areas_exact(I, eta):
     mu4 = eta * np.cos(I) / (1 - eta * np.sin(I))
@@ -419,7 +420,7 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
                                        np.cos(q_rolled[ :idx_turnaround + 1]))
             mu_half1 = mu_half1_interp(phi_half2)
             ax.fill_between(phi_half2, mu_half1, mu_half2,
-                            color='0.5', alpha=0.5)
+                            color='0.5', alpha=my_alpha)
 
     # now use the ylims to compute only the viewable separatrix
     for plot_idx, ax in zip(plot_idxs, axs):
@@ -609,19 +610,19 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
     q_f_23 = [np.arccos(sep_areas_exact(I, eta)[2] / (2 * np.pi) - 1)
               for eta in eta_2[idx_23]]
     ax1.plot(np.degrees(dqs[idx_23]), np.degrees(q_f_23), 'r',
-             label=r'$II \to III$', lw=my_lw, zorder=1)
+             label=r'$II \to III$', lw=my_lw, zorder=1, alpha=my_alpha)
 
     # A2 -> A1, all eta_2s
     q_f_21 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
               for eta in eta_2]
     ax1.plot(np.degrees(dqs[idx_2]), np.degrees(q_f_21), 'c',
-             label=r'$II \to I$', lw=my_lw, zorder=1)
+             label=r'$II \to I$', lw=my_lw, zorder=1, alpha=my_alpha)
 
     # A3 -> A1, J_f = A2_star + A3_star
     q_f_31 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
               for eta in eta_3]
     ax1.plot(np.degrees(dqs[idx_3]), np.degrees(q_f_31), 'g',
-             label=r'$III \to I$', lw=my_lw, zorder=1)
+             label=r'$III \to I$', lw=my_lw, zorder=1, alpha=my_alpha)
 
     # A3 -> A2 -> A1
     eta_second_cross = []
@@ -637,7 +638,7 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
     q_f_321 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
                for eta in eta_second_cross]
     ax1.plot(np.degrees(dqs[idx_3][idx_second_cross]), np.degrees(q_f_321),
-             'm', label=r'$III \to II\to I$', lw=my_lw, zorder=1)
+             'm', label=r'$III \to II\to I$', lw=my_lw, zorder=1, alpha=my_alpha)
 
     # A3 -> A3
     # dq (theta_{sd,i}) does not accurately predict the enclosed area when we
@@ -647,7 +648,7 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
     # make sure does not exceed 180 degrees (np.pi)
     dqs_cs3 = np.minimum(_dqs_cs3, 2 * np.pi - _dqs_cs3)
     ax1.plot(np.degrees(dqs[idx_33]), np.degrees(dqs_cs3[idx_33]), 'k',
-             label=r'$III \to III$', lw=my_lw, zorder=1)
+             label=r'$III \to III$', lw=my_lw, zorder=1, alpha=my_alpha)
 
     # overplot 4 vertical lines delineating the regimes
     # invert A = 2pi * (1 - cos(q))
@@ -655,8 +656,8 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
         return
     if I == np.radians(5):
         for q_b in q_bounds:
-            ax1.axvline(q_b, c='k', ls='dashed', lw=0.2 * my_lw)
-            ax2.axvline(q_b, c='k', ls='dashed', lw=0.2 * my_lw)
+            ax1.axvline(q_b, c='k', ls='dashed', lw=0.4 * my_lw)
+            ax2.axvline(q_b, c='k', ls='dashed', lw=0.4 * my_lw)
 
     # overplot the simplest analytical estimate
     # this is the square root motivated one, second simplest
@@ -670,48 +671,48 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
     mu_f_1 = (np.pi * dqs**2 / 16)**2 / np.tan(I) + dqs**2 / 4
     mu_f_2 = (np.pi * dqs**2 / 16)**2 / np.tan(I) - dqs**2 / 4
     ax1.plot(np.degrees(dqs), np.degrees(np.arccos(mu_f_1)),
-             'k:', linewidth=0.4 * my_lw, zorder=1)
+             'k:', linewidth=0.4 * my_lw, zorder=1, alpha=my_alpha)
     ax1.plot(np.degrees(dqs), np.degrees(np.arccos(mu_f_2)),
-             'k:', linewidth=0.4 * my_lw, zorder=1)
+             'k:', linewidth=0.4 * my_lw, zorder=1, alpha=my_alpha)
 
     # plot probabilities
     # Probability 2 -> 3
     _, dA2_23, dA3_23 = d_sep_areas(I, eta_23)
     P_23 = -dA3_23 / dA2_23
     ax2.plot(np.degrees(dqs[idx_23]), np.minimum(P_23, np.ones_like(P_23)),
-             'r', lw=my_lw, zorder=1)
+             'r', lw=my_lw, zorder=1, alpha=my_alpha)
     # Probability 2 -> 1
     dA1_21, dA2_21, _ = d_sep_areas(I, eta_2)
     P_21 = -dA1_21 / dA2_21
     ax2.plot(np.degrees(dqs[idx_2]), np.minimum(P_21, np.ones_like(P_21)),
-             'c', lw=my_lw, zorder=1)
+             'c', lw=my_lw, zorder=1, alpha=my_alpha)
     # Prob 3 -> 2 -> 1 = 3 -> 2
     eta_321 = eta_3[np.where(eta_3 > max_A2_eta)[0]]
     _, dA2_32, dA3_32 = d_sep_areas(I, eta_321)
     P_32 = -dA2_32 / dA3_32
     ax2.plot(np.degrees(dqs[idx_3][idx_second_cross]),
              np.minimum(P_32, np.ones_like(P_32)),
-             'm', lw=my_lw, zorder=1)
+             'm', lw=my_lw, zorder=1, alpha=my_alpha)
     # Prob 3 -> 1
     dA1_31, _, dA3_31 = d_sep_areas(I, eta_3)
     P_31 = -dA1_31 / dA3_31
     ax2.plot(np.degrees(dqs[idx_3]),
              np.minimum(P_31, np.ones_like(P_31)),
-             'g', lw=my_lw, zorder=1)
+             'g', lw=my_lw, zorder=1, alpha=my_alpha)
     # Prob 3 -> 3 (trivial)
     P_33 = np.degrees(dqs[idx_33])
-    ax2.plot(P_33, np.ones_like(P_33), 'k', lw=my_lw)
+    ax2.plot(P_33, np.ones_like(P_33), 'k', lw=my_lw, zorder=1, alpha=my_alpha)
 
     # analytical estimates
     eta_cross = (np.pi * dqs**2 / 16)**2 / np.sin(I)
     ax2.plot(np.degrees(dqs),
              (-2 * np.pi * eta_cross + 4 * np.sqrt(eta_cross * np.sin(I)))
              / (8 * np.sqrt(eta_cross * np.sin(I))),
-             'k:', linewidth=0.4 * my_lw, zorder=1)
+             'k:', linewidth=0.4 * my_lw, zorder=1, alpha=my_alpha)
     ax2.plot(np.degrees(dqs),
              (2 * np.pi * eta_cross + 4 * np.sqrt(eta_cross * np.sin(I)))
              / (8 * np.sqrt(eta_cross * np.sin(I))), 'k:',
-             linewidth=0.4 * my_lw, zorder=1)
+             linewidth=0.4 * my_lw, zorder=1, alpha=my_alpha)
 
     # plot data-generated points for probabilities
     ax2.set_ylim([-0.1, 1.1])
@@ -790,7 +791,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
     PKL_FN = '3dat%02d_%02d.pkl' % (I_deg, eps_log)
     PKL_FN2 = '3dat%02d_%02d_2.pkl' % (I_deg, eps_log)
     filename = '3_ensemble_%02d_%02d' % (I_deg, eps_log)
-    title = r'$I = %d^\circ, \epsilon = 10^{-%.1f}$' % (I_deg, eps_log / 10)
+    title = r'$I = %d^\circ$' % I_deg
 
     if not os.path.exists(PKL_FN):
         print('running', PKL_FN)
@@ -879,8 +880,10 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         dong_est_deg = np.degrees(np.sqrt(2 * np.pi / (-eps))
                                   * np.tan(I) * np.cos(I))
         dqs_d = np.degrees(dqs)
-        ax1.plot(dqs_d, dong_est_deg + (dqs_d - min(dqs_d)), 'r:')
-        ax1.plot(dqs_d, dong_est_deg - (dqs_d - min(dqs_d)), 'r:')
+        ax1.plot(dqs_d, dong_est_deg + (dqs_d - min(dqs_d)), 'r',
+                 zorder=1, alpha=my_alpha)
+        ax1.plot(dqs_d, dong_est_deg - (dqs_d - min(dqs_d)), 'r',
+                 zorder=1, alpha=my_alpha)
 
         ax1.set_title(title)
         ax1.set_ylim(ymin=0)
@@ -942,7 +945,7 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
             * (eta_cross * np.sin(I) / np.sin(q_x)**3 + 1)) / (2 * np.pi)
     plt.axvline(eps_nonad, c='k')
     plt.fill_betweenx(ylims,
-                      eps_nonad, eps_min, color='0.5', alpha=0.5)
+                      eps_nonad, eps_min, color='0.5', alpha=my_alpha)
     plt.xlim([eps_min, eps_max])
     plt.yticks([np.degrees(I), 90],
                [r'$%d$' % np.degrees(I), r'$90$'])

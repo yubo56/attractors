@@ -8,7 +8,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('font', family='serif', size=16)
+plt.rc('font', family='serif', size=20)
+LW=3.5
 
 def get_etac(I):
     return (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
@@ -63,13 +64,12 @@ def get_cs(I):
 def plot_cs(I=np.radians(5)):
     etas, cs_vals, etas_four, etac = get_cs(I)
 
-    plt.semilogx(etas_four, np.degrees(cs_vals[0]), 'y', label='1')
-    plt.semilogx(etas, np.degrees(cs_vals[1]), 'r', label='2')
-    plt.semilogx(etas, np.degrees(cs_vals[2]), 'm', label='3')
-    plt.semilogx(etas_four, np.degrees(cs_vals[3]), 'c', label='4')
+    plt.semilogx(etas_four, np.degrees(cs_vals[0]), 'y', lw=LW, label='1')
+    plt.semilogx(etas, np.degrees(cs_vals[1]), 'r', lw=LW, label='2')
+    plt.semilogx(etas, np.degrees(cs_vals[2]), 'm', lw=LW, label='3')
+    plt.semilogx(etas_four, np.degrees(cs_vals[3]), 'c', lw=LW, label='4')
     plt.xlabel(r'$\eta$')
     plt.ylabel(r'$\theta$ (deg)')
-    plt.legend(loc='lower right')
     plt.xlim([min(etas), max(etas)])
     plt.yticks([-180 + np.degrees(I),
                 -90,
@@ -79,13 +79,24 @@ def plot_cs(I=np.radians(5)):
                 r'$-90$',
                 r'$%d$' % np.degrees(I),
                 r'$90$'])
+    # place upper right corner of legend flush against eta -> infinity asymptote
+    # (np.degrees(I))
+    ymin, ymax = plt.ylim()
+    y_perc = (np.degrees(I) - ymin) / (ymax - ymin)
+    legend = plt.legend(fontsize=16, loc='upper right',
+                        bbox_to_anchor=(1.0, y_perc))
     plt.axhline(np.degrees(I), lw=0.8, c='k', ls='dashed')
     plt.axhline(-180 + np.degrees(I), lw=0.8, c='k', ls='dashed')
     plt.axvline(etac, c='k', lw='0.8', ls='dashed')
-    plt.title(r'$I = %d^\circ, \eta_c = %.3f$' % (np.degrees(I), etac))
+    plt.title(r'$I = %d^\circ$' % np.degrees(I))
     plt.tight_layout()
     plt.savefig('2_cs_locs', dpi=400)
 
+    legend.remove()
+    # place upper right corner of legend flush against eta -> infinity asymptote
+    # (np.degrees(I))
+    legend = plt.legend(fontsize=16, loc='upper left',
+                        bbox_to_anchor=(0.0, y_perc))
     xlims = plt.xlim()
     plt.xlim(xlims[1], xlims[0]) # flip
     plt.savefig('2_cs_locs_flip', dpi=400)

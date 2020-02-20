@@ -3,6 +3,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
+plt.rc('lines', linewidth=3)
 plt.rc('font', family='serif', size=16)
 from utils import roots, get_four_subplots, plot_point, H, get_grids, get_etac,\
     get_sep_area
@@ -17,7 +18,7 @@ def plot_H_for_eta(f, ax, eta, I, idx):
     x_grid, phi_grid = get_grids()
     H_grid = H(I, eta, x_grid, phi_grid)
     cset = ax.contour(phi_grid, x_grid, H_grid,
-                      cmap='RdBu_r', linewidths=0.8, levels=5)
+                      cmap='RdBu_r', linewidths=2.0, levels=5)
 
     thetas, phis = roots(I, eta)
     colors = ['y', 'r', 'm', 'c'] if len(thetas) == 4 else ['r', 'm']
@@ -67,7 +68,7 @@ def plot_H_for_eta(f, ax, eta, I, idx):
                    H_grid,
                    levels=[H_sep],
                    colors=['k'],
-                   linewidths=0.5,
+                   linewidths=1.5,
                    linestyles='dashed')
         ax.contourf(phi_grid,
                     x_grid,
@@ -79,8 +80,7 @@ def plot_H_for_eta(f, ax, eta, I, idx):
 
     ax.set_title(r'(%s) $\eta = %.2f$' % (letters[idx], eta), fontsize=14)
 
-    plt.suptitle(r'$I = %d^\circ, \eta_c = %.3f$' %
-                 (np.degrees(I), eta_c))
+    plt.suptitle(r'$I = %d^\circ$' % np.degrees(I))
 
 if __name__ == '__main__':
     I = np.radians(5)
