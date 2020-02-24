@@ -7,8 +7,12 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('lines', lw=3.0)
+LW=2.0
+plt.rc('lines', lw=LW)
 plt.rc('font', family='serif', size=20)
+
+def get_etac(I):
+    return (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
 
 def plot_A_crit():
     '''
@@ -20,16 +24,23 @@ def plot_A_crit():
     l1 = ax1.plot(I, area_frac, 'r', label='Areas')
     ax1.set_xlabel(r'$I$ (deg)')
     ax1.set_ylabel(r'$A_{crit}/4\pi$')
-    ax2 = ax1.twinx()
 
+    # ax2 = ax1.twinx()
     # @ cross, area is (A_3 - 2pi) / 2pi, while A_3 = 4pi * (1 - area_frac)
-    q_f = ((1 - area_frac) * 4 * np.pi - 2 * np.pi) / (2 * np.pi)
-    l2 = ax2.plot(I, np.degrees(np.arccos(q_f)), 'b',
-                  label=r'$\theta_{f,\max}$') # TODO
-    ax2.set_ylabel(r'$\theta$')
+    # q_f = ((1 - area_frac) * 4 * np.pi - 2 * np.pi) / (2 * np.pi)
+    # l2 = ax2.plot(I, np.degrees(np.arccos(q_f)), 'b',
+    #               label=r'$\theta_{f,\max}$') # TODO
+    # ax2.set_ylabel(r'$\theta$')
+    # lns = l1 + l2
+    # ax2.legend(lns, [l.get_label() for l in lns], loc='upper left', fontsize=8)
 
-    lns = l1 + l2
-    ax2.legend(lns, [l.get_label() for l in lns], loc='upper left', fontsize=8)
+    # overplot our direct evaluation of the Ward areas formula
+    etac_vals = get_etac(np.radians(I))
+    a2_fracs = [get_areas_ward(eta_val, I_val)[1] / (4 * np.pi)
+               for eta_val, I_val in zip(etac_vals, np.radians(I))]
+    ax1.plot(I, a2_fracs, label='Numerical')
+
+    ax1.legend()
     plt.savefig('1_Acrit.png', dpi=400)
     plt.clf()
 
@@ -51,7 +62,7 @@ def get_areas_ward(eta, I):
 
 def plot_areas(I=np.radians(5), filename='1_areas'):
     ''' plot exact area + my old approx '''
-    eta_c = (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
+    eta_c = get_etac(I)
     scale_pow = 3
     eta = np.linspace(0, eta_c**(1/scale_pow), 1001)**scale_pow
 
@@ -64,11 +75,11 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     fig, ax1 = plt.subplots(1, 1)
     ax3 = ax1.twinx()
     ax4 = ax1.twiny()
-    ax1.plot(eta, A1ys / (4 * np.pi), 'g:')
+    ax1.plot(eta, A1ys / (4 * np.pi), 'g:', lw=LW/2)
     ax1.plot(eta, A1w / (4 * np.pi), 'g', label=r'$A_{\rm I}$')
-    ax1.plot(eta, A2ys / (4 * np.pi), 'b:')
+    ax1.plot(eta, A2ys / (4 * np.pi), 'b:', lw=LW/2)
     ax1.plot(eta, A2w / (4 * np.pi), 'b', label=r'$A_{\rm II}$')
-    ax1.plot(eta, A3ys / (4 * np.pi), 'r:')
+    ax1.plot(eta, A3ys / (4 * np.pi), 'r:', lw=LW/2)
     ax1.plot(eta, A3w / (4 * np.pi), 'r', label=r'$A_{\rm III}$')
 
     # dotted line continuation to show "analytic" continuation
@@ -77,7 +88,7 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     ax1.plot(eta_cont, np.full_like(eta_cont, A2w[-1] / (4 * np.pi)), 'b--')
     ax1.plot(eta_cont, np.full_like(eta_cont, A3w[-1] / (4 * np.pi)), 'r--')
     xlims = ax1.get_xlim()
-    ax1.legend(loc='upper left', fontsize=14,
+    ax1.legend(loc='upper left', fontsize=12,
                bbox_to_anchor=(0.05, xlims[1] + 0.035))
     ax1.set_xlabel(r'$\eta$')
     ax1.set_ylabel(r'$A / 4\pi$')

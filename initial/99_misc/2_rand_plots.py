@@ -7,6 +7,7 @@ import scipy.optimize as opt
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=20)
 LW=3.5
@@ -138,6 +139,77 @@ def plot_eigens(I=np.radians(5)):
     plt.savefig('2_lambdas.png', dpi=400)
     plt.clf()
 
+def plot_3vec():
+    ''' plots the relative orientations of the three vectors '''
+    offset = 0.02 # offset for text from arrow tip
+    alpha = 0.8
+
+    fig, ax = plt.subplots(1, 1, figsize=(6, 6))
+    plt.axis('off')
+    ax.set_xlim(0.2, 1.1)
+    ax.set_ylim(-0.1, 1.1)
+    def get_xy(angle):
+        return 1 - np.sin(np.radians(angle)), np.cos(np.radians(angle))
+
+    # central dot
+    ax.plot(1, 0, 'ko', ms=8, zorder=np.inf)
+    arrowprops = lambda c: {'fc': c, 'alpha': alpha, 'lw': 0,
+                            'width': 3, 'headwidth': 12}
+
+    # draw three arrows
+    l_xy = get_xy(0)
+    l_c = 'b'
+    ax.annotate('', xy=l_xy, xytext=(1, 0),
+                 arrowprops=arrowprops(l_c))
+    ax.text(l_xy[0] - offset / 3, l_xy[1] + offset, r'$\hat{\mathbf{l}}$',
+             fontdict={'c': l_c})
+
+    ld_q = 20
+    ld_xy = get_xy(ld_q)
+    ld_c = 'darkslategray'
+    ax.annotate('', xy=ld_xy, xytext=(1, 0),
+                 arrowprops=arrowprops(ld_c))
+    ax.text(ld_xy[0] - offset / 2, ld_xy[1] + offset,
+            r'$\hat{\mathbf{l}}_{\rm d}$', fontdict={'c': ld_c})
+
+    s_q = 50
+    s_xy = get_xy(s_q)
+    s_c = 'r'
+    ax.annotate('', xy=s_xy, xytext=(1, 0),
+                 arrowprops=arrowprops(s_c))
+    ax.text(s_xy[0] - offset, s_xy[1] + offset, r'$\hat{\mathbf{s}}$',
+             fontdict={'c': s_c})
+
+    # draw arcs
+    # center, (dx, dy), rotation, start angle, end angle (degrees)
+    arc_lw = 3
+    ld_arc = patches.Arc((1, 0), 1.0, 1.0, 90, 0, ld_q,
+                         color=l_c, lw=arc_lw, alpha=alpha,
+                         label='1')
+    ax.add_patch(ld_arc)
+    s_arc = patches.Arc((1, 0), 0.6, 0.6, 90, 0, s_q,
+                        color=s_c, lw=arc_lw, alpha=alpha)
+    ax.add_patch(s_arc)
+    # label arcs
+    ax.text(1 - np.sin(np.radians(ld_q * 0.6)) * 0.5,
+            np.cos(np.radians(ld_q * 0.6)) * 0.5 + offset,
+            r'$I$',
+            fontdict={'c': l_c})
+    ax.text(1 - np.sin(np.radians(0.8 * s_q)) * 0.3 - 2 * offset,
+            np.cos(np.radians(0.8 * s_q)) * 0.3 + 2 * offset,
+            r'$+\theta$',
+            fontdict={'c': s_c})
+    xy_s_tip = (
+        1 - 0.3 * np.sin(np.radians(s_q)),
+        0.3 * np.cos(np.radians(s_q)))
+    ax.annotate('', xy=xy_s_tip - np.array([0.003, 0.003]), xytext=xy_s_tip,
+                arrowprops=arrowprops(s_c))
+
+    ax.set_aspect('equal')
+    plt.savefig('2_3vec', dpi=400)
+    plt.clf()
+
 if __name__ == '__main__':
-    plot_cs(np.radians(5))
+    # plot_cs(np.radians(5))
     # plot_eigens(np.radians(5))
+    plot_3vec()
