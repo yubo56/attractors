@@ -70,7 +70,7 @@ Astronomy, Cornell University, Ithaca, NY 14853, USA
     analytically characterized and extended to arbitrary misalignment angles. It
     is shown that (i) under adiabatic evolution, final planetary obliquities
     bifurcate into distinct tracks governed by interactions with the resonance,
-    while (ii) under non-adiabatic evolution, a broad range of obliquities can
+    while (ii) under nonadiabatic evolution, a broad range of obliquities can
     be excited. Analytical formulae are provided for most interesting regimes of
     parameter space.
 \end{abstract}
@@ -97,10 +97,10 @@ obliquity excitations have been achieved via \emph{spin-orbit resonances}, where
 the spin and orbital precession frequencies of the planet become and remain
 commensurate as the system evolves (sometimes called \emph{resonance
 advection}). Spin-orbit resonances have been studied extensively in solar system
-dynamics as \emph{Cassini States} and are responsible for the significant
-nonzero obliquities of both Jupiter ($3.1^\circ$) and Saturn ($26.7^\circ$)
-\citep{colombo1966, henrard1987, ward2004I, ward_jupiter}. Recent work has
-attempted to apply this mechanism to the ice giants as well
+dynamics as \emph{Cassini States} and are thought to be responsible for the
+significant nonzero obliquities of both Jupiter ($3.1^\circ$) and Saturn
+($26.7^\circ$) \citep{colombo1966, henrard1987, ward2004I, ward_jupiter}. Recent
+work has attempted to apply this mechanism to the ice giants as well
 \citep{hamilton_tilting_ice}.
 
 Producing exoplanet obliquities via spin-orbit resonances was the subject of
@@ -114,12 +114,12 @@ resonance crossings.
 However, their study was limited to small initial misalignment angles between
 the spin vector of the planet and the orbital angular momentum of the
 protoplanetary disk. Such an assumption is intuitive, since the planet forms
-from the disk, but prospects for it to be violated exist. In particular, giant
-and planetesimal impacts are expected to be abundant during planet formation and
-may perturb the spin axis of the protoplanet from its primordial value
-\citep{yalinewich2019atmospheric, schlichting2015atmospheric}. Furthermore, the
-abundance of compact multi-planet systems provides support for possible
-scattering between close-in, newly-formed planets \citep{usp_compact1,
+from the disk, but evidence suggests it may not always be satisfied. In
+particular, giant and planetesimal impacts are expected to be abundant during
+planet formation and may perturb the spin axis of the protoplanet from its
+primordial value \citep{yalinewich2019atmospheric, schlichting2015atmospheric}.
+Furthermore, the prevalence of compact multi-planet systems provides support for
+possible scattering between close-in, newly-formed planets \citep{usp_compact1,
 usp_review}. It is conceivable that such processes could generate significant
 spin-disk misalignment within the lifetime of the disk.
 
@@ -134,12 +134,12 @@ encounters.
 The paper is organized as follows. In Section~\ref{s:eq}, we review relevant
 spin-orbit dynamics and present the equations studied in the rest of the paper.
 In Sections~\ref{s:ad} and~\ref{s:nonad}, we study the evolution of the system
-when the disk either dissipates adiabatically or non-adiabatically respectively.
+when the disk either dissipates adiabatically or nonadiabatically respectively.
 Exhaustive yet simple analytical arguments are able to explain completely the
 numerical results in both limits. We discuss potential consequences in
 Section~\ref{s:disc}. Our primary physical results consist of
 Fig.~\ref{fig:ad_ensemble} in the adiabatic limit and
-Fig.~\ref{fig:3_ensemble_05_15} in the non-adiabatic limit. Longer mathematical
+Fig.~\ref{fig:3_ensemble_05_15} in the nonadiabatic limit. Longer mathematical
 calculations are relegated to the appendicies, including a leading-order
 estimate of final planetary obliquities given small initial spin-disk
 misalignment angles in Appendix~\ref{s:ad_approx}.
@@ -151,13 +151,13 @@ misalignment angles in Appendix~\ref{s:ad_approx}.
 We consider a star of mass $M_\star$ hosting an oblate planet of mass $M_{\rm
 p}$, radius $R_{\rm p}$, at semimajor axis $a_{\rm p}$, and with spin angular
 frequency $\Omega_{\rm p}$, and a protoplanetary disk of mass $M_{\rm d}$. For
-simplicity, we treat the disk as a ring of radius $r_d$, but it is simple to
+simplicity, we treat the disk as a ring of radius $r_{\rm d}$, but it is simple to
 generalize to a disk with finite extent \citep[see][]{millholland_disk}.
 Denote $\bm{S}$ the spin angular momentum and $\bm{L}$ the orbital angular
 momentum of the planet, and $\bm{L}_{\rm d}$ the angular momentum of the disk.
 The corresponding unit vectors are $\uv{s} \equiv \bm{S} / S$,
 $\uv{l} \equiv \bm{L} / L$, and $\uv{l}_{\rm d} \equiv \bm{L}_{\rm
-d} / L_d$.
+d} / L_{\rm d}$.
 
 We assume $S \ll L \ll L_{\rm d}$, so $\uv{l}_{\rm d}$ is approximately
 constant and $\uv{l}$ experiences negligible backreaction torque from
@@ -193,9 +193,9 @@ denoted
     \theta_{\rm sd} &\equiv \arccos \p{\uv{s} \cdot \uv{l}_{\rm d}},\\
     I &\equiv \arccos \p{\uv{l} \cdot \uv{l}_{\rm d}}.
 \end{align}
-Following standard notation \citep[e.g.][]{colombo1966,peale1969,ward_jupiter},
-we have defined $\alpha \equiv \omega_{\rm sl}$ and $g \equiv -\omega_{\rm
-ld}\cos I$.
+Following standard notation \citep[e.g.][]{colombo1966,peale1969,ward2004I}, we
+have defined $\alpha \equiv \omega_{\rm sl}$ and $g \equiv -\omega_{\rm ld}\cos
+I$.
 
 We can combine Eqs.~\eqref{eq:dsdt} and~\eqref{eq:dldt} into a single equation
 by transforming into a frame rotating about $\uv{l}_{\rm d}$ with
@@ -259,10 +259,10 @@ our analysis of the evolution of the system.
 
 \subsection{Cassini States}\label{ss:cs}
 
-Spin states satisfying $\p{\rd{\uv{s}}{t}}_{\rm rot} = 0$ are referred to as
+Spin states satisfying $\p{\rd{\uv{s}}{\tau}}_{\rm rot} = 0$ are referred to as
 \emph{Cassini States} (CSs). They require that $\uv{s}$, $\uv{l}$, and
 $\uv{l}_{\rm d}$ be coplanar. There are either two or four CSs, depending
-on the values of $\eta$. They are specified by the obliquity $\theta$ and the
+on the value of $\eta$. They are specified by the obliquity $\theta$ and the
 precessional phase of $\uv{s}$ around $\uv{l}$, denoted by $\phi$. Following
 the standard convention and nomenclature (see Figs.~\ref{fig:cs_vecs}
 and~\ref{fig:cs_locs}), CSs 1, 3, 4 have $\phi = 0$ and $\theta < 0$,
@@ -276,14 +276,13 @@ c}$, where
 all four CSs exist, and when $\eta > \eta_{\rm c}$, only CSs 2, 3 exist. The CS
 obliquities as a function of $\eta$ are shown in Fig.~\ref{fig:cs_locs}.
 \begin{figure}
-    \includegraphics[width=0.45\textwidth]{plots_diskdisp/2_3vec.png}
+    \includegraphics[width=0.5\textwidth]{plots_diskdisp/2_3vec.png}
     \caption{Definition of angles in the Cassini state configuration and the
     adopted sign convention for $\theta$. Traditionally, $\theta \in [-\pi,
-    pi]$.}\label{fig:cs_vecs}
+    \pi]$.}\label{fig:cs_vecs}
 \end{figure}
 \begin{figure}
-    %
-    \includegraphics[width=0.45\textwidth]{plots_diskdisp/2_cs_locs.png}
+    \includegraphics[width=0.5\textwidth]{plots_diskdisp/2_cs_locs.png}
     \caption{Cassini state obliquities as a function of $\eta$ for $I =
     5^\circ$. The vertical dashed line indicates $\eta_{\rm c}$ ($= 0.766$ for
     $I = 5^\circ$), where CS1 and CS4 merge and annihilate, and the horizontal
@@ -299,22 +298,23 @@ respectively near these CSs.
 
 The Hamiltonian (in the rotating frame) of the system is
 \begin{align}
-    \mathcal{H} &= -\frac{1}{2}\p{\uv{s} \cdot \uv{l}}^2
+    \mathcal{H}\p{\phi, \cos \theta} &= -\frac{1}{2}\p{\uv{s} \cdot \uv{l}}^2
             + \eta \p{\uv{s} \cdot \uv{l}_{\rm d}}\nonumber\\
         &= -\frac{1}{2}\cos^2\theta
             + \eta \p{\cos \theta \cos I - \sin I \sin \theta \cos \phi}
                 \label{eq:H}.
 \end{align}
-Trajectories in the phase space $\p{\phi, \cos \theta}$ satisfy $H = $ constant
-(see Fig.~\ref{fig:eq_1contours}).
+Here, $\phi$ and $\cos \theta$ are canonically conjugate variables. Trajectories
+in the phase space $\p{\phi, \cos \theta}$ satisfy $H = $ constant (see
+Fig.~\ref{fig:eq_1contours}).
 
 When $\eta < \eta_{\rm c}$, CS4 exists and is a saddle point. The two
 trajectories originating and ending at CS4 are the only two infinite-period
 orbits in the phase space. Together, these two critical trajectories are
 referred to as the \emph{separatrix} and divide phase space into three zones. In
 Fig.~\ref{fig:eq_1contours}, we show the separatrix, the three zones, and their
-relations to the CSs. Note that trajectories in zone II librate about CS2
-while those in zones I and III circulate.
+relations to the CSs. Trajectories in zone II librate about CS2 while those in
+zones I and III circulate.
 \begin{figure*}
     \centering
     \includegraphics[width=0.8\textwidth]{plots_diskdisp/1contours_flip.png}
@@ -327,13 +327,13 @@ while those in zones I and III circulate.
     of the separatrix, shaded in grey, is formally only defined for $\eta <
     \eta_{\rm c}$, but we may identify the points in phase space that flow into
     zone II when evolved forward in time (decreasing $\eta$ adiabatically); this
-    is the shaded region in the top left panel, bounded by the black dotted
+    is the shaded region in panel (a), bounded by the black dotted
     line.}\label{fig:eq_1contours}
 \end{figure*}
 
-Since $\p{\phi, \cos \theta}$ form a set of canonical variables, the integral
-$\oint \cos \theta\;\mathrm{d}\phi$ along a trajectory is an adiabatic invariant
-(see Section~\ref{s:ad}). The unsigned areas $\p{\abs{\int \cos \theta
+Since $\p{\phi, \cos \theta}$ are canonically conjugate, the integral $\oint
+\cos \theta\;\mathrm{d}\phi$ along a trajectory is an adiabatic invariant (see
+Section~\ref{s:ad}). The unsigned areas $\p{\abs{\int \cos \theta
 \;\mathrm{d}\phi}}$ of the three zones (as defined in
 Fig.~\ref{fig:eq_1contours}) can be computed analytically
 \citep{henrard1987,ward2004I}. Define
@@ -356,16 +356,15 @@ The areas for $\eta < \eta_{\rm c}$ are given by
         A_{\rm III} &= 2\pi\p{1 + z_0} - \frac{A_2}{2}\label{eq:A3}.
     \end{align}
 \end{subequations}
-These are plotted as a function of $\eta$ in Fig.~\ref{fig:eq_areas}. Note that
-the zones are not formally defined for $\eta > \eta_{\rm c}$ since the
-separatrix disappears, but a natural extension exists: evolve an initial phase
-space point $p$ under adiabatic decrease of $\eta$ until the separatrix appears
-at $\eta = \eta_{\rm c}$, then identify $p$ with the zone it is in at $\eta_{\rm
-c}$. Since phase space area is conserved under adiabatic evolution, this
-extension implies $A_{\rm i}\p{\eta > \eta_{\rm c}} = A_{\rm i}(\eta_{\rm c})$.
-The boundary between these extended zones is denoted by the dashed black line in
-the top left panel of Fig.~\ref{fig:eq_1contours}, where otherwise no separatrix
-exists.
+These are plotted as a function of $\eta$ in Fig.~\ref{fig:eq_areas}. While the
+zones are not formally defined for $\eta > \eta_{\rm c}$ since the separatrix
+disappears, a natural extension exists: evolve an initial phase space point $p$
+under adiabatic decrease of $\eta$ until the separatrix appears at $\eta =
+\eta_{\rm c}$, then identify $p$ with the zone it is in at $\eta_{\rm c}$. Since
+phase space area is conserved under adiabatic evolution, this extension implies
+$A_{\rm i}\p{\eta > \eta_{\rm c}} = A_{\rm i}(\eta_{\rm c})$. The boundary
+between these extended zones is denoted by the dashed black line in panel (a) of
+Fig.~\ref{fig:eq_1contours}, where no separatrix exists.
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/1_areas.png}
@@ -379,16 +378,14 @@ exists.
     dashed lines correspond to $\eta = \eta_{\rm c}$ [Eq.\eqref{eq:etac}] and
     the values of $\eta$ for which $A_{\rm II}$ is maximized ($\eta_{\rm \max,
     II}$) and for which $A_{\rm III}$ is minimized ($\eta_{\rm \min, III}$,
-    Eq.~\eqref{eq:eta_minIII}). The horizontal black dashed line illustrates the
-    fraction of phase space occupied by zone II at separatrix appearance.
-    }\label{fig:eq_areas}
+    Eq.~\eqref{eq:eta_minIII}).}\label{fig:eq_areas}
 \end{figure}
 
 \section{Adiabatic Evolution}\label{s:ad}
 
 In this section, we study the evolution of the planetary obliquity $\theta$ when
-the parameter $\eta$ (or the disk mass $M_{\rm d}$; see Eqs.~\eqref{eq:eta}
-and~\eqref{eq:deta_dt}) decreases sufficiently slowly that the evolution is
+the parameter $\eta$ [or the disk mass $M_{\rm d}$; see Eqs.~\eqref{eq:eta}
+and~\eqref{eq:deta_dt}] decreases sufficiently slowly that the evolution is
 adiabatic. Strictly speaking, this requires the disk evolution timescale $t_{\rm
 d}$ [Eq.~\eqref{eq:dmd_dt}] be much larger than all timesccales of the dynamical
 system governed by the Hamiltonian [Eq.~\eqref{eq:H}]. This is of course not
@@ -418,13 +415,16 @@ vary more slowly than this libration frequency
 \end{equation}
 where $\theta_2$ is the obliquity at CS2. This formula differs from that given
 in \citet{millholland_disk}, where the $\csc^3\theta_2$ term is neglected and
-the square root is missing.
+the square root is missing\footnote{The missing $\csc^3 \theta_2$ term can be
+traced to a $\theta \gg I$ approximation made in Eq.~(3) of \citet{ward2004II}.
+Since $\theta_2 \approx I$ for $\eta \gg 1$ (Fig.~\ref{fig:cs_locs}), this
+approximation is not always valid.}.
 
-For $I = 5^\circ$, $\eta \sim \eta_{\rm c}$ Eq.~\eqref{eq:ad_constr} gives $\epsilon
-\lesssim 0.085$. Since our criterion is only a weak condition for diabaticity,
-we use $\epsilon = 3 \times 10^{-4}$ in our ``adiabatic'' simulations below
-(Section~\ref{ss:ad_ensemble}). We explore the consequences of nonadiabatic
-evolution in Section~\ref{s:nonad}.
+For $I = 5^\circ$, $\eta \sim \eta_{\rm c}$ Eq.~\eqref{eq:ad_constr} gives
+$\epsilon \lesssim 0.085$. Since our criterion is only a weak condition for
+diabaticity, we use $\epsilon = 3 \times 10^{-4}$ in our ``adiabatic''
+simulations below. We explore the consequences of nonadiabatic evolution in
+Section~\ref{s:nonad}.
 
 \subsection{Adiabatic Evolution Outcomes}\label{ss:ad_ensemble}
 
@@ -435,35 +435,36 @@ decreases to $\eta_{\rm f} \ll 1$ (i.e.\ after the disk has dissipated to a
 negligible mass). Note that when $\eta_{\rm i} \gg 1$, $\uv{l}$ precesses
 around $\uv{l}_{\rm d}$ much faster than the spin-orbit precession
 ($\abs{\omega_{\rm ld}} \gg \abs{\omega_{\rm sl}}$), and the spin obliquity
-$\theta$ varies rapidly. So it is more appropriate to use $\theta_{\rm sd}$
+$\theta$ varies rapidly. It is thus more appropriate to use $\theta_{\rm sd, i}$
 rather than $\theta$ to specify the initial spin orientation. We explore the
 entire range $\theta_{\rm sd, i} \in [0, \pi]$ and choose $\epsilon = 3 \times
 10^{-4}$ so that the system evolves almost adiabatically (see above).
 
 To obtain the distribution of the final obliquities $\theta_{\rm f}$, we evenly
 sample $101$ values of $\theta_{\rm sd, i}$, and for each $\theta_{\rm sd, i}$
-value, we pick $101$ orientations of $\uv{s}$ approximately from the ring of
-initial conditions having angular distance $\theta_{\rm sd, i}$ to $\uv{l}_{\rm
-d}$%
+value, we pick $101$ evenly spaced orientations of $\uv{s}$ approximately from
+the ring of initial conditions having angular distance $\theta_{\rm sd, i}$ to
+$\uv{l}_{\rm d}$%
 %
-\footnote{The procedure we adopted for choosing the initial conditions is the
-natural extension of this for finite $\eta_{\rm i}$. Note that the center of
-libration of $\uv{s}$ is CS2, which, since $\eta_{\rm i}$ is finite, is
-different from $\uv{l}_{\rm d}$. Furthermore, the libration is not exactly
+\footnote{The actual procedure we adopt to choose the initial conditions is the
+natural extension of this description to finite $\eta_{\rm i}$. Note that the
+center of libration of $\uv{s}$ is CS2, which, since $\eta_{\rm i}$ is finite,
+is different from $\uv{l}_{\rm d}$. Furthermore, the libration is not exactly
 circular. As a result, the libration trajectories for initial conditions on the
 circular ring of points having angular distance $\theta_{\rm sd, i}$ from
 $\uv{l}_{\rm d}$ are not the same and will each enclose slightly different
 initial phase space areas $A_{\rm i}$. Since our analytical theory assumes exact
-conservation of phase space area $A_{\rm i}$ derived from $\theta_{\rm sd, i}$
-(see Section~\ref{ss:zone_transitions}), this discrepancy introduces an extra
-deviation from the analytical prediction. To guarantee all points for a
-particular $\theta_{\rm sd, i}$ have the same $A_{\rm i}$, we instead choose
-initial conditions on the libration cycle going through $\p{\theta_2 +
-\theta_{\rm sd, i}, \phi_2}$ [where $\p{\theta_2, \phi_2}$ are the coordinates
-of CS2]. This ensures that all initial conditions for a given $\theta_{\rm sd,
-i}$ enclose the same initial $A_{\rm i}$. Note that as $\eta_{\rm i} \to
-\infty$, CS2 becomes coincident with $\uv{l}_{\rm d}$ and the libration cycle
-becomes exactly circular, recovering the procedure given in the text.}.
+conservation of the initially enclosed phase space area $A_{\rm i}$ for each
+$\theta_{\rm sd, i}$ (see Section~\ref{ss:zone_transitions}), this discrepancy
+introduces an extra deviation from the analytical prediction. To guarantee all
+points for a particular $\theta_{\rm sd, i}$ have the same $A_{\rm i}$, we
+instead choose initial conditions on the libration cycle going through
+$\p{\theta_2 + \theta_{\rm sd, i}, \phi_2}$ [where $\p{\theta_2, \phi_2}$ are
+the coordinates of CS2]. This ensures that all initial conditions for a given
+$\theta_{\rm sd, i}$ enclose the same initial $A_{\rm i}$. As $\eta_{\rm i} \to
+\infty$, this procedure generates initial conditions on the ring having angular
+distance $\theta_{\rm sd, i}$ to $\uv{l}_{\rm d}$, recovering the procedure
+given in the text.}.
 %
 To be concrete, we choose $\eta_{\rm i} = 10\eta_{\rm c}$ where $\eta_{\rm c}$
 is given by Eq.~\eqref{eq:etac} and evolve Eqs.~\eqref{eq:dsdt_base}
@@ -479,24 +480,24 @@ semi-analytically using the method discussed in the following subsection.
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3_ensemble_05_35.png}
-    \caption{Top: Shown are the final spin obliquity $\theta_{\rm f}$ as a
-    function of the initial spin-disk misalignment angle $\theta_{\rm sd, i}$
-    for systems evolving from initial $\eta_{\rm i} \gg 1$ to $\eta_{\rm f} \ll
-    1$. The blue dots are results of numerical calculations
-    (Section~\ref{ss:ad_ensemble}), and the colored tracks are semi-analytical
-    results (Section~\ref{ss:zone_transitions}). The black dotted lines
-    represent analytical approximations valid in the small-$\theta_{\rm sd, i}$
-    limit (see Appendix~\ref{s:ad_approx}). Bottom: Shown are the probabilities
-    of different outcomes. Where a particular $\theta_{\rm sd, i}$ corresponds
-    to multiple tracks, the system evolves probabilistically. The track that a
-    particular system evolves along in a numerical simulation can be measured by
-    examining its final obliquity. The dots represent the inferred probabilities
-    from measured final obliquities in our simulations, while the colored tracks
+    \caption{Top: The final spin obliquity $\theta_{\rm f}$ as a function of the
+    initial spin-disk misalignment angle $\theta_{\rm sd, i}$ for systems
+    evolving from initial $\eta_{\rm i} \gg 1$ to $\eta_{\rm f} \ll 1$. The blue
+    dots are results of numerical calculations (Section~\ref{ss:ad_ensemble}),
+    and the colored tracks are semi-analytical results
+    (Section~\ref{ss:zone_transitions}). Bottom: The probabilities of different
+    outcomes. Where a particular $\theta_{\rm sd, i}$ corresponds to multiple
+    tracks, the system evolves probabilistically. The track that a particular
+    system evolves along in a numerical simulation can be measured by examining
+    its final obliquity. The dots represent the inferred probabilities from
+    measured final obliquities in our simulations, while the colored tracks
     denote the semi-analytic probability of the system evolving along each
     track. There are five regimes of $\theta_{\rm sd, i}$ values for which
-    different tracks are accessible. Semi-analytical calculations of the
-    boundaries of these regimes are denoted via the vertical dashed black lines
-    (see Section~\ref{ss:zone_transitions}).}\label{fig:ad_ensemble}
+    different tracks are accessible. In both plots, the vertical dashed black
+    lines denote semi-analytical calculations of the boundaries of these regimes
+    (see Section~\ref{ss:zone_transitions}), while the black dotted lines
+    represent analytical approximations valid in the small-$\theta_{\rm sd, i}$
+    limit (see Appendix~\ref{s:ad_approx}).}\label{fig:ad_ensemble}
 \end{figure}
 \begin{figure}
     \centering
@@ -530,12 +531,12 @@ convention where
     A \equiv \oint \p{1 - \cos \theta}\;\mathrm{d}\phi.\label{eq:a_oint}
 \end{equation}
 This definition of $A$ has the advantage of (i) being continuous across
-transitions from circulating to librating that cross the North pole
-($\cos \theta = 1$), and (ii) being easily expressible as combinations of the
-$A_{\rm i}$ of Eqs.~\eqref{se:area_ward}. The bounds of the integral are either
-a libration or circulation cycle. Note that when $\eta_{\rm i} \gg 1$,
-trajectories librate about $\uv{l}_{\rm d}$ with constant $\theta_{\rm sd}$,
-meaning they enclose initial phase space area
+transitions from circulating to librating that cross the North pole ($\cos
+\theta = 1$), and (ii) the areas of the three zones are equal in absolute value
+to the expressions given in Eqs.~\eqref{se:area_ward}. The path over which the
+integral is taken is either a libration or circulation cycle. When $\eta_{\rm i}
+\gg 1$, trajectories librate about $\uv{l}_{\rm d}$ with constant $\theta_{\rm
+sd}$, meaning they enclose initial phase space area
 \begin{equation}
     A_{\rm i} = 2\pi\p{1 - \cos \theta_{\rm sd, i}}.\label{eq:ai_qsd}
 \end{equation}
@@ -577,7 +578,7 @@ $j$ and $k$ are given by
     \end{align}
 \end{subequations}
 Note that $\Pr \p{i \to j} + \Pr\p{i \to k} = 1$.
-Eqs.~\eqref{eq:henrard_hop} can be used directly in conjunction with
+Eqs.~\eqref{eq:henrard_hop} can be used in conjunction with
 Eqs.~\eqref{se:area_ward} to understand for what initial conditions each track
 can be observed and with what probabilities.
 
@@ -622,7 +623,7 @@ regime, only zones II and III exist; as $\eta \to 0$, only zones I and III exist
         This track can only occur when the initial condition begins in zone II,
         requiring $A_{\rm i} < A_{\rm II}(\eta_{\rm c})$, where $A_{\rm
         II}\p{\eta_c}$ is given by Eq.~\eqref{eq:A2} evaluated at $\eta =
-        \eta_c$. Note that since $\pdil{A_{\rm I}}{\eta} < 0$ everywhere, while
+        \eta_c$. Since $\pdil{A_{\rm I}}{\eta} < 0$ everywhere, while
         $\pdil{A_{\rm II}}{\eta} > 0$ at all possible $\eta_\star$ for an
         initial condition starting in zone II, this track always has nonzero
         probability.
@@ -672,12 +673,11 @@ regime, only zones II and III exist; as $\eta \to 0$, only zones I and III exist
         III transition). This condition is $A_{\rm i} < \max \p{A_{\rm I} +
         A_{\rm II}} = 4\pi - \min \p{A_{\rm III}}$.
 
-        Note that since $\pdil{A_{\rm I}}{\eta} < 0$ while $\pdil{A_{\rm
-        III}}{\eta} > 0$ for all accessible $\eta_{\star}$, this track is
-        always permitted.
+        Since $\pdil{A_{\rm I}}{\eta} < 0$ and $\pdil{A_{\rm III}}{\eta} > 0$
+        for all accessible $\eta_{\star}$, this track is always permitted.
 
     \item III $\to$ II $\to$ I (see Fig.~\ref{fig:ad_321}) That $A_{\rm II}
-        \p{\eta_c}$ is not monotonic is key to the existence of this track.
+        \p{\eta_{\rm c}}$ is not monotonic is key to the existence of this track.
         Consider a trajectory originating in zone III that first encounters the
         separatrix at $\eta_1$, when $A_{\rm I}(\eta_1) + A_{\rm II}(\eta_1) =
         A_{\rm i}$, such that it transitions into zone II enclosing
@@ -689,42 +689,44 @@ regime, only zones II and III exist; as $\eta \to 0$, only zones I and III exist
                     _{\eta = \eta_1},
         \end{equation}
         which is nonnegative (i.e.\ the transition is permitted) if $\eta_1
-        \in [\eta_{\rm \max, II}, \eta_c]$. Equivalently, this requires
+        \in [\eta_{\rm \max, II}, \eta_{\rm c}]$. Equivalently, this requires
         $A_{\rm i} \in \s{A_{\rm II}\p{\eta_{\rm c}} , A_{\rm II, \max}}$.
 
         Then, as $\eta$ continues to decrease, a second $\eta_2$ value exists
         for which $A_{\rm m} = A_{\rm II}(\eta_2)$, upon which the trajectory
-        is ejected to zone I and $A_f = -A_{\rm I}(\eta_2)$. Note that $\eta_2
-        < \eta_{\rm \max, II}$ necessarily, as zone II must be shrinking in
-        order for the trajectory to be ejected. The final obliquity is finally
-        given by Eq.~\eqref{eq:qfaf}.
+        is ejected to zone I and $A_{\rm f} = -A_{\rm I}(\eta_2)$. Note that
+        $\eta_2 < \eta_{\rm \max, II}$ necessarily, as zone II must be shrinking
+        in order for the trajectory to be ejected. The final obliquity is
+        finally given by Eq.~\eqref{eq:qfaf}.
 
         Graphical inspection of Fig.~\ref{fig:eq_areas} shows that
-        $\pdil{A_{\rm II}}{\eta}$ and $\pdil{A_{\rm I}}{\eta}$ have opposite
-        signs for $\eta_2 < \eta_{\rm \max, II}$, and therefore the second II
-        $\to$ I transition is guaranteed. In summary, the III $\to$ II $\to$ I
-        track is permitted so long as the first transition is permitted, or
+        $\pdil{A_{\rm II}}{\eta}$ and $\pdil{A_{\rm III}}{\eta}$ have the same
+        signs for $\eta < \eta_{\rm \max, II}$, and therefore the complementary
+        II $\to$ I transition is guaranteed. In summary, the III $\to$ II $\to$
+        I track is permitted so long as the first transition is permitted, or
         $A_{\rm i} \in \s{A_{\rm II}\p{\eta_{\rm c}} , A_{\rm II, \max}}$.
 
     \item III $\to$ III --- This track is the trivial case where no separatrix
         encounter occurs, and $A$ is constant throughout the evolution ($A_{\rm
-        f} = A_{\rm i}$). This requires $A_{\rm i} > \max \p{A_{\rm I} + A_{\rm
-        II}}$. In the limit of $\eta_{\rm i} \to \infty$ and $ \eta_{\rm f} \to
-        0$ we have $\theta_{\rm f} = \theta_{\rm sd, i}$.
+        f} = A_{\rm i}$) except for a jump by $4\pi$ when crossing the South
+        pole ($\cos \theta = -1$) due to the coordinate singularity. This
+        requires $A_{\rm i} > \max \p{A_{\rm I} + A_{\rm II}}$. In the limit of
+        $\eta_{\rm i} \to \infty$ and $ \eta_{\rm f} \to 0$ we have $\theta_{\rm
+        f} = \theta_{\rm sd, i}$.
 
-        Note that for finite $\eta_{\rm i}$, the initial enclosed phase space
-        area for III $\to$ III trajectories is not given exactly by using
-        $\theta = \theta_{\rm sd, i}$ in Eq.~\eqref{eq:ai_qsd}. This is because
-        the initial orbits for these trajectories are better described as
-        librating about CS3 with angle of libration $\Delta \theta - \theta_{\rm
-        sd, i}$ rather than about CS2 with angle of libration $\theta_{\rm sd,
-        i}$. Here, $\Delta \theta$ is the angular distance between CS2 and CS3
-        and is not equal to $180^\circ$ except for $\eta_{\rm i} \to \infty$.
+        For finite $\eta_{\rm i}$, the initial enclosed phase space area for III
+        $\to$ III trajectories is not given exactly by using $\theta =
+        \theta_{\rm sd, i}$ in Eq.~\eqref{eq:ai_qsd}. This is because the
+        initial orbits for these trajectories are better described as librating
+        about CS3 with angle of libration $\Delta \theta - \theta_{\rm sd, i}$
+        rather than about CS2 with angle of libration $\theta_{\rm sd, i}$.
+        Here, $\Delta \theta$ is the angular distance between CS2 and CS3 and is
+        not equal to $180^\circ$ except when $\eta_{\rm i} \to \infty$.
 
-        Using such an orbit to evaluate Eq.~\eqref{eq:a_oint} for these initial
-        conditions yields the correct enclosed phase space area that predicts
-        the $\theta_{\rm f}$-$\p{\theta_{\rm sd, i}}$ mapping for the III $\to$
-        III track in the simulation results. This correction is responsible for
+        Using such an orbit to evaluate Eq.~\eqref{eq:a_oint} for the initial
+        conditions for the III $\to$ III track yields the correct enclosed phase
+        space area that predicts the $\theta_{\rm f}$-$\p{\theta_{\rm sd, i}}$
+        mapping in the simulation results. This correction is responsible for
         the small cusp at the very right ($\theta_{\rm sd, i} \to 180^\circ$) of
         all of Figs.~\ref{fig:ad_ensemble},~\ref{fig:3_ensemble_10_35},
         and~\ref{fig:3_ensemble_20_35}.
@@ -756,26 +758,24 @@ numerical results.
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo21.png}
 
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo21_subplots.png}
-    % Even though the enclosed area jumps at
-    % separatrix crossing, the resultant $A$ is still accurately predicted.
     \caption{An example of the II $\to$ I evolutionary track for $I = 5^\circ$
     and $\theta_{\rm sd, i} = 17.2^\circ$. Upper panel: The green line shows
     $\cos \theta$ as a function of $\eta$, obtained by numerical integration
     (with $\epsilon = 3 \times 10^{-4}$). Overlaid are the location of Cassini
-    State 2 (red) and the upper and lower bounds on the separatrix (black). Note
-    that the trajectory tracks CS2 to a final obliquity of $88.57^\circ$. The
-    black vertical dashed lines denote instants in the simulation  portrayed in
-    bottom panels. Middle panel: The enclosed separatrix area obtained by
-    integrating the simulated trajectory (blue dots) and adiabatic theory (red
-    line). Lower plot: Snapshots in $\p{\cos \theta, \phi}$ phase space of one
+    State 2 (red) and the upper and lower bounds on the separatrix (black). The
+    trajectory tracks CS2 to a final obliquity of $88.57^\circ$. The black
+    vertical dashed lines denote instants in the simulation  portrayed in bottom
+    panels. Middle panel: The enclosed separatrix area obtained by integrating
+    the simulated trajectory (blue dots) and adiabatic theory (red line). Lower
+    plot: Snapshots in $\p{\cos \theta, \phi}$ phase space of one
     circulation/libration cycle of the trajectory, shown in dark green with an
     arrow indicating direction. The snapshots correspond to the start of the
     simulation (a), the appearance of the separatrix (b), two panels depicting
     the separatrix crossing process (c-d), and a final snapshot at $\eta =
     10^{-3.5}$ (e). The separatricies at the beginning and end of the portrayed
-    orbit in each snapshot are shown in solid/dashed black lines respectively.
-    Also labeled is CS2 at the start of each orbit (red point). Finally, the
-    enclosed phase space area is shaded in grey ($A > 0$) and red ($A <
+    cycle in each snapshot are shown in solid/dashed black lines respectively.
+    Also labeled is CS2 at the start of each cycle (filled red circle). Finally,
+    the enclosed phase space area is shaded in grey ($A > 0$) and red ($A <
     0$).}\label{fig:ad_21}
 \end{figure}
 \begin{figure}
@@ -803,8 +803,8 @@ numerical results.
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo321_subplots.png}
     \caption{Same as Fig.~\ref{fig:ad_21} but for the III $\to$ II $\to$ I
     track. $\theta_{\rm sd, i} = 60^\circ$, and $\epsilon = 3.14 \times
-    10^{-4}$. Two separatrix crossings are shown [in panels (c-d) and (e-f)].
-    }\label{fig:ad_321}
+    10^{-4}$. Two separatrix crossings are shown, in panels (c-d) and
+    (e-f).}\label{fig:ad_321}
 \end{figure}
 
 \section{Nonadiabatic Effects}\label{s:nonad}
@@ -815,12 +815,12 @@ separatrix crossings). We now consider nonadiabatic effects.
 
 \subsection{Transition to Non-adiabaticity}\label{ss:transition}
 
-To illustrate the transition to non-adiabaticity, we carried out a suite of
+To illustrate the transition to nonadiabaticity, we carried out a suite of
 simulations for several values of $\epsilon$. The results for two of these
 values are shown in Figs.~\ref{fig:3_ensemble_05_25}
 and~\ref{fig:3_ensemble_05_15}.
 
-As $\epsilon$ increases (see Fig.~\ref{fig:3_ensemble_05_25}), non-adiabaticity
+As $\epsilon$ increases (see Fig.~\ref{fig:3_ensemble_05_25}), nonadiabaticity
 manifests as a larger scatter of final obliquities near the tracks predicted
 from adiabatic evolution. This scatter first sets in for trajectories starting
 in zone III, as the obliquity of CS2 at separatrix crossing is higher for these
@@ -832,9 +832,9 @@ satisfies the weak adiabaticity criterion [Eq.~\eqref{eq:ad_constr}], these
 large scatters take on band-like structures that seem to persist across all
 values of $\theta_{\rm sd, i}$. We attribute these to the separatrix crossing
 process becoming sensitive to the \emph{phase} of the final
-libration/circulation orbit at the crossing. This suggests that $\eta$
+libration/circulation cycle at the crossing. This suggests that $\eta$
 changes substantially over the separatrix crossing orbit and is clearly a
-non-adiabatic effect. The weak adiabaticity criterion permits this, as it only
+nonadiabatic effect. The weak adiabaticity criterion permits this, as it only
 compares the rate of change of $\eta$ to dynamics far from the separatrix.
 \begin{figure}
     \centering
@@ -850,70 +850,73 @@ compares the rate of change of $\eta$ to dynamics far from the separatrix.
     \caption{Same as Fig.~\ref{fig:3_ensemble_05_25} but for $\epsilon =
     10^{-1.5}$. Some small resemblance to the evolutionary tracks remains, and
     the deviations appear to have a banded structure. This can be attributed to
-    non-adiabaticity ``freezing-in'' the phase of the obliquity variations over
-    the final libration/circulation orbit prior to separatrix
+    nonadiabaticity ``freezing-in'' the phase of the obliquity variations over
+    the final libration/circulation cycle prior to separatrix
     crossing.}\label{fig:3_ensemble_05_15}
 \end{figure}
 
 A sample trajectory following in the style of Fig.~\ref{fig:ad_21} but for
 $\epsilon = 0.3$ (violating even weak adiabaticity) is provided in
 Fig.~\ref{fig:nonad_traj}. It is clear that the trajectory does not track the
-level curves of the Hamiltonian during each individual snapshot. This manifests
-when CS2 migrates more quickly than the trajectory can librate about CS2, a
-violation of the weak adiabaticity criterion.
+level curves of the Hamiltonian during each individual snapshot. This results
+from CS2 migrating more quickly than the trajectory can librate about CS2,
+violating the weak adiabaticity criterion.
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo_nonad.png}
 
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo_nonad_subplots.png}
-    \caption{Same as Fig.~\ref{fig:ad_21} but for a non-adiabatic $\epsilon =
-    0.3$. In the top panel of the top plot, it is evident that the libration
-    cycle about CS2 is unable to keep up with the swift motion of CS2 as $\eta$
-    changes, decreasing the obliquity jump. In the bottom plot, we can see that
-    individual orbits do not lie along level curves of the Hamiltonian, as the
-    Hamiltonian phase space changes quickly compared to the period of
-    circulation cycles.}\label{fig:nonad_traj}
+    \caption{Same as Fig.~\ref{fig:ad_21} but for a nonadiabatic $\epsilon =
+    0.3$. In the top panel, it is evident that the libration cycle about CS2 is
+    unable to keep up with the swift migration of CS2 as $\eta$ changes,
+    decreasing the obliquity excitation compared to the adiabatic simulation. In
+    the middle panel, the enclosed phase space area is evidently not conserved.
+    In the bottom panel, we can see that individual orbits do not lie along
+    level curves of the Hamiltonian, as the Hamiltonian phase space changes
+    quickly compared to the period of circulation cycles.}\label{fig:nonad_traj}
 \end{figure}
 
 \subsection{Non-adiabatic Evolution Outcomes}
 
 We now consider the general problem of how a state evolves when $\eta$ changes
-non-adiabatically [i.e.\ $\epsilon \gtrsim \p{\alpha t_{\rm d}}^{-1}$, see
+nonadiabatically [i.e.\ $\epsilon \gtrsim \p{\alpha t_{\rm d}}^{-1}$, see
 Eq.~\eqref{eq:ad_constr}]. In Appendix~\ref{s:nonad_app}, we derive a formula
 for the final obliquity $\theta_{\rm f}$ assuming no initial spin-disk
 misalignment:
 \begin{equation}
-    \theta_{\rm f}\p{\theta_{\rm sd, i} = 0} = \sqrt{\frac{2\pi}{\epsilon}} \tan
+    \p{\theta_{\rm f}}_{\theta_{\rm sd, i} = 0} = \sqrt{\frac{2\pi}{\epsilon}} \tan
         I\cos I.\label{eq:nonad_q_f}
 \end{equation}
 
-An intuitive guess at generalizing this assumes that any nonzero $\theta_{\rm
-sd, i}$ manifests as obliquity variations as $\uv{s}$ librates about
-$\uv{l}_{\rm d}$. These can be accounted for by simply allowing the final
-obliquity to vary over the same range as the initial obliquity, or,
+We can generalize this to nonzero $\theta_{\rm sd, i}$ by assuming the amplitude
+of libration of $\uv{s}$ about $\uv{l}_{\rm d}$ ($\theta_{\rm sd, i}$ namely)
+is equal to the range of final obliquities when the disk dissipates quickly.
+Intuitively, this corresponds to ``freezing in'' the variations in initial
+obliquity over a single libration cycle to the final obliquity. We obtain
 \begin{equation}
-    \theta_{\rm f}\p{\theta_{\rm sd, i}} - \sqrt{\frac{2\pi}{\epsilon}} \tan
+    \theta_{\rm f} - \sqrt{\frac{2\pi}{\epsilon}} \tan
         I\cos I\in \s{-\theta_{\rm sd, i}, \theta_{\rm sd,i}}
         .\label{eq:nonad_q_f_dist}
 \end{equation}
-In Fig.~\ref{fig:nonad_3_ensemeble}, we show that this proves to be remarkably
-accurate when taking $\epsilon = 0.3$.
+In Fig.~\ref{fig:nonad_3_ensemeble}, we show that this agrees with numerical
+simulations for $\epsilon = 0.3$.
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3_ensemble_05_05.png}
     \caption{$\theta_{\rm  f}\p{\theta_{\rm sd, i}}$ at $\epsilon = 0.3$, firmly
-    in the non-adiabatic regime. Note the clear double-valuedeness has
-    disappeared, as have distinct dynamical tracks. The red dotted line presents
-    the analytical prediction given by
+    in the nonadiabatic regime. The clear double-valuedeness has disappeared,
+    as have distinct dynamical tracks. The red dotted line presents the
+    analytical prediction given by
     Eq.~\eqref{eq:nonad_q_f_dist}.}\label{fig:nonad_3_ensemeble}
 \end{figure}
 
-The agreement of Eq.~\eqref{eq:nonad_q_f} at fixed I for varying $\epsilon$ is
-shown in Fig.~\ref{fig:nonad_3_scan}. Note that $\epsilon \to 0$ recovers the
-adiabatic regime. The deviation of $\theta_{\rm f}$ from the analytical
-prediction within the adiabatic regime is indeed due to adiabatic effects
-becoming dominant; compare to Fig.~\ref{fig:nonad_3_scan_20} where little
-deviation is observed until $\theta_{\rm f} \approx 90^\circ$.
+The agreement of Eq.~\eqref{eq:nonad_q_f} at fixed $I$ for varying $\epsilon$ is
+shown in Fig.~\ref{fig:nonad_3_scan}. In the limit $\epsilon \to 0$,
+$\theta_{\rm f} = 90^\circ$, in agreement with the adiabatic prediction (e.g.\
+Fig.~\ref{fig:ad_ensemble}). The deviation of $\theta_{\rm f}$ from the
+analytical prediction within the adiabatic regime is indeed due to adiabatic
+effects becoming dominant; compare to Fig.~\ref{fig:nonad_3_scan_20} where
+little deviation is observed until $\theta_{\rm f} \approx 90^\circ$.
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3scan.png}
@@ -922,56 +925,55 @@ deviation is observed until $\theta_{\rm f} \approx 90^\circ$.
     line, corresponds to the adiabatic regime estimated by
     Eq.~\eqref{eq:ad_constr}. Overplotted in the red line is
     Eq.~\eqref{eq:nonad_q_f}, which is in good agreement for $\epsilon \gtrsim
-    0.1$ the non-adiabatic regime, while $\theta_{\rm f} \approx 90^\circ$ in
+    0.1$ the nonadiabatic regime, while $\theta_{\rm f} \approx 90^\circ$ in
     the adiabatic regime.}\label{fig:nonad_3_scan}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3scan_20.png}
     \caption{Same as Fig.~\ref{fig:nonad_3_scan} but for $I=20^\circ$. Note that
-    Eq.~\eqref{eq:nonad_q_f} is accurate until $\theta_{\rm f} \approx 90^\circ$,
-    which is much closer to the transition to adiabaticity. Comparison with
-    Fig.~\ref{fig:nonad_3_scan} suggests that the breakdown of
-    Eq.~\eqref{eq:nonad_q_f} indeed is caused by the breakdown of the
-    non-adiabatic assumption.}\label{fig:nonad_3_scan_20}
+    Eq.~\eqref{eq:nonad_q_f} is much higher final obliquities than
+    in for $I = 5^\circ$. This suggests the breakdown of
+    Eq.~\eqref{eq:nonad_q_f} is caused by the breakdown of the nonadiabatic
+    assumption rather than proximity to $\theta_f =
+    90^\circ$.}\label{fig:nonad_3_scan_20}
 \end{figure}
 
 \section{Summary and Discussion}\label{s:disc}
 
 In this paper, we have studied the excitation of planetary obliquities by a
-dissipating protoplanetary disk for arbitrary initial misalignment angles. This
-is described by transfer function $\theta_{\rm f}\p{\theta_{\rm sd, i}}$, where
-$\theta_{\rm f}$ is the final planetary obliquity and $\theta_{\rm sd, i}$ is
-the initial misalignment angle between the planet's spin axis and the disk's
+dissipating protoplanetary disk for arbitrary initial misalignment angles. We
+present our result as a mapping from $\theta_{\rm sd, i}$ to $\theta_{\rm f}$,
+where $\theta_{\rm f}$ is the final planetary obliquity and $\theta_{\rm sd, i}$
+is the initial misalignment angle between the planet's spin axis and the disk's
 orbital angular momentum. We have presented analytical results that capture the
-behavior of $\theta_{\rm f}\p{\theta_{\rm sd, i}}$ in both the adiabatic and
-nonadiabatic
-limits:
+behavior of this mapping in both the adiabatic and nonadiabatic limits:
 \begin{enumerate}
     \item In the adiabatic limit, we are able to reproduce the known result
-        $\theta(0) \approx 90^\circ$ \citep{millholland_disk}. We demonstrate
-        via numerical simulation the dual-valued behavior of $\theta$ as nonzero
-        values of $\theta_{\rm sd, i}$ are permitted (see
-        Fig.~\ref{fig:ad_ensemble}). We are able to capture both the exact final
-        $\theta$ values and the probabilities of observing each value via
-        careful accounting of enclosed phase space area and separatrix crossing
-        dynamics \citep{henrard1982,henrard1987}.
+        $\theta_{\rm f} = 90^\circ$ for $\theta_{\rm sd, i} \approx 0$
+        \citep{millholland_disk}. We demonstrate via numerical simulation and
+        analytical argument the dual-valued behavior of $\theta_{\rm f}$ as
+        nonzero initial spin-disk misalignment angles $\theta_{\rm sd, i}$ are
+        permitted (see Fig.~\ref{fig:ad_ensemble}). We are able to capture both
+        the exact final $\theta_{\rm f}$ values and the probabilities of
+        observing each value via careful accounting of enclosed phase space area
+        and separatrix crossing dynamics.
 
     \item As the system transitions more abruptly, the adiabatic prediction
-        breaks down when criterion Eq.~\eqref{eq:ad_constr} is violated. We find a
-        broad range of $\theta$ values can be excited for a given $\theta_{\rm
-        sd, i}$ (see Fig.~\ref{fig:nonad_3_ensemeble}). We provide an analytical
-        expression of the bounds on $\theta_{\rm f}\p{\theta_{\rm sd, i}}$ in
+        breaks down when criterion Eq.~\eqref{eq:ad_constr} is violated. We find
+        a broad range of final obliquities can be reached for a given
+        $\theta_{\rm sd, i}$ (see Fig.~\ref{fig:nonad_3_ensemeble}). We provide
+        an analytical expression of the bounds on $\theta_{\rm f}$ in
         Eq.~\eqref{eq:nonad_q_f_dist}.
 \end{enumerate}
 
-It is of interest to note the leading order behavior of $\theta$ in the small
-$\theta_{\rm sd, i}$ limit given by Eq.~\eqref{eq:qf_21_approx} and
-Eq.~\eqref{eq:qf_23_approx}. Therefore, if $\theta_{\rm sd, i}$ is generally
-small, as might be expected for planets that do not experience strong collisions
-or scattering, resonance capture induced by an adiabatically dissipating
-protoplanetary disk is expected to significantly narrow the final $\theta$
-spread compared to the initial $\theta_{\rm sd, i}$ spread.
+It is of interest to note the leading order dependence of $\theta_{\rm f}$ on
+$\theta_{\rm sd, i}$ [given by Eq.~\eqref{eq:qf_21_approx} and
+Eq.~\eqref{eq:qf_23_approx}] is second order. Therefore, if $\theta_{\rm sd, i}$
+is generally small, as might be expected for planets that do not experience
+strong collisions or scattering, resonance passage induced by an adiabatically
+dissipating protoplanetary disk is expected to significantly narrow the final
+$\theta_{\rm f}$ spread compared to the initial $\theta_{\rm sd, i}$ spread.
 
 \bibliographystyle{mnras}
 \bibliography{Su_sep_cross}
@@ -982,24 +984,22 @@ spread compared to the initial $\theta_{\rm sd, i}$ spread.
 
 \section{Cassini State Local Dynamics}\label{s:local_dynamics}
 
-In this section, we perform local linearizations about the CSs to determine the
-stability of each CS and, when stable, the local libration frequencies.
+In this section, we linearize the equations of motion near each CS\@. We
+determine the stability of each CS and the local libration frequencies of the
+stable CSs.
 
 \subsection{Canonical Equations of Motion and Solutions}
 
 For analytical work, we adopt spherical coordinate system where $\uv{l} =
-\uv{z}$ and $\theta, \phi$ are the polar and azimuthal angle of $\uv{s}$. By
-convention, we choose $\uv{l}_{\rm z}$ at coordinates $\theta = I, \phi = \pi$.
-Note that $\p{\cos \theta, \phi}$ form a canonically conjugate pair of variables
-describing $\uv{s}$. To derive equations of motion for these canonical
-coordinates, we rewrite Eq.~\eqref{eq:H}
-\begin{equation}
-    \mathcal{H}\p{\theta, \phi} = -\frac{1}{2}\cos^2\theta
-            + \eta \p{\cos \theta \cos I - \sin I \sin \theta \cos \phi}.
-\end{equation}
+\uv{z}$ and $\theta, \phi$ are the polar and azimuthal angle of $\uv{s}$. We
+choose $\uv{l}_{\rm z}$ at coordinates $\theta = I, \phi = \pi$ (see
+Figs.~\ref{fig:cs_vecs} and~\ref{fig:cs_locs}). Following modern mathematical
+convention, we will use
+$\theta \in [0, \pi)$% chktex 9
+and $\phi \in [0, 2\pi)$.% chktex 9
 
-The equations of motion follow by taking derivatives of $\mathcal{H}$ and agree
-with Eq.~\eqref{eq:dsdt_base}:
+The equations of motion in coordinates $\p{\phi, \cos \theta}$ follow by
+applying Hamilton's equations to the Hamiltonian [Eq.~\eqref{eq:H}]:
 \begin{subequations}\label{se:H_eom}
     \begin{align}
         \rd{\phi}{t} = \pd{\mathcal{H}}{(\cos\theta)}
@@ -1010,8 +1010,9 @@ with Eq.~\eqref{eq:dsdt_base}:
                 \label{seq:H_eom_mu_t}
     \end{align}
 \end{subequations}
-While these equations are numerically stiff owing to the $\cot\theta$ term, they
-are the most intuitive description for analytical work.
+These agree with Eq.~\eqref{eq:dsdt_base}. While these equations are numerically
+stiff owing to the $\cot\theta$ term, they are the most intuitive description
+for analytical work.
 
 We next develop some approximate forms for the CS obliquities that will be
 useful for guiding later discussion. Denote $\theta_{\rm cs}$ the obliquity of
@@ -1049,9 +1050,9 @@ some Cassini State (fixed point of Eqs.~\eqref{se:H_eom}).
         and CS3, while in the limit $\eta \gg \eta_{\rm c}$ these two solutions
         describe CS2 and CS3.
 \end{enumerate}
-Note that the $\theta_{\rm cs}$ values derived here do not follow the same
-convention as Fig.~\ref{fig:cs_locs}, because the previous $\theta$ conventions
-presume $\cos \phi = -1$ for all states and let $-\pi \leq \theta < \pi$.
+Again, the $\theta_{\rm cs}$ values derived here do not follow the same
+convention as Fig.~\ref{fig:cs_locs} due to our different $\theta, \phi$
+convention.
 
 \subsection{Stability and Frequency of Local Oscillations}\label{ss:eigens}
 
@@ -1088,19 +1089,13 @@ lib}}$.
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/2_lambdas.png}
-    \caption{Plot of $\lambda^2$ per Eq.~\eqref{eq:lambda2} evaluated at each
-    of the Cassini States. The vertical axis is rescaled to limit the vertical
-    extent of the plot. Note that CS4 is a saddle point ($\lambda^2 > 0$) when
-    it exists while all others are centers ($\lambda^2 < 0$). The horizontal
-    dashed line is $\lambda^2 = 0$ the instability boundary while $\eta_{\rm c}$ is
-    labered in the vertical dashed line.}\label{fig:lambda2}
+    \caption{$\lambda^2$, given by Eq.~\eqref{eq:lambda2}, evaluated at each of
+    the Cassini States. The vertical axis is rescaled for clarity. Note that CS4
+    is a saddle point ($\lambda^2 > 0$) when it exists while all others are
+    stable ($\lambda^2 < 0$). The horizontal dashed line is the instability
+    boundary $\lambda^2 = 0$ while the vertical dashed line labels $\eta =
+    \eta_{\rm c}$.}\label{fig:lambda2}
 \end{figure}
-
-Note that our expression is somewhat more complicated than in existing
-literature \citep{millholland_disk,ward2004II}. This seems to stem from the
-approximation $\theta \gg I$ made in deriving Equation 3 of
-\citet{ward2004II}. This is invalid in the $\eta \gtrsim \eta_{\rm c}$ limit for
-CS2, since $\theta_{\rm cs} \approx I$ in this regime as was shown above.
 
 \section{Approximate Adiabatic Evolution}\label{s:ad_approx}
 
@@ -1116,9 +1111,9 @@ coordinates for Cassini State 4:
     \cos \theta_4 \approx \frac{\mu \cos I}{1 - \eta \sin I}.
 \end{equation}
 Note that $\phi_4 = 0$. Then, the separatrix is the level curve of the
-Hamiltonian intersecting CS4, so it satisfies $\mathcal{H}\p{\theta_{\rm
-sep}(\phi), \phi} = \mathcal{H}\p{\theta_4, \phi_4}$. This solves to be
-approximately
+Hamiltonian intersecting CS4, so it satisfies $\mathcal{H}\p{\phi, \theta_{\rm
+sep}(\phi)} = \mathcal{H}\p{\phi_4, \theta_4}$. To leading order in $\eta$, this
+has simple expression
 \begin{equation}
     \cos \theta_{\rm sep}(\phi) \approx \cos \theta_4 \pm
         \sqrt{2\eta \sin I\p{1 - \cos \phi}}.
@@ -1192,8 +1187,7 @@ I$). Then let's examine the evolution of quantity $S = s_{\rm x} + is_{\rm y}$ i
 \begin{equation}
     \rd{S}{t} = i\p{\eta\cos I - 1}S - i \eta \sin I\cos I.\label{eq:nonad_ode}
 \end{equation}
-Now this is a first-order ODE in $S$, albeit complex, which can be solved via
-an integrating factor
+This can be solved via an integrating factor
 \begin{align}
     \Phi(t) &\equiv \int_{-\infty}^t \p{1 - \eta(t') \cos I}
         \mathrm{d}t',\\
@@ -1201,12 +1195,11 @@ an integrating factor
         &= \int\limits_{-\infty}^t e^{i\Phi(t')}
             \p{-i\eta(t')\sin I\cos I}\;\mathrm{d}t'\label{eq:nonad_int}
 \end{align}
-We now invoke stationary phase, asserting that $e^{i\Phi(t)}$ is dominated by
-its contribution where $\dot{\Phi} = 0$ (the phases add constructively). But
-$\dot{\Phi} = 0$ is where $1 - \eta\cos I = 0$, or where $\eta\cos I = 1$.
-
-Now at this point, let's choose $\eta(0) = 1/\cos I, \at{\rd{\eta}{t}}_{t=0} =
--\epsilon/\cos I$. Then we expand near $t = 0$ so
+We now invoke the stationary phase approximation, asserting that $e^{i\Phi(t)}$
+is dominated by its contribution where $\dot{\Phi} = 0$ (the phases add
+constructively). This occurs where where $1 - \eta\cos I = 0$, or where
+$\eta\cos I = 1$. Choosing initial conditions $\eta(0) = 1/\cos I,
+\at{\rd{\eta}{t}}_{t=0} = -\epsilon/\cos I$, we can then expand near $t = 0$:
 \begin{align}
     \Phi(t) &\approx \Phi(0) + \frac{1}{2}\ddot{\Phi}t^2,\\
         &\approx \Phi(0) + \frac{1}{2}\epsilon t^2,\\
@@ -1217,7 +1210,7 @@ Now at this point, let's choose $\eta(0) = 1/\cos I, \at{\rd{\eta}{t}}_{t=0} =
             \frac{1}{\cos I}e^{i\Phi(0)}\int\limits_{-\infty}^\infty
                 \exp\s{\frac{i}{2}\epsilon t^2}\;\mathrm{d}t
                 & t > 0.
-        \end{cases}\\
+        \end{cases}\label{eq:app_phase}\\
     \int\limits_{-\infty}^\infty
                 \exp\s{\frac{i}{2}\epsilon t^2}\;\mathrm{d}t
         &= \int\limits_{-\infty}^\infty e^{-\tau^2}\;\mathrm{d}\tau
@@ -1225,10 +1218,11 @@ Now at this point, let's choose $\eta(0) = 1/\cos I, \at{\rd{\eta}{t}}_{t=0} =
         &= \sqrt{\frac{2\pi}{i\epsilon}}.
 \end{align}
 
-Now, it should be noted that $e^{i\Phi}$ is just a phase; all we really care
-about is $\abs{S} = \sqrt{1 - s_{\rm z}^2}$. Thus, taking the absolute value of both
-sides of Eq.~\eqref{eq:nonad_int}, assuming $S\p{-\infty} \ll S\p{+\infty}$ and
-noting $\theta_{\rm f} \approx \abs{S}(+\infty)$, we obtain
+Now, it should be noted that $e^{i\Phi}$ in Eq.~\ref{eq:app_phase} is just a
+complex phase, and the obliquity excitation depends only on $\abs{S} = \sqrt{1 -
+s_{\rm z}^2}$. Thus, taking the absolute value of both sides of
+Eq.~\eqref{eq:nonad_int}, assuming $S\p{-\infty} \ll S\p{+\infty}$ and noting
+$\theta_{\rm f} \approx \abs{S}(+\infty)$, we obtain
 \begin{equation}
     \theta_{\rm f} = \tan I\cos I\sqrt{\frac{2\pi}{\epsilon}}.
         \label{eq:nonad_dong}
@@ -1238,29 +1232,31 @@ It should be noted that this result breaks down in two ways:
 \begin{enumerate}
     \item If the evolution of $\uv{s}$ is adiabatic, then it is invalid to
         assume $s_{\rm z}$ is approximately constant in time, as many
-        circulation/libration orbits can ensue. Only when the driving is
-        sufficiently impulsive that the evolution dominates the change in
-        $s_{\rm z}$
-        is this calculation valid.
+        circulation/libration orbits can ensue. We can understand this as
+        requiring $\dot{\eta}$ be sufficiently impulsive that its response
+        dominate the adjustment in $s_{\rm z}$. This is supported by analysis of
+        Figs.~\ref{fig:nonad_3_scan} and~\ref{fig:nonad_3_scan}.
 
-    \item If $\abs{S\p{-\infty}} \sim \abs{S\p{+\infty}}$, then taking the
+    \item If $\abs{S\p{-\infty}} \gtrsim \abs{S\p{+\infty}}$, then taking the
         absolute value of both sides of Eq.~\eqref{eq:nonad_int} no longer
-        simply yields $\abs{S}\p{+\infty}$. This corresponds to the extreme
+        simply reduces to $\abs{S}\p{+\infty}$. This corresponds to the extreme
         limit where $\eta$ changes so suddenly that $\uv{s}$ has no time to
-        respond and remains roughly unchanged as $\eta \to 0$. This is
-        accommodated by noting $\theta_{\rm f} \geq \theta_{\rm sd, i}$, so the
-        correct estimate can be roughly amended
+        respond and remains roughly unchanged as $\eta \to 0$. However,
+        regardless of how quickly $\eta$ evolves, the final obliquity must
+        satisfy $\theta_{\rm f} \geq \theta_{\rm sd, i}$, so the correct
+        estimate can be roughly amended
         \begin{equation}
             \theta_{\rm f} \simeq \min\p{\tan I\cos
                 I\sqrt{\frac{2\pi}{\epsilon}}, \theta_{\rm sd, i}}.
         \end{equation}
 \end{enumerate}
 
-We note the resemblance to the well-known eccentricity excitation of an asteroid
-sweeping through a secular resonance \citep{malhotra_calc}. Both results have
-the same scaling with repsect to the rate of change of secular frequency,
-$\epsilon$ in our notation and $\lambda$ in theirs.
+Finally, we note the resemblance of this nonadiabatic result to the well-known
+eccentricity excitation of an asteroid sweeping through a secular resonance
+\citep{malhotra_calc}. Both results have the same scaling with repsect to the
+rate of change of secular frequency, $\epsilon$ in our notation and $\lambda$ in
+theirs.
 
 \bsp
 \label{lastpage} % chktex 24
-\end{document}
+\end{document} % chktex 17

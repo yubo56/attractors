@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=20)
+plt.rc('xtick', direction='in', top=True, bottom=True)
+plt.rc('ytick', direction='in', left=True, right=True)
 LW=3.5
 
 def get_etac(I):
@@ -69,8 +71,8 @@ def plot_cs(I=np.radians(5)):
     plt.semilogx(etas, np.degrees(cs_vals[1]), 'r', lw=LW, label='2')
     plt.semilogx(etas, np.degrees(cs_vals[2]), 'm', lw=LW, label='3')
     plt.semilogx(etas_four, np.degrees(cs_vals[3]), 'c', lw=LW, label='4')
-    plt.xlabel(r'$\eta$')
-    plt.ylabel(r'$\theta$ (deg)')
+    plt.xlabel(r'$\eta$', fontsize=22)
+    plt.ylabel(r'$\theta$ (deg)', fontsize=22)
     plt.xlim([min(etas), max(etas)])
     plt.yticks([-180 + np.degrees(I),
                 -90,
@@ -130,11 +132,12 @@ def plot_eigens(I=np.radians(5)):
     # plt.yscale('symlog', linthreshy=1e-5)
     plt.xlabel(r'$\eta$')
     plt.ylabel(r'$\lambda^2/ (1 + \eta^2)$')
-    plt.legend(loc='lower right')
+    plt.legend(loc='upper left', fontsize=14,
+               bbox_to_anchor=(0.5, 0.7))
     plt.xlim([min(etas), max(etas)])
     plt.axhline(0, lw=0.8, c='k', ls='dashed')
     plt.axvline(etac, c='k', lw='0.8', ls='dashed')
-    plt.title(r'$I = %d^\circ, \eta_c = %.3f$' % (np.degrees(I), etac))
+    plt.title(r'$I = %d^\circ$' % np.degrees(I))
     plt.tight_layout()
     plt.savefig('2_lambdas.png', dpi=400)
     plt.clf()
@@ -211,5 +214,5 @@ def plot_3vec():
 
 if __name__ == '__main__':
     # plot_cs(np.radians(5))
-    # plot_eigens(np.radians(5))
-    plot_3vec()
+    plot_eigens(np.radians(5))
+    # plot_3vec()

@@ -94,7 +94,7 @@ def get_t_vals(t_i, t_f, int_n_pts=401):
     # first/last elements overlap
     return np.concatenate((t1, t2[1: ]))
 
-def get_areas_2(ret):
+def get_areas_2(ret, plot_type):
     '''
     not get_areas in utils since this that assumes start -> ejection from sep,
     but really assumes a very full featured trajectory
@@ -116,42 +116,61 @@ def get_areas_2(ret):
     # can start either circulating or librating, but always eventually
     # transitions to librating about CS2, and ends up circulating again...
 
-    # if starts circulating, integrate (1 - mu) dphi for continuity... so many
-    # cases
-    for t_0_i, t_0_f, t_pi_f in zip(t_0, t_0[1: ], t_pi[1: ]):
-        if t_0_f < t_pi_f: # circulating
-            t_vals = get_t_vals(t_0_i, t_0_f)
-            t_areas.append(t_0_i)
-            t_areas_f.append(t_0_f)
+    # note that for plot_type = '33', the first and third loops are the relevant
+    # ones, since the first loop is *librating*. We just code this
+    # separately...
+    if plot_type != '33':
+        # if starts circulating, integrate (1 - mu) dphi for continuity... so
+        # many cases
+        for t_0_i, t_0_f, t_pi_f in zip(t_0, t_0[1: ], t_pi[1: ]):
+            if t_0_f < t_pi_f: # circulating
+                t_vals = get_t_vals(t_0_i, t_0_f)
+                t_areas.append(t_0_i)
+                t_areas_f.append(t_0_f)
+
+                x, y, z, _ = ret.sol(t_vals)
+                q, phi = to_ang(x, y, z)
+                dphi = np.gradient(np.unwrap(phi))
+                areas.append(np.sum((1 - np.cos(q)) * dphi))
+            else:
+                break
+        # truncate list of times during initial circulation
+        t_end_circ = t_0_f
+        if t_end_circ >= t_0[-1]: # pure circulating traj?
+            return np.inf, np.inf, np.array(t_areas), np.array(t_areas_f), np.array(areas)
+        if len(areas):
+            t_0 = t_0[np.where(t_0 >= t_end_circ)[0][0]: ]
+            t_pi = t_pi[np.where(t_pi >= t_end_circ)[0][0]: ]
+        # now solve librating period (except for 3-3, which is now circulating
+        t_end_lib = max(t_pi) if len(t_0) == 0 else t_0[0]
+        t_pi_lib = t_pi[np.where(t_pi < t_end_lib)[0]]
+        for t_pi_i, t_pi_f in zip(t_pi_lib[ :-2:2], t_pi_lib[2::2]):
+            t_vals = get_t_vals(t_pi_i, t_pi_f)
+            t_areas.append(t_pi_i)
+            t_areas_f.append(t_pi_f)
 
             x, y, z, _ = ret.sol(t_vals)
             q, phi = to_ang(x, y, z)
             dphi = np.gradient(np.unwrap(phi))
             areas.append(np.sum((1 - np.cos(q)) * dphi))
-        else:
-            break
-    # truncate list of times during initial circulation
-    t_end_circ = t_pi_f
-    if t_end_circ >= t_0[-1]: # pure circulating traj?
-        return np.inf, np.inf, np.array(t_areas), np.array(t_areas_f), np.array(areas)
-    if len(areas):
-        t_0 = t_0[np.where(t_0 >= t_end_circ)[0][0]: ]
-        t_pi = t_pi[np.where(t_pi >= t_end_circ)[0][0]: ]
-    # now solve librating period
-    t_end_lib = max(t_pi) if len(t_0) == 0 else t_0[0]
-    t_pi_lib = t_pi[np.where(t_pi < t_end_lib)[0]]
-    for t_pi_i, t_pi_f in zip(t_pi_lib[ :-2:2], t_pi_lib[2::2]):
-        t_vals = get_t_vals(t_pi_i, t_pi_f)
-        t_areas.append(t_pi_i)
-        t_areas_f.append(t_pi_f)
+    else: # 33 case
+        t_end_lib = t_pi[0]
+        t_end_circ = t_end_lib
+        for t_0_i, t_0_f in zip(t_0, t_0[1: ]):
+            if t_0_f < t_end_lib: # librating
+                t_vals = get_t_vals(t_0_i, t_0_f)
+                t_areas.append(t_0_i)
+                t_areas_f.append(t_0_f)
 
-        x, y, z, _ = ret.sol(t_vals)
-        q, phi = to_ang(x, y, z)
-        dphi = np.gradient(np.unwrap(phi))
-        areas.append(np.sum((1 - np.cos(q)) * dphi))
+                x, y, z, _ = ret.sol(t_vals)
+                q, phi = to_ang(x, y, z)
+                dphi = np.gradient(np.unwrap(phi))
+                areas.append(np.sum((1 - np.cos(q)) * dphi))
+        t_0 = t_0[np.where(t_0 >= t_end_circ)[0][0]: ]
     # final circ period; note that t_0[0] < t_pi_fin[0] again
     t_pi_fin = t_pi[np.where(t_pi > t_end_lib)[0]]
-    for t_0_i, t_0_f, t_pi_f in zip(t_0, t_0[1: ], t_pi_fin[1: ]):
+    # for t_0_i, t_0_f, t_pi_f in zip(t_0, t_0[1: ], t_pi_fin[1: ]):
+    for t_0_i, t_0_f in zip(t_0, t_0[1: ]):
         t_vals = get_t_vals(t_0_i, t_0_f)
         t_areas.append(t_0_i)
         t_areas_f.append(t_0_f)
@@ -171,12 +190,14 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     plot_type controls which of the final area predictions to overlay (default
         none)
     '''
+    snapshot_labels=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'] # add if need
     eta_c = get_etac(I)
     y0 = [*to_cart(q0 + dq, 0), eta0]
     PKL_FN = '%s.pkl' % filename
     if not os.path.exists(PKL_FN):
         ret = solve_ic_base(I, eps, y0, tf, events=events)
-        t_end_lib, t_end_circ, t_areas, t_areas_f, areas = get_areas_2(ret)
+        t_end_lib, t_end_circ, t_areas, t_areas_f, areas =\
+            get_areas_2(ret, plot_type=plot_type)
         with open(PKL_FN, 'wb') as f:
             pickle.dump((ret, t_end_lib, t_end_circ,
                          t_areas, t_areas_f, areas), f)
@@ -205,6 +226,8 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
         plot_idxs = sorted([1, cross_idx, *sep_idxs,
                             *([i + 1 for i in sep_idxs])]) + [-2]
 
+    if plot_type == 'nonad':
+        plot_idxs[0] = 0 # everything is too close together in nonad
     fig, (ax1, ax3) = plt.subplots(2, 1,
                             sharex=True,
                             figsize=(6, 5),
@@ -345,8 +368,42 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
                            ls='dashed')
 
     # flip axes
-    xlims = ax3.set_xlim()
+    xlims = ax3.get_xlim()
     xlims2 = ax3.set_xlim(xlims[::-1])
+
+    # finally, if plotting snapshots (plot_type != 33), labels on top of top
+    # plot
+    if plot_type != '33':
+        ax_label = ax1.twiny()
+        ax_label.set_xlim(ax1.get_xlim())
+        ax_label.set_xscale('log')
+        label_xticks = []
+        label_xticklabels = []
+        for idx, plot_idx in enumerate(plot_idxs):
+            label_xticks.append(eta_areas[plot_idx])
+            label_xticklabels.append('(%s)' % snapshot_labels[idx])
+
+        # space out some of the closer-spaced labels
+        # 321 is a helluva place
+        if plot_type != '321':
+            min_width = 2
+            for i in range(len(label_xticks) - 1):
+                if label_xticks[i] / label_xticks[i + 1] < min_width:
+                    middle = np.sqrt(label_xticks[i + 1] * label_xticks[i])
+                    label_xticks[i] = middle * np.sqrt(min_width)
+                    label_xticks[i + 1] = middle / np.sqrt(min_width)
+        else:
+            # consolidate labels
+            label_xticklabels = ['(a)', '(b-d)', '(e-f)', '(g)']
+            mean = np.product(label_xticks[1:6])**(1 / 5)
+            min_width = 3.5
+            label_xticks = [label_xticks[0],
+                            mean * np.sqrt(min_width),
+                            mean / np.sqrt(min_width),
+                            label_xticks[6]]
+        ax_label.set_xticks(label_xticks)
+        ax_label.tick_params(axis='x', labelsize=14, top=False)
+        ax_label.set_xticklabels(label_xticklabels)
 
     ax3.xaxis.set_tick_params(pad=7)
     plt.tight_layout()
@@ -386,7 +443,6 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
         ax.plot(phi_uw, np.cos(q_vals), 'darkgreen', lw=ms)
         vals_arr.append((t_vals, q_vals, phi_uw))
 
-    plot_labels=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'] # add if need
     for idx, (plot_idx, ax, vals) in\
             enumerate(zip(plot_idxs, axs, vals_arr)):
         t_vals, q_vals, phi_uw = vals
@@ -431,14 +487,24 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
             ax.fill_between(phi_half2, mu_half1, mu_half2,
                             color='0.5', alpha=my_alpha)
 
-        # overplot an arrow to show direction (at end so we know lims)
-        arrow_idx = len(t_vals) // 2
+        # overplot an arrow to show direction (placed at end of code so we know
+        # lims). Plot the arrow as close to phi=pi as possible (some librating
+        # trajectories start at phi=pi though, so truncate endpoints)
+        arrow_idx = np.argmin(np.abs(phi_uw[2:-2] - np.pi))
         width_base = ylims[1] - ylims[0]
-        ax.arrow(phi_uw[arrow_idx], np.cos(q_vals[arrow_idx]),
-                 phi_uw[arrow_idx + 1] - phi_uw[arrow_idx],
-                 np.cos(q_vals[arrow_idx + 1]) - np.cos(q_vals[arrow_idx]),
-                 color='darkgreen', width=0,
-                 head_width=0.09 * width_base, head_length=0.12)
+        ax.annotate("", xy=(phi_uw[arrow_idx + 1],
+                            np.cos(q_vals[arrow_idx + 1])),
+                    xytext=(phi_uw[arrow_idx], np.cos(q_vals[arrow_idx])),
+                    arrowprops={
+                        'headwidth': 6,
+                        'headlength': 6,
+                        'color': 'darkgreen',
+                    })
+        # ax.arrow(phi_uw[arrow_idx], np.cos(q_vals[arrow_idx]),
+        #          phi_uw[arrow_idx + 1] - phi_uw[arrow_idx],
+        #          np.cos(q_vals[arrow_idx + 1]) - np.cos(q_vals[arrow_idx]),
+        #          color='darkgreen', width=0,
+        #          head_width=0.09 * width_base, head_length=0.12)
 
         # put letter labels somewhere on left, except hard coded exceptions
         x, y = 0.4, 0.75 * (ylims[1] - ylims[0]) + ylims[0]
@@ -454,7 +520,7 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
                 y = 0.7 * (ylims[1] - ylims[0]) + ylims[0]
             elif idx == 6:
                 y = 0.6 * (ylims[1] - ylims[0]) + ylims[0]
-        ax.text(x, y, '(%s)' % plot_labels[idx], fontsize=10)
+        ax.text(x, y, '(%s)' % snapshot_labels[idx], fontsize=10)
 
     # now use the ylims to compute only the viewable separatrix
     for plot_idx, ax in zip(plot_idxs, axs):
@@ -480,23 +546,21 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
         ax.set_xticks([np.pi])
         ax.set_xticklabels([r'$\pi$'])
     # if there are too many yticks (>= 3), drop every other one
-    # fig.subplots_adjust(wspace=0, hspace=0.1)
-    # plt.draw()
-    # plt.tight_layout()
-    # for ax in axs[::2]:
-    #     yticklabels = ax.get_yticklabels()
-    #     # not sure why not all yticklabels are within ylims...
-    #     print(ax.get_ylim())
-    #     print([t.get_text() for t in yticklabels])
-    #     if len(yticklabels) >= 3:
-    #         for t in yticklabels[1::2]:
-    #             t.set_text('')
-    #         print([t.get_text() for t in yticklabels])
-    #         ax.set_yticklabels(yticklabels)
+    # seems matplotilb by default includes one extra tick on either end, so if
+    # >= 5, drop every other
+    plt.draw()
+    for ax in axs[::2]:
+        yticklabels = ax.get_yticklabels()
+        if len(yticklabels) >= 5:
+            for t in yticklabels[::2]:
+                t.set_text('')
+            ax.set_yticklabels(yticklabels)
     if plot_type == '23':
         axs[-1].set_yticks([-0.05, 0.0])
         axs[-1].set_yticklabels(['$-0.05$', '$0.00$'])
 
+    plt.tight_layout()
+    fig.subplots_adjust(wspace=0, hspace=0.08)
     plt.savefig(filename + '_subplots', dpi=dpi)
     plt.close(fig)
     print('Saved', filename, 'eta_c =', eta_c)
@@ -1003,7 +1067,7 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
     plt.ylabel(r'$\theta_{\rm f}$')
     plt.title(r'$I = %d^\circ$' % np.degrees(I))
     plt.tight_layout()
-    plt.legend()
+    # plt.legend()
     plt.savefig(filename, dpi=dpi)
     plt.clf()
 
