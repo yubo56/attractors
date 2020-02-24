@@ -1,5 +1,4 @@
 %TODO
-% rework 3->2->1 ??? part, probably also the 3 -> 3 part
 % Fig 7 caption lol
     \documentclass[
         fleqn,
@@ -244,13 +243,13 @@ t_{\rm d}$. In dimensionless units, we have
 \end{equation}
 where
 \begin{align}
-    \epsilon \equiv{}& \frac{1}{\alpha t_{\rm d}},\label{eq:eps_def}\\
+    \epsilon \equiv{}& \frac{1}{\alpha t_{\rm d}},\nonumber\\
         ={}& 0.015 \p{\frac{k_{\rm p}}{6k_{\rm qp}}}
             \p{\frac{m_{\rm p}/M_\star}{0.001}}
             \p{\frac{a_{\rm p}}{1\;\mathrm{AU}}}^3\nonumber\\
         &\times \p{\frac{R_{\rm p}}{R_{\rm J}}}^{-3}
             \p{\frac{\Omega_{\rm p}}{2\pi/\p{10\;\mathrm{days}}}}
-            \p{\frac{t_{\rm d}}{10\;\mathrm{Myr}}}^{-1}.
+            \p{\frac{t_{\rm d}}{10\;\mathrm{Myr}}}^{-1}.\label{eq:eps_def}
 \end{align}
 Eqs.~\eqref{eq:dsdt_base} and~\eqref{eq:deta_dt} together constitute our system
 of study.
@@ -265,29 +264,32 @@ Spin states satisfying $\p{\rd{\uv{s}}{t}}_{\rm rot} = 0$ are referred to as
 $\uv{l}_{\rm d}$ be coplanar. There are either two or four CSs, depending
 on the values of $\eta$. They are specified by the obliquity $\theta$ and the
 precessional phase of $\uv{s}$ around $\uv{l}$, denoted by $\phi$. Following
-the standard convention and nomenclature (see Fig.~\ref{fig:cs_locs}), CSs 1, 3, 4
-have $\phi = 0$ and $\theta < 0$, corresponding to $\uv{s}$ and $\uv{l}_{\rm
-d}$ being on opposite sides of $\uv{l}$, while CS2 has $\phi = \pi$ and $\theta
-> 0$, corresponding to $\uv{s}$ and $\uv{l}_{\rm d}$ being on the same side of
-$\uv{l}$. When $\eta < \eta_{\rm c}$, where
+the standard convention and nomenclature (see Figs.~\ref{fig:cs_vecs}
+and~\ref{fig:cs_locs}), CSs 1, 3, 4 have $\phi = 0$ and $\theta < 0$,
+corresponding to $\uv{s}$ and $\uv{l}_{\rm d}$ being on opposite sides of
+$\uv{l}$, while CS2 has $\phi = \pi$ and $\theta > 0$, corresponding to $\uv{s}$
+and $\uv{l}_{\rm d}$ being on the same side of $\uv{l}$. When $\eta < \eta_{\rm
+c}$, where
 \begin{equation}
     \eta_{\rm c} \equiv \p{\sin^{2/3}I + \cos^{2/3}I}^{-3/2},\label{eq:etac}
 \end{equation}
 all four CSs exist, and when $\eta > \eta_{\rm c}$, only CSs 2, 3 exist. The CS
 obliquities as a function of $\eta$ are shown in Fig.~\ref{fig:cs_locs}.
-\begin{figure*}
-    \includegraphics[width=0.45\textwidth]{plots_diskdisp/2_3vec.png}\hfil
+\begin{figure}
+    \includegraphics[width=0.45\textwidth]{plots_diskdisp/2_3vec.png}
+    \caption{Definition of angles in the Cassini state configuration and the
+    adopted sign convention for $\theta$. Traditionally, $\theta \in [-\pi,
+    pi]$.}\label{fig:cs_vecs}
+\end{figure}
+\begin{figure}
     %
     \includegraphics[width=0.45\textwidth]{plots_diskdisp/2_cs_locs.png}
-    \caption{Left: Definition of angles in the Cassini state configuration and
-    the adopted sign convention for $\theta$. Right: Cassini state obliquities
-    as a function of $\eta$ for $I = 5^\circ$, where $\theta \in [-\pi, \pi]$
-    is the traditional definition of the polar angle. The vertical dashed line
-    indicates $\eta_{\rm c}$ ($= 0.766$ for $I = 5^\circ$), where CS1 and CS4
-    merge and annihilate, and the horizontal dashed lines indicate $\theta = I$
-    and $I - 180^\circ$, the asymptotic values for CSs 2 and 3 for $\eta \gg
-    \eta_{\rm c}$.}\label{fig:cs_locs}
-\end{figure*}
+    \caption{Cassini state obliquities as a function of $\eta$ for $I =
+    5^\circ$. The vertical dashed line indicates $\eta_{\rm c}$ ($= 0.766$ for
+    $I = 5^\circ$), where CS1 and CS4 merge and annihilate, and the horizontal
+    dashed lines indicate $\theta = I$ and $I - 180^\circ$, the asymptotic
+    values for CSs 2 and 3 for $\eta \gg \eta_{\rm c}$.}\label{fig:cs_locs}
+\end{figure}
 
 Of the four CSs, 1, 2, 3 are stable while 4 is unstable.
 Appendix~\ref{s:local_dynamics} gives the libration frequencies and growth rates
@@ -580,7 +582,7 @@ Eqs.~\eqref{se:area_ward} to understand for what initial conditions each track
 can be observed and with what probabilities.
 
 As an example, consider a system in zone II in panel (d) of
-Fig.~\ref{fig:eq_1contours}. As $\eta decreases, zone II$ will shrink while
+Fig.~\ref{fig:eq_1contours}. As $\eta$ decreases, zone II will shrink while
 zones I and III will expand until the trajectory crosses the separatrix. Suppose
 the trajectory exits zone II at some $\eta_\star$, then the probability of the
 II $\to$ I transition is $\Pr\p{\rm II \to I} = -\dot{A}_{\rm I} / \dot{A}_{\rm
@@ -694,7 +696,7 @@ regime, only zones II and III exist; as $\eta \to 0$, only zones I and III exist
         for which $A_{\rm m} = A_{\rm II}(\eta_2)$, upon which the trajectory
         is ejected to zone I and $A_f = -A_{\rm I}(\eta_2)$. Note that $\eta_2
         < \eta_{\rm \max, II}$ necessarily, as zone II must be shrinking in
-        order for the trajectory to be ejected. The final obliquity is again
+        order for the trajectory to be ejected. The final obliquity is finally
         given by Eq.~\eqref{eq:qfaf}.
 
         Graphical inspection of Fig.~\ref{fig:eq_areas} shows that
@@ -710,16 +712,22 @@ regime, only zones II and III exist; as $\eta \to 0$, only zones I and III exist
         II}}$. In the limit of $\eta_{\rm i} \to \infty$ and $ \eta_{\rm f} \to
         0$ we have $\theta_{\rm f} = \theta_{\rm sd, i}$.
 
-        Note that a small deviation from $\theta = \theta_{\rm sd, i}$ occurs
-        because we use finite $\eta_{\rm i}$, as hinted at in
-        Section~\ref{sss:a_evo}. This is because for $\theta_{\rm sd, i}
-        \gtrsim \pi/2$, trajectories are better described as librating about
-        CS3. Nevertheless, we can still approximate $A_{\rm i}$ to good
-        accuracy as the solid angle enclosed by libration about CS3 with polar
-        angle $2\pi + \theta_3 - \theta_2 - \theta_{\rm sd, i}$. This recovers
-        the correct $\theta_{\rm f}$-$\p{\theta_{\rm sd, i}}$ mapping for the
-        III $\to$ III regime, as can be seen visibly in
-        Fig.~\ref{fig:3_ensemble_20_35}.
+        Note that for finite $\eta_{\rm i}$, the initial enclosed phase space
+        area for III $\to$ III trajectories is not given exactly by using
+        $\theta = \theta_{\rm sd, i}$ in Eq.~\eqref{eq:ai_qsd}. This is because
+        the initial orbits for these trajectories are better described as
+        librating about CS3 with angle of libration $\Delta \theta - \theta_{\rm
+        sd, i}$ rather than about CS2 with angle of libration $\theta_{\rm sd,
+        i}$. Here, $\Delta \theta$ is the angular distance between CS2 and CS3
+        and is not equal to $180^\circ$ except for $\eta_{\rm i} \to \infty$.
+
+        Using such an orbit to evaluate Eq.~\eqref{eq:a_oint} for these initial
+        conditions yields the correct enclosed phase space area that predicts
+        the $\theta_{\rm f}$-$\p{\theta_{\rm sd, i}}$ mapping for the III $\to$
+        III track in the simulation results. This correction is responsible for
+        the small cusp at the very right ($\theta_{\rm sd, i} \to 180^\circ$) of
+        all of Figs.~\ref{fig:ad_ensemble},~\ref{fig:3_ensemble_10_35},
+        and~\ref{fig:3_ensemble_20_35}.
 \end{enumerate}
 In summary, starting from an initial condition with phase space area $A_{\rm i}$
 at $\eta = \eta_{\rm i} \gg 1$, the five evolutionary tracks are:
@@ -731,7 +739,7 @@ at $\eta = \eta_{\rm i} \gg 1$, the five evolutionary tracks are:
         II}(\eta_{\rm c})}$. Only the II $\to$ I track.
 
     \item $A_{\rm i} \in \s{A_{\rm II}(\eta_{\rm c}), A_{\rm II, \max}}$.
-        Both the III $\to$ I and III $\to$ II $\to$ I  are possible.
+        Both the III $\to$ I and III $\to$ II $\to$ I are possible.
 
     \item $A_{\rm i} \in \s{A_{\rm II, \max}, \max \p{A_{\rm I} + A_{\rm II}}}$.
         Only the III $\to$ I track.
@@ -748,27 +756,27 @@ numerical results.
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo21.png}
 
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo21_subplots.png}
-    \caption{Fiducial simulation following the II $\to$ I
-    track. An initial $\theta_{\rm sd, i} = 0.3\;\mathrm{rad} \approx
-    17.2^\circ$ was used, as well as $\epsilon = 3 \times 10^{-4}$. Top plot
-    upper panel: plot of $\cos \theta(t)$ (green) in an example simulation.
-    Overlaid are the locations of Cassini State 2 (red), and upper and lower
-    bounds on the separatrix (black). Note that the trajectory successfully
-    tracks CS2 to an obliquity $\theta \approx 90^\circ$. Light vertical blue
-    lines denote times portrayed in bottom plot. Top plot lower panel: plot of
-    the enclosed separatrix area obtained by integrating the simulated
-    trajectory (blue dots) and adiabatic theory (red line). Even though the
-    enclosed area jumps at separatrix crossing, the resultant $A$ is still
-    accurately predicted. Lower plot: snapshots in the $\p{\cos \theta, \phi}$
-    space of the simulation trajectories for the vertical blue lines in the top
-    plots. These times correspond to the start of the simulation, the appearance
-    of the separatrix, two panels depicting the separatrix crossing process, and
-    a final snapshot at $\eta = 10^{-3.5}$. The green line denotes a full
-    circulation or libration cycle at the selected time, including an arrow for
-    directionality. The separatrix at the start/end of the portrayed cycle are
-    shown in solid/dashed black lines respectively. Also labeled is CS2 at the
-    start of the cycle (red). Finally, the enclosed phase space area is shaded
-    in grey ($A > 0$) and red ($A < 0$).}\label{fig:ad_21}
+    % Even though the enclosed area jumps at
+    % separatrix crossing, the resultant $A$ is still accurately predicted.
+    \caption{An example of the II $\to$ I evolutionary track for $I = 5^\circ$
+    and $\theta_{\rm sd, i} = 17.2^\circ$. Upper panel: The green line shows
+    $\cos \theta$ as a function of $\eta$, obtained by numerical integration
+    (with $\epsilon = 3 \times 10^{-4}$). Overlaid are the location of Cassini
+    State 2 (red) and the upper and lower bounds on the separatrix (black). Note
+    that the trajectory tracks CS2 to a final obliquity of $88.57^\circ$. The
+    black vertical dashed lines denote instants in the simulation  portrayed in
+    bottom panels. Middle panel: The enclosed separatrix area obtained by
+    integrating the simulated trajectory (blue dots) and adiabatic theory (red
+    line). Lower plot: Snapshots in $\p{\cos \theta, \phi}$ phase space of one
+    circulation/libration cycle of the trajectory, shown in dark green with an
+    arrow indicating direction. The snapshots correspond to the start of the
+    simulation (a), the appearance of the separatrix (b), two panels depicting
+    the separatrix crossing process (c-d), and a final snapshot at $\eta =
+    10^{-3.5}$ (e). The separatricies at the beginning and end of the portrayed
+    orbit in each snapshot are shown in solid/dashed black lines respectively.
+    Also labeled is CS2 at the start of each orbit (red point). Finally, the
+    enclosed phase space area is shaded in grey ($A > 0$) and red ($A <
+    0$).}\label{fig:ad_21}
 \end{figure}
 \begin{figure}
     \centering
@@ -776,7 +784,7 @@ numerical results.
 
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo23_subplots.png}
     \caption{Same as Fig.~\ref{fig:ad_21} but for the II $\to$ III track.
-    $\theta_{\rm sd, i} = 0.3\;\mathrm{rad}$ and $\epsilon = 3.01 \times
+    $\theta_{\rm sd, i} = 17.2^\circ$ and $\epsilon = 3.01 \times
     10^{-4}$.}\label{fig:ad_23}
 \end{figure}
 \begin{figure}
@@ -795,12 +803,13 @@ numerical results.
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo321_subplots.png}
     \caption{Same as Fig.~\ref{fig:ad_21} but for the III $\to$ II $\to$ I
     track. $\theta_{\rm sd, i} = 60^\circ$, and $\epsilon = 3.14 \times
-    10^{-4}$. Two separatrix crossings are shown.}\label{fig:ad_321}
+    10^{-4}$. Two separatrix crossings are shown [in panels (c-d) and (e-f)].
+    }\label{fig:ad_321}
 \end{figure}
 
 \section{Nonadiabatic Effects}\label{s:nonad}
 
-In Section~\autoref{s:ad}, we have examined the spin axis evolution in the limit
+In Section~\ref{s:ad}, we have examined the spin axis evolution in the limit
 where $\epsilon \ll 1$ and the evolution is mostly adiabatic (except at
 separatrix crossings). We now consider nonadiabatic effects.
 
@@ -869,7 +878,7 @@ violation of the weak adiabaticity criterion.
 \subsection{Non-adiabatic Evolution Outcomes}
 
 We now consider the general problem of how a state evolves when $\eta$ changes
-non-adiabatically [i.e.\ $\epsilon \gtrsim \p*{\alpha t_{\rm d}}^{-1}$, see
+non-adiabatically [i.e.\ $\epsilon \gtrsim \p{\alpha t_{\rm d}}^{-1}$, see
 Eq.~\eqref{eq:ad_constr}]. In Appendix~\ref{s:nonad_app}, we derive a formula
 for the final obliquity $\theta_{\rm f}$ assuming no initial spin-disk
 misalignment:
@@ -1076,7 +1085,7 @@ just
 \end{align}
 The libration period is related simply $T_{\rm lib} = \frac{2\pi}{\omega_{\rm
 lib}}$.
-\begin{figure}[t]
+\begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/2_lambdas.png}
     \caption{Plot of $\lambda^2$ per Eq.~\eqref{eq:lambda2} evaluated at each
@@ -1225,11 +1234,6 @@ noting $\theta_{\rm f} \approx \abs{S}(+\infty)$, we obtain
         \label{eq:nonad_dong}
 \end{equation}
 
-We note the resemblance to a similar result given by \citet{malhotra_calc}
-describing the impact of a secular resonance sweeping through a system. Both
-results have the scaling with repsect to $\epsilon$, despite the vastly
-different calculation.
-
 It should be noted that this result breaks down in two ways:
 \begin{enumerate}
     \item If the evolution of $\uv{s}$ is adiabatic, then it is invalid to
@@ -1251,6 +1255,11 @@ It should be noted that this result breaks down in two ways:
                 I\sqrt{\frac{2\pi}{\epsilon}}, \theta_{\rm sd, i}}.
         \end{equation}
 \end{enumerate}
+
+We note the resemblance to the well-known eccentricity excitation of an asteroid
+sweeping through a secular resonance \citep{malhotra_calc}. Both results have
+the same scaling with repsect to the rate of change of secular frequency,
+$\epsilon$ in our notation and $\lambda$ in theirs.
 
 \bsp
 \label{lastpage} % chktex 24

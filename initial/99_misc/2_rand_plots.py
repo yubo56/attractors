@@ -166,7 +166,7 @@ def plot_3vec():
 
     ld_q = 20
     ld_xy = get_xy(ld_q)
-    ld_c = 'darkslategray'
+    ld_c = 'k'
     ax.annotate('', xy=ld_xy, xytext=(1, 0),
                  arrowprops=arrowprops(ld_c))
     ax.text(ld_xy[0] - offset / 2, ld_xy[1] + offset,

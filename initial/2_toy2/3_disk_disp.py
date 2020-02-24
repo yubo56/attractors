@@ -16,14 +16,17 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=18)
+plt.rc('xtick', direction='in', top=True, bottom=True)
+plt.rc('ytick', direction='in', left=True, right=True)
 
 PLOT_DIR = '1plots'
 from utils import to_cart, to_ang, roots, H, solve_ic_base,\
     get_etac
 dpi = 600
-my_ms = 3.5
-my_lw = 3.5
-my_alpha = 0.7
+my_lw = 4.5
+lw_single = 2.0
+my_ms = 2
+my_alpha = 0.5
 
 def sep_areas_exact(I, eta):
     mu4 = eta * np.cos(I) / (1 - eta * np.sin(I))
@@ -255,17 +258,20 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     # will handle them in the plot_type branches below
     mu_dat = np.cos(q)
 
-    ax1.semilogx(etas, mu_dat, c='g', label='Sim')
+    if plot_type == 'nonad':
+        ax1.semilogx(etas, mu_dat, c='g', label='Sim')
+    else:
+        ax1.semilogx(etas, mu_dat, c='g', lw=0.5, label='Sim')
+        ax1.semilogx(etas, mu_dat, c='g', label='Sim')
     max_valid_idxs = np.where(mu_max > 0)[0]
     ax1.semilogx(eta4s[max_valid_idxs], mu_max[max_valid_idxs],
              'k', label='Sep')
     ax1.semilogx(eta4s, mu_min, 'k')
     ax1.semilogx(etas, np.cos(q2s), 'r', label='CS2')
-    ax1.set_xlabel(r'$t$')
     ax1.set_ylabel(r'$\cos\theta$')
 
-    ax1.set_title(r'$I = %d^\circ$' % np.degrees(I))
-    ax1.legend(loc='right')
+    # ax1.set_title(r'$I = %d^\circ$' % np.degrees(I))
+    # ax1.legend(loc='right')
 
     # plot areas
     etas_pre_cross = eta_areas[np.where(t_areas < t_end_lib)[0]]
@@ -273,23 +279,23 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     # theory
     if plot_type == '23':
         ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int),
-                     'r', label='Th', lw=my_lw)
+                     'r', label='Th', lw=lw_single)
         ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed23), 'r',
-                     lw=my_lw)
+                     lw=lw_single)
     elif plot_type == '21':
         ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int),
-                     'r', label='Th', lw=my_lw)
+                     'r', label='Th', lw=lw_single)
         ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed21), 'r',
-                     lw=my_lw)
+                     lw=lw_single)
     elif plot_type == '31':
         ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int),
-                     'r', label='Th', lw=my_lw)
+                     'r', label='Th', lw=lw_single)
         opt_func = lambda eta: sum(sep_areas_exact(I, eta)[ :2]) - a_init_int
         eta_guess = 0.1 # whatever, easy to find
         eta_cross = opt.newton(opt_func, x0=eta_guess)
         a_crossed31 = -sep_areas_exact(I, eta_cross)[0]
         ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed31), 'r',
-                     lw=my_lw)
+                     lw=lw_single)
     elif plot_type == '321':
         # It's a bit trickier to find both crossings, so we will seed
         # the search using plot_idxs, which gives the two jumps in areas
@@ -313,30 +319,36 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
             t_areas >= t_end_circ))[0]]
         # etas21 = etas_crossed
         ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int),
-                     'r', label='Th', lw=my_lw)
-        ax3.semilogx(etas_32, np.full_like(etas_32, a_crossed32), 'r', lw=my_lw)
+                     'r', label='Th', lw=lw_single)
+        ax3.semilogx(etas_32, np.full_like(etas_32, a_crossed32), 'r',
+                     lw=lw_single)
         ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed21), 'r',
-                     lw=my_lw)
+                     lw=lw_single)
 
     # data
-    ax3.semilogx(eta_areas, areas, 'bo', markersize=0.3, label='Dat')
+    if plot_type == 'nonad':
+        ax3.semilogx(eta_areas, areas, 'bo', markersize=3, label='Dat')
+    else:
+        ax3.semilogx(eta_areas, areas, 'bo', markersize=0.3, label='Dat')
     ax3.set_xlabel(r'$\eta$')
     ax3.set_ylabel(r'$A$')
     # figure out where to place the legend
-    if areas[-1] > areas[0]:
-        ax3.legend(loc='lower right')
-    else:
-        ax3.legend(loc='upper right')
+    # if areas[-1] > areas[0]:
+    #     ax3.legend(loc='lower right')
+    # else:
+    #     ax3.legend(loc='upper right')
 
     if plot_type != '33':
         for ax in [ax1, ax3]:
             for plt_idx in plot_idxs:
-                ax.axvline(eta_areas[plt_idx], c='b', lw=my_lw)
+                ax.axvline(eta_areas[plt_idx], c='k', lw=lw_single / 3,
+                           ls='dashed')
 
     # flip axes
     xlims = ax3.set_xlim()
     xlims2 = ax3.set_xlim(xlims[::-1])
 
+    ax3.xaxis.set_tick_params(pad=7)
     plt.tight_layout()
     # fig.subplots_adjust(hspace=0)
     plt.savefig(filename, dpi=dpi)
@@ -370,26 +382,23 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
         q2 = curr_roots[0] if len(curr_roots) == 2 else curr_roots[1]
         ax.plot(np.pi, np.cos(q2), 'mo', ms=my_ms)
 
-        # plot data + overplot an arrow to show direction
-        ax.plot(phi_uw, np.cos(q_vals), 'g', lw=ms)
-        arrow_idx = len(t_vals) // 2
-        width_base = ax.get_ylim()[1] - ax.get_ylim()[0]
-        ax.arrow(phi_uw[arrow_idx], np.cos(q_vals[arrow_idx]),
-                 phi_uw[arrow_idx + 1] - phi_uw[arrow_idx],
-                 np.cos(q_vals[arrow_idx + 1]) - np.cos(q_vals[arrow_idx]),
-                 color='g', width=0,
-                 head_width=0.056 * width_base, head_length=0.12)
+        # plot data
+        ax.plot(phi_uw, np.cos(q_vals), 'darkgreen', lw=ms)
         vals_arr.append((t_vals, q_vals, phi_uw))
 
-    for plot_idx, ax, vals in zip(plot_idxs, axs, vals_arr):
+    plot_labels=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'] # add if need
+    for idx, (plot_idx, ax, vals) in\
+            enumerate(zip(plot_idxs, axs, vals_arr)):
         t_vals, q_vals, phi_uw = vals
 
         # shade the enclosed phase space area
         ylims = ax.get_ylim()
-        # give a small bit of extra space
-        ylims = (max(ylims[0] - 0.1 * abs(ylims[0]), -1),
-                 min(ylims[1] + 0.1 * abs(ylims[1]), 1))
-        ax.set_ylim(ylims)
+        # give a small bit of extra space (don't do this twice, only for left
+        # plots)
+        if idx % 2 == 0:
+            ylims = (max(ylims[0] - 0.1 * abs(ylims[0]), -1),
+                     min(ylims[1] + 0.1 * abs(ylims[1]), 1))
+            ax.set_ylim(ylims)
         if abs(phi_uw[-1] - phi_uw[0]) > np.pi:
             # circulating, if phi increasing, shade grey, else red
             fill_bound = ylims[1]
@@ -422,6 +431,31 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
             ax.fill_between(phi_half2, mu_half1, mu_half2,
                             color='0.5', alpha=my_alpha)
 
+        # overplot an arrow to show direction (at end so we know lims)
+        arrow_idx = len(t_vals) // 2
+        width_base = ylims[1] - ylims[0]
+        ax.arrow(phi_uw[arrow_idx], np.cos(q_vals[arrow_idx]),
+                 phi_uw[arrow_idx + 1] - phi_uw[arrow_idx],
+                 np.cos(q_vals[arrow_idx + 1]) - np.cos(q_vals[arrow_idx]),
+                 color='darkgreen', width=0,
+                 head_width=0.09 * width_base, head_length=0.12)
+
+        # put letter labels somewhere on left, except hard coded exceptions
+        x, y = 0.4, 0.75 * (ylims[1] - ylims[0]) + ylims[0]
+        if plot_type == '21' and idx == 4:
+            y = 0.6 * (ylims[1] - ylims[0]) + ylims[0]
+        elif plot_type == '23' and idx == 4:
+            y = -0.03
+        elif plot_type == '31' and idx == 1:
+            y = 0.2
+        elif plot_type == '321':
+            if idx == 1 or idx == 3:
+                x = 0.8
+                y = 0.7 * (ylims[1] - ylims[0]) + ylims[0]
+            elif idx == 6:
+                y = 0.6 * (ylims[1] - ylims[0]) + ylims[0]
+        ax.text(x, y, '(%s)' % plot_labels[idx], fontsize=10)
+
     # now use the ylims to compute only the viewable separatrix
     for plot_idx, ax in zip(plot_idxs, axs):
         ylims = ax.get_ylim()
@@ -437,19 +471,32 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
                     np.arccos(np.linspace(ylims[0], ylims[1], 801)))
                 H_grid = H(I, eta_plot, q_grid, phi_grid)
                 ax.contour(phi_grid, np.cos(q_grid), H_grid, levels=[H4],
-                           colors='k', linewidths=my_lw, linestyles=style)
-    axs[0].set_ylabel(r'$\cos \theta$')
+                           colors='k', linewidths=lw_single / 3, linestyles=style)
+
+    axs[2].set_ylabel(r'$\cos \theta$')
     axs[-1].set_xlabel(r'$\phi$')
     for ax in axs[-2: ]:
         ax.set_xlim([0, 2 * np.pi])
         ax.set_xticks([np.pi])
         ax.set_xticklabels([r'$\pi$'])
+    # if there are too many yticks (>= 3), drop every other one
+    # fig.subplots_adjust(wspace=0, hspace=0.1)
+    # plt.draw()
+    # plt.tight_layout()
+    # for ax in axs[::2]:
+    #     yticklabels = ax.get_yticklabels()
+    #     # not sure why not all yticklabels are within ylims...
+    #     print(ax.get_ylim())
+    #     print([t.get_text() for t in yticklabels])
+    #     if len(yticklabels) >= 3:
+    #         for t in yticklabels[1::2]:
+    #             t.set_text('')
+    #         print([t.get_text() for t in yticklabels])
+    #         ax.set_yticklabels(yticklabels)
     if plot_type == '23':
         axs[-1].set_yticks([-0.05, 0.0])
-        axs[-1].set_yticklabels(['-0.05', '0.00'])
+        axs[-1].set_yticklabels(['$-0.05$', '$0.00$'])
 
-    plt.tight_layout()
-    fig.subplots_adjust(wspace=0, hspace=0)
     plt.savefig(filename + '_subplots', dpi=dpi)
     plt.close(fig)
     print('Saved', filename, 'eta_c =', eta_c)
@@ -610,19 +657,19 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
     q_f_23 = [np.arccos(sep_areas_exact(I, eta)[2] / (2 * np.pi) - 1)
               for eta in eta_2[idx_23]]
     ax1.plot(np.degrees(dqs[idx_23]), np.degrees(q_f_23), 'r',
-             label=r'$II \to III$', lw=my_lw, zorder=1, alpha=my_alpha)
+             label=r'II $\to$ III', lw=my_lw, zorder=1, alpha=my_alpha)
 
     # A2 -> A1, all eta_2s
     q_f_21 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
               for eta in eta_2]
     ax1.plot(np.degrees(dqs[idx_2]), np.degrees(q_f_21), 'c',
-             label=r'$II \to I$', lw=my_lw, zorder=1, alpha=my_alpha)
+             label=r'II $\to$ I', lw=my_lw, zorder=1, alpha=my_alpha)
 
     # A3 -> A1, J_f = A2_star + A3_star
     q_f_31 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
               for eta in eta_3]
     ax1.plot(np.degrees(dqs[idx_3]), np.degrees(q_f_31), 'g',
-             label=r'$III \to I$', lw=my_lw, zorder=1, alpha=my_alpha)
+             label=r'III $\to$ I', lw=my_lw, zorder=1, alpha=my_alpha)
 
     # A3 -> A2 -> A1
     eta_second_cross = []
@@ -638,17 +685,19 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
     q_f_321 = [np.arccos(sum(sep_areas_exact(I, eta)[1: ]) / (2 * np.pi) - 1)
                for eta in eta_second_cross]
     ax1.plot(np.degrees(dqs[idx_3][idx_second_cross]), np.degrees(q_f_321),
-             'm', label=r'$III \to II\to I$', lw=my_lw, zorder=1, alpha=my_alpha)
+             'm', label=r'III $\to$ II $\to$ I', lw=my_lw, zorder=1, alpha=my_alpha)
 
     # A3 -> A3
     # dq (theta_{sd,i}) does not accurately predict the enclosed area when we
     # are close to CS3, use angular distance to CS3 instead
     q2, q3 = roots(I, eta0)
     _dqs_cs3 = q2 + dqs - q3 % (2 * np.pi) + np.pi
-    # make sure does not exceed 180 degrees (np.pi)
-    dqs_cs3 = np.minimum(_dqs_cs3, 2 * np.pi - _dqs_cs3)
-    ax1.plot(np.degrees(dqs[idx_33]), np.degrees(dqs_cs3[idx_33]), 'k',
-             label=r'$III \to III$', lw=my_lw, zorder=1, alpha=my_alpha)
+    # make sure does not exceed 180 degrees (np.pi), only show when data goes
+    # out to dq > 90 degrees
+    if dqs.max() > 3 * np.pi / 4:
+        dqs_cs3 = np.minimum(_dqs_cs3, 2 * np.pi - _dqs_cs3)
+        ax1.plot(np.degrees(dqs[idx_33]), np.degrees(dqs_cs3[idx_33]), 'grey',
+                 label=r'III $\to$ III', lw=my_lw, zorder=1, alpha=my_alpha)
 
     # overplot 4 vertical lines delineating the regimes
     # invert A = 2pi * (1 - cos(q))
@@ -671,9 +720,9 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
     mu_f_1 = (np.pi * dqs**2 / 16)**2 / np.tan(I) + dqs**2 / 4
     mu_f_2 = (np.pi * dqs**2 / 16)**2 / np.tan(I) - dqs**2 / 4
     ax1.plot(np.degrees(dqs), np.degrees(np.arccos(mu_f_1)),
-             'k:', linewidth=0.4 * my_lw, zorder=1, alpha=my_alpha)
+             'k:', linewidth=0.4 * my_lw, zorder=1)
     ax1.plot(np.degrees(dqs), np.degrees(np.arccos(mu_f_2)),
-             'k:', linewidth=0.4 * my_lw, zorder=1, alpha=my_alpha)
+             'k:', linewidth=0.4 * my_lw, zorder=1)
 
     # plot probabilities
     # Probability 2 -> 3
@@ -701,18 +750,18 @@ def plot_anal_qfs(I, dqs_arr, res_arr, eta0, axs, two_panel=True):
              'g', lw=my_lw, zorder=1, alpha=my_alpha)
     # Prob 3 -> 3 (trivial)
     P_33 = np.degrees(dqs[idx_33])
-    ax2.plot(P_33, np.ones_like(P_33), 'k', lw=my_lw, zorder=1, alpha=my_alpha)
+    ax2.plot(P_33, np.ones_like(P_33), 'grey', lw=my_lw, zorder=1, alpha=my_alpha)
 
     # analytical estimates
     eta_cross = (np.pi * dqs**2 / 16)**2 / np.sin(I)
     ax2.plot(np.degrees(dqs),
              (-2 * np.pi * eta_cross + 4 * np.sqrt(eta_cross * np.sin(I)))
              / (8 * np.sqrt(eta_cross * np.sin(I))),
-             'k:', linewidth=0.4 * my_lw, zorder=1, alpha=my_alpha)
+             'k:', linewidth=0.4 * my_lw, zorder=1)
     ax2.plot(np.degrees(dqs),
              (2 * np.pi * eta_cross + 4 * np.sqrt(eta_cross * np.sin(I)))
              / (8 * np.sqrt(eta_cross * np.sin(I))), 'k:',
-             linewidth=0.4 * my_lw, zorder=1, alpha=my_alpha)
+             linewidth=0.4 * my_lw, zorder=1)
 
     # plot data-generated points for probabilities
     ax2.set_ylim([-0.1, 1.1])
@@ -857,13 +906,13 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
             ax_ticks = ax1
         ax_ticks.set_xticks([0, 90, 180])
         ax_ticks.set_xticklabels([r'$0$', r'$90$', r'$180$'])
-        ax_ticks.set_xlabel(r'$\theta_{\rm sd,i}$')
+        ax_ticks.set_xlabel(r'$\theta_{\rm sd,i}$ (deg)')
 
         if dqs.max() > 3 * np.pi / 4:
-            ax1.legend(loc='lower right', prop={'size': 14})
+            ax1.legend(loc='lower right', prop={'size': 12})
             ax1.set_xlim([0, 180])
         else:
-            ax1.legend(loc='lower left', prop={'size': 14})
+            ax1.legend(loc='lower left', prop={'size': 12})
             ax1.set_xlim([0, 90])
 
     else:
@@ -1021,10 +1070,10 @@ def plot_singles(I):
     term_event2.terminal = True
     events2 = [term_event2]
     plot_single(I, -0.3, tf, eta0, q2, '3testo_nonad', dq=0.3,
-                events=events2)
+                events=events2, plot_type='nonad')
 
-def plot_manys(I):
-    sim_for_many(I, eps=-3e-4, n_pts=101, n_dqs=51, extra_plot=True)
+def plot_manys():
+    sim_for_many(np.radians(5), eps=-3e-4, n_pts=101, n_dqs=51, extra_plot=True)
     sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
                  two_panel=False, extra_plot=True)
     sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
@@ -1045,8 +1094,8 @@ def plot_manys(I):
 
 if __name__ == '__main__':
     I = np.radians(5)
-    # plot_singles(I)
-    plot_manys(I)
+    plot_singles(I)
+    # plot_manys()
 
     # testing high epsilon
     # eta_c = get_etac(I)
