@@ -73,7 +73,7 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     A1ys = 2 * np.pi * (1 - eta * np.cos(I)) - A2ys / 2
     A3ys = 2 * np.pi * (1 + eta * np.cos(I)) - A2ys / 2
     fig, ax1 = plt.subplots(1, 1)
-    ax3 = ax1.twinx()
+    # ax3 = ax1.twinx()
     ax4 = ax1.twiny()
     ax1.plot(eta, A1ys / (4 * np.pi), 'g:', lw=LW/2)
     ax1.plot(eta, A1w / (4 * np.pi), 'g', label=r'$A_{\rm I}$')
@@ -96,7 +96,7 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     ax1.set_xticklabels([r'$0$', r'$0.3$', r'$0.6$', r'$0.9$'])
     old_ylims = ax1.get_ylim()
     ax1.set_ylim([0, old_ylims[1]])
-    ax3.set_ylim([0, old_ylims[1]])
+    # ax3.set_ylim([0, old_ylims[1]])
     ax1.set_xlim([0, 1.2 * eta_c])
     ax4.set_xlim([0, 1.2 * eta_c])
 
@@ -104,8 +104,8 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     crit_vals_y = [A_sep_crit]
     # for val in crit_vals_y:
     #     ax3.axhline(val, c='k', lw=2.0, ls='dashed')
-    ax3.set_yticks(crit_vals_y)
-    ax3.set_yticklabels([r'$A_{\rm II}(\eta_c)$'])
+    # ax3.set_yticks(crit_vals_y)
+    # ax3.set_yticklabels([r'$A_{\rm II}(\eta_c)$'])
     eta_2_max = eta[np.argmax(A2w)]
     eta_3_min = eta[np.argmin(A3w)]
     crit_vals_x = [eta_c, eta_2_max, eta_3_min]
@@ -116,9 +116,9 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
                          r'$\eta_{\max,II}$',
                          r'$\eta_{\min,III}$'])
 
-    plt.title(r'$I = %d^\circ$' % np.degrees(I))
+    # plt.title(r'$I = %d^\circ$' % np.degrees(I))
     plt.tight_layout()
-    plt.savefig(filename, dpi=400)
+    plt.savefig(filename, dpi=200)
     plt.clf()
 
 if __name__ == '__main__':

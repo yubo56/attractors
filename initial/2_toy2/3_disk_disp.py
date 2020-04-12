@@ -282,15 +282,14 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     mu_dat = np.cos(q)
 
     if plot_type == 'nonad':
-        ax1.semilogx(etas, mu_dat, c='g', label='Sim')
+        ax1.semilogx(etas, mu_dat, c='g', alpha=0.7, label='Sim')
     else:
-        ax1.semilogx(etas, mu_dat, c='g', lw=0.5, label='Sim')
-        ax1.semilogx(etas, mu_dat, c='g', label='Sim')
+        ax1.semilogx(etas, mu_dat, c='g', lw=0.5, alpha=0.7, label='Sim')
     max_valid_idxs = np.where(mu_max > 0)[0]
     ax1.semilogx(eta4s[max_valid_idxs], mu_max[max_valid_idxs],
-             'k', label='Sep')
-    ax1.semilogx(eta4s, mu_min, 'k')
-    ax1.semilogx(etas, np.cos(q2s), 'r', label='CS2')
+                 'k:', label='Sep')
+    ax1.semilogx(eta4s, mu_min, 'k:')
+    ax1.semilogx(etas, np.cos(q2s), 'r--', label='CS2')
     ax1.set_ylabel(r'$\cos\theta$')
 
     # ax1.set_title(r'$I = %d^\circ$' % np.degrees(I))
@@ -299,26 +298,28 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
     # plot areas
     etas_pre_cross = eta_areas[np.where(t_areas < t_end_lib)[0]]
     etas_crossed = eta_areas[np.where(t_areas >= t_end_lib)[0]]
+    al_th = 0.3 # alpha for theory
+    lw_theory = 2 * lw_single
     # theory
     if plot_type == '23':
         ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int),
-                     'r', label='Th', lw=lw_single)
+                     'r', alpha=al_th, label='Th', lw=lw_theory)
         ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed23), 'r',
-                     lw=lw_single)
+                     alpha=al_th, lw=lw_theory)
     elif plot_type == '21':
         ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int),
-                     'r', label='Th', lw=lw_single)
+                     'r', alpha=al_th, label='Th', lw=lw_theory)
         ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed21), 'r',
-                     lw=lw_single)
+                     alpha=al_th, lw=lw_theory)
     elif plot_type == '31':
         ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int),
-                     'r', label='Th', lw=lw_single)
+                     'r', alpha=al_th, label='Th', lw=lw_theory)
         opt_func = lambda eta: sum(sep_areas_exact(I, eta)[ :2]) - a_init_int
         eta_guess = 0.1 # whatever, easy to find
         eta_cross = opt.newton(opt_func, x0=eta_guess)
         a_crossed31 = -sep_areas_exact(I, eta_cross)[0]
         ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed31), 'r',
-                     lw=lw_single)
+                     alpha=al_th, lw=lw_theory)
     elif plot_type == '321':
         # It's a bit trickier to find both crossings, so we will seed
         # the search using plot_idxs, which gives the two jumps in areas
@@ -342,17 +343,17 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
             t_areas >= t_end_circ))[0]]
         # etas21 = etas_crossed
         ax3.semilogx(etas_pre_cross, np.full_like(etas_pre_cross, a_init_int),
-                     'r', label='Th', lw=lw_single)
+                     'r', alpha=al_th, label='Th', lw=lw_theory)
         ax3.semilogx(etas_32, np.full_like(etas_32, a_crossed32), 'r',
-                     lw=lw_single)
+                     alpha=al_th, lw=lw_theory)
         ax3.semilogx(etas_crossed, np.full_like(etas_crossed, a_crossed21), 'r',
-                     lw=lw_single)
+                     alpha=al_th, lw=lw_theory)
 
     # data
     if plot_type == 'nonad':
-        ax3.semilogx(eta_areas, areas, 'bo', markersize=3, label='Dat')
+        ax3.semilogx(eta_areas, areas, 'go', markersize=3, label='Dat')
     else:
-        ax3.semilogx(eta_areas, areas, 'bo', markersize=0.3, label='Dat')
+        ax3.semilogx(eta_areas, areas, 'go', markersize=1, label='Dat')
     ax3.set_xlabel(r'$\eta$')
     ax3.set_ylabel(r'$A$')
     # figure out where to place the legend
@@ -904,7 +905,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
     PKL_FN = '3dat%02d_%02d.pkl' % (I_deg, eps_log)
     PKL_FN2 = '3dat%02d_%02d_2.pkl' % (I_deg, eps_log)
     filename = '3_ensemble_%02d_%02d' % (I_deg, eps_log)
-    title = r'$I = %d^\circ$' % I_deg
+    # title = r'$I = %d^\circ$' % I_deg
 
     if not os.path.exists(PKL_FN):
         print('running', PKL_FN)
@@ -958,18 +959,14 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
                 ax1.scatter(np.full_like(final_mus, np.degrees(dq)),
                             final_q_deg, c='b', s=my_ms, zorder=2)
 
-        ax1.set_yticks([0, 90, 180])
-        ax1.set_yticklabels([r'$0$', r'$90$', r'$180$'])
         ax1.set_ylabel(r'$\theta_{\rm f}$ (deg)')
-        ax1.set_title(title)
+        # ax1.set_title(title)
 
         if two_panel:
             ax_ticks = ax2
             ax2.set_ylabel('Prob')
         else:
             ax_ticks = ax1
-        ax_ticks.set_xticks([0, 90, 180])
-        ax_ticks.set_xticklabels([r'$0$', r'$90$', r'$180$'])
         ax_ticks.set_xlabel(r'$\theta_{\rm sd,i}$ (deg)')
 
         if dqs.max() > 3 * np.pi / 4:
@@ -984,29 +981,34 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         fig, ax1 = plt.subplots(1, 1)
         ax1.set_xlabel(r'$\theta_{\rm sd,i}$')
         ax1.set_ylabel(r'$\theta_{\rm f}$ (deg)')
-        ax1.set_xticks([0, 90, 180])
-        ax1.set_xticklabels([r'$0$', r'$90$', r'$180$'])
-        ax1.set_yticks([0, 90, 180])
-        ax1.set_yticklabels([r'$0$', r'$90$', r'$180$'])
 
         # fit = dong's est +- linear
         dong_est_deg = np.degrees(np.sqrt(2 * np.pi / (-eps))
                                   * np.tan(I) * np.cos(I))
         dqs_d = np.degrees(dqs)
         ax1.plot(dqs_d, dong_est_deg + (dqs_d - min(dqs_d)), 'r',
-                 zorder=1, alpha=my_alpha)
+                 zorder=1)
         ax1.plot(dqs_d, dong_est_deg - (dqs_d - min(dqs_d)), 'r',
-                 zorder=1, alpha=my_alpha)
+                 zorder=1)
 
-        ax1.set_title(title)
+        # ax1.set_title(title)
         ax1.set_ylim(ymin=0)
         ax1.set_xlim([0, 90])
     for dq, final_mus in zip(dqs, res_arr):
         final_q_deg = np.degrees(np.arccos(final_mus))
         ax1.scatter(np.full_like(final_mus, np.degrees(dq)),
                     final_q_deg, c='b', s=my_ms, zorder=2)
-    # if not two_panel or not adiabatic:
-    #     print('tight')
+    if extra_plot:
+        ax1.set_xticks([0, 90, 180])
+        ax1.set_xticklabels([r'$0$', r'$90$', r'$180$'])
+        ax1.set_yticks([0, 90, 180])
+        ax1.set_yticklabels([r'$0$', r'$90$', r'$180$'])
+    else:
+        ax1.set_xticks([0, 30, 60, 90])
+        ax1.set_xticklabels([r'$0$', r'$30$', r'$60$', r'$90$'])
+        ax1.set_yticks([0, 30, 60, 90])
+        ax1.set_yticklabels([r'$0$', r'$30$', r'$60$', r'$90$'])
+
     plt.tight_layout() # not sure why this is necessary, xlabel cut off
     plt.savefig(filename, dpi=dpi)
     plt.clf()
@@ -1065,7 +1067,7 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
     plt.ylim(ylims)
     plt.xlabel(r'$\epsilon$')
     plt.ylabel(r'$\theta_{\rm f}$')
-    plt.title(r'$I = %d^\circ$' % np.degrees(I))
+    # plt.title(r'$I = %d^\circ$' % np.degrees(I))
     plt.tight_layout()
     # plt.legend()
     plt.savefig(filename, dpi=dpi)

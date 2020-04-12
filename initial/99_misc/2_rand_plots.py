@@ -147,7 +147,7 @@ def plot_3vec():
     offset = 0.02 # offset for text from arrow tip
     alpha = 0.8
 
-    fig, ax = plt.subplots(1, 1, figsize=(6, 6))
+    fig, ax = plt.subplots(1, 1, figsize=(4, 4))
     plt.axis('off')
     ax.set_xlim(0.2, 1.1)
     ax.set_ylim(-0.1, 1.1)
@@ -198,7 +198,7 @@ def plot_3vec():
             np.cos(np.radians(ld_q * 0.6)) * 0.5 + offset,
             r'$I$',
             fontdict={'c': l_c})
-    ax.text(1 - np.sin(np.radians(0.8 * s_q)) * 0.3 - 2 * offset,
+    ax.text(1 - np.sin(np.radians(0.8 * s_q)) * 0.3 - 4 * offset,
             np.cos(np.radians(0.8 * s_q)) * 0.3 + 2 * offset,
             r'$+\theta$',
             fontdict={'c': s_c})
@@ -214,5 +214,5 @@ def plot_3vec():
 
 if __name__ == '__main__':
     # plot_cs(np.radians(5))
-    plot_eigens(np.radians(5))
-    # plot_3vec()
+    # plot_eigens(np.radians(5))
+    plot_3vec()
