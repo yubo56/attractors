@@ -67,10 +67,10 @@ def get_cs(I):
 def plot_cs(I=np.radians(5)):
     etas, cs_vals, etas_four, etac = get_cs(I)
 
-    plt.semilogx(etas_four, np.degrees(cs_vals[0]), 'y', lw=LW, label='1')
+    plt.semilogx(etas_four, np.degrees(cs_vals[0]), 'y:', lw=LW, label='1')
     plt.semilogx(etas, np.degrees(cs_vals[1]), 'r', lw=LW, label='2')
-    plt.semilogx(etas, np.degrees(cs_vals[2]), 'm', lw=LW, label='3')
-    plt.semilogx(etas_four, np.degrees(cs_vals[3]), 'c', lw=LW, label='4')
+    plt.semilogx(etas, np.degrees(cs_vals[2]), 'm--', lw=LW, label='3')
+    plt.semilogx(etas_four, np.degrees(cs_vals[3]), 'c-.', lw=LW, label='4')
     plt.xlabel(r'$\eta$', fontsize=22)
     plt.ylabel(r'$\theta$ (deg)', fontsize=22)
     plt.xlim([min(etas), max(etas)])
@@ -91,7 +91,7 @@ def plot_cs(I=np.radians(5)):
     plt.axhline(np.degrees(I), lw=0.8, c='k', ls='dashed')
     plt.axhline(-180 + np.degrees(I), lw=0.8, c='k', ls='dashed')
     plt.axvline(etac, c='k', lw='0.8', ls='dashed')
-    plt.title(r'$I = %d^\circ$' % np.degrees(I))
+    # plt.title(r'$I = %d^\circ$' % np.degrees(I))
     plt.tight_layout()
     plt.savefig('2_cs_locs', dpi=400)
 
@@ -116,19 +116,19 @@ def plot_eigens(I=np.radians(5)):
     plt.semilogx(etas_four,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas_four, cs_vals[0])],
-                  'y', label='1')
+                 'y:', label='1', lw=LW)
     plt.semilogx(etas,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas, cs_vals[1])],
-                  'r', label='2')
+                  'r', label='2', lw=LW)
     plt.semilogx(etas,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas, cs_vals[2])],
-                  'm', label='3')
+                  'm--', label='3', lw=LW)
     plt.semilogx(etas_four,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas_four, cs_vals[3])],
-                  'c', label='4')
+                  'c-.', label='4', lw=LW)
     # plt.yscale('symlog', linthreshy=1e-5)
     plt.xlabel(r'$\eta$')
     plt.ylabel(r'$\lambda^2/ (1 + \eta^2)$')
@@ -137,7 +137,7 @@ def plot_eigens(I=np.radians(5)):
     plt.xlim([min(etas), max(etas)])
     plt.axhline(0, lw=0.8, c='k', ls='dashed')
     plt.axvline(etac, c='k', lw='0.8', ls='dashed')
-    plt.title(r'$I = %d^\circ$' % np.degrees(I))
+    # plt.title(r'$I = %d^\circ$' % np.degrees(I))
     plt.tight_layout()
     plt.savefig('2_lambdas.png', dpi=400)
     plt.clf()
@@ -214,5 +214,5 @@ def plot_3vec():
 
 if __name__ == '__main__':
     # plot_cs(np.radians(5))
-    # plot_eigens(np.radians(5))
-    plot_3vec()
+    plot_eigens(np.radians(5))
+    # plot_3vec()

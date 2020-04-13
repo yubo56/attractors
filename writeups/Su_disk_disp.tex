@@ -349,10 +349,11 @@ obliquities as a function of $\eta$ are shown in Fig.~\ref{fig:cs_locs}.
 \begin{figure}
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/2_cs_locs.png}
     \caption{Cassini state obliquities as a function of $\eta$ for $I =
-    5^\circ$. The vertical dashed line indicates $\eta_{\rm c}$ ($= 0.766$ for
-    $I = 5^\circ$), where CS1 and CS4 merge and annihilate, and the horizontal
-    dashed lines indicate $\theta = I$ and $I - 180^\circ$, the asymptotic
-    values for CSs 2 and 3 for $\eta \gg \eta_{\rm c}$.}\label{fig:cs_locs}
+    5^\circ$. The thin vertical dashed line indicates $\eta_{\rm c}$ ($= 0.766$
+    for $I = 5^\circ$), where CS1 and CS4 merge and annihilate, and the thin
+    horizontal dashed lines indicate $\theta = I$ and $I - 180^\circ$, the
+    asymptotic values for CSs 2 and 3 for $\eta \gg \eta_{\rm
+    c}$.}\label{fig:cs_locs}
 \end{figure}
 
 Of the four CSs, 1, 2, 3 are stable while 4 is unstable.
@@ -473,7 +474,8 @@ $t_{\rm d}^{-1} \lesssim \omega_{\rm lib} / 2\pi$. In terms of the dimensionless
 parameter $\epsilon$
 [Eq.~\eqref{eq:eps_def}], this adiabaticity condition is
 \begin{equation}
-    \epsilon \lesssim \frac{1}{2\pi}\sqrt{\eta\sin I \sin \theta_2
+    \epsilon \lesssim \epsilon_{\rm c} \equiv
+        \frac{1}{2\pi}\sqrt{\eta\sin I \sin \theta_2
             \p{1 + \eta \sin I \csc^3 \theta_2}},
             \label{eq:ad_constr}
 \end{equation}
@@ -485,7 +487,7 @@ Since $\theta_2 \approx I$ for $\eta \gg 1$ (Fig.~\ref{fig:cs_locs}), this
 approximation is not always valid.}.
 
 For $I = 5^\circ$, $\eta \sim \eta_{\rm c}$ Eq.~\eqref{eq:ad_constr} gives
-$\epsilon \lesssim 0.085$. Since our criterion is only a weak condition for
+$\epsilon_{\rm c} = 0.085$. Since our criterion is only a weak condition for
 diabaticity, we use $\epsilon = 3 \times 10^{-4}$ in our ``adiabatic''
 calculations below. We explore the consequences of nonadiabatic evolution in
 Section~\ref{s:nonad}.
@@ -502,7 +504,7 @@ around $\uv{l}_{\rm d}$ much faster than the spin-orbit precession
 $\theta$ varies rapidly. It is thus more appropriate to use $\theta_{\rm sd, i}$
 rather than $\theta$ to specify the initial spin orientation. We explore the
 entire range $\theta_{\rm sd, i} \in [0, \pi]$ and choose $\epsilon = 3 \times
-10^{-4}$ so that the system evolves almost adiabatically (see above).
+10^{-4}$ (see above).
 
 To obtain the distribution of the final obliquities $\theta_{\rm f}$, we evenly
 sample $101$ values of $\theta_{\rm sd, i}$, and for each $\theta_{\rm sd, i}$
@@ -868,12 +870,12 @@ numerical results.
 \section{Nonadiabatic Effects}\label{s:nonad}
 
 In Section~\ref{s:ad}, we have examined the spin axis evolution in the limit
-where $\epsilon \ll 1$ [see Eq.~\eqref{eq:ad_constr}] and the evolution is
-mostly adiabatic (except at separatrix crossings). We now consider nonadiabatic
-effects.
+where $\epsilon \ll \epsilon_{\rm c}$ [see Eq.~\eqref{eq:ad_constr}] and the
+evolution is mostly adiabatic (except at separatrix crossings). We now consider
+nonadiabatic effects.
 
 \subsection{Transition to Non-adiabaticity: Results for $\epsilon\lesssim
-1$}\label{ss:transition}
+\epsilon_{\rm c}$}\label{ss:transition}
 
 To illustrate the transition to nonadiabaticity, we carried out a suite of
 numerical calculations for several values of $\epsilon$. The results for two of these
@@ -943,83 +945,102 @@ violating the weak adiabaticity criterion.
     circulation cycles.}\label{fig:nonad_traj}
 \end{figure}
 
-\subsection{Non-adiabatic Evolution: Result for $\epsilon\gtrsim 1$}
+\subsection{Non-adiabatic Evolution:
+Result for $\epsilon\gtrsim \epsilon_{\rm c}$}
 
 In general, numerical calculations are needed to determine the non-adiabatic
-obliquity evolution ($\epsilon\gtrsim 1$). However, some analytical results can
-be still be obtained when the obliquity remains small throughout the evolution.
+obliquity evolution ($\epsilon\gtrsim \epsilon_{\rm c}$). However, some
+analytical results can be still be obtained when the obliquity change is small.
 
 We start from Eq.~\eqref{eq:dsdt_base}, which governs the evolution of the spin
 axis. We choose coordinate axes such that $\uv{l} = \uv{z}$ and $ \uv{l}_{\rm d}
 = \uv{z} \cos I + \uv{x}\sin I$, giving
 \begin{equation}
     \rd{\uv{s}}{\tau} = \s{
-        \p{\eta \cos I - \cos\theta}\uv{z} + \eta \sin I \,\uv{x}} \times \uv{s}.
+        \p{\eta \cos I - 1}\uv{z} + \eta \sin I \,\uv{x}} \times \uv{s}.
 \end{equation}
-%Now, let's assume that $s_{\rm z} \approx \cos I$ throughout the evolution of
-%$\uv{s}$ (note that $\theta_{\rm sd, i} = 0$ implies the initial $s_{\rm z} = \cos I$).
 Define $S = {\hat s}_{\rm x} + i{\hat s}_{\rm y}$, we find
 \begin{equation}
-    \rd{S}{\tau} = i\p{\eta\cos I - \cos\theta}S - i \eta \sin I\cos\theta.\label{eq:nonad_ode}
+    \rd{S}{\tau} = i\p{\eta\cos I - 1}S
+        - i \eta \sin I\cos\theta.\label{eq:nonad_ode}
 \end{equation}
-To proceed, we assume $\theta$ is small and set $\cos\theta \simeq 1$. Equation
-(\ref{eq:nonad_ode}) can then be solved explicitly, starting from the initial
-value $S(\tau_{\rm i})$:
+To proceed, we assume the obliquity is roughly constant, $\cos \theta \approx
+\cos \theta_{\rm i}$. Eq.~\eqref{eq:nonad_ode} can then be solved explicitly,
+starting from the initial value $S(\tau_{\rm i})$:
 \begin{equation}
     S(\tau)e^{-i\Phi(\tau)} - S(\tau_{\rm i})
-        \simeq -i\sin I\int_{\tau_{\rm i}}^\tau \eta(\tau')
+        \simeq -i\sin I \cos \theta_{\rm i}
+            \int_{\tau_{\rm i}}^\tau \eta(\tau')
             e^{-i\Phi(\tau')}\;\mathrm{d}\tau',
 \end{equation}
 where
 \begin{equation}
-    \Phi(\tau) \equiv \int_{\tau_{\rm i}}^\tau \p{\eta(\tau') \cos I -1}\;
-        \mathrm{d}\tau'.
+    \Phi(\tau) \equiv \int_{\tau_{\rm i}}^\tau \p{\eta(\tau') \cos I
+        - 1}\; \mathrm{d}\tau'.
 \end{equation}
 We now invoke the stationary phase approximation, so that $\Phi(\tau)\simeq
-\Phi(\tau_0) + (1/2)\ddot\Phi (\tau_0)(\tau - \tau_0)^2$, where $\tau_0$ is
-determined by $\dot\Phi=0$ or $\eta_0=1/\cos I$. We then find, for $\tau\gg
-\tau_0$,
+\Phi(\tau_0) + (1/2)\ddot\Phi (\tau_0)(\tau - \tau_0)^2$ where $\tau_0$ is
+determined by $\dot\Phi = 0$, occuring when $\eta_0 = 1/\cos I$. We then find,
+for $\tau \gg \tau_0$,
 \begin{equation}
-    S(\tau)e^{-i\Phi(\tau)}-S(\tau_{\rm i})\simeq -i\sin I\,\eta(\tau_0)\, e^{-i\Phi(\tau_0)}
-    \p{\frac{2\pi}{i \ddot\Phi(\tau_0)}}^{1/2}.
+    S(\tau)e^{-i\Phi(\tau)} - S(\tau_{\rm i})
+        \simeq -i \eta(\tau_0)\sin I \cos \theta_{\rm i} e^{-i\Phi(\tau_0)}
+            \p{\frac{2\pi}{i \ddot\Phi(\tau_0)}}^{1/2}.
 \end{equation}
 Using $\dot\eta = -\epsilon \eta$ [Eq.~\eqref{eq:deta_dt}] and
 $\ddot\Phi(\tau_0) = \dot\eta(\tau_0)\cos I = -\epsilon$, we have
 \begin{equation}
-    S(\tau)e^{-i\Phi(\tau)}-S(\tau_{\rm i})
-        \simeq -i^{3/2}\tan I\, e^{-i\Phi(\tau_0)}
+    S(\tau)e^{-i\Phi(\tau)} - S(\tau_{\rm i})
+        \simeq -i^{3/2}\tan I \cos \theta_{\rm i} e^{-i\Phi(\tau_0)}
             \p{\frac{2\pi}{\epsilon}}^{1/2}.
 \end{equation}
-If the initial obliquity is negligible ($\theta_{\rm i} = \abs{S(\tau_{\rm
-i})} \ll 1$), the final obliquity is given by
+If the initial obliquity is much smaller than the final obliquity ($\theta_{\rm
+i} = \abs{S(\tau_{\rm i})} \ll \abs{S(\tau_{\rm f})}$), then we obtain
 \begin{equation}
-    \theta_{\rm f}\simeq \sqrt{\frac{2\pi}{\epsilon}}\tan I.\label{eq:nonad_q_f}
+    \theta_{\rm f}\simeq \sqrt{\frac{2\pi}{\epsilon}}\tan I\cos \theta_{\rm i}.
+        \label{eq:nonad_q_f}
 \end{equation}
-This expression is valid only if $\theta_f$ is small (recall that we have used
-the approximation $\cos\theta\simeq 1$ in the above derivation).
+This expression is valid only if $\cos \theta \approx \cos \theta_{\rm i}$
+throughout the evolution. This corresponds to the limit where $\theta_{\rm f}$
+is not too much larger than $\theta_{\rm i}$, which requires $\epsilon$ not to
+be too small. Numerically, we verify this is consistent with being in the
+nonadiabatic regime $\epsilon \gtrsim \epsilon_{\rm c}$ (see
+Figs.~\ref{fig:nonad_3_scan} and~\ref{fig:nonad_3_scan_20}).
 
-We can generalize the above analytic result to nonzero initial spin-disc
-angle $\theta_{\rm sd, i}$ by assuming the amplitude
-of libration of $\uv{s}$ about $\uv{l}_{\rm d}$ (namely $\theta_{\rm sd, i}$)
-is equal to the range of final obliquities when the disk dissipates quickly.
-Intuitively, this corresponds to ``freezing in'' the variations in initial
-obliquity over a single libration cycle to the final obliquity. Thus we expect
+We must next understand the above results in terms of the initial spin-disk
+misalignment angle $\theta_{\rm sd, i}$. To do so, we first compute the final
+obliquity when $\theta_{\rm sd, i} = 0$, corresponding to initial obliquity
+$\theta_{\rm i} = \theta_2 \approx I$. The set of possible initial conditions
+for nonzero $\theta_{\rm sd, i}$ is a ring of angular width $\theta_{\rm sd, i}$
+about CS2. We find this ring evolves to a new ring of angular width $\theta_{\rm
+sd, i}$ about the $\theta_{\rm sd, i} = 0$ prediction, so the range of final
+obliquities is the $\theta$ range spanned by this final ring\footnote{The
+interpretation for this procedure is that the process generating the final
+obliquity predicted by Eq.~\eqref{eq:nonad_q_f} acts only on the \emph{center}
+of libration of the trajectory when $\eta \gg 1$ (CS2). This is not apparent
+from our derivation but reproduces the results of the numerical simulation.}.
+This procedure yields prediction
 \begin{equation}
-  \theta_{\rm f} - \sqrt{\frac{2\pi}{\epsilon}} \tan I
-  \in \s{-\theta_{\rm sd, i}, \theta_{\rm sd,i}}.\label{eq:nonad_q_f_dist}
+    \abs{\p{\sqrt{\frac{2\pi}{\epsilon}}\tan I\cos I - \theta_{\rm sd, i}}}
+    \leq \theta_{\rm f}
+    \leq
+    \sqrt{\frac{2\pi}{\epsilon}}\tan I\cos I + \theta_{\rm sd, i}
+    .\label{eq:nonad_q_f_dist}
 \end{equation}
+The absolute value in the lower bound is a result of the ring of final
+conditions crossing the North pole.
 
 In Fig.~\ref{fig:nonad_3_ensemble}, we show the numerical result of $\theta_f$
 vs $\theta_{\rm sd,i}$ for $I = 5^\circ$ and $\epsilon = 0.3$. We see that
-Eq.~(\ref{eq:nonad_q_f_dist}) provides good lower and upper bounds of the final
-obliquity for $\theta_{\rm sd,i} \lesssim 20^\circ$.
+Eq.~\eqref{eq:nonad_q_f_dist} provides good lower and upper bounds of the final
+obliquity for $\theta_{\rm sd,i} \lesssim 45^\circ$.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3_ensemble_05_05.png}
     \caption{$\theta_{\rm  f}$ vs $\theta_{\rm sd, i}$ for $I=5^\circ$ and
     $\epsilon = 0.3$ (firmly in the nonadiabatic regime). The blue dots
-    represent numerical result, and the two red lines show the analytical lower
+    represent numerical results, and the two red lines show the analytical lower
     and upper limits given by
     Eq.~\eqref{eq:nonad_q_f_dist}.}\label{fig:nonad_3_ensemble}
 \end{figure}
@@ -1028,9 +1049,9 @@ Figures~\ref{fig:nonad_3_scan} and~\ref{fig:nonad_3_scan_20} show $\theta_f$ as
 function of $\epsilon$ for $\theta_{\rm sd,i} = 0$ and $I = 5$, $20^\circ$. We
 see that the agreement between the numerical results and
 Eq.~\eqref{eq:nonad_q_f} is excellent, particularly for the $I = 5^\circ$ case.
-The agreement when $I = 20^\circ$ is poorer as the initial obliquity
-$\theta_{\rm i} = I$ is larger, violating one of our key assumptions. For
-$\epsilon \ll 1$, we find $\theta_f \simeq 90^\circ$, in agreement with the
+The agreement when $I = 20^\circ$ is slightly poorer as $\theta_{\rm i}$ is
+larger and hence less negligible in Eq.~\eqref{eq:nonad_q_f}. For $\epsilon \ll
+\epsilon_{\rm c}$, we find $\theta_f \simeq 90^\circ$, in agreement with the
 result of adiabatic evolution (see Fig.~\ref{fig:ad_ensemble}).
 
 \begin{figure}
@@ -1040,16 +1061,18 @@ result of adiabatic evolution (see Fig.~\ref{fig:ad_ensemble}).
     $\theta_{\rm sd,i} = 0$ and $I = 5^\circ$. The shaded area, bordered by the
     black line, corresponds to the adiabatic regime estimated by
     Eq.~\eqref{eq:ad_constr}. The blue dots are numerical results, and the red
-    line corresponds to Eq.~\eqref{eq:nonad_q_f}, which is in good agreement
-    with numerical results for $\epsilon \gtrsim 0.1$ (the nonadiabatic regime);
-    $\theta_{\rm f} \simeq  90^\circ$ in the adiabatic regime ($\epsilon\ll
-    1$).}\label{fig:nonad_3_scan}
+    dashed line corresponds to Eq.~\eqref{eq:nonad_q_f}, which is in good
+    agreement with numerical results for $\epsilon > \epsilon_{\rm c} \approx
+    0.1$ (the nonadiabatic regime); $\theta_{\rm f} \simeq  90^\circ$ in the
+    adiabatic regime ($\epsilon\ll \epsilon_{\rm c}$).}\label{fig:nonad_3_scan}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3scan_20.png}
-    \caption{Same as Fig.~\ref{fig:nonad_3_scan} but for $I=20^\circ$.
-    }\label{fig:nonad_3_scan_20}
+    \caption{Same as Fig.~\ref{fig:nonad_3_scan} but for $I=20^\circ$. The right
+    shaded area is where $\theta_{\rm f}$ predicted by Eq.~\eqref{eq:nonad_q_f}
+    violates the assumption $\theta_{\rm f} \gg \theta_{\rm
+    i}$.}\label{fig:nonad_3_scan_20}
 \end{figure}
 
 \section{Summary and Discussion}\label{s:disc}
@@ -1207,8 +1230,8 @@ lib}}$.
     \caption{$\lambda^2$, given by Eq.~\eqref{eq:lambda2}, evaluated at each of
     the Cassini States. The vertical axis is rescaled for clarity. Note that CS4
     is a saddle point ($\lambda^2 > 0$) when it exists while all others are
-    stable ($\lambda^2 < 0$). The horizontal dashed line is the instability
-    boundary $\lambda^2 = 0$ while the vertical dashed line labels $\eta =
+    stable ($\lambda^2 < 0$). The thin horizontal dashed line is the instability
+    boundary $\lambda^2 = 0$ while the thin vertical dashed line labels $\eta =
     \eta_{\rm c}$.}\label{fig:lambda2}
 \end{figure}
 

@@ -988,7 +988,12 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
         dqs_d = np.degrees(dqs)
         ax1.plot(dqs_d, dong_est_deg + (dqs_d - min(dqs_d)), 'r',
                  zorder=1)
-        ax1.plot(dqs_d, dong_est_deg - (dqs_d - min(dqs_d)), 'r',
+        ax1.plot(dqs_d,
+                 np.maximum(
+                     dong_est_deg - (dqs_d - min(dqs_d)),
+                     (dqs_d - min(dqs_d)) - dong_est_deg,
+                 ),
+                 'r',
                  zorder=1)
 
         # ax1.set_title(title)
@@ -1050,17 +1055,23 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
         plt.semilogx(eps_vals, qdeg_per, 'bo', ms=my_ms)
 
     s_final = np.sqrt(2 * np.pi / eps_vals) * np.tan(I)
-    q_final = np.maximum(np.degrees(s_final * np.cos(I)), np.degrees(q2))
+    q_final = np.degrees(s_final * np.cos(I))
     ylims = [0, plt.ylim()[1]]
     plt.semilogx(eps_vals, q_final, 'r:', label='Analytical')
     eta_cross = get_etac(I) # some characteristic value
     q_x = q2 # another ballpark value, crossing theta
+
+    # when eps is adiabatic
     eps_nonad = np.sqrt(
         eta_cross * np.sin(I) * np.sin(q_x)
             * (eta_cross * np.sin(I) / np.sin(q_x)**3 + 1)) / (2 * np.pi)
     plt.axvline(eps_nonad, c='k')
-    plt.fill_betweenx(ylims,
-                      eps_nonad, eps_min, color='0.5', alpha=my_alpha)
+    plt.fill_betweenx(ylims, eps_nonad, eps_min, color='0.5', alpha=my_alpha)
+    # when qf < qi
+    eps_ltq2 = eps_vals[np.where(q_final < np.degrees(q2))[0]].min()
+    plt.axvline(eps_ltq2, c='k')
+    plt.fill_betweenx(ylims, eps_ltq2, eps_max, color='0.5', alpha=my_alpha)
+
     plt.xlim([eps_min, eps_max])
     plt.yticks([np.degrees(I), 90],
                [r'$%d$' % np.degrees(I), r'$90$'])
@@ -1139,29 +1150,29 @@ def plot_singles(I):
                 events=events2, plot_type='nonad')
 
 def plot_manys():
-    sim_for_many(np.radians(5), eps=-3e-4, n_pts=101, n_dqs=51, extra_plot=True)
-    sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
-                 two_panel=False, extra_plot=True)
-    sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
-                 two_panel=False, extra_plot=True)
-    sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
-    sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
-    sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
-                 two_panel=False)
-    sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
-                 two_panel=False, dqmin=0.01)
+    # sim_for_many(np.radians(5), eps=-3e-4, n_pts=101, n_dqs=51, extra_plot=True)
+    # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
+    #              two_panel=False, extra_plot=True)
+    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
+    #              two_panel=False, extra_plot=True)
+    # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
+    # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
+    # sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
+    #              two_panel=False)
+    # sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
+    #              two_panel=False, dqmin=0.01)
 
     sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
                  adiabatic=False, dqmin=0.01)
-    sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
-                 adiabatic=False, dqmin=0.01)
-    sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
-                 adiabatic=False, dqmin=0.01)
+    # sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
+    #              adiabatic=False, dqmin=0.01)
+    # sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
+    #              adiabatic=False, dqmin=0.01)
 
 if __name__ == '__main__':
     I = np.radians(5)
-    plot_singles(I)
-    # plot_manys()
+    # plot_singles(I)
+    plot_manys()
 
     # testing high epsilon
     # eta_c = get_etac(I)
