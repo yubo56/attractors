@@ -984,7 +984,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
 
         # fit = dong's est +- linear
         dong_est_deg = np.degrees(np.sqrt(2 * np.pi / (-eps))
-                                  * np.tan(I) * np.cos(I))
+                                  * np.sin(2 * I) / 2)
         dqs_d = np.degrees(dqs)
         ax1.plot(dqs_d, dong_est_deg + (dqs_d - min(dqs_d)), 'r',
                  zorder=1)
@@ -1054,7 +1054,7 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
     for qdeg_per in qdeg_finals:
         plt.semilogx(eps_vals, qdeg_per, 'bo', ms=my_ms)
 
-    s_final = np.sqrt(2 * np.pi / eps_vals) * np.tan(I)
+    s_final = np.sqrt(2 * np.pi / eps_vals) * np.sin(I) * np.cos(I)
     q_final = np.degrees(s_final * np.cos(I))
     ylims = [0, plt.ylim()[1]]
     plt.semilogx(eps_vals, q_final, 'r:', label='Analytical')
@@ -1068,9 +1068,11 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
     plt.axvline(eps_nonad, c='k')
     plt.fill_betweenx(ylims, eps_nonad, eps_min, color='0.5', alpha=my_alpha)
     # when qf < qi
-    eps_ltq2 = eps_vals[np.where(q_final < np.degrees(q2))[0]].min()
-    plt.axvline(eps_ltq2, c='k')
-    plt.fill_betweenx(ylims, eps_ltq2, eps_max, color='0.5', alpha=my_alpha)
+    eps_ltq2_where = eps_vals[np.where(q_final < np.degrees(q2))[0]]
+    if eps_ltq2_where.size > 0:
+        eps_ltq2 = eps_ltq2_where.min()
+        plt.axvline(eps_ltq2, c='k')
+        plt.fill_betweenx(ylims, eps_ltq2, eps_max, color='0.5', alpha=my_alpha)
 
     plt.xlim([eps_min, eps_max])
     plt.yticks([np.degrees(I), 90],
@@ -1172,7 +1174,7 @@ def plot_manys():
 if __name__ == '__main__':
     I = np.radians(5)
     # plot_singles(I)
-    plot_manys()
+    # plot_manys()
 
     # testing high epsilon
     # eta_c = get_etac(I)
@@ -1183,8 +1185,8 @@ if __name__ == '__main__':
     # plot_traj_colors(I, ret, '3testo_inf')
 
     # eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
-    # eps_scan(np.radians(20), eps_max=10, eps_min=5e-2,
-    #          n_pts=301, filename='3scan_20')
+    eps_scan(np.radians(20), eps_max=10, eps_min=5e-2,
+             n_pts=301, filename='3scan_20')
     # I_scan(5, filename='3Iscan_test', n_pts=31, n_pts_ring=2)
     # I_scan(1, filename='3Iscan_test_eps1', n_pts=31, n_pts_ring=2)
     # I_scan(20, filename='3Iscan_test_eps20', n_pts=31, n_pts_ring=2)

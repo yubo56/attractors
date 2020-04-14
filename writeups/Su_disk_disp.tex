@@ -953,15 +953,17 @@ obliquity evolution ($\epsilon\gtrsim \epsilon_{\rm c}$). However, some
 analytical results can be still be obtained when the obliquity change is small.
 
 We start from Eq.~\eqref{eq:dsdt_base}, which governs the evolution of the spin
-axis. We choose coordinate axes such that $\uv{l} = \uv{z}$ and $ \uv{l}_{\rm d}
-= \uv{z} \cos I + \uv{x}\sin I$, giving
+axis in the rotating frame. We choose coordinate axes such that $\uv{l} =
+\uv{z}$ and $ \uv{l}_{\rm d} = \uv{z} \cos I + \uv{x}\sin I$, giving
 \begin{equation}
-    \rd{\uv{s}}{\tau} = \s{
-        \p{\eta \cos I - 1}\uv{z} + \eta \sin I \,\uv{x}} \times \uv{s}.
+    \p{\rd{\uv{s}}{\tau}}_{\rm rot} = \s{
+        \p{\eta \cos I - \cos \theta}\uv{z}
+            + \eta \sin I \,\uv{x}} \times \uv{s}.
 \end{equation}
-Define $S = {\hat s}_{\rm x} + i{\hat s}_{\rm y}$, we find
+Defining $S = {\hat s}_{\rm x} + i{\hat s}_{\rm y}$ in the rotating frame, we
+find
 \begin{equation}
-    \rd{S}{\tau} = i\p{\eta\cos I - 1}S
+    \rd{S}{\tau} = i\p{\eta\cos I - \cos \theta}S
         - i \eta \sin I\cos\theta.\label{eq:nonad_ode}
 \end{equation}
 To proceed, we assume the obliquity is roughly constant, $\cos \theta \approx
@@ -976,12 +978,12 @@ starting from the initial value $S(\tau_{\rm i})$:
 where
 \begin{equation}
     \Phi(\tau) \equiv \int_{\tau_{\rm i}}^\tau \p{\eta(\tau') \cos I
-        - 1}\; \mathrm{d}\tau'.
+        - \cos \theta_{\rm i}}\; \mathrm{d}\tau'.
 \end{equation}
 We now invoke the stationary phase approximation, so that $\Phi(\tau)\simeq
 \Phi(\tau_0) + (1/2)\ddot\Phi (\tau_0)(\tau - \tau_0)^2$ where $\tau_0$ is
-determined by $\dot\Phi = 0$, occuring when $\eta_0 = 1/\cos I$. We then find,
-for $\tau \gg \tau_0$,
+determined by $\dot\Phi = 0$, occuring when $\eta_0 = \cos \theta_i /\cos I$. We
+then find, for $\tau \gg \tau_0$,
 \begin{equation}
     S(\tau)e^{-i\Phi(\tau)} - S(\tau_{\rm i})
         \simeq -i \eta(\tau_0)\sin I \cos \theta_{\rm i} e^{-i\Phi(\tau_0)}
@@ -991,14 +993,14 @@ Using $\dot\eta = -\epsilon \eta$ [Eq.~\eqref{eq:deta_dt}] and
 $\ddot\Phi(\tau_0) = \dot\eta(\tau_0)\cos I = -\epsilon$, we have
 \begin{equation}
     S(\tau)e^{-i\Phi(\tau)} - S(\tau_{\rm i})
-        \simeq -i^{3/2}\tan I \cos \theta_{\rm i} e^{-i\Phi(\tau_0)}
+        \simeq -i^{3/2}\tan I \cos^2\theta_{\rm i} e^{-i\Phi(\tau_0)}
             \p{\frac{2\pi}{\epsilon}}^{1/2}.
 \end{equation}
 If the initial obliquity is much smaller than the final obliquity ($\theta_{\rm
 i} = \abs{S(\tau_{\rm i})} \ll \theta_{\rm f} = \abs{S(\tau_{\rm f})}$), then we
 obtain
 \begin{equation}
-    \theta_{\rm f}\simeq \sqrt{\frac{2\pi}{\epsilon}}\tan I\cos \theta_{\rm i}.
+    \theta_{\rm f}\simeq \sqrt{\frac{2\pi}{\epsilon}}\tan I\cos^2\theta_{\rm i}.
         \label{eq:nonad_q_f}
 \end{equation}
 This expression is valid only if $\cos \theta \approx \cos \theta_{\rm i}$
@@ -1011,21 +1013,21 @@ Figs.~\ref{fig:nonad_3_scan} and~\ref{fig:nonad_3_scan_20}).
 We must next understand the above results in terms of the initial spin-disk
 misalignment angle $\theta_{\rm sd, i}$. To do so, we first compute the final
 obliquity when $\theta_{\rm sd, i} = 0$, corresponding to initial obliquity
-$\theta_{\rm i} = \theta_2 \approx I$. The set of possible initial conditions
+$\theta_{\rm i} = I$. The set of possible initial conditions
 for nonzero $\theta_{\rm sd, i}$ is a ring of angular width $\theta_{\rm sd, i}$
-about CS2. We find this ring evolves to a new ring of angular width $\theta_{\rm
-sd, i}$ about the $\theta_{\rm sd, i} = 0$ prediction, so the range of final
-obliquities is the $\theta$ range spanned by this final ring\footnote{The
-interpretation for this procedure is that the process generating the final
-obliquity predicted by Eq.~\eqref{eq:nonad_q_f} acts only on the \emph{center}
-of libration of the trajectory when $\eta \gg 1$ (CS2). This is not apparent
-from our derivation but reproduces the results of the numerical simulation.}.
-This procedure yields prediction
+about $\uv{l}_{\rm d}$. We find this ring evolves to a new ring of angular width
+$\theta_{\rm sd, i}$ about the $\theta_{\rm sd, i} = 0$ prediction, so the range
+of final obliquities is the $\theta$ range spanned by this final
+ring\footnote{The interpretation for this procedure is that the process
+generating the final obliquity predicted by Eq.~\eqref{eq:nonad_q_f} acts only
+on the \emph{center} of libration of the trajectory when $\eta \gg 1$ (CS2).
+This is not apparent from our derivation but reproduces the results of the
+numerical simulation.}. This procedure yields prediction
 \begin{equation}
-    \abs{\p{\sqrt{\frac{2\pi}{\epsilon}}\tan I\cos I - \theta_{\rm sd, i}}}
+    \abs{\sqrt{\frac{2\pi}{\epsilon}}\frac{\sin \p{2I}}{2}
+        - \theta_{\rm sd, i}}
     \leq \theta_{\rm f}
-    \leq
-    \sqrt{\frac{2\pi}{\epsilon}}\tan I\cos I + \theta_{\rm sd, i}
+    \leq \sqrt{\frac{2\pi}{\epsilon}}\frac{\sin\p{2I}}{2} + \theta_{\rm sd, i}
     .\label{eq:nonad_q_f_dist}
 \end{equation}
 The absolute value in the lower bound is a result of the ring of final
