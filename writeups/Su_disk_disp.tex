@@ -143,11 +143,11 @@ ohno_infer_obl} and tidal dissipation in hot Jupiters
 It is natural to imagine some of the mechanisms that generate planetary
 obliquities in the Solar System may also operate in exoplanetary systems.
 Recently, \citet{millholland_disk} studied the production of planet obliquities
-via spin-orbit resonance, where a dissipating protoplanetary disk causes
+via a spin-orbit resonance, where a dissipating protoplanetary disk causes
 resonance capture and advection. In their work, a planet is accompanied by an
-inclined exterior disk; as the disk graduatelly dissipates, the resulting
-planetary obliquity is generally substantial, reaching $90^\circ$ for what they
-characterize as adiabatic resonance crossings.
+inclined exterior disk; as the disk gradually dissipates, the planetary
+obliquity increases, reaching $90^\circ$ for what the authors characterize as
+adiabatic resonance crossings.
 
 The Millholland \& Batygin study assumes a negligible initial planetary
 obliquity. This assumption is intuitive, since the planet attains its spin
@@ -178,11 +178,11 @@ dissipating disk is dynamically equivalent to an outward migrating external
 companion.
 
 The paper is organized as follows. In Section~\ref{s:eq}, we review the relevant
-spin-orbit dynamics, equations and key concepts that are used in the remainder
-of the paper. In Sections~\ref{s:ad} and~\ref{s:nonad}, we study the evolution
-of the system when the disk dissipates on different timescales, from highly
-adiabatic to nonadiabatic. Analytical results are presented to explain the
-numerical results in both limits. We discuss the implications of our results in
+spin-orbit dynamics and key concepts that are used in the remainder of the
+paper. In Sections~\ref{s:ad} and~\ref{s:nonad}, we study the evolution of the
+system when the disk dissipates on different timescales, from highly adiabatic
+to nonadiabatic. Analytical results are presented to explain the numerical
+results in both limits. We discuss the implications of our results in
 Section~\ref{s:disc}. Our primary physical results consist of
 Fig.~\ref{fig:ad_ensemble} in the adiabatic limit and
 Fig.~\ref{fig:3_ensemble_05_15} in the nonadiabatic limit. Some detailed
@@ -203,8 +203,7 @@ generalize to a disk with finite extent \citep[see][]{millholland_disk}. Denote
 $\bm{S}$ the spin angular momentum and $\bm{L}$ the orbital angular momentum of
 the planet, and $\bm{L}_{\rm d}$ the angular momentum of the disk. The
 corresponding unit vectors are $\uv{s} \equiv \bm{S} / S$, $\uv{l} \equiv \bm{L}
-/ L$, and $\uv{l}_{\rm d} \equiv \bm{L}_{\rm
-d} / L_{\rm d}$.
+/ L$, and $\uv{l}_{\rm d} \equiv \bm{L}_{\rm d} / L_{\rm d}$.
 
 The spin axis $\uv{s}$ of the planet tends to precess around its orbital
 (angular momentum) axis $\uv{l}$, driven by the gravitational torque from the
@@ -329,9 +328,12 @@ $\phi$. Following the standard convention and nomenclature (see
 Figs.~\ref{fig:cs_vecs} and~\ref{fig:cs_locs}), CSs 1, 3, 4 have $\phi = 0$ and
 $\theta < 0$, corresponding to $\uv{s}$ and $\uv{l}_{\rm d}$ being on opposite
 sides of $\uv{l}$, while CS2 has $\phi = \pi$ and $\theta > 0$, corresponding to
-$\uv{s}$ and $\uv{l}_{\rm d}$ being on the same side of $\uv{l}$. When $\eta <
-\eta_{\rm
-c}$, where
+$\uv{s}$ and $\uv{l}_{\rm d}$ being on the same side of $\uv{l}$.
+The CS obliquity satisfie
+\begin{equation}
+    \sin \theta \cos \theta - \eta \sin\p{\theta - I} = 0.
+\end{equation}
+When $\eta < \eta_{\rm c}$, where
 \begin{equation}
     \eta_{\rm c} \equiv \p{\sin^{2/3}\!I + \cos^{2/3}\!I}^{-3/2},\label{eq:etac}
 \end{equation}
@@ -436,20 +438,20 @@ Fig.~\ref{fig:eq_1contours}, where no separatrix exists.
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/1_areas.png}
     \caption{The solid lines show the fractional areas of each of the zones
     $A_{\rm i}(\eta) / 4\pi$ as given by Eqs.~\eqref{se:area_ward}. The colored
-    dashed lines correspond to small $\eta$ approximations used in
+    dotted lines correspond to small $\eta$ approximations used in
     Appendix~\ref{s:ad_approx}. The colored dashed lines for $\eta > \eta_{\rm
     c}$ are the effective values of $A_{\rm II}, A_{\rm III}$ for $\eta >
     \eta_{\rm c}$, denoting the points that would flow into either area under
-    adiabatic decrease of $\eta$ from $\eta > \eta_{\rm c}$ (see the text). The vertical black
-    dashed lines correspond to $\eta = \eta_{\rm c}$ [Eq.\eqref{eq:etac}] and
-    the values of $\eta$ for which $A_{\rm II}$ is maximized ($\eta_{\rm \max,
-    II}$) and for which $A_{\rm III}$ is minimized ($\eta_{\rm \min, III}$,
-    Eq.~\eqref{eq:eta_minIII}).}\label{fig:eq_areas}
+    adiabatic decrease of $\eta$ from $\eta > \eta_{\rm c}$ (see the text). The
+    vertical black dashed lines correspond to $\eta = \eta_{\rm c}$
+    [Eq.\eqref{eq:etac}] and the values of $\eta$ for which $A_{\rm II}$ is
+    maximized ($\eta_{\rm \max, II}$) and for which $A_{\rm III}$ is minimized
+    ($\eta_{\rm \min, III}$, Eq.~\eqref{eq:eta_minIII}).}\label{fig:eq_areas}
 \end{figure}
 
 \section{Adiabatic Evolution}\label{s:ad}
 
-In this section, we study the evolution of the planetary obliquity $\theta$ when
+In this appendix, we study the evolution of the planetary obliquity $\theta$ when
 the parameter $\eta$ [or the disk mass $M_{\rm d}$; see Eqs.~\eqref{eq:eta}
 and~\eqref{eq:deta_dt}] decreases sufficiently slowly that the evolution is
 adiabatic. Strictly speaking, this requires the disk evolution timescale $t_{\rm
@@ -1010,52 +1012,59 @@ be too small. Numerically, we verify this is consistent with being in the
 nonadiabatic regime $\epsilon \gtrsim \epsilon_{\rm c}$ (see
 Figs.~\ref{fig:nonad_3_scan} and~\ref{fig:nonad_3_scan_20}).
 
-We must next understand the above results in terms of the initial spin-disk
-misalignment angle $\theta_{\rm sd, i}$. To do so, we first compute the final
-obliquity when $\theta_{\rm sd, i} = 0$, corresponding to initial obliquity
-$\theta_{\rm i} = I$. The set of possible initial conditions
-for nonzero $\theta_{\rm sd, i}$ is a ring of angular width $\theta_{\rm sd, i}$
-about $\uv{l}_{\rm d}$. We find this ring evolves to a new ring of angular width
-$\theta_{\rm sd, i}$ about the $\theta_{\rm sd, i} = 0$ prediction, so the range
-of final obliquities is the $\theta$ range spanned by this final
-ring\footnote{The interpretation for this procedure is that the process
-generating the final obliquity predicted by Eq.~\eqref{eq:nonad_q_f} acts only
-on the \emph{center} of libration of the trajectory when $\eta \gg 1$ (CS2).
-This is not apparent from our derivation but reproduces the results of the
-numerical simulation.}. This procedure yields prediction
-\begin{equation}
-    \abs{\sqrt{\frac{2\pi}{\epsilon}}\frac{\sin \p{2I}}{2}
-        - \theta_{\rm sd, i}}
-    \leq \theta_{\rm f}
-    \leq \sqrt{\frac{2\pi}{\epsilon}}\frac{\sin\p{2I}}{2} + \theta_{\rm sd, i}
-    .\label{eq:nonad_q_f_dist}
-\end{equation}
-The absolute value in the lower bound is a result of the ring of final
-conditions crossing the North pole.
+The above calculation is performed for initial condition $\theta_{\rm i}$, but,
+as discussed earlier in the text, the initial spin orientation is more
+appropriately described by $\theta_{\rm sd, i}$. The correct way to predict
+final obliquities for such initial conditions using Eq.~\eqref{eq:nonad_q_f} is
+somewhat indirect but yields good agreement with numerical results. We develop
+the procedure for two cases: (i) for $\theta_{\rm sd, i} = 0$, then (ii) for
+nonzero $\theta_{\rm sd, i}$. To simplify the discussion below, we consider the
+limit where $\eta_{\rm i} \to \infty$, and CS2 and $\uv{l}_d$ coincide. The
+nonadiabatic evolution is then described by:
+\begin{itemize}
+    \item When $\theta_{\rm sd, i} = 0$, the initial condition is just CS2, so
+        Eq.~\eqref{eq:nonad_q_f} can be directly applied setting $\theta_{\rm i}
+        = I$. This yields good agreement with numerical results (see
+        Figs.~\ref{fig:nonad_3_scan} and~\ref{fig:nonad_3_scan_20}). We denote
+        this final obliquity
+        \begin{equation}
+            \theta_{\rm f} = \sqrt{\frac{2\pi}{\epsilon}}\frac{\sin (2I)}{2}.
+                \label{eq:theta_2f}
+        \end{equation}
+        The azimuthal angle of the spin vector does not change and remains $\phi
+        = \pi$. Figures~\ref{fig:nonad_3_scan} and~\ref{fig:nonad_3_scan_20}
+        show the final obliquity as function of $\epsilon$ for $\theta_{\rm
+        sd,i} = 0$ and $I = 5$, $20^\circ$. We see that the agreement between
+        the numerical results and Eq.~\eqref{eq:nonad_q_f} is excellent,
+        particularly for the $I = 5^\circ$ case. The agreement when $I =
+        20^\circ$ is slightly poorer as $\theta_{\rm i}$ is larger and hence
+        less negligible in Eq.~\eqref{eq:nonad_q_f}. For $\epsilon \ll
+        \epsilon_{\rm c}$, we find $\theta_f \simeq 90^\circ$, in agreement with
+        the result of adiabatic evolution (see Fig.~\ref{fig:ad_ensemble}).
 
-In Fig.~\ref{fig:nonad_3_ensemble}, we show the numerical result of $\theta_f$
-vs $\theta_{\rm sd,i}$ for $I = 5^\circ$ and $\epsilon = 0.3$. We see that
-Eq.~\eqref{eq:nonad_q_f_dist} provides good lower and upper bounds of the final
-obliquity for $\theta_{\rm sd,i} \lesssim 45^\circ$.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3_ensemble_05_05.png}
-    \caption{$\theta_{\rm  f}$ vs $\theta_{\rm sd, i}$ for $I=5^\circ$ and
-    $\epsilon = 0.3$ (firmly in the nonadiabatic regime). The blue dots
-    represent numerical results, and the two red lines show the analytical lower
-    and upper limits given by
-    Eq.~\eqref{eq:nonad_q_f_dist}.}\label{fig:nonad_3_ensemble}
-\end{figure}
-
-Figures~\ref{fig:nonad_3_scan} and~\ref{fig:nonad_3_scan_20} show $\theta_f$ as
-function of $\epsilon$ for $\theta_{\rm sd,i} = 0$ and $I = 5$, $20^\circ$. We
-see that the agreement between the numerical results and
-Eq.~\eqref{eq:nonad_q_f} is excellent, particularly for the $I = 5^\circ$ case.
-The agreement when $I = 20^\circ$ is slightly poorer as $\theta_{\rm i}$ is
-larger and hence less negligible in Eq.~\eqref{eq:nonad_q_f}. For $\epsilon \ll
-\epsilon_{\rm c}$, we find $\theta_f \simeq 90^\circ$, in agreement with the
-result of adiabatic evolution (see Fig.~\ref{fig:ad_ensemble}).
+    \item When $\theta_{\rm sd, i}$ is permitted to be nonzero, the set of
+        possible initial conditions forms a ring of angular width $\theta_{\rm
+        sd, i}$ about CS2. We find that this set of initial conditions
+        approximately evolves under nonadiabatic evolution to a ring of angular
+        width $\theta_{\rm sd, i}$ about the $\theta_{\rm sd, i} = 0$ prediction
+        given by Eq.~\eqref{eq:theta_2f}. The range of possible final
+        obliquities is the range of $\theta$ spanned by this ring of possible
+        outcomes. This can be solved in closed form, yielding generalization of
+        Eq.~\eqref{eq:theta_2f}
+        \begin{equation}
+            \abs{\sqrt{\frac{2\pi}{\epsilon}}\frac{\sin \p{2I}}{2}
+                - \theta_{\rm sd, i}}
+            \leq \theta_{\rm f}
+            \leq \sqrt{\frac{2\pi}{\epsilon}}\frac{\sin\p{2I}}{2}
+                + \theta_{\rm sd, i} .\label{eq:nonad_q_f_dist}
+        \end{equation}
+        The absolute value in the lower bound is a result of the ring of final
+        conditions crossing the North pole. Fig.~\ref{fig:nonad_3_ensemble}
+        shows the numerical result of $\theta_f$ vs $\theta_{\rm sd,i}$ for $I =
+        5^\circ$ and $\epsilon = 0.3$. We see that Eq.~\eqref{eq:nonad_q_f_dist}
+        provides good lower and upper bounds of the final obliquity for
+        $\theta_{\rm sd,i} \lesssim 45^\circ$.
+\end{itemize}
 
 \begin{figure}
     \centering
@@ -1076,6 +1085,15 @@ result of adiabatic evolution (see Fig.~\ref{fig:ad_ensemble}).
     shaded area is where $\theta_{\rm f}$ predicted by Eq.~\eqref{eq:nonad_q_f}
     violates the assumption $\theta_{\rm f} \gg \theta_{\rm
     i}$.}\label{fig:nonad_3_scan_20}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3_ensemble_05_05.png}
+    \caption{$\theta_{\rm  f}$ vs $\theta_{\rm sd, i}$ for $I=5^\circ$
+    and $\epsilon = 0.3$ (firmly in the nonadiabatic regime). The blue
+    dots represent numerical results, and the two red lines show the
+    analytical lower and upper limits given by
+    Eq.~\eqref{eq:nonad_q_f_dist}.}\label{fig:nonad_3_ensemble}
 \end{figure}
 
 \section{Summary and Discussion}\label{s:disc}
@@ -1126,20 +1144,19 @@ $\theta_{\rm f}$ spread compared to the initial $\theta_{\rm sd, i}$ spread.
 \section{Cassini State Local Dynamics}\label{s:local_dynamics}
 
 In this section, we linearize the equations of motion near each CS\@. We
-determine the stability of each CS and the local libration frequencies of the
-stable CSs.
+determine the stability of each CS and the local libration frequencies or growth
+rates of the CSs.
 
-\subsection{Canonical Equations of Motion and Solutions}
+\subsection{Canonical Equations of Motion and Solutions}\label{ss:canonical}
 
-For analytical work, we adopt spherical coordinate system where $\uv{l} =
+We adopt spherical coordinate system where $\uv{l} =
 \uv{z}$ and $\theta, \phi$ are the polar and azimuthal angle of $\uv{s}$. We
-choose $\uv{l}_{\rm z}$ at coordinates $\theta = I, \phi = \pi$ (see
-Figs.~\ref{fig:cs_vecs} and~\ref{fig:cs_locs}). Following modern mathematical
-convention, we will use
+choose $\uv{l}_{\rm d}$ at coordinates $\theta = I, \phi = \pi$ (see
+Figs.~\ref{fig:cs_vecs} and~\ref{fig:cs_locs}). We use the convention
 $\theta \in [0, \pi)$% chktex 9
 and $\phi \in [0, 2\pi)$.% chktex 9
 
-The equations of motion in coordinates $\p{\phi, \cos \theta}$ follow by
+The equations of motion in $\p{\phi, \cos \theta}$ follow by
 applying Hamilton's equations to the Hamiltonian [Eq.~\eqref{eq:H}]:
 \begin{subequations}\label{se:H_eom}
     \begin{align}
@@ -1151,137 +1168,146 @@ applying Hamilton's equations to the Hamiltonian [Eq.~\eqref{eq:H}]:
                 \label{seq:H_eom_mu_t}
     \end{align}
 \end{subequations}
-These agree with Eq.~\eqref{eq:dsdt_base}. While these equations are numerically
-stiff owing to the $\cot\theta$ term, they are the most intuitive description
-for analytical work.
+These agree with Eq.~\eqref{eq:dsdt_base}.
+% While these equations are numerically stiff owing to the $\cot\theta$ term, they
+% are the most intuitive description for analytical work.
 
-We next develop some approximate forms for the CS obliquities that will be
-useful for guiding later discussion. Denote $\theta_{\rm cs}$ the obliquity of
-some Cassini State (fixed point of Eqs.~\eqref{se:H_eom}).
-\begin{enumerate}
-    \item $\eta \ll 1, \cos \theta_{\rm cs} \ll 1$ --- This is the limiting case
-        for CS2 and CS4 when $\eta \ll \eta_{\rm c}$. We examine
-        Eqs.~\eqref{seq:H_eom_phi_t} and approximate $\cot \theta \approx \cos
-        \theta$ to find
-        \begin{equation}
-            \cos \theta_{\rm cs} \approx \frac{\eta \cos I}
-                {1 \mp \eta \sin I}.
-        \end{equation}
-        The two signs correspond to choices of $\cos \phi$. Each sign
-        corresponds to one of CS2 and CS4.
+% We next develop some approximate forms for the CS obliquities that will be
+% useful for guiding later discussion. Denote $\theta_{\rm cs}$ the obliquity of
+% some Cassini State (fixed point of Eqs.~\eqref{se:H_eom}).
+% \begin{enumerate}
+%     \item $\eta \ll 1, \cos \theta_{\rm cs} \ll 1$ --- This is the limiting case
+%         for CS2 and CS4 when $\eta \ll \eta_{\rm c}$. We examine
+%         Eqs.~\eqref{seq:H_eom_phi_t} and approximate $\cot \theta \approx \cos
+%         \theta$ to find
+%         \begin{equation}
+%             \cos \theta_{\rm cs} \approx \frac{\eta \cos I}
+%                 {1 \mp \eta \sin I}.
+%         \end{equation}
+%         The two signs correspond to choices of $\cos \phi$. Each sign
+%         corresponds to one of CS2 and CS4.
 
-    \item $\sin \theta_{\rm cs} \ll 1$ --- The $\eta \ll 1, \eta \gg 1$ cases
-        can be solved together, and are the limiting cases both for CS1 and CS3
-        when $\eta \ll \eta_{\rm c}$, and for CS2 and CS3 when $\eta \gg
-        \eta_{\rm c}$. It proves easiest to rewrite Eqs.~\eqref{seq:H_eom_phi_t}
-        as
-        \begin{equation}
-            0 = \cos \theta_{\rm cs}\p{-1 + 2\eta
-                \frac{\sin \p{I \pm \theta_{\rm cs}}}{\sin \p{2\theta_{\rm
-                    cs}}}}.\label{eq:rewritten_dphi}
-        \end{equation}
-        The $\pm$ choice again comes from choice of $\cos \phi$. Then assuming
-        $\theta_{\rm cs}, I \ll 1$, we obtain $\frac{I \pm
-        \theta_{\rm cs}}{2\theta_{\rm cs}} = \frac{1}{2\eta}$ or
-        \begin{equation}
-            \theta_{\rm cs} = \frac{\eta I}{1 \mp \eta}.
-        \end{equation}
+%     \item $\sin \theta_{\rm cs} \ll 1$ --- The $\eta \ll 1, \eta \gg 1$ cases
+%         can be solved together, and are the limiting cases both for CS1 and CS3
+%         when $\eta \ll \eta_{\rm c}$, and for CS2 and CS3 when $\eta \gg
+%         \eta_{\rm c}$. It proves easiest to rewrite Eqs.~\eqref{seq:H_eom_phi_t}
+%         as
+%         \begin{equation}
+%             0 = \cos \theta_{\rm cs}\p{-1 + 2\eta
+%                 \frac{\sin \p{I \pm \theta_{\rm cs}}}{\sin \p{2\theta_{\rm
+%                     cs}}}}.\label{eq:rewritten_dphi}
+%         \end{equation}
+%         The $\pm$ choice again comes from choice of $\cos \phi$. Then assuming
+%         $\theta_{\rm cs}, I \ll 1$, we obtain $\frac{I \pm
+%         \theta_{\rm cs}}{2\theta_{\rm cs}} = \frac{1}{2\eta}$ or
+%         \begin{equation}
+%             \theta_{\rm cs} = \frac{\eta I}{1 \mp \eta}.
+%         \end{equation}
 
-        In the limit $\eta \ll \eta_{\rm c}$, these two solutions describe CS1
-        and CS3, while in the limit $\eta \gg \eta_{\rm c}$ these two solutions
-        describe CS2 and CS3.
-\end{enumerate}
-Again, the $\theta_{\rm cs}$ values derived here do not follow the same
-convention as Fig.~\ref{fig:cs_locs} due to our different $\theta, \phi$
-convention.
+%         In the limit $\eta \ll \eta_{\rm c}$, these two solutions describe CS1
+%         and CS3, while in the limit $\eta \gg \eta_{\rm c}$ these two solutions
+%         describe CS2 and CS3.
+% \end{enumerate}
+% Again, the $\theta_{\rm cs}$ values derived here do not follow the same
+% convention as Fig.~\ref{fig:cs_locs} due to our different $\theta, \phi$
+% convention.
+
+The CSs satisfy $\dot{\phi} = \dot{\theta} = 0$. For convenience, we give
+approximate solutions for the CSs in the limits $\eta \ll 1$ and $\eta \gg 1$.
+For $\eta \ll 1$:
+\begin{itemize}
+    \item CS1: $\phi_1 = 0$, $\theta_1 \simeq \eta \sin I$.
+    \item CS2: $\phi_2 = \pi$, $\theta_2 \simeq \pi / 2 + \eta \cos I$.
+    \item CS3: $\phi_3 = 0$, $\theta_3 \simeq \pi - \eta \sin I$.
+    \item CS4: $\phi_4 = 0$, $\theta_4 \simeq \pi / 2 - \eta \cos I$.
+\end{itemize}
+For $\eta \gg 1$, only CS2 and CS3 exist and are given by:
+\begin{itemize}
+    \item CS2: $\phi_2 = \pi$, $\theta_2 \simeq I - \sin I \cos I / \eta$.
+    \item CS3: $\phi_3 = 0$, $\theta_3 \simeq \pi - I + \sin I \cos I / \eta$.
+\end{itemize}
 
 \subsection{Stability and Frequency of Local Oscillations}\label{ss:eigens}
 
-To examine stability of each CS, it proves very easy to handle them generally.
-We linearize about an equilibrium located at $\phi_{\rm cs} = 0, \pi$ but
-arbitrary $\theta_{\rm cs}$. Linearizing Eqs.~\eqref{se:H_eom} about $\phi =
-\phi_{\rm cs} + \delta \phi, \theta = \theta_{\rm cs} + \delta \theta$ gives
+To examine stability of each CS, we linearize Eqs.~\eqref{se:H_eom} about an
+equilibrium located at $\phi_{\rm cs} = 0$ (CS 1, 3, 4) or $\pi$ (CS2) but
+arbitrary $\theta_{\rm cs}$. Setting $\phi = \phi_{\rm cs} + \delta \phi, \theta
+= \theta_{\rm cs} + \delta \theta$ gives
 \begin{subequations}\label{se:H_eom_lin}
     \begin{align}
         \rd{\delta \phi}{t} &= \sin \theta_{\rm cs} \delta \theta
             \mp \eta \frac{\sin I}{\sin^2\theta_{\rm cs}} \delta \theta,\\
-        \rd{\delta \theta}{t} &= \pm \eta \sin I \delta \phi.
+        \rd{\delta \theta}{t} &= \pm \eta \sin I \delta \phi,
     \end{align}
 \end{subequations}
-Note that the positive sign corresponds to $\phi_{\rm cs} = 0$. Eliminating
-$\delta \theta$ gives
-\begin{align}
-    \rtd{\delta \phi}{t} &= \p{\sin \theta_{\rm cs}
-        \mp \eta \sin I\csc^2\theta}\p{\pm \eta \sin I} \delta
-            \phi,\\
-        &\equiv \lambda^2\delta \phi.\label{eq:lambda2}
-\end{align}
+where the upper sign corresponds to $\phi_{\rm cs} = 0$. Eliminating $\delta
+\theta$ gives
+\begin{equation}
+    \rtd{\delta \phi}{t} \equiv \lambda^2\delta \phi,\label{eq:lambda2}
+\end{equation}
+where
+\begin{equation}
+    \lambda^2 \equiv \p{\sin \theta_{\rm cs}
+        \mp \eta \sin I\csc^2\theta}\p{\pm \eta \sin I}.
+\end{equation}
 A plot of $\lambda^2$ for each of the CSs is given in Fig.~\ref{fig:lambda2}.
-From the plot, it is clear that only CS4 is a saddle point, while the other
-three are centers (stable). The local libration frequency for these points is
-just
-\begin{align}
-    \omega_{\rm lib} &= \sqrt{-\lambda^2},\\
-        &= \sqrt{\p{\sin \theta_{\rm cs}
-            \mp \eta \sin I \csc^2\theta}\p{\mp \eta \sin I}}.
-\end{align}
-The libration period is related simply $T_{\rm lib} = \frac{2\pi}{\omega_{\rm
-lib}}$.
+It is clear that CS4 is unstable while the other three are stable. The local
+libration frequency for these stable CSs is simply $\omega_{\rm lib} =
+\sqrt{-\lambda^2}$.
+
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/2_lambdas.png}
     \caption{$\lambda^2$, given by Eq.~\eqref{eq:lambda2}, evaluated at each of
     the Cassini States. The vertical axis is rescaled for clarity. Note that CS4
-    is a saddle point ($\lambda^2 > 0$) when it exists while all others are
+    is unstable ($\lambda^2 > 0$) when it exists while all others are
     stable ($\lambda^2 < 0$). The thin horizontal dashed line is the instability
     boundary $\lambda^2 = 0$ while the thin vertical dashed line labels $\eta =
-    \eta_{\rm c}$.}\label{fig:lambda2}
+    \eta_{\rm c}$ [Eq.~\eqref{eq:etac}].}\label{fig:lambda2}
 \end{figure}
 
 \section{Approximate Adiabatic Evolution}\label{s:ad_approx}
 
-In this section, we will use approximations valid for small $\eta$ to derive
-analytic expressions for the final obliquities at small $\theta_{\rm sd, i}$ and
-associated probabilities for the II $\to$ I and II $\to$ III tracks that are
-accessible.
+In this appendix, we will use approximations valid for small $\eta$ to derive
+the explicit analytic expressions for the final obliquities at small
+$\theta_{\rm sd, i}$ and the associated probabilities for the II $\to$ I and II
+$\to$ III tracks. These are the only possible tracks for small $\eta$.
 
-We first seek a simple parameterization for the separatrix. We first solve for
-equilibria of the equation of motion Eq.~\eqref{eq:dsdt_base} to compute the
-coordinates for Cassini State 4:
-\begin{equation}
-    \cos \theta_4 \approx \frac{\mu \cos I}{1 - \eta \sin I}.
-\end{equation}
-Note that $\phi_4 = 0$. Then, the separatrix is the level curve of the
-Hamiltonian intersecting CS4, so it satisfies $\mathcal{H}\p{\phi, \theta_{\rm
-sep}(\phi)} = \mathcal{H}\p{\phi_4, \theta_4}$. To leading order in $\eta$, this
-has simple expression
+We first seek a simple parameterization for the separatrix, the level curve of
+the Hamiltonian intersecting the unstable equilibrium CS4. Points along the
+separatrix, parameterized by $\p{\phi, \theta_{\rm sep}(\phi)}$, satisfy
+$\mathcal{H}\p{\phi, \theta_{\rm sep}(\phi)} = \mathcal{H}\p{\phi_4, \theta_4}$
+where $\phi_4$ and $\theta_4$ are given in Appendix~\ref{ss:canonical}. We
+obtain two solutions for $\theta_{\rm sep}$, given to leading order in $\eta$
+by:
 \begin{equation}
     \cos \theta_{\rm sep}(\phi) \approx \cos \theta_4 \pm
         \sqrt{2\eta \sin I\p{1 - \cos \phi}}.
 \end{equation}
-Integration of the phase area enclosed by the two legs of the separatrix then
-yields
+These two solutions parameterize the two legs of the separatrix. Integration of
+the phase area enclosed by the separatrix yields then
 \begin{equation}
     A_{\rm II}(\eta) \approx 16\sqrt{\eta \sin I}.\label{eq:a_approx}
 \end{equation}
-This, in conjunction with Eqs.~\eqref{eq:henrard_hop}, is sufficient to compute
-$\theta_{\rm f}\p{\theta_{\rm sd, i}}$ for zone II initial conditions.
-
+We can now compute the final obliquities and their associated probabilities for
+each track as follows:
 \begin{enumerate}
     \item For a given $\theta_{\rm sd, i}$, we know that if $\eta \to \infty$
         then the trajectory executes simple libration about $\uv{l}_{\rm d}$,
         and so $A = 2\pi\p{1 - \cos \theta_{\rm sd, i}} \approx \pi \theta_{\rm
         sd, i}^2$. This then implies $\eta_\star$ must be the solution to
         $A_{\rm II}(\eta_\star) = A$, or
-        \begin{align}
-            \eta_\star &\approx \p{\frac{2\pi\p{1 - \cos \theta_{\rm sd,i}}}{
-                        16}}^2 / \sin I,\\
-                    &\approx \p{\frac{\pi \theta_{\rm sd, i}^2}{16}}^2/\sin I.
-        \end{align}
+        \begin{equation}
+            \eta_\star \approx \p{\frac{2\pi\p{1 - \cos \theta_{\rm sd,i}}}{
+                        16}}^2 \frac{1}{\sin I}
+                    \approx \p{\frac{\pi \theta_{\rm sd,
+                    i}^2}{16}}^2\frac{1}{\sin I}.
+        \end{equation}
 
     \item Upon separatrix encounter, a transition to either zone I or zone
-        III occurs. These can be calculated to have associated probabilities
-        (using the approximate area Eq.~\eqref{eq:a_approx})
+        III occurs. These can be calculated to have the associated probabilities
+        [using the approximate area Eq.~\eqref{eq:a_approx} and
+        Eqs.~\eqref{eq:henrard_hop}]
         \begin{subequations}
             \begin{align}
                 \Pr\p{\rm II \to I} &\approx \frac{2\pi
@@ -1293,25 +1319,24 @@ $\theta_{\rm f}\p{\theta_{\rm sd, i}}$ for zone II initial conditions.
             \end{align}
         \end{subequations}
 
-    \item Upon a transition to zone I or zone III, the final obliquities can
-        be predicted by observing the final adiabatic invariant $A_{\rm f} = -A_{\rm
-        I}(\eta_\star)$ in the zone I case and $A_{\rm f} = A_{\rm I}(\eta_\star) +
-        A_{\rm I}I(\eta_\star)$ in the zone III case. As $\eta \to 0$, these
-        correspond to obliquities
+    \item Upon a transition to zone I or zone III, the final obliquity can be
+        predicted by observing the final adiabatic invariant $A_{\rm f} =
+        -A_{\rm I}(\eta_\star)$ in the zone I case and $A_{\rm f} = A_{\rm
+        I}(\eta_\star) + A_{\rm I}I(\eta_\star)$ in the zone III case. As $\eta
+        \to 0$, these correspond to obliquities
         \begin{subequations}\label{se:q_f_approx}
             \begin{align}
                 \p{\cos \theta_{\rm f}}_{\rm II \to I} &\approx
-                    \p{\frac{\pi \theta_{\rm sp, i}^2}{16}}^2 \cot I
-                        + \frac{\theta_{\rm sp, i}^2}{4},\\
+                    \p{\frac{\pi \theta_{\rm sd, i}^2}{16}}^2 \cot I
+                        + \frac{\theta_{\rm sd, i}^2}{4},\\
                 \p{\cos \theta_{\rm f}}_{\rm II \to III} &\approx
-                    \p{\frac{\pi \theta_{\rm sp, i}^2}{16}}^2 \cot I
-                        - \frac{\theta_{\rm sp, i}^2}{4}.
+                    \p{\frac{\pi \theta_{\rm sd, i}^2}{16}}^2 \cot I
+                        - \frac{\theta_{\rm sd, i}^2}{4}.
             \end{align}
         \end{subequations}
         These are the black dotted lines overplotted in
         Fig.~\ref{fig:ad_ensemble}.
 \end{enumerate}
-
 
 \bsp
 \label{lastpage} % chktex 24
