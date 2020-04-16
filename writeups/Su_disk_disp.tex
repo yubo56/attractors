@@ -35,15 +35,17 @@
     \DeclareMathOperator*{\med}{med}
 
 \title[Exoplanet Obliquities]{Dynamics of Colombo's Top: Generating Exoplanet
-Obliquties from Planet-Disc Interactions}
+Obliquities from Planet-Disc Interactions}
 \author[Y. Su and D. Lai]{
 Yubo Su$^1$,
-Dong Lai$^1$
+Dong Lai$^{1,2}$
 \\
 $^1$ Cornell Center for Astrophysics and Planetary Science, Department of
 Astronomy, Cornell University, Ithaca, NY 14853, USA
+\\
+$^2$ Tsung-Dao Lee Institute, Shanghai Jiao Tong University, Shanghai, 200240,
+China
 }
-
 
 % for i in ../initial/99_misc/2_3vec.png ../initial/99_misc/2_cs_locs.png ../initial/0_eta/1contours_flip.png ../initial/99_misc/1_areas.png ../initial/2_toy2/3_ensemble_05_35.png ../initial/2_toy2/3_ensemble_10_35.png ../initial/2_toy2/3_ensemble_20_35.png ../initial/2_toy2/3testo21.png ../initial/2_toy2/3testo21_subplots.png ../initial/2_toy2/3testo23.png ../initial/2_toy2/3testo23_subplots.png ../initial/2_toy2/3testo31.png ../initial/2_toy2/3testo31_subplots.png ../initial/2_toy2/3testo321.png ../initial/2_toy2/3testo321_subplots.png ../initial/2_toy2/3_ensemble_05_25.png ../initial/2_toy2/3_ensemble_05_15.png ../initial/2_toy2/3testo_nonad.png ../initial/2_toy2/3testo_nonad_subplots.png ../initial/2_toy2/3_ensemble_05_05.png ../initial/2_toy2/3scan.png ../initial/2_toy2/3scan_20.png ../initial/99_misc/2_lambdas.png; do cp $i plots_diskdisp; done
 
@@ -56,22 +58,21 @@ Astronomy, Cornell University, Ithaca, NY 14853, USA
 \maketitle
 
 \begin{abstract}
-%DL: Not done yet
-    Large planetary spin-orbit misalignments (obliquities) are thought to play a
-    key role in some planets' atmospheric circulation and tidal heating. A
-    promising avenue to generate high obliquities is via spin-orbit resonances,
-    where the spin and orbital precession frequencies of the planet become and
-    remain commensurate as the system evolves. One such proposed mechanism
-    involves a dissipating protoplanetary disk driving orbital precession of an
-    interior planet \citep{millholland_disk}. This previous work is limited to
-    small initial misalignment angles between the spin axis of the planet and
-    orbital axis of the massive disk. In the present paper, this scenario is
-    analytically characterized and extended to arbitrary misalignment angles. It
-    is shown that (i) under adiabatic evolution, final planetary obliquities
-    bifurcate into distinct tracks governed by interactions with the resonance,
-    while (ii) under nonadiabatic evolution, a broad range of obliquities can
-    be excited. Analytical formulae are provided for most interesting regimes of
-    parameter space.
+Large planetary spin-orbit misalignments (obliquities) may strongly influence
+atmospheric circulation and tidal heating in the planet. A promising avenue to
+generate obliquities is via spin-orbit resonances, where the spin and orbital
+precession frequencies of the planet cross each other as the system evolves in
+time. One such mechanism involves a dissipating (mass-losing) protoplanetary
+disk driving orbital precession of an interior planet. We study this scenario
+analytically in this paper, and obtain the mapping between the initial spin
+orientation and the final obliquity. We show that (i) under adiabatic evolution
+(i.e.\ the disk dissipates at a sufficiently slow rate), the final planetary
+obliquities bifurcate into distinct tracks governed by interactions with the
+resonance; (ii) under nonadiabatic evolution, a broad range of obliquities can
+be excited. We obtain analytical expressions for the final obliquities for most
+interesting regimes of parameter space. The dynamical system studied in this
+paper is an example of ``Colombo's top'', and our analysis and results can be
+adapted for other applications.
 \end{abstract}
 
 \begin{keywords}
@@ -92,23 +93,21 @@ precession rate, the orbital precession rate, or their ratio, gradually changes
 in time?
 
 \citet{colombo1966} was the first to point out the importance of the above
-simple model in the study of the obliquity (the angle between the spin axis and
-orbital axis) of planets and satellites. Subsequent works
+simple model in the study of the obliquity (the angle between the spin and
+orbital axes) of planets and satellites. Subsequent works
 \citep{peale1969,peale1974possible,ward1975tidal,henrard1987} have revealed rich
-dynamics of this model. With appropriate modification,
-% (e.g. including the nutation of the orbital axis and multi-frequency
-% precessions due to multiple planets),
-this model can be used as a basis for understanding the evolution of rotation
-axes of celestial bodies.  Indeed, many contemporary problems in
-planetary/exoplanetary dynamics can be casted into a form analogous to this
-simple model or its variant \citep[e.g.][]{ward2004I, fabrycky_otides,
-batygin2013magnetic, lai2014star, anderson2018teeter}.
+dynamics of this model. With appropriate modification, this model can be used as
+a basis for understanding the evolution of rotation axes of celestial bodies.
+Indeed, many contemporary problems in planetary/exoplanetary dynamics can be
+cast into a form analogous to this simple model or its variants
+\citep[e.g.][]{ward2004I, fabrycky_otides, batygin2013magnetic, lai2014star,
+anderson2018teeter}.
 
 In this paper we present a systematic investigation on the secular evolution of
 Colombo's top, starting from general initial conditions. Our study includes
 several new analytical results that go beyond previous works. While our results
 are general, we frame our study in the context of generating exoplanet
-obliquities from planet-disc interaction with in a dissipating disc.
+obliquities from planet-disc interaction with a dissipating disc.
 
 \subsection{Planetary Obliquities from Planet-Disc Interaction}
 
@@ -118,14 +117,14 @@ obliquities are observed, from nearly zero for Mercury and $3.1^\circ$ for
 Jupiter, to $23^\circ$ for Earth and $26.7^\circ$ for Saturn, to $98^\circ$ for
 Uranus. Multiple giant impacts are traditionally invoked to generate the large
 obliquities of ice giants \citep{original_gi, benz1989tilting,
-korycansky1990one, morbidelli_gi}. For gas giants, obliquity excitations may be
+korycansky1990one, morbidelli_gi}. For gas giants, obliquity excitation may be
 achieved via spin-orbit resonances, where the spin and orbital precession
 frequencies of the planet become commensurate as the system evolves
 \citep{ward2004I, ward2004II, vokrouhlicky2015tilting}. Such resonances may also
-play a role in generating Uranus's obliquity \citep{hamilton_tilting_ice}. For
-terrestrial planets, multiple spin-orbit resonances and their overlaps can make
-the obliquity vary chaotically over a wide range
-\citep[e.g.][]{laskar1993chaotic, touma1993chaotic, correia2003long}
+play a role in generating the obliquities of Uranus and Neptune
+\citep{hamilton_tilting_ice}. For terrestrial planets, multiple spin-orbit
+resonances and their overlaps can make the obliquity vary chaotically over a
+wide range \citep[e.g.][]{laskar1993chaotic, touma1993chaotic, correia2003long}
 
 Obliquities of extrasolar planets are difficult to measure. So far only loose
 constraints have been obtained for the obliquity of a faraway ($\gtrsim 50$~au)
@@ -155,7 +154,7 @@ angular momentum from the disk. But it may not always be satisfied. In
 particular, the formation of rocky planets through planetesimal accretion can
 lead to a wide range of obliquities, especially if the final spin is imparted by
 a few large bodies \citep{dones1993does, lissauer1997accretion,
-miguel2010planet}. Such ``stocastic'' accretion likely happened for terrestrial
+miguel2010planet}. Such ``stochastic'' accretion likely happened for terrestrial
 planets in the Solar System. Giant impacts may have also played a role in the
 formation of the close-in multiple-planet systems discovered by the Kepler
 satellite \citep[e.g.][]{inamdar2015formation, izidoro2017breaking}.
@@ -174,7 +173,7 @@ numerical calculations.
 It is important to note that while we focus on a specific scenario of
 generating/modifying planetary obliquities from planet-disk interactions, our
 analysis and results have a wide range of applicability. For example, a
-dissipating disk is dynamically equivalent to an outward migrating external
+dissipating disk is dynamically equivalent to an outward-migrating external
 companion.
 
 The paper is organized as follows. In Section~\ref{s:eq}, we review the relevant
@@ -186,7 +185,7 @@ results in both limits. We discuss the implications of our results in
 Section~\ref{s:disc}. Our primary physical results consist of
 Fig.~\ref{fig:ad_ensemble} in the adiabatic limit and
 Fig.~\ref{fig:3_ensemble_05_15} in the nonadiabatic limit. Some detailed
-calculations are relegated to the appendicies, including a leading-order
+calculations are relegated to the appendices, including a leading-order
 estimate of the final planetary obliquities given small initial spin-disk
 misalignment angles in Appendix~\ref{s:ad_approx}.
 
@@ -281,7 +280,7 @@ and the frequency ratio $\eta$
 % ((3 * 0.01 / 4) * (1 / 30AU)^3 * (10 hours * sqrt(G * (solar mass)) / (2pi)) / (1.5 * (1 solar mass / (5AU)^(9/2)) / (4 * pi / 3 * (1g/cm^3))))
 where $\rho_p = 3M_p/(4\pi R_p^3)$ and $P_p = 2\pi/\Omega_p$ is the planet's
 rotation period. . In Eq.~\eqref{eq:eta}, we have introduced the fiducial values
-of variable parameters for the appciation considered in this paper.
+of variable parameters for the application considered in this paper.
 Eq.~\eqref{eq:dsdt_rot} then becomes
 \begin{equation}
     \p{\rd{\uv{s}}{\tau}}_{\rm rot} = \p{\uv{s} \cdot \uv{l}}
@@ -328,8 +327,8 @@ $\phi$. Following the standard convention and nomenclature (see
 Figs.~\ref{fig:cs_vecs} and~\ref{fig:cs_locs}), CSs 1, 3, 4 have $\phi = 0$ and
 $\theta < 0$, corresponding to $\uv{s}$ and $\uv{l}_{\rm d}$ being on opposite
 sides of $\uv{l}$, while CS2 has $\phi = \pi$ and $\theta > 0$, corresponding to
-$\uv{s}$ and $\uv{l}_{\rm d}$ being on the same side of $\uv{l}$.
-The CS obliquity satisfie
+$\uv{s}$ and $\uv{l}_{\rm d}$ being on the same side of $\uv{l}$. The CS
+obliquity satisfies
 \begin{equation}
     \sin \theta \cos \theta - \eta \sin\p{\theta - I} = 0.
 \end{equation}
@@ -451,11 +450,11 @@ Fig.~\ref{fig:eq_1contours}, where no separatrix exists.
 
 \section{Adiabatic Evolution}\label{s:ad}
 
-In this appendix, we study the evolution of the planetary obliquity $\theta$ when
+In this section, we study the evolution of the planetary obliquity $\theta$ when
 the parameter $\eta$ [or the disk mass $M_{\rm d}$; see Eqs.~\eqref{eq:eta}
 and~\eqref{eq:deta_dt}] decreases sufficiently slowly that the evolution is
 adiabatic. Strictly speaking, this requires the disk evolution timescale $t_{\rm
-d}$ [Eq.~\eqref{eq:dmd_dt}] be much larger than all timesccales of the dynamical
+d}$ [Eq.~\eqref{eq:dmd_dt}] be much larger than all timescales of the dynamical
 system governed by the Hamiltonian [Eq.~\eqref{eq:H}]. This is of course not
 possible in all cases, as the motion along the separatrix has an infinite
 period.
@@ -490,7 +489,7 @@ approximation is not always valid.}.
 
 For $I = 5^\circ$, $\eta \sim \eta_{\rm c}$ Eq.~\eqref{eq:ad_constr} gives
 $\epsilon_{\rm c} = 0.085$. Since our criterion is only a weak condition for
-diabaticity, we use $\epsilon = 3 \times 10^{-4}$ in our ``adiabatic''
+adiabaticity, we use $\epsilon = 3 \times 10^{-4}$ in our ``adiabatic''
 calculations below. We explore the consequences of nonadiabatic evolution in
 Section~\ref{s:nonad}.
 
@@ -623,12 +622,12 @@ $A_{\rm f}$ by
 \end{equation}
 
 The enclosed phase space area is not conserved when the trajectory encounters
-the separatrix. Howover, the change is easily understood \citep{henrard1982}. In
+the separatrix. However, the change is easily understood \citep{henrard1982}. In
 essence, when the trajectory crosses the separatrix, it continues to evolve
 adjacent to the separatrix. So if a separatrix crossing results in a zone I
 trajectory (see Fig.~\ref{fig:eq_1contours}), the new area can be approximated
 by integrating Eq.~\eqref{eq:a_oint} along the upper leg of the separatrix.
-Pictorally, this can be seen in the bottom panels of Fig.~\ref{fig:ad_21}.
+Pictorially, this can be seen in the bottom panels of Fig.~\ref{fig:ad_21}.
 
 \subsubsection{Governing Principle: Probabilistic Separatrix Crossing}
 
@@ -833,7 +832,7 @@ numerical results.
     trajectory, shown in dark green with an arrow indicating direction. The
     snapshots correspond to the start of the simulation (a), the appearance of
     the separatrix (b), two panels depicting the separatrix crossing process
-    (c-d), and a final snapshot at $\eta = 10^{-3.5}$ (e). The separatricies at
+    (c-d), and a final snapshot at $\eta = 10^{-3.5}$ (e). The separatrices at
     the beginning and end of the portrayed cycle in each snapshot are shown in
     solid/dashed black lines respectively. Also labeled is CS2 at the start of
     each cycle (filled red circle). Finally, the enclosed phase space area is
@@ -952,7 +951,7 @@ Result for $\epsilon\gtrsim \epsilon_{\rm c}$}
 
 In general, numerical calculations are needed to determine the non-adiabatic
 obliquity evolution ($\epsilon\gtrsim \epsilon_{\rm c}$). However, some
-analytical results can be still be obtained when the obliquity change is small.
+analytical results can still be obtained when the obliquity change is small.
 
 We start from Eq.~\eqref{eq:dsdt_base}, which governs the evolution of the spin
 axis in the rotating frame. We choose coordinate axes such that $\uv{l} =
@@ -962,8 +961,7 @@ axis in the rotating frame. We choose coordinate axes such that $\uv{l} =
         \p{\eta \cos I - \cos \theta}\uv{z}
             + \eta \sin I \,\uv{x}} \times \uv{s}.
 \end{equation}
-Defining $S = {\hat s}_{\rm x} + i{\hat s}_{\rm y}$ in the rotating frame, we
-find
+Defining $S = {\hat s}_{\rm x} + i{\hat s}_{\rm y}$, we find
 \begin{equation}
     \rd{S}{\tau} = i\p{\eta\cos I - \cos \theta}S
         - i \eta \sin I\cos\theta.\label{eq:nonad_ode}
@@ -983,88 +981,87 @@ where
         - \cos \theta_{\rm i}}\; \mathrm{d}\tau'.
 \end{equation}
 We now invoke the stationary phase approximation, so that $\Phi(\tau)\simeq
-\Phi(\tau_0) + (1/2)\ddot\Phi (\tau_0)(\tau - \tau_0)^2$ where $\tau_0$ is
-determined by $\dot\Phi = 0$, occuring when $\eta_0 = \cos \theta_i /\cos I$. We
-then find, for $\tau \gg \tau_0$,
+\Phi(\tau_0) + (1/2)\ddot\Phi (\tau_0)(\tau - \tau_0)^2$, where $\tau_0$ is
+determined by $\dot\Phi = 0$, occurring when $\eta_0 = \cos \theta_i /\cos I$.
+We then find, for $\tau \gg \tau_0$,
 \begin{equation}
     S(\tau)e^{-i\Phi(\tau)} - S(\tau_{\rm i})
-        \simeq -i \eta(\tau_0)\sin I \cos \theta_{\rm i} e^{-i\Phi(\tau_0)}
-            \p{\frac{2\pi}{i \ddot\Phi(\tau_0)}}^{1/2}.
+        \simeq -i \eta(\tau_0)\sin I \cos \theta_{\rm i}\,e^{-i\Phi(\tau_0)}
+            \sqrt{\frac{2\pi}{i \ddot\Phi(\tau_0)}}.
 \end{equation}
 Using $\dot\eta = -\epsilon \eta$ [Eq.~\eqref{eq:deta_dt}] and
-$\ddot\Phi(\tau_0) = \dot\eta(\tau_0)\cos I = -\epsilon$, we have
+$\ddot\Phi(\tau_0) = \dot\eta(\tau_0)\cos I = -\epsilon \cos\theta_i$,
+we have
 \begin{equation}
-    S(\tau)e^{-i\Phi(\tau)} - S(\tau_{\rm i})
-        \simeq -i^{3/2}\tan I \cos^2\theta_{\rm i} e^{-i\Phi(\tau_0)}
-            \p{\frac{2\pi}{\epsilon}}^{1/2}.
+  S(\tau)e^{-i\Phi(\tau)} - S(\tau_{\rm i})
+        \simeq -i^{3/2}\tan I (\cos\theta_{\rm i})^{3/2} e^{-i\Phi(\tau_0)}
+            \sqrt{\frac{2\pi}{\epsilon}}.
 \end{equation}
-If the initial obliquity is much smaller than the final obliquity ($\theta_{\rm
-i} = \abs{S(\tau_{\rm i})} \ll \theta_{\rm f} = \abs{S(\tau_{\rm f})}$), then we
-obtain
+The final obliquity $\theta_{\rm f}$ is then given by
 \begin{equation}
-    \theta_{\rm f}\simeq \sqrt{\frac{2\pi}{\epsilon}}\tan I\cos^2\theta_{\rm i}.
-        \label{eq:nonad_q_f}
+    \sin\theta_{\rm f}\simeq \abs{
+        \sin\theta_i+ e^{-i\varphi_0}\tan I (\cos\theta_{\rm i})^{3/2}
+            \sqrt{\frac{2\pi}{\epsilon}}},
+\label{eq:thetaf}
+\end{equation}
+where $\varphi_0=\Phi(\tau_0)+\pi/4$ is a constant phase. If the initial
+obliquity is much smaller than the final obliquity ($\sin\theta_{\rm i} \ll
+\sin\theta_{\rm f}$), we obtain
+\begin{equation}
+    \sin\theta_{\rm f}\simeq \sqrt{\frac{2\pi}{\epsilon}}
+        \tan I (\cos\theta_{\rm i})^{3/2}.
+            \label{eq:nonad_q_f}
 \end{equation}
 This expression is valid only if $\cos \theta \approx \cos \theta_{\rm i}$
 throughout the evolution. This corresponds to the limit where $\theta_{\rm f}$
-is not too much larger than $\theta_{\rm i}$, which requires $\epsilon$ not to
-be too small. Numerically, we verify this is consistent with being in the
+is not much larger than $\theta_{\rm i}$, which requires $\epsilon$ not to be
+too small. Numerically, this is consistent with the system being in the
 nonadiabatic regime $\epsilon \gtrsim \epsilon_{\rm c}$ (see
-Figs.~\ref{fig:nonad_3_scan} and~\ref{fig:nonad_3_scan_20}).
+Fig.~\ref{fig:nonad_3_scan}).
 
-The above calculation is performed for initial condition $\theta_{\rm i}$, but,
-as discussed earlier in the text, the initial spin orientation is more
-appropriately described by $\theta_{\rm sd, i}$. The correct way to predict
-final obliquities for such initial conditions using Eq.~\eqref{eq:nonad_q_f} is
-somewhat indirect but yields good agreement with numerical results. We develop
-the procedure for two cases: (i) for $\theta_{\rm sd, i} = 0$, then (ii) for
-nonzero $\theta_{\rm sd, i}$. To simplify the discussion below, we consider the
-limit where $\eta_{\rm i} \to \infty$, and CS2 and $\uv{l}_d$ coincide. The
-nonadiabatic evolution is then described by:
-\begin{itemize}
-    \item When $\theta_{\rm sd, i} = 0$, the initial condition is just CS2, so
-        Eq.~\eqref{eq:nonad_q_f} can be directly applied setting $\theta_{\rm i}
-        = I$. This yields good agreement with numerical results (see
-        Figs.~\ref{fig:nonad_3_scan} and~\ref{fig:nonad_3_scan_20}). We denote
-        this final obliquity
-        \begin{equation}
-            \theta_{\rm f} = \sqrt{\frac{2\pi}{\epsilon}}\frac{\sin (2I)}{2}.
-                \label{eq:theta_2f}
-        \end{equation}
-        The azimuthal angle of the spin vector does not change and remains $\phi
-        = \pi$. Figures~\ref{fig:nonad_3_scan} and~\ref{fig:nonad_3_scan_20}
-        show the final obliquity as function of $\epsilon$ for $\theta_{\rm
-        sd,i} = 0$ and $I = 5$, $20^\circ$. We see that the agreement between
-        the numerical results and Eq.~\eqref{eq:nonad_q_f} is excellent,
-        particularly for the $I = 5^\circ$ case. The agreement when $I =
-        20^\circ$ is slightly poorer as $\theta_{\rm i}$ is larger and hence
-        less negligible in Eq.~\eqref{eq:nonad_q_f}. For $\epsilon \ll
-        \epsilon_{\rm c}$, we find $\theta_f \simeq 90^\circ$, in agreement with
-        the result of adiabatic evolution (see Fig.~\ref{fig:ad_ensemble}).
+The above calculation applies for a specific initial $\theta_{\rm i}$, but, as
+discussed at the beginning of Section~\ref{ss:ad_ensemble}, the initial spin
+orientation is more appropriately described by $\theta_{\rm sd, i}$ since
+$\eta_i\gg 1$. The correct way to predict the final obliquity for a given
+$\theta_{\rm sd, i}$ using Eq.~\eqref{eq:thetaf}
+is somewhat indirect but yields good agreement with numerical results.
 
-    \item When $\theta_{\rm sd, i}$ is permitted to be nonzero, the set of
-        possible initial conditions forms a ring of angular width $\theta_{\rm
-        sd, i}$ about CS2. We find that this set of initial conditions
-        approximately evolves under nonadiabatic evolution to a ring of angular
-        width $\theta_{\rm sd, i}$ about the $\theta_{\rm sd, i} = 0$ prediction
-        given by Eq.~\eqref{eq:theta_2f}. The range of possible final
-        obliquities is the range of $\theta$ spanned by this ring of possible
-        outcomes. This can be solved in closed form, yielding generalization of
-        Eq.~\eqref{eq:theta_2f}
-        \begin{equation}
-            \abs{\sqrt{\frac{2\pi}{\epsilon}}\frac{\sin \p{2I}}{2}
-                - \theta_{\rm sd, i}}
-            \leq \theta_{\rm f}
-            \leq \sqrt{\frac{2\pi}{\epsilon}}\frac{\sin\p{2I}}{2}
-                + \theta_{\rm sd, i} .\label{eq:nonad_q_f_dist}
-        \end{equation}
-        The absolute value in the lower bound is a result of the ring of final
-        conditions crossing the North pole. Fig.~\ref{fig:nonad_3_ensemble}
-        shows the numerical result of $\theta_f$ vs $\theta_{\rm sd,i}$ for $I =
-        5^\circ$ and $\epsilon = 0.3$. We see that Eq.~\eqref{eq:nonad_q_f_dist}
-        provides good lower and upper bounds of the final obliquity for
-        $\theta_{\rm sd,i} \lesssim 45^\circ$.
-\end{itemize}
+First consider the case with $\theta_{\rm sd, i} = 0$. This corresponds to a
+well-defined initial obliquity $\theta_i = I$ (more precisely, the initial
+condition is CS2). Thus
+\begin{align}
+    \sin\theta_{\rm f} &\simeq \sin I \abs{1 + e^{-i\varphi_0}
+            \sqrt{\frac{2\pi \cos I}{\epsilon}}},\nonumber\\
+        &\approx \sin I \sqrt{\frac{2\pi \cos I}{\epsilon}},
+            \label{eq:theta_2f}
+\end{align}
+where the second equality assumes $\sqrt{2\pi/\epsilon}\gg 1$.
+Fig.~\ref{fig:nonad_3_scan} shows the final obliquity as function of $\epsilon$
+for $\theta_{\rm sd,i} = 0$ and $I = 5^\circ$. We see that the agreement between
+the numerical results and Eq.~\eqref{eq:theta_2f} is excellent. For $\epsilon
+\ll \epsilon_{\rm c}$, we find $\theta_{\rm f} \simeq 90^\circ$, in agreement
+with the result of adiabatic evolution (see Fig.~\ref{fig:ad_ensemble}).
+
+For $\theta_{\rm sd, i}\neq 0$, the set of possible initial conditions forms a
+ring of angular radius $\theta_{\rm sd, i}$ about $\uv{l}_{\rm d}$ (or CS2). We
+find that this set of initial conditions approximately evolves under
+nonadiabatic evolution to a ring of angular width $\theta_{\rm sd, i}$ about the
+$\theta_{\rm sd, i} = 0$ result given by Eq.~\eqref{eq:theta_2f}. Intuitively,
+because of the rapid precession of $\uv{l}$ around $\uv{l}_d$ at $\eta = \eta_i
+\gg 1$, the initial $\theta_i$ varies rapidly but is centered around $\theta_i
+\simeq I$. Thus the final obliquity spans in the range
+\begin{equation}
+    \abs{\sqrt{\frac{2\pi \cos I}{\epsilon}}\sin I
+            - \sin\theta_{\rm sd, i}}
+        \lesssim \sin\theta_{\rm f}
+        \lesssim
+            \sqrt{\frac{2\pi \cos I}{\epsilon}}\sin I + \sin \theta_{\rm sd, i}
+    .\label{eq:nonad_q_f_dist}
+\end{equation}
+Fig.~\ref{fig:nonad_3_ensemble} shows the numerical result of $\theta_f$ vs
+$\theta_{\rm sd,i}$ for $I =5^\circ$ and $\epsilon = 0.3$. We see that
+Eq.~\eqref{eq:nonad_q_f_dist} provides good lower and upper bounds of the final
+obliquity for $\theta_{\rm sd,i} \lesssim 45^\circ$.
 
 \begin{figure}
     \centering
@@ -1073,66 +1070,82 @@ nonadiabatic evolution is then described by:
     $\theta_{\rm sd,i} = 0$ and $I = 5^\circ$. The shaded area, bordered by the
     black line, corresponds to the adiabatic regime estimated by
     Eq.~\eqref{eq:ad_constr}. The blue dots are numerical results, and the red
-    dashed line corresponds to Eq.~\eqref{eq:nonad_q_f}, which is in good
+    dashed line corresponds to Eq.~\eqref{eq:theta_2f}, which is in good
     agreement with numerical results for $\epsilon > \epsilon_{\rm c} \approx
-    0.1$ (the nonadiabatic regime); $\theta_{\rm f} \simeq  90^\circ$ in the
-    adiabatic regime ($\epsilon\ll \epsilon_{\rm c}$).}\label{fig:nonad_3_scan}
+    0.1$ (the nonadiabatic regime). Note that $\theta_{\rm f} \simeq  90^\circ$
+    in the adiabatic regime ($\epsilon\ll \epsilon_{\rm
+    c}$).}\label{fig:nonad_3_scan}
 \end{figure}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3scan_20.png}
-    \caption{Same as Fig.~\ref{fig:nonad_3_scan} but for $I=20^\circ$. The right
-    shaded area is where $\theta_{\rm f}$ predicted by Eq.~\eqref{eq:nonad_q_f}
-    violates the assumption $\theta_{\rm f} \gg \theta_{\rm
-    i}$.}\label{fig:nonad_3_scan_20}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3scan_20.png}
+%     \caption{Same as Fig.~\ref{fig:nonad_3_scan} but for $I=20^\circ$. The right
+%     shaded area is where $\theta_{\rm f}$ predicted by Eq.~\eqref{eq:theta_2f}
+%     violates the assumption $\theta_{\rm f} \gtrsim \theta_{\rm
+%     i}$.}\label{fig:nonad_3_scan_20}
+% \end{figure}
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3_ensemble_05_05.png}
-    \caption{$\theta_{\rm  f}$ vs $\theta_{\rm sd, i}$ for $I=5^\circ$
-    and $\epsilon = 0.3$ (firmly in the nonadiabatic regime). The blue
-    dots represent numerical results, and the two red lines show the
-    analytical lower and upper limits given by
+    \caption{Final obliquity $\theta_{\rm  f}$ vs $\theta_{\rm sd, i}$ for
+    $I=5^\circ$ and $\epsilon = 0.3$ (firmly in the nonadiabatic regime). The
+    blue dots represent numerical results, and the two red lines show the
+    analytical lower and upper bounds given by
     Eq.~\eqref{eq:nonad_q_f_dist}.}\label{fig:nonad_3_ensemble}
 \end{figure}
 
-\section{Summary and Discussion}\label{s:disc}
+\section{Summary}\label{s:disc}
 
-%DL: Not done yet
-
-In this paper, we have studied the excitation of planetary obliquities by a
-dissipating protoplanetary disk for arbitrary initial misalignment angles. We
-present our result as a mapping from $\theta_{\rm sd, i}$ to $\theta_{\rm f}$,
-where $\theta_{\rm f}$ is the final planetary obliquity and $\theta_{\rm sd, i}$
-is the initial misalignment angle between the planet's spin axis and the disk's
-orbital angular momentum. We have presented analytical results that capture the
-behavior of this mapping in both the adiabatic and nonadiabatic limits:
+In this paper, we have studied the excitation of planetary obliquities due to
+gravitational interaction with an exterior, dissipating (mass-losing)
+protoplanetary disk. Obliquity excitation occurs as the system passes through a
+secular resonance between spin precession and orbital (nodal) precession. This
+scenario was recently studied by \citet{millholland_disk}, who focused on the
+special case of small initial obliquities.  In contrast, we consider arbitrary
+initial misalignment angles in this paper, motivated by the fact that planet
+formation through core accretion can lead to a wide range of initial spin
+orientations.  We present our result as a mapping from $\theta_{\rm sd, i}$ to
+$\theta_{\rm f}$, where $\theta_{\rm sd, i}$ is the initial misalignment angle
+between the planet's spin axis and the disk's orbital angular momentum axis, and
+$\theta_{\rm f}$ is the final planetary obliquity. We have derived analytical
+results that capture the behavior of this mapping in both the adiabatic and
+nonadiabatic limits:
 \begin{enumerate}
-    \item In the adiabatic limit, we reproduce the known result $\theta_{\rm f}
-        = 90^\circ$ for $\theta_{\rm sd, i} \approx 0$ \citep{millholland_disk}.
-        We demonstrate via numerical simulation and analytical argument the
-        dual-valued behavior of $\theta_{\rm f}$ as nonzero initial spin-disk
-        misalignment angles $\theta_{\rm sd, i}$ are permitted (see
-        Fig.~\ref{fig:ad_ensemble}). We are able to capture both the exact final
-        $\theta_{\rm f}$ values and the probabilities of observing each value
-        via careful accounting of enclosed phase space area and separatrix
-        crossing dynamics.
-
-    \item As the system transitions more abruptly, the adiabatic prediction
-        breaks down when criterion Eq.~\eqref{eq:ad_constr} is violated. We find
-        a broad range of final obliquities can be reached for a given
-        $\theta_{\rm sd, i}$ (see Fig.~\ref{fig:nonad_3_ensemble}). We provide
-        an analytical expression of the bounds on $\theta_{\rm f}$ in
-        Eq.~\eqref{eq:nonad_q_f_dist}.
+    \item In the adiabatic limit (i.e.\ the disk dissipates at a
+        sufficiently slow rate), we reproduce the known result $\theta_{\rm f}
+        \simeq 90^\circ$ for $\theta_{\rm sd, i} \simeq 0$. We demonstrate via
+        numerical calculation and analytical argument the dual-valued behavior
+        of $\theta_{\rm f}$ for nonzero initial spin-disk misalignment angles
+        $\theta_{\rm sd, i}$ (see Fig.~\ref{fig:ad_ensemble}). We are able to
+        capture both the exact final $\theta_{\rm f}$ values and the
+        probabilities of achieving each value via careful accounting of
+        adiabatic invariance and separatrix crossing dynamics.
+    \item As the disk dissipates more rapidly, the adiabatic condition
+        [Eq.~\eqref{eq:ad_constr}] breaks down, we find that a broad range of
+        final obliquities can be reached for a given $\theta_{\rm sd, i}$ (see
+        Fig.~\ref{fig:nonad_3_ensemble}). We provide an analytical expression of
+        the bounds on $\theta_{\rm f}$ in Eq.~\eqref{eq:nonad_q_f_dist}.
 \end{enumerate}
 
-It is of interest to note the leading order dependence of $\theta_{\rm f}$ on
-$\theta_{\rm sd, i}$ [given by Eq.~\eqref{eq:qf_21_approx} and
-Eq.~\eqref{eq:qf_23_approx}] is second order. Therefore, if $\theta_{\rm sd, i}$
-is generally small, as might be expected for planets that do not experience
-strong collisions or scattering, resonance passage induced by an adiabatically
-dissipating protoplanetary disk is expected to significantly narrow the final
-$\theta_{\rm f}$ spread compared to the initial $\theta_{\rm sd, i}$ spread.
+As noted in Section 1, while in this paper we have examined a specific scenario
+of generating/modifying planetary obliquities from planet-disk interactions, the
+dynamical problem have studied is more general
+\citep{colombo1966,peale1969,peale1974possible,ward1975tidal,henrard1987}. Our
+work goes beyond these previous works and provides the most general solution to
+the evolution of ``Colombo's top'' as the system evolves from the ``weak
+spin-orbit coupling'' regime ($\eta\gg 1$) to the ``strong spin-orbit coupling''
+regime ($\eta\ll 1$).  The new analytical results presented in this paper can be
+adapted for other applications.
+
+\section*{Acknowledgements}
+
+We thank Kassandra Anderson for discussion and assistance in the early phase of
+this work. DL thanks the Dept.\ of Astronomy and the Miller Institute for Basic
+Science at UC Berkeley for hospitality while part of this work was carried out.
+This work has been supported in part by the NSF grant AST-17152 and NASA grant
+80NSSC19K0444. YS is supported by the NASA FINESST grant
+19-ASTRO19-0041.% chktex 8
+
 
 \bibliographystyle{mnras}
 \bibliography{Su_sep_cross}
@@ -1143,9 +1156,9 @@ $\theta_{\rm f}$ spread compared to the initial $\theta_{\rm sd, i}$ spread.
 
 \section{Cassini State Local Dynamics}\label{s:local_dynamics}
 
-In this section, we linearize the equations of motion near each CS\@. We
-determine the stability of each CS and the local libration frequencies or growth
-rates of the CSs.
+In this appendix, we linearize the equations of motion near each CS and
+determine its stability. We derive the local libration frequency or growth
+rate for perturbations around each CS\@.
 
 \subsection{Canonical Equations of Motion and Solutions}\label{ss:canonical}
 
@@ -1153,7 +1166,7 @@ We adopt spherical coordinate system where $\uv{l} =
 \uv{z}$ and $\theta, \phi$ are the polar and azimuthal angle of $\uv{s}$. We
 choose $\uv{l}_{\rm d}$ at coordinates $\theta = I, \phi = \pi$ (see
 Figs.~\ref{fig:cs_vecs} and~\ref{fig:cs_locs}). We use the convention
-$\theta \in [0, \pi)$% chktex 9
+$\theta \in [0, \pi)$ % chktex 9
 and $\phi \in [0, 2\pi)$.% chktex 9
 
 The equations of motion in $\p{\phi, \cos \theta}$ follow by
@@ -1217,22 +1230,24 @@ approximate solutions for the CSs in the limits $\eta \ll 1$ and $\eta \gg 1$.
 For $\eta \ll 1$:
 \begin{itemize}
     \item CS1: $\phi_1 = 0$, $\theta_1 \simeq \eta \sin I$.
-    \item CS2: $\phi_2 = \pi$, $\theta_2 \simeq \pi / 2 + \eta \cos I$.
+    \item CS2: $\phi_2 = \pi$, $\theta_2 \simeq \pi / 2 - \eta \cos I$.
     \item CS3: $\phi_3 = 0$, $\theta_3 \simeq \pi - \eta \sin I$.
     \item CS4: $\phi_4 = 0$, $\theta_4 \simeq \pi / 2 - \eta \cos I$.
 \end{itemize}
 For $\eta \gg 1$, only CS2 and CS3 exist and are given by:
 \begin{itemize}
-    \item CS2: $\phi_2 = \pi$, $\theta_2 \simeq I - \sin I \cos I / \eta$.
-    \item CS3: $\phi_3 = 0$, $\theta_3 \simeq \pi - I + \sin I \cos I / \eta$.
+    \item CS2: $\phi_2 = \pi$, $\theta_2 \simeq I + \eta^{-1}\sin I \cos I$.
+    \item CS3: $\phi_3 = 0$, $\theta_3 \simeq \pi - I + \eta^{-1}\sin I \cos I$.
 \end{itemize}
+Note that in the convention of Fig.~\ref{fig:cs_locs}, CS1, CS3 and CS4 have
+negative $\theta$ values since $\phi=0$.
 
 \subsection{Stability and Frequency of Local Oscillations}\label{ss:eigens}
 
 To examine stability of each CS, we linearize Eqs.~\eqref{se:H_eom} about an
 equilibrium located at $\phi_{\rm cs} = 0$ (CS 1, 3, 4) or $\pi$ (CS2) but
 arbitrary $\theta_{\rm cs}$. Setting $\phi = \phi_{\rm cs} + \delta \phi, \theta
-= \theta_{\rm cs} + \delta \theta$ gives
+= \theta_{\rm cs} + \delta \theta$ yields
 \begin{subequations}\label{se:H_eom_lin}
     \begin{align}
         \rd{\delta \phi}{t} &= \sin \theta_{\rm cs} \delta \theta

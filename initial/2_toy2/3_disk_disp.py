@@ -984,7 +984,7 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
 
         # fit = dong's est +- linear
         dong_est_deg = np.degrees(np.sqrt(2 * np.pi / (-eps))
-                                  * np.sin(2 * I) / 2)
+                                  * np.sin(I) * np.sqrt(np.cos(I)))
         dqs_d = np.degrees(dqs)
         ax1.plot(dqs_d, dong_est_deg + (dqs_d - min(dqs_d)), 'r',
                  zorder=1)
@@ -1054,10 +1054,14 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
     for qdeg_per in qdeg_finals:
         plt.semilogx(eps_vals, qdeg_per, 'bo', ms=my_ms)
 
-    s_final = np.sqrt(2 * np.pi / eps_vals) * np.sin(I) * np.cos(I)
-    q_final = np.degrees(s_final * np.cos(I))
+    s_final = np.sqrt(2 * np.pi / eps_vals) * np.sin(I) * np.sqrt(np.cos(I))
+    valid_idxs = np.where(np.abs(s_final) < 1)[0]
+    eps_one = 2 * np.pi * (np.sin(I) * np.sqrt(np.cos(I)))**2
+    q_final = np.concatenate((np.degrees(np.arcsin(s_final[valid_idxs])), [90]))
     ylims = [0, plt.ylim()[1]]
-    plt.semilogx(eps_vals, q_final, 'r:', label='Analytical')
+    plt.semilogx(np.concatenate((eps_vals[valid_idxs], [eps_one])),
+                 q_final,
+                 'r:', label='Analytical')
     eta_cross = get_etac(I) # some characteristic value
     q_x = q2 # another ballpark value, crossing theta
 
@@ -1155,8 +1159,7 @@ def plot_manys():
     # sim_for_many(np.radians(5), eps=-3e-4, n_pts=101, n_dqs=51, extra_plot=True)
     # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
     #              two_panel=False, extra_plot=True)
-    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
-    #              two_panel=False, extra_plot=True)
+    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51, #              two_panel=False, extra_plot=True)
     # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
     # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
     # sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
@@ -1184,9 +1187,9 @@ if __name__ == '__main__':
     # ret = solve_ic_base(I, -5, y0, np.inf, events=[term_event])
     # plot_traj_colors(I, ret, '3testo_inf')
 
-    # eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
-    eps_scan(np.radians(20), eps_max=10, eps_min=5e-2,
-             n_pts=301, filename='3scan_20')
+    eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
+    # eps_scan(np.radians(20), eps_max=10, eps_min=5e-2,
+    #          n_pts=301, filename='3scan_20')
     # I_scan(5, filename='3Iscan_test', n_pts=31, n_pts_ring=2)
     # I_scan(1, filename='3Iscan_test_eps1', n_pts=31, n_pts_ring=2)
     # I_scan(20, filename='3Iscan_test_eps20', n_pts=31, n_pts_ring=2)
