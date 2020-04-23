@@ -22,7 +22,7 @@ plt.rc('ytick', direction='in', left=True, right=True)
 PLOT_DIR = '1plots'
 from utils import to_cart, to_ang, roots, H, solve_ic_base,\
     get_etac
-dpi = 600
+dpi = 200
 my_lw = 4.5
 lw_single = 2.0
 my_ms = 2
@@ -996,6 +996,19 @@ def sim_for_many(I, eps=-1e-3, eta0_mult=10, etaf=1e-3, n_pts=21, n_dqs=51,
                  'r',
                  zorder=1)
 
+        # alternative fit: use theta_i = [abs(theta_sdi - I), theta_sdi + I]
+        # bound_1_deg = []
+        # bound_2_deg = []
+        # for dq in dqs:
+        #     bound_1_deg.append(np.degrees(
+        #         np.sqrt(2 * np.pi / (-eps))
+        #         * np.tan(I) * np.cos(abs(dq - I))**(3/2)))
+        #     bound_2_deg.append(np.degrees(
+        #         np.sqrt(2 * np.pi / (-eps))
+        #         * np.tan(I) * np.cos(dq + I)**(3/2)))
+        # ax1.plot(dqs_d, bound_1_deg, 'g:', zorder=1,)
+        # ax1.plot(dqs_d, bound_2_deg, 'g:', zorder=1,)
+
         # ax1.set_title(title)
         ax1.set_ylim(ymin=0)
         ax1.set_xlim([0, 90])
@@ -1083,7 +1096,7 @@ def eps_scan(I, filename='3scan', dq=0.01, n_pts=151, n_pts_ring=21,
                [r'$%d$' % np.degrees(I), r'$90$'])
     plt.ylim(ylims)
     plt.xlabel(r'$\epsilon$')
-    plt.ylabel(r'$\theta_{\rm f}$')
+    plt.ylabel(r'$\theta_{\rm 0f}$')
     # plt.title(r'$I = %d^\circ$' % np.degrees(I))
     plt.tight_layout()
     # plt.legend()
@@ -1177,7 +1190,7 @@ def plot_manys():
 if __name__ == '__main__':
     I = np.radians(5)
     # plot_singles(I)
-    # plot_manys()
+    plot_manys()
 
     # testing high epsilon
     # eta_c = get_etac(I)
@@ -1187,7 +1200,7 @@ if __name__ == '__main__':
     # ret = solve_ic_base(I, -5, y0, np.inf, events=[term_event])
     # plot_traj_colors(I, ret, '3testo_inf')
 
-    eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
+    # eps_scan(I, eps_max=2, eps_min=1e-2, n_pts=301, filename='3scan')
     # eps_scan(np.radians(20), eps_max=10, eps_min=5e-2,
     #          n_pts=301, filename='3scan_20')
     # I_scan(5, filename='3Iscan_test', n_pts=31, n_pts_ring=2)

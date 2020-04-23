@@ -142,6 +142,9 @@ def plot_eigens(I=np.radians(5)):
     plt.savefig('2_lambdas.png', dpi=400)
     plt.clf()
 
+def get_xy(angle, mag=1):
+    return 1 - mag * np.sin(np.radians(angle)), mag * np.cos(np.radians(angle))
+
 def plot_3vec():
     ''' plots the relative orientations of the three vectors '''
     offset = 0.02 # offset for text from arrow tip
@@ -151,8 +154,6 @@ def plot_3vec():
     plt.axis('off')
     ax.set_xlim(0.2, 1.1)
     ax.set_ylim(-0.1, 1.1)
-    def get_xy(angle):
-        return 1 - np.sin(np.radians(angle)), np.cos(np.radians(angle))
 
     # central dot
     ax.plot(1, 0, 'ko', ms=8, zorder=np.inf)
@@ -161,7 +162,7 @@ def plot_3vec():
 
     # draw three arrows
     l_xy = get_xy(0)
-    l_c = 'b'
+    l_c = 'k'
     ax.annotate('', xy=l_xy, xytext=(1, 0),
                  arrowprops=arrowprops(l_c))
     ax.text(l_xy[0] - offset / 3, l_xy[1] + offset, r'$\hat{\mathbf{l}}$',
@@ -212,7 +213,87 @@ def plot_3vec():
     plt.savefig('2_3vec', dpi=400)
     plt.clf()
 
+def plot_nonad_diagram():
+    ''' plots the relative orientations of the three vectors '''
+    offset = 0.02 # offset for text from arrow tip
+    alpha = 0.8
+
+    fig, ax = plt.subplots(1, 1, figsize=(4, 4))
+    plt.axis('off')
+    ax.set_xlim(0, 1.2)
+    ax.set_ylim(-0.02, 1.1)
+    fs = 14
+
+    # central dot
+    ax.plot(1, 0, 'ko', ms=8, zorder=np.inf)
+    arrowprops = lambda c: {'fc': c, 'ec': c, 'lw': 1}
+
+    # draw three arrows
+    l_xy = get_xy(0)
+    l_c = 'b'
+    ax.annotate('', xy=l_xy, xytext=(1, 0),
+                 arrowprops=arrowprops(l_c), zorder=2)
+    ax.text(l_xy[0] - offset / 3, l_xy[1] + offset, r'$\hat{\mathbf{l}}$',
+            fontdict={'c': l_c, 'size': fs}, zorder=2)
+
+    ld_q = 20
+    ld_xy = get_xy(ld_q)
+    ld_c = 'k'
+    ax.annotate('', xy=ld_xy, xytext=(1, 0),
+                arrowprops=arrowprops(ld_c), zorder=2)
+    ax.text(ld_xy[0] - offset / 2, ld_xy[1] + offset,
+            r'$I$', fontdict={'c': ld_c, 'size': fs}, zorder=2)
+
+    ld_qf = 50
+    ldqf_xy = get_xy(ld_qf)
+    ldqf_c = (0.2, 0.2, 0.2)
+    ax.annotate('', xy=ldqf_xy, xytext=(1, 0),
+                arrowprops=arrowprops(ldqf_c), zorder=2)
+    ax.text(ldqf_xy[0] - 5 * offset, ldqf_xy[1] + offset, r'$\theta_{\rm 0f}$',
+            fontdict={'c': ldqf_c, 'size': fs}, zorder=2)
+
+    # draw locations of obliquities
+    def draw(q_cent, c, c_fill, q_sdi=10, mag1=0.9, mag2=0.45, hatch=None):
+        vrts = np.array([get_xy(q_cent + q_sdi, mag=mag1),
+                         get_xy(q_cent - q_sdi, mag=mag1),
+                         get_xy(q_cent - q_sdi, mag=mag2),
+                         get_xy(q_cent + q_sdi, mag=mag2)])
+        ax.plot(vrts[:2, 0], vrts[:2, 1], c=c, zorder=1)
+        ax.fill(vrts[:, 0], vrts[:, 1], c=c_fill, zorder=0)
+        if hatch:
+            fill_polygon = patches.Polygon(vrts, fill=False, hatch=hatch)
+            ax.add_patch(fill_polygon)
+        return vrts
+    verts_i = draw(ld_q, (1, 0.3, 0.3), (0.7, 0.2, 0.2), mag2=0)
+    verts_f = draw(ld_qf, (1, 0.5, 0.5), (0.7, 0.4, 0.4), hatch='/', mag2=0)
+    ax.plot([verts_f[0, 0], 1], [verts_f[0, 1], verts_f[0, 1]], 'g',
+            zorder=3, lw=2.5)
+    ax.plot([verts_f[1, 0], 1], [verts_f[1, 1], verts_f[1, 1]], 'g',
+            zorder=3, lw=2.5)
+
+    # label angular coordinates
+    ax.text(verts_i[0, 0] - fs / 65, verts_i[0, 1] + 3 * offset,
+            r'$\theta_{2} + \theta_{\rm sd, i}$', c=(1, 0.3, 0.3),
+            size=fs)
+
+    # label the range of final obliquities
+    obl_final_label_ycoord = (2 * verts_f[0, 1] + verts_f[1, 1]) / 3
+    ax.text(1 + 2 * offset, obl_final_label_ycoord,
+            r'$\cos \theta_{\rm f}$', c='g', size=fs)
+
+    # try drawing case where q_sdi > q_0f? Too cluttered
+    # draw(ld_q, (0.3, 1, 0.3), (0.2, 0.7, 0.2),
+    #      q_sdi=60, mag1=0.45, mag2=0)
+    # draw(ld_qf, (0.5, 1, 0.5), (0.4, 0.7, 0.4),
+    #      hatch='/', q_sdi=60, mag1=0.45, mag2=0)
+
+    ax.set_aspect('equal')
+    plt.tight_layout()
+    plt.savefig('2_nonad_rot', dpi=200)
+    plt.clf()
+
 if __name__ == '__main__':
     # plot_cs(np.radians(5))
-    plot_eigens(np.radians(5))
+    # plot_eigens(np.radians(5))
     # plot_3vec()
+    plot_nonad_diagram()
