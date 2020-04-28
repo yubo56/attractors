@@ -287,9 +287,9 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
         ax1.semilogx(etas, mu_dat, c='g', lw=0.5, alpha=0.7, label='Sim')
     max_valid_idxs = np.where(mu_max > 0)[0]
     ax1.semilogx(eta4s[max_valid_idxs], mu_max[max_valid_idxs],
-                 'k:', label='Sep')
-    ax1.semilogx(eta4s, mu_min, 'k:')
-    ax1.semilogx(etas, np.cos(q2s), 'r--', label='CS2')
+                 'k', label='Sep')
+    ax1.semilogx(eta4s, mu_min, 'k')
+    ax1.semilogx(etas, np.cos(q2s), 'r', label='CS2')
     ax1.set_ylabel(r'$\cos\theta$')
 
     # ax1.set_title(r'$I = %d^\circ$' % np.degrees(I))
@@ -1189,8 +1189,8 @@ def plot_manys():
 
 if __name__ == '__main__':
     I = np.radians(5)
-    # plot_singles(I)
-    plot_manys()
+    plot_singles(I)
+    # plot_manys()
 
     # testing high epsilon
     # eta_c = get_etac(I)

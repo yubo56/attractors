@@ -171,7 +171,7 @@ def plot_3vec():
 
     ld_q = 20
     ld_xy = get_xy(ld_q)
-    ld_c = 'k'
+    ld_c = 'b'
     ax.annotate('', xy=ld_xy, xytext=(1, 0),
                  arrowprops=arrowprops(ld_c))
     ax.text(ld_xy[0] - offset / 2, ld_xy[1] + offset,
@@ -324,7 +324,7 @@ def plot_nonad_diagram():
     plt.clf()
 
 if __name__ == '__main__':
-    plot_cs(np.radians(5))
-    plot_eigens(np.radians(5))
+    # plot_cs(np.radians(5))
+    # plot_eigens(np.radians(5))
     plot_3vec()
-    plot_nonad_diagram()
+    # plot_nonad_diagram()
