@@ -1,8 +1,16 @@
-    \documentclass[
-        fleqn,
-        usenatbib,
-        % referee,
-    ]{mnras}
+%%  twocolumn   : two text columns, 10 point font, single spaced article.
+%%                This is the most compact and represent the final published
+%%                derived PDF copy of the accepted manuscript from the publisher
+%%  manuscript  : one text column, 12 point font, double spaced article.
+%%  preprint    : one text column, 12 point font, single spaced article.
+%%  preprint2   : two text columns, 12 point font, single spaced article.
+%%  modern      : a stylish, single text column, 12 point font, article with
+%%        wider left and right margins. This uses the Daniel
+%%        Foreman-Mackey and David Hogg design.
+%%  RNAAS       : Preferred style for Research Notes which are by design
+%%                lacking an abstract and brief. DO NOT use \begin{abstract}
+%%                and \end{abstract} with this style.
+    \documentclass[twocolumn]{aastex63}
     \usepackage{
         amsmath,
         amssymb,
@@ -27,8 +35,8 @@
     \newcommand*{\at}[1]{\left.#1\right|}
     \newcommand*{\abs}[1]{\left|#1\right|}
     \newcommand*{\ev}[1]{\langle#1\rangle}
-    \newcommand*{\bm}[1]{\boldsymbol{\mathbf{#1}}}
-    \newcommand*{\uv}[1]{\hat{\bm{#1}}}
+    \newcommand*{\bsmb}[1]{\boldsymbol{\mathbf{#1}}}
+    \newcommand*{\uv}[1]{\hat{\bsmb{#1}}}
     \newcommand*{\p}[1]{\left(#1\right)}
     \newcommand*{\s}[1]{\left[#1\right]}
     \newcommand*{\z}[1]{\left\{#1\right\}}
@@ -38,31 +46,43 @@
 
     \colorlet{Corr}{red}
 
+    \newcommand{\vdag}{(v)^\dagger}
+    \newcommand\aastex{AAS\TeX}
+    \newcommand\latex{La\TeX}
 
-\title[Exoplanet Obliquities]{Dynamics of Colombo's Top: Generating Exoplanet
-Obliquities from Planet-Disc Interactions}
-\author[Y. Su and D. Lai]{
-Yubo Su$^1$,
-Dong Lai$^{1,2}$
-\\
-$^1$ Cornell Center for Astrophysics and Planetary Science, Department of
-Astronomy, Cornell University, Ithaca, NY 14853, USA
-\\
-$^2$ Tsung-Dao Lee Institute, Shanghai Jiao Tong University, Shanghai, 200240,
-China
-}
+    \received{XXXX}
+    \revised{XXXX}
+    \accepted{XXXX}
+    \submitjournal{ApJ}
 
 % for i in ../initial/99_misc/2_nonad_rot.png ../initial/99_misc/2_3vec.png ../initial/99_misc/2_cs_locs.png ../initial/0_eta/1contours_flip.png ../initial/99_misc/1_areas.png ../initial/2_toy2/3_ensemble_05_35.png ../initial/2_toy2/3_ensemble_10_35.png ../initial/2_toy2/3_ensemble_20_35.png ../initial/2_toy2/3testo21.png ../initial/2_toy2/3testo21_subplots.png ../initial/2_toy2/3testo23.png ../initial/2_toy2/3testo23_subplots.png ../initial/2_toy2/3testo31.png ../initial/2_toy2/3testo31_subplots.png ../initial/2_toy2/3testo321.png ../initial/2_toy2/3testo321_subplots.png ../initial/2_toy2/3_ensemble_05_25.png ../initial/2_toy2/3_ensemble_05_15.png ../initial/2_toy2/3testo_nonad.png ../initial/2_toy2/3testo_nonad_subplots.png ../initial/2_toy2/3_ensemble_05_05.png ../initial/2_toy2/3scan.png ../initial/2_toy2/3scan_20.png ../initial/99_misc/2_lambdas.png; do cp $i plots_diskdisp; done
+\shorttitle{Exoplanet Obliquities}
+\shortauthors{Y.\ Su and D.\ Lai}
 
-\date{Accepted XXX\@. Received YYY\@; in original form ZZZ}
+\begin{document}
 
-\pubyear{2020}
+\title{Template \aastex Article with Examples:
+v6.3\footnote{Released on June, 10th, 2019}}
 
-\begin{document}\label{firstpage}
-\pagerange{\pageref{firstpage}--\pageref{lastpage}}
-\maketitle
+\title{Dynamics of Colombo's Top: Generating Exoplanet Obliquities from
+Planet-Disc Interactions}
+
+
+\correspondingauthor{Yubo Su}
+\email{yubosu@astro.cornell.edu}
+
+\author[0000-0001-8283-3425]{Yubo Su}% chktex 8
+\affiliation{Cornell Center for Astrophysics and Planetary Science, Department
+of Astronomy, Cornell University, Ithaca, NY 14853, USA}
+
+\author[0000-0002-1934-6250]{Dong Lai}% chktex 8
+\affiliation{Cornell Center for Astrophysics and Planetary Science, Department
+of Astronomy, Cornell University, Ithaca, NY 14853, USA}
+\affiliation{Tsung-Dao Lee Institute, Shanghai Jiao Tong University, Shanghai, 200240,
+China}
 
 \begin{abstract}
+
 Large planetary spin-orbit misalignments (obliquities) may strongly influence
 atmospheric circulation and tidal heating in the planet. A promising avenue to
 generate obliquities is via spin-orbit resonances, where the spin and orbital
@@ -78,11 +98,8 @@ be excited. We obtain analytical expressions for the final obliquities for most
 interesting regimes of parameter space. The dynamical system studied in this
 paper is an example of ``Colombo's top'', and our analysis and results can be
 adapted for other applications.
-\end{abstract}
 
-\begin{keywords}
-planet--star interactions % chktex 8
-\end{keywords}
+\end{abstract}
 
 \section{Introduction}\label{s:intro}
 
@@ -204,10 +221,10 @@ radius $R_{\rm p}$ and spin angular frequency $\Omega_{\rm p}$) at semimajor
 axis $a_{\rm p}$, and a protoplanetary disk of mass $M_{\rm d}$. For simplicity,
 we treat the disk as a ring of radius $r_{\rm d}$, but it is simple to
 generalize to a disk with finite extent \citep[see][]{millholland_disk}. Denote
-$\bm{S}$ the spin angular momentum and $\bm{L}$ the orbital angular momentum of
-the planet, and $\bm{L}_{\rm d}$ the angular momentum of the disk. The
-corresponding unit vectors are $\uv{s} \equiv \bm{S} / S$, $\uv{l} \equiv \bm{L}
-/ L$, and $\uv{l}_{\rm d} \equiv \bm{L}_{\rm d} / L_{\rm d}$.
+$\bsmb{S}$ the spin angular momentum and $\bsmb{L}$ the orbital angular momentum of
+the planet, and $\bsmb{L}_{\rm d}$ the angular momentum of the disk. The
+corresponding unit vectors are $\uv{s} \equiv \bsmb{S} / S$, $\uv{l} \equiv \bsmb{L}
+/ L$, and $\uv{l}_{\rm d} \equiv \bsmb{L}_{\rm d} / L_{\rm d}$.
 
 The spin axis $\uv{s}$ of the planet tends to precess around its orbital
 (angular momentum) axis $\uv{l}$, driven by the gravitational torque from the
@@ -353,7 +370,8 @@ obliquities as a function of $\eta$ are shown in Fig.~\ref{fig:cs_locs}.
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/2_cs_locs.png}
+    \centering
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/2_cs_locs.png}
     \caption{Cassini state obliquities as a function of $\eta$ for $I =
     5^\circ$. The thin vertical dashed line indicates $\eta_{\rm c}$ ($= 0.766$
     for $I = 5^\circ$), where CS1 and CS4 merge and annihilate, and the thin
@@ -439,7 +457,7 @@ between these extended zones is denoted by the dashed black line in panel (a) of
 Fig.~\ref{fig:eq_1contours}, where no separatrix exists.
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/1_areas.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/1_areas.png}
     \caption{The solid lines show the fractional areas of each of the zones
     $A_{\rm i}(\eta) / 4\pi$ as given by Eqs.~\eqref{se:area_ward}. The colored
     dotted lines correspond to small $\eta$ approximations used in
@@ -458,64 +476,67 @@ Fig.~\ref{fig:eq_1contours}, where no separatrix exists.
 In this section, we study the evolution of the planetary obliquity $\theta$ when
 the parameter $\eta$ [or the disk mass $M_{\rm d}$; see Eqs.~\eqref{eq:eta}
 and~\eqref{eq:deta_dt}] decreases sufficiently slowly that the evolution is
-adiabatic. Strictly speaking, this requires the disk evolution timescale $t_{\rm
-d}$ [Eq.~\eqref{eq:dmd_dt}] be much larger than all timescales of the dynamical
-system governed by the Hamiltonian [Eq.~\eqref{eq:H}]. This is of course not
-possible in all cases, as the motion along the separatrix has an infinite
-period.
+adiabatic. \textcolor{Corr}{Intuitively, this requires the disk evolution time
+$t_{\rm d}$ [Eq.~\eqref{eq:dmd_dt}] be larger than the spin precession period,
+$2\pi / \alpha$, i.e.\ $\epsilon = 1 / (\alpha t_{\rm d}) \lesssim 1/ (2\pi)$.}
 
-In practice, as $\eta$ evolves, the system only crosses the separatrix once or
-twice, while it spends many orbits inside one of the three zones and far from
-the separatrix. Thus, a \emph{weak adiabaticity criterion} is
-that\textcolor{Corr}{, for all equilibria/fixed points, the local
-circulation/libration timescales are much shorter than motion of the
-equilibrium}. If this criterion is satisfied, then the system will evolve
-adiabatically for most of its evolution save one or two separatrix crossings.
+Strictly speaking, \textcolor{Corr}{adiabaticity} requires $t_{\rm d}$ be much
+larger than all timescales of the dynamical system governed by the Hamiltonian
+[Eq.~\eqref{eq:H}]. This is of course not possible in all cases, as the motion
+along the separatrix has an infinite period. In practice, as $\eta$ evolves, the
+system only crosses the separatrix once or twice, while it spends many orbits
+inside one of the three zones and far from the separatrix. Thus, a \emph{weak
+adiabaticity criterion} is that, for all equilibria/fixed points, the local
+circulation/libration periods are much shorter than the
+\textcolor{Corr}{timescale for the} motion of the equilibria
+\textcolor{Corr}{due to changing $\eta$}. If this criterion is satisfied, then
+the system will evolve adiabatically for most of its
+evolution save one or two separatrix crossings.
 
 As shown in Appendix~\ref{ss:eigens}, libration about CS2 is slower than that
 about CS1 or CS3. As such, it has the smallest characteristic frequency in the
-system. The weak adiabaticity criterion \textcolor{Corr}{is equivalent to
-requiring that, for all times other than separatrix crossing, the obliquity of
-CS2 ($\theta_2$) evolve over longer timescales than the local libration period
-about CS2, or
+system. The weak adiabaticity criterion is equivalent to
+requiring that, at all times other than separatrix crossing, the obliquity of
+CS2 ($\theta_2$) evolve over a longer timescale than the local libration period
+about CS2, i.e.
 \begin{equation}
-    \rd{\theta_2(t)}{t} \lesssim \frac{\omega_{\rm lib}(t)}{2\pi},\label{eq:ad_base}
+    \abs{\rd{\theta_2}{\tau}} \lesssim
+        \frac{\omega_{\rm lib}}{2\pi},\label{eq:ad_base}
 \end{equation}
 where
 \begin{equation}
-    \omega_{\rm lib}(t) = \sqrt{\eta(t)\sin I \sin \theta_2(t)
-            \p{1 + \eta \sin I \csc^3 \theta_2(t)}},\label{eq:w_lib}
+    \omega_{\rm lib} = \sqrt{\eta\sin I \sin \theta_2
+        \p{1 + \eta \sin I \csc^3 \theta_2}},\label{eq:w_lib}
 \end{equation}
-is the libration frequency about CS2 at time $t$ (Appendix~\ref{ss:eigens}).}
-This formula differs from that given in \citet{millholland_disk}, where the
-$\csc^3\!\theta_2$ term is neglected and the square root is missing\footnote{The
-missing $\csc^3\!\theta_2$ term can be traced to a $\theta \gg I$ approximation
-made in Eq.~(3) of \citet{ward2004II}. Since $\theta_2 \sim I$ for $\eta \sim 1$
-(Fig.~\ref{fig:cs_locs}), this approximation is not always valid.}.
-\textcolor{Corr}{Differentiating Eq.~\eqref{eq:cs_zero} gives
+is the libration frequency about CS2 \textcolor{Corr}{for a given $\eta$}
+(Appendix~\ref{ss:eigens}). This formula differs from that given in
+\citet{millholland_disk}, where the $\csc^3\!\theta_2$ term is neglected and the
+square root is missing\footnote{The missing $\csc^3\!\theta_2$ term can be
+traced to a $\theta \gg I$ approximation made in Eq.~(3) of \citet{ward2004II}.
+Since $\theta_2 \sim I$ for $\eta \gtrsim 1$ (Fig.~\ref{fig:cs_locs}), this
+approximation is not always valid.}. Differentiating Eq.~\eqref{eq:cs_zero}
+gives
 \begin{equation}
-    \rd{\theta_2}{t} = \epsilon \frac{\eta \sin\p{\theta_2(t) - I}}{
-        \cos\p{2\theta_2(t)} - \eta \cos\p{\theta_2(t) - I}},\label{eq:dq2dt}
+    \rd{\theta_2}{\tau} = -\epsilon \frac{\eta \sin\p{\theta_2 - I}}{
+        \cos\p{2\theta_2} - \eta \cos\p{\theta_2 - I}},\label{eq:dq2dt}
 \end{equation}
-where $\epsilon = -\rdil{(\ln \eta)}{t}$ [Eq.~\eqref{eq:eps_def}]. For a given
-$\epsilon$, Eqs.~(\ref{eq:ad_base}--\ref{eq:dq2dt}) will be satisfied for all
-times if they are satisfied near $\eta \simeq 1$, where $\dot{\theta}_2 \simeq
-\epsilon$. Thus, weak adiabiticity requires
+where $\epsilon = -\rdil{(\ln \eta)}{\tau}$ [Eq.~\eqref{eq:eps_def}].
+\textcolor{Corr}{Eq.~\eqref{eq:ad_base} is most constraining at $\eta \sim 1$,
+i.e.\ it is satisfied for all $\eta$ if it is satisfied near $\eta \sim 1$,
+$\abs{\rdil{\theta_2}{\tau}} \sim \epsilon$}. Thus, weak adiabiticity requires
+\textcolor{Corr}{
 \begin{equation}
-    \epsilon \lesssim \epsilon_{\rm c},\label{eq:ad_constr}
+    \epsilon \lesssim \epsilon_{\rm c}
+        \equiv \p{\frac{\omega_{\rm lib}}{2\pi}}_{\eta = 1}
+            % =\frac{1}{2\pi}\sqrt{\sin I \sin \theta_{\rm 2c}
+            %     \p{1 + \sin I \csc^3 \theta_{\rm 2c}}}
+            \sim 0.0433,\label{eq:ad_constr}
 \end{equation}
-where
-\begin{equation}
-    \epsilon_{\rm c} \equiv \p{\frac{\omega_{\rm lib}}{t}}_{\eta = 1} =
-        \frac{1}{2\pi}\sqrt{\sin I \sin \theta_{\rm 2c}
-            \p{1 + \sin I \csc^3 \theta_{\rm 2c}}},
-\end{equation}
-where $\theta_{\rm 2c}$ is the location of CS2 for $\eta = 1$.
-% theta_{2c} = 31^\circ$
-} For $I = 5^\circ$, we find $\epsilon_{\rm c} = 0.0431$. Since our criterion is
-only a weak condition for adiabaticity, we use $\epsilon = 3 \times 10^{-4}$ in
-our ``adiabatic'' calculations below. We explore the consequences of
-nonadiabatic evolution in Section~\ref{s:nonad}.
+where we have used $\sin \theta_{\rm 2} \sim 1/2$ when $\eta =
+1$ (for $I = 5^\circ$ and $\eta = 1$, $\theta_{\rm 2} \approx 31^\circ$)}. Since
+our criterion is only a weak condition for adiabaticity, we use $\epsilon = 3
+\times 10^{-4}$ in our ``adiabatic'' calculations below. We explore the
+consequences of nonadiabatic evolution in Section~\ref{s:nonad}.
 
 \subsection{Adiabatic Evolution Outcomes}\label{ss:ad_ensemble}
 
@@ -562,15 +583,16 @@ is given by Eq.~\eqref{eq:etac} and evolve Eqs.~\eqref{eq:dsdt_base}
 and~\eqref{eq:deta_dt} until $\eta$ reaches its final value $10^{-5}$. At such a
 small $\eta$, $\uv{s}$ is strongly coupled to $\uv{l}$ and the final obliquity
 $\theta_{\rm f}$ is frozen. The mapping between $\theta_{\rm sd, i}$ and
-$\theta_{\rm f}$ is our primary result, and is shown for $I = 5^\circ, 10^\circ,
-20^\circ$ in Figs.~\ref{fig:ad_ensemble},~\ref{fig:3_ensemble_10_35},
+$\theta_{\rm f}$ is our primary result, and is shown for $I = 5^\circ$,
+$10^\circ$, and $20^\circ$ in
+Figs.~\ref{fig:ad_ensemble},~\ref{fig:3_ensemble_10_35},
 and~\ref{fig:3_ensemble_20_35} respectively. The blue dots represent the results
 of the numerical calculation. The colored tracks are calculated
 semi-analytically using the method discussed in the following subsection.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3_ensemble_05_35.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3_ensemble_05_35.png}
     \caption{Top: The final spin obliquity $\theta_{\rm f}$ as a function of the
     initial spin-disk misalignment angle $\theta_{\rm sd, i}$ for systems
     evolving from initial $\eta_{\rm i} \gg 1$ to $\eta_{\rm f} \ll 1$. The blue
@@ -592,13 +614,13 @@ semi-analytically using the method discussed in the following subsection.
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3_ensemble_10_35.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3_ensemble_10_35.png}
     \caption{Same as the top panel of Fig.~\ref{fig:ad_ensemble} but for $I =
     10^\circ$ and with fewer annotations.}\label{fig:3_ensemble_10_35}
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3_ensemble_20_35.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3_ensemble_20_35.png}
     \caption{Same as the top panel of Fig.~\ref{fig:3_ensemble_10_35} but for $I
     = 20^\circ$ and with fewer annotations.}\label{fig:3_ensemble_20_35}
 \end{figure}
@@ -839,9 +861,9 @@ Fig.~\ref{fig:ad_ensemble}, where they can be seen to agree well with the
 numerical results.
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo21.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3testo21.png}
 
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo21_subplots.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3testo21_subplots.png}
     \caption{An example of the II $\to$ I evolutionary track for $I = 5^\circ$
     and $\theta_{\rm sd, i} = 17.2^\circ$. Upper panel: The thin green line shows
     $\cos \theta$ as a function of $\eta$, obtained by numerical integration
@@ -864,27 +886,27 @@ numerical results.
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo23.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3testo23.png}
 
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo23_subplots.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3testo23_subplots.png}
     \caption{Same as Fig.~\ref{fig:ad_21} but for the II $\to$ III track.
     $\theta_{\rm sd, i} = 17.2^\circ$ and $\epsilon = 3.01 \times
     10^{-4}$.}\label{fig:ad_23}
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo31.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3testo31.png}
 
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo31_subplots.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3testo31_subplots.png}
     \caption{Same as Fig.~\ref{fig:ad_21} but for the III $\to$ I track.
     $\theta_{\rm sd, i} = 89.1^\circ$, and $\epsilon = 3 \times
     10^{-4}$.}\label{fig:ad_31}
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo321.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3testo321.png}
 
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo321_subplots.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3testo321_subplots.png}
     \caption{Same as Fig.~\ref{fig:ad_21} but for the III $\to$ II $\to$ I
     track. $\theta_{\rm sd, i} = 60^\circ$, and $\epsilon = 3.14 \times
     10^{-4}$. Two separatrix crossings are shown, in panels (c-d) and
@@ -929,7 +951,7 @@ on $\theta_{\rm sd, i}$.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3_ensemble_05_25.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3_ensemble_05_25.png}
     \caption{Same as Fig.~\ref{fig:ad_ensemble} but for $\epsilon = 10^{-2.5}$
     and restricting $\theta_{\rm sd, i} < 90^\circ$ (blue dots). The colored
     solid lines are analytical adiabatic results (same as shown in
@@ -940,7 +962,7 @@ on $\theta_{\rm sd, i}$.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3_ensemble_05_15.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3_ensemble_05_15.png}
     \caption{Same as Fig.~\ref{fig:3_ensemble_05_25} but for $\epsilon =
     10^{-1.5}$ (i.e.\ larger non-adiabaticity effect). Some small resemblance to
     the adiabatic tracks remains, and the deviations appear to have a banded
@@ -955,9 +977,9 @@ from CS2 migrating more quickly than the trajectory can librate about CS2,
 violating the weak adiabaticity criterion.
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo_nonad.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3testo_nonad.png}
 
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3testo_nonad_subplots.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3testo_nonad_subplots.png}
     \caption{Same as Fig.~\ref{fig:ad_21} but for a nonadiabatic case, with $\epsilon =
     0.3$. In the top panel, it is evident that the libration cycle about CS2 is
     unable to keep up with the swift migration of CS2 as $\eta$ changes,
@@ -1047,14 +1069,13 @@ The above calculation applies for a specific initial $\theta_{\rm i}$, but, as
 discussed at the beginning of Section~\ref{ss:ad_ensemble}, the initial spin
 orientation is more appropriately described by $\theta_{\rm sd, i}$ since
 $\eta_i\gg 1$. The correct way to predict the final obliquity for a given
-$\theta_{\rm sd, i}$ using Eq.~\eqref{eq:thetaf}
-is somewhat \textcolor{Corr}{subtle} but yields good agreement with numerical
-results.
+$\theta_{\rm sd, i}$ using Eq.~\eqref{eq:thetaf} is somewhat subtle but yields
+good agreement with numerical results.
 
 First consider the case with $\theta_{\rm sd, i} = 0$. This corresponds to a
 well-defined initial obliquity $\theta_i = I$ (more precisely, the initial
-condition is CS2). \textcolor{Corr}{The final obliquity in this case, denoted
-$\theta_{\rm 0f}$, is given by}
+condition is CS2). The final obliquity in this case, denoted
+$\theta_{\rm 0f}$, is given by
 \begin{align}
     \sin\theta_{\rm 0f} &\simeq \sin I \abs{1 + e^{-i\varphi_0}
             \sqrt{\frac{2\pi \cos I}{\epsilon}}},\nonumber\\
@@ -1070,39 +1091,66 @@ with the result of adiabatic evolution (see Fig.~\ref{fig:ad_ensemble}).
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\columnwidth]{plots_diskdisp/2_nonad_rot.png}
-    \caption{\textcolor{Corr}{Schematic depicting the calculation of
-    $\theta_{\rm f}$ for nonadiabatic evolution when $\theta_{\rm sd, i} > 0$,
-    where $\theta_{\rm 0f}$ is given by Eq.~\eqref{eq:theta_2f}. The figure
-    shows a projection onto the $x$-$z$ plane. For a given $\theta_{\rm sd, i}$,
-    the set of initial conditions forms a ring about CS2 (solid red area) and
-    evolves to a ring about $\theta_{\rm 0f}$ (hatched red area) under
-    nonadiabatic evolution. The final obliquities are the projection of this
-    final cone onto the $\uv{l}$ axis (horizontal green
-    lines).}}\label{fig:2nonadrot}
+    \includegraphics[width=0.7\columnwidth]{plots_diskdisp/2_nonad_rot_cropped.png}
+    \caption{\textcolor{Corr}{Schematic depicting nonadiabatic obliquity
+    evolution when $\theta_{\rm sd, i} > 0$ assuming $\eta_{\rm i} \gg 1$. The
+    figure shows a projection onto the plane containing both $\uv{l}$ and
+    $\uv{l}_{\rm d}$. When $\theta_{\rm sd, i} = 0$, the initial spin vector
+    points along $\uv{l}_{\rm d}$ and evolves into the final spin vector (grey),
+    which has obliquity $\theta_{\rm 0f}$ [Eq.~\eqref{eq:theta_2f}]. When
+    $\theta_{\rm sd, i} \neq 0$, the set of initial conditions for the spin
+    vector forms a cone (solid red area) centered on $\uv{l}_{\rm d}$ with
+    opening half-angle $\theta_{\rm sd, i}$. Under nonadiabatic evolution, the
+    set of final spin vectors forms a new cone, still with opening half-angle
+    $\theta_{\rm sd, i}$, centered on $\theta_{\rm 0f}$ (light red
+    area).}}\label{fig:2nonadrot}
 \end{figure}
-\textcolor{Corr}{
-When $\theta_{\rm sd, i}\neq 0$, the calculation of final obliquities is best
-described by Fig.~\ref{fig:2nonadrot}, and yields the range of obliquities
+
+When $\theta_{\rm sd, i}\neq 0$, \textcolor{Corr}{we find that the final
+obliquity $\theta_{\rm f}$ varies over a range of values for a given
+$\theta_{\rm sd, i}$, as can be seen in Fig.~\ref{fig:nonad_3_ensemble}. The
+range can be described by}
 \begin{equation}
     \abs{\theta_{\rm 0f} - \theta_{\rm sd, i}}
-        \lesssim \sin\theta_{\rm f}
+        \lesssim \theta_{\rm f}
         \lesssim \theta_{\rm 0f} + \theta_{\rm sd, i}
     .\label{eq:nonad_q_f_dist}
 \end{equation}
-The absolute value in the lower bound is necessary to capture the behavior of
-the projected obliquities in Fig.~\ref{fig:2nonadrot} when the hatched area
-encloses $\uv{l}$.}
-
 \textcolor{Corr}{
-The process depicted in Fig.~\ref{fig:2nonadrot} has a physically clear
-interpretation as a two-step process: (i) when $\eta$ is sufficiently large, the
-evolution of the system is always adiabatic [$\dot{\theta}_2 \to 0$,
-Eq.~\eqref{eq:dq2dt}], so $\uv{s}$ precesses around CS2 with constant angle
-$\theta_{\rm sd, i}$ as $\eta$ decreases; (ii) when $\eta$ has decreased
-sufficiently that the system becomes nonadiabatic [violating
-Eq.~\eqref{eq:ad_base}], the obliquity of the system at that instant is frozen
-in as the final obliquity.}
+This can be understood as follows (see Fig.~\ref{fig:2nonadrot}). In the
+beginning ($\eta = \eta_{\rm i} \gg 1$), the initial spin vector precesses
+around $\uv{l}_{\rm d}$ on a cone with opening half-angle $\theta_{\rm sd, i}$
+(more precisely, the cone is centered on CS2, which coincides with $\uv{l}_{\rm
+d}$ as $\eta_{\rm i} \to \infty$). Note that for $\eta \gg 1$, the adiabaticity
+condition is easily satisfied: Eq.~\eqref{eq:w_lib} gives $\omega_{\rm lib}
+\simeq \eta$ while Eq.~\eqref{eq:dq2dt} gives $\abs{\rdil{\theta_2}{\tau}} \sim
+\epsilon \tan\p{\theta_2 - I} \ll \eta$. As $\eta$ decreases, the system will
+transition from being adiabatic to being nonadiabatic, since $\epsilon \gtrsim
+\epsilon_{\rm c}$. The evolution of the system can thus be decomposed into
+two phases: (i) when the evolution is adiabatic, the spin vector will precess
+around the slowly-moving CS2, then (ii) when the evolution becomes nonadiabatic,
+the spin vector stops tracking the quickly-evolving CS2. During the adiabatic
+evolution of phase (i), the angle between CS2 and the spin vector is
+approximately unchanged due to conservation of phase space area}\footnote{
+\textcolor{Corr}{This approximation assumes sufficiently small $\theta_{\rm sd,
+i}$ such that libration about CS2 remains approximately circular throughout
+phase (i). Deviations from this approximation occur when $\theta_{\rm sd, i}$ is
+sufficiently large that libration cycles become non-circular as $\eta$ decreases
+(Fig.~\ref{fig:eq_1contours} illustrates that libration cycles farther from CS2
+are less circular).
+% Such deformations decrease the obliquity spanned by the cone (see
+% Fig.~\ref{fig:eq_1contours} for decreasing $\eta$; note that level curves of $H$
+% correspond to bases of cones), which causes the observed range of final
+% obliquities in Fig.~\ref{fig:nonad_3_ensemble} to be smaller than predicted by
+% Eq.~\eqref{eq:nonad_q_f_dist} when $\theta_{\rm sd, i} \gtrsim 45^\circ$.
+This causes the deviation of the data in Fig.~\ref{fig:nonad_3_ensemble} from
+Eq.~\eqref{eq:nonad_q_f_dist} for $\theta_{\rm sd, i} \gtrsim 45^\circ$.
+}}.
+\textcolor{Corr}{Once the evolution enters phase (ii), the precession axis
+quickly (on timescale $\ll 1 / \omega_{\rm lib}$) changes to $\uv{l}$ (as $\eta
+\to \eta_{\rm f} \ll 1$). Precession about $\uv{l}$ does not change the
+obliquity, so the range of obliquities when the spin vector stops tracking CS2
+is frozen in as the range of final obliquities.}
 
 Fig.~\ref{fig:nonad_3_ensemble} shows the numerical result of $\theta_f$ vs
 $\theta_{\rm sd,i}$ for $I =5^\circ$ and $\epsilon = 0.3$. We see that
@@ -1111,20 +1159,20 @@ obliquity for $\theta_{\rm sd,i} \lesssim 45^\circ$.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3scan.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3scan.png}
     \caption{Final obliquity $\theta_{\rm  f}$ as a function of $\epsilon$ for
     $\theta_{\rm sd,i} = 0$ and $I = 5^\circ$. The shaded area, bordered by the
     black line, corresponds to the adiabatic regime estimated by
     Eq.~\eqref{eq:ad_constr}. The blue dots are numerical results, and the red
     dashed line corresponds to Eq.~\eqref{eq:theta_2f}, which is in good
     agreement with numerical results for $\epsilon > \epsilon_{\rm c} \approx
-    0.1$ (the nonadiabatic regime). Note that $\theta_{\rm f} \simeq  90^\circ$
+    0.1$ (the nonadiabatic regime). Note that $\theta_{\rm f} \simeq 90^\circ$
     in the adiabatic regime ($\epsilon\ll \epsilon_{\rm
     c}$).}\label{fig:nonad_3_scan}
 \end{figure}
 % \begin{figure}
 %     \centering
-%     \includegraphics[width=0.5\textwidth]{plots_diskdisp/3scan_20.png}
+%     \includegraphics[width=0.47\textwidth]{plots_diskdisp/3scan_20.png}
 %     \caption{Same as Fig.~\ref{fig:nonad_3_scan} but for $I=20^\circ$. The right
 %     shaded area is where $\theta_{\rm f}$ predicted by Eq.~\eqref{eq:theta_2f}
 %     violates the assumption $\theta_{\rm f} \gtrsim \theta_{\rm
@@ -1132,7 +1180,7 @@ obliquity for $\theta_{\rm sd,i} \lesssim 45^\circ$.
 % \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/3_ensemble_05_05.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/3_ensemble_05_05.png}
     \caption{Final obliquity $\theta_{\rm  f}$ vs $\theta_{\rm sd, i}$ for
     $I=5^\circ$ and $\epsilon = 0.3$ (firmly in the nonadiabatic regime). The
     blue dots represent numerical results, and the two red lines show the
@@ -1192,12 +1240,9 @@ This work has been supported in part by the NSF grant AST-17152 and NASA grant
 80NSSC19K0444. YS is supported by the NASA FINESST grant
 19-ASTRO19-0041.% chktex 8
 
-
-\bibliographystyle{mnras}
 \bibliography{Su_sep_cross}
+\bibliographystyle{aasjournal}
 
-% \clearpage
-% \onecolumn
 \appendix
 
 \section{Cassini State Local Dynamics}\label{s:local_dynamics}
@@ -1318,7 +1363,7 @@ libration frequency for these stable CSs is simply $\omega_{\rm lib} =
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{plots_diskdisp/2_lambdas.png}
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/2_lambdas.png}
     \caption{$\lambda^2$, given by Eq.~\eqref{eq:lambda2}, evaluated at each of
     the Cassini States. The vertical axis is rescaled for clarity. Note that CS4
     is unstable ($\lambda^2 > 0$) when it exists while all others are
@@ -1399,6 +1444,5 @@ each track as follows:
         Fig.~\ref{fig:ad_ensemble}.
 \end{enumerate}
 
-\bsp
-\label{lastpage} % chktex 24
-\end{document} % chktex 17
+\end{document}
+% chktex 17

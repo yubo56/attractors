@@ -1,6 +1,7 @@
 '''
 more random plots
 '''
+# convert 2_nonad_rot.png -crop 650x700+100+75 2_nonad_rot_cropped.png
 import numpy as np
 import scipy.optimize as opt
 
@@ -67,10 +68,10 @@ def get_cs(I):
 def plot_cs(I=np.radians(5)):
     etas, cs_vals, etas_four, etac = get_cs(I)
 
-    plt.semilogx(etas_four, np.degrees(cs_vals[0]), 'y:', lw=LW, label='1')
+    plt.semilogx(etas_four, np.degrees(cs_vals[0]), 'y', lw=LW, label='1')
     plt.semilogx(etas, np.degrees(cs_vals[1]), 'r', lw=LW, label='2')
-    plt.semilogx(etas, np.degrees(cs_vals[2]), 'm--', lw=LW, label='3')
-    plt.semilogx(etas_four, np.degrees(cs_vals[3]), 'c-.', lw=LW, label='4')
+    plt.semilogx(etas, np.degrees(cs_vals[2]), 'm', lw=LW, label='3')
+    plt.semilogx(etas_four, np.degrees(cs_vals[3]), 'c', lw=LW, label='4')
     plt.xlabel(r'$\eta$', fontsize=22)
     plt.ylabel(r'$\theta$ (deg)', fontsize=22)
     plt.xlim([min(etas), max(etas)])
@@ -116,7 +117,7 @@ def plot_eigens(I=np.radians(5)):
     plt.semilogx(etas_four,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas_four, cs_vals[0])],
-                 'y:', label='1', lw=LW)
+                 'y', label='1', lw=LW)
     plt.semilogx(etas,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas, cs_vals[1])],
@@ -124,11 +125,11 @@ def plot_eigens(I=np.radians(5)):
     plt.semilogx(etas,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas, cs_vals[2])],
-                  'm--', label='3', lw=LW)
+                  'm', label='3', lw=LW)
     plt.semilogx(etas_four,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas_four, cs_vals[3])],
-                  'c-.', label='4', lw=LW)
+                  'c', label='4', lw=LW)
     # plt.yscale('symlog', linthreshy=1e-5)
     plt.xlabel(r'$\eta$')
     plt.ylabel(r'$\lambda^2/ (1 + \eta^2)$')
@@ -242,44 +243,74 @@ def plot_nonad_diagram():
     ax.annotate('', xy=ld_xy, xytext=(1, 0),
                 arrowprops=arrowprops(ld_c), zorder=2)
     ax.text(ld_xy[0] - offset / 2, ld_xy[1] + offset,
-            r'$I$', fontdict={'c': ld_c, 'size': fs}, zorder=2)
+            r'$\hat{\mathbf{l}}_{\rm d}$', fontdict={'c': ld_c, 'size': fs}, zorder=2)
 
     ld_qf = 50
     ldqf_xy = get_xy(ld_qf)
-    ldqf_c = (0.2, 0.2, 0.2)
+    ldqf_c = (0.5, 0.5, 0.5)
     ax.annotate('', xy=ldqf_xy, xytext=(1, 0),
                 arrowprops=arrowprops(ldqf_c), zorder=2)
-    ax.text(ldqf_xy[0] - 5 * offset, ldqf_xy[1] + offset, r'$\theta_{\rm 0f}$',
-            fontdict={'c': ldqf_c, 'size': fs}, zorder=2)
+    # ax.text(ldqf_xy[0] - 5 * offset, ldqf_xy[1] + offset, r'$\theta_{\rm 0f}$',
+    #         fontdict={'c': ldqf_c, 'size': fs}, zorder=2)
 
     # draw locations of obliquities
     def draw(q_cent, c, c_fill, q_sdi=10, mag1=0.9, mag2=0.45, hatch=None):
-        vrts = np.array([get_xy(q_cent + q_sdi, mag=mag1),
-                         get_xy(q_cent - q_sdi, mag=mag1),
+        vrts_orig = np.array([get_xy(q_cent + q_sdi, mag=mag1),
+                              get_xy(q_cent - q_sdi, mag=mag1)])
+        vrts = np.array([get_xy(q_cent + q_sdi, mag=mag1 * 0.9),
+                         get_xy(q_cent - q_sdi, mag=mag1 * 0.9),
                          get_xy(q_cent - q_sdi, mag=mag2),
                          get_xy(q_cent + q_sdi, mag=mag2)])
-        ax.plot(vrts[:2, 0], vrts[:2, 1], c=c, zorder=1)
+        # ax.plot([1, vrts_orig[0, 0]], [0, vrts_orig[0, 1]], c=c, zorder=1)
+        # ax.plot([1, vrts_orig[1, 0]], [0, vrts_orig[1, 1]], c=c, zorder=1)
+        ax.annotate('', xy=vrts_orig[0], xytext=(1, 0),
+                    arrowprops={**arrowprops(c), 'width': 1}, zorder=2)
+        ax.annotate('', xy=vrts_orig[1], xytext=(1, 0),
+                    arrowprops={**arrowprops(c), 'width': 1}, zorder=2)
         ax.fill(vrts[:, 0], vrts[:, 1], c=c_fill, zorder=0)
         if hatch:
             fill_polygon = patches.Polygon(vrts, fill=False, hatch=hatch)
             ax.add_patch(fill_polygon)
-        return vrts
+        return vrts_orig
     verts_i = draw(ld_q, (1, 0.3, 0.3), (0.7, 0.2, 0.2), mag2=0)
-    verts_f = draw(ld_qf, (1, 0.5, 0.5), (0.7, 0.4, 0.4), hatch='/', mag2=0)
-    ax.plot([verts_f[0, 0], 1], [verts_f[0, 1], verts_f[0, 1]], 'g',
-            zorder=3, lw=2.5)
-    ax.plot([verts_f[1, 0], 1], [verts_f[1, 1], verts_f[1, 1]], 'g',
-            zorder=3, lw=2.5)
+    # verts_f = draw(ld_qf, (1, 0.5, 0.5), (0.7, 0.4, 0.4), hatch='/', mag2=0)
+    verts_f = draw(ld_qf, (1, 0.5, 0.5), (0.7, 0.4, 0.4), mag2=0)
 
     # label angular coordinates
-    ax.text(verts_i[0, 0] - fs / 65, verts_i[0, 1] + 3 * offset,
-            r'$\theta_{2} + \theta_{\rm sd, i}$', c=(1, 0.3, 0.3),
-            size=fs)
+    ax.text(verts_i[0, 0] - fs / 205, verts_i[0, 1],
+            r'$I + \theta_{\rm sd, i}$', c=(1, 0.3, 0.3),
+            size=fs - 2)
+    ax.text(verts_i[1, 0] - fs / 205, verts_i[1, 1],
+            r'$I - \theta_{\rm sd, i}$', c=(1, 0.3, 0.3),
+            size=fs - 2)
+
+    # label arcs
+    arc_lw = 2
+    ld_arc = patches.Arc((1, 0), 1.4, 1.4, 90, 0, ld_q,
+                         color=l_c, lw=arc_lw, alpha=alpha,
+                         zorder=10)
+    ax.add_patch(ld_arc)
+    ax.text(1 - np.sin(np.radians(ld_q * 0.4)) * 0.7,
+            np.cos(np.radians(ld_q * 0.4)) * 0.7 + offset,
+            r'$I$',
+            fontdict={'c': 'k', 'fontsize': fs})
+    q0f_arc = patches.Arc((1, 0), 1.1, 1.1, 90, 0, ld_qf,
+                         color=(0.5, 0.5, 0.5), lw=arc_lw, alpha=alpha,
+                         zorder=10)
+    ax.add_patch(q0f_arc)
+    ax.text(1 - np.sin(np.radians(ld_qf * 0.78)) * 0.6,
+            np.cos(np.radians(ld_qf * 0.78)) * 0.6,
+            r'$\theta_{\rm 0f}$',
+            fontdict={'c': (0.5, 0.5, 0.5), 'fontsize': fs})
 
     # label the range of final obliquities
-    obl_final_label_ycoord = (2 * verts_f[0, 1] + verts_f[1, 1]) / 3
-    ax.text(1 + 2 * offset, obl_final_label_ycoord,
-            r'$\cos \theta_{\rm f}$', c='g', size=fs)
+    # ax.plot([verts_f[0, 0], 1], [verts_f[0, 1], verts_f[0, 1]], 'g',
+    #         zorder=3, lw=2.5)
+    # ax.plot([verts_f[1, 0], 1], [verts_f[1, 1], verts_f[1, 1]], 'g',
+    #         zorder=3, lw=2.5)
+    # obl_final_label_ycoord = (2 * verts_f[0, 1] + verts_f[1, 1]) / 3
+    # ax.text(1 + 2 * offset, obl_final_label_ycoord,
+    #         r'$\cos \theta_{\rm f}$', c='g', size=fs)
 
     # try drawing case where q_sdi > q_0f? Too cluttered
     # draw(ld_q, (0.3, 1, 0.3), (0.2, 0.7, 0.2),
@@ -293,7 +324,7 @@ def plot_nonad_diagram():
     plt.clf()
 
 if __name__ == '__main__':
-    # plot_cs(np.radians(5))
-    # plot_eigens(np.radians(5))
-    # plot_3vec()
+    plot_cs(np.radians(5))
+    plot_eigens(np.radians(5))
+    plot_3vec()
     plot_nonad_diagram()

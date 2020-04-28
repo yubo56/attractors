@@ -76,9 +76,9 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     # ax3 = ax1.twinx()
     ax4 = ax1.twiny()
     ax1.plot(eta, A1ys / (4 * np.pi), 'g:', lw=LW/2, alpha=0.7)
-    ax1.plot(eta, A1w / (4 * np.pi), 'g', label=r'$A_{\rm I}$', lw=LW/3)
+    ax1.plot(eta, A1w / (4 * np.pi), 'g', label=r'$A_{\rm I}$', lw=LW)
     ax1.plot(eta, A2ys / (4 * np.pi), 'b:', lw=LW/2, alpha=0.7)
-    ax1.plot(eta, A2w / (4 * np.pi), 'b', label=r'$A_{\rm II}$', lw=2*LW/3)
+    ax1.plot(eta, A2w / (4 * np.pi), 'b', label=r'$A_{\rm II}$', lw=LW)
     ax1.plot(eta, A3ys / (4 * np.pi), 'r:', lw=LW/2, alpha=0.7)
     ax1.plot(eta, A3w / (4 * np.pi), 'r', label=r'$A_{\rm III}$', lw=LW)
 
@@ -86,7 +86,7 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     eta_cont = np.linspace(eta_c, 1.2 * eta_c, 21)
     # ax1.plot(eta_cont, np.full_like(eta_cont, A1w[-1] / (4 * np.pi)), 'g--')
     ax1.plot(eta_cont, np.full_like(eta_cont, A2w[-1] / (4 * np.pi)), 'b--',
-             lw=2*LW/3)
+             lw=LW)
     ax1.plot(eta_cont, np.full_like(eta_cont, A3w[-1] / (4 * np.pi)), 'r--',
              lw=LW)
     xlims = ax1.get_xlim()
