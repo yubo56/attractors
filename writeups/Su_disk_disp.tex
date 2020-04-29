@@ -1,15 +1,3 @@
-%%  twocolumn   : two text columns, 10 point font, single spaced article.
-%%                This is the most compact and represent the final published
-%%                derived PDF copy of the accepted manuscript from the publisher
-%%  manuscript  : one text column, 12 point font, double spaced article.
-%%  preprint    : one text column, 12 point font, single spaced article.
-%%  preprint2   : two text columns, 12 point font, single spaced article.
-%%  modern      : a stylish, single text column, 12 point font, article with
-%%        wider left and right margins. This uses the Daniel
-%%        Foreman-Mackey and David Hogg design.
-%%  RNAAS       : Preferred style for Research Notes which are by design
-%%                lacking an abstract and brief. DO NOT use \begin{abstract}
-%%                and \end{abstract} with this style.
     \documentclass[twocolumn,twocolappendix]{aastex63}
     \usepackage{
         amsmath,
@@ -19,12 +7,8 @@
         graphicx,
         ae, aecompl,
         booktabs,
-        caption,
-        subcaption,
-        xcolor,
     }
     \usepackage[T1]{fontenc}
-    \captionsetup{compatibility=false}
 
     \newcommand*{\rd}[2]{\frac{\mathrm{d}#1}{\mathrm{d}#2}}
     \newcommand*{\rtd}[2]{\frac{\mathrm{d}^2#1}{\mathrm{d}#2^2}}
@@ -44,9 +28,6 @@
     \DeclareMathOperator*{\argmax}{argmax}
     \DeclareMathOperator*{\med}{med}
 
-    \colorlet{Corr}{red}
-
-    \newcommand{\vdag}{(v)^\dagger}
     \newcommand\aastex{AAS\TeX}
     \newcommand\latex{La\TeX}
 
@@ -1110,7 +1091,7 @@ half-angle $\theta_{\rm sd, i}$ (more precisely, the cone is centered on CS2,
 which coincides with $\uv{l}_{\rm d}$ as $\eta_{\rm i} \to \infty$). Note that
 for $\eta \gg 1$, the adiabaticity condition is easily satisfied: using
 $\theta_2 \simeq I + \eta^{-1}\sin I \cos I$ (see
-Section~\ref{s:s:local_dynamics}), Eq.~\eqref{eq:w_lib} gives $\omega_{\rm lib}
+Section~\ref{s:local_dynamics}), Eq.~\eqref{eq:w_lib} gives $\omega_{\rm lib}
 \simeq \eta$ while Eq.~\eqref{eq:dq2dt} gives $\abs{\rdil{\theta_2}{\tau}}
 \simeq \p{\epsilon / \eta} \sin I \cos I \ll \omega_{\rm lib}$. As $\eta$
 decreases, the system will transition from being adiabatic to being
@@ -1247,7 +1228,7 @@ This work has been supported in part by the NSF grant AST-17152 and NASA grant
 80NSSC19K0444. YS is supported by the NASA FINESST grant
 19-ASTRO19-0041.% chktex 8
 
-\bibliography{Su_sep_cross}
+\bibliography{Su_disk_disp}
 \bibliographystyle{aasjournal}
 
 \appendix
