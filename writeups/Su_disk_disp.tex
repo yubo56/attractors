@@ -10,7 +10,7 @@
 %%  RNAAS       : Preferred style for Research Notes which are by design
 %%                lacking an abstract and brief. DO NOT use \begin{abstract}
 %%                and \end{abstract} with this style.
-    \documentclass[twocolumn]{aastex63}
+    \documentclass[twocolumn,twocolappendix]{aastex63}
     \usepackage{
         amsmath,
         amssymb,
@@ -88,18 +88,21 @@ atmospheric circulation and tidal heating in the planet. A promising avenue to
 generate obliquities is via spin-orbit resonances, where the spin and orbital
 precession frequencies of the planet cross each other as the system evolves in
 time. One such mechanism involves a dissipating (mass-losing) protoplanetary
-disk driving orbital precession of an interior planet. We study this scenario
-analytically in this paper, and obtain the mapping between the initial spin
-orientation and the final obliquity. We show that (i) under adiabatic evolution
-(i.e.\ the disk dissipates at a sufficiently slow rate), the final planetary
-obliquities bifurcate into distinct tracks governed by interactions with the
-resonance; (ii) under nonadiabatic evolution, a broad range of obliquities can
-be excited. We obtain analytical expressions for the final obliquities for most
-interesting regimes of parameter space. The dynamical system studied in this
-paper is an example of ``Colombo's top'', and our analysis and results can be
-adapted for other applications.
+disk that drives orbital precession of an interior planet. We study this
+scenario analytically in this paper, and obtain the mapping between the general
+initial spin orientation and the final obliquity. We show that (i) under
+adiabatic evolution (i.e.\ the disk dissipates at a sufficiently slow rate), the
+final planetary obliquity as a function of the initial spin orientation
+bifurcates into distinct tracks governed by interactions with the resonance;
+(ii) under nonadiabatic evolution, a broad range of obliquities can be excited.
+We obtain analytical expressions for the final obliquities for various
+regimes of parameter space. The dynamical system studied in this paper is an
+example of ``Colombo's top'', and our analysis and results can be adapted to
+other applications.
 
 \end{abstract}
+
+\keywords{planet---star interactions}
 
 \section{Introduction}\label{s:intro}
 
@@ -109,7 +112,7 @@ A rotating planet is subjected to gravitational torque from its host star,
 making its spin axis precess around its orbital (angular momentum) axis.  Now
 suppose the orbital axis precesses around another fixed axis---such orbital
 precession could arise from gravitational interactions with other masses in the
-system (e.g.\ planets, external discs, or binary stellar companion). What is the
+system (e.g.\ planets, external disks, or binary stellar companion). What is the
 dynamics of the planetary spin axis?  How does the spin axis evolve as the spin
 precession rate, the orbital precession rate, or their ratio, gradually changes
 in time?
@@ -123,13 +126,13 @@ a basis for understanding the evolution of rotation axes of celestial bodies.
 Indeed, many contemporary problems in planetary/exoplanetary dynamics can be
 cast into a form analogous to this simple model or its variants
 \citep[e.g.][]{ward2004I, fabrycky_otides, batygin2013magnetic, lai2014star,
-anderson2018teeter}.
+anderson2018teeter,zanazzi2018planet}.
 
 In this paper we present a systematic investigation on the secular evolution of
 Colombo's top, starting from general initial conditions. Our study includes
 several new analytical results that go beyond previous works. While our results
 are general, we frame our study in the context of generating exoplanet
-obliquities from planet-disc interaction with a dissipating disc.
+obliquities from planet-disk interaction with a dissipating disk.
 
 \subsection{Planetary Obliquities from Planet-Disc Interaction}
 
@@ -178,7 +181,7 @@ lead to a wide range of obliquities, especially if the final spin is imparted by
 a few large bodies \citep{dones1993does, lissauer1997accretion,
 miguel2010planet}. Such ``stochastic'' accretion likely happened for terrestrial
 planets in the Solar System. Giant impacts may have also played a role in the
-formation of the close-in multiple-planet systems discovered by the Kepler
+formation of the close-in multiple-planet systems diskovered by the Kepler
 satellite \citep[e.g.][]{inamdar2015formation, izidoro2017breaking}.
 
 \subsection{Goal of This Paper}
@@ -203,8 +206,8 @@ spin-orbit dynamics and key concepts that are used in the remainder of the
 paper. In Sections~\ref{s:ad} and~\ref{s:nonad}, we study the evolution of the
 system when the disk dissipates on different timescales, from highly adiabatic
 to nonadiabatic. Analytical results are presented to explain the numerical
-results in both limits. We discuss the implications of our results in
-Section~\ref{s:disc}. Our primary physical results consist of
+results in both limits. We diskuss the implications of our results in
+Section~\ref{s:disk}. Our primary physical results consist of
 Fig.~\ref{fig:ad_ensemble} in the adiabatic limit and
 Fig.~\ref{fig:3_ensemble_05_15} in the nonadiabatic limit. Some detailed
 calculations are relegated to the appendices, including a leading-order
@@ -229,7 +232,7 @@ corresponding unit vectors are $\uv{s} \equiv \bsmb{S} / S$, $\uv{l} \equiv \bsm
 The spin axis $\uv{s}$ of the planet tends to precess around its orbital
 (angular momentum) axis $\uv{l}$, driven by the gravitational torque from the
 host star acting on the planet's rotational bulge. On the other hand, $\uv{l}$
-and the disc axis $\uv{l}_{\rm d}$ precess around each other due to
+and the disk axis $\uv{l}_{\rm d}$ precess around each other due to
 gravitational interactions. We assume $S \ll L \ll L_{\rm d}$, so $\uv{l}_{\rm
 d}$ is nearly constant and $\uv{l}$ experiences negligible backreaction torque
 from $\uv{s}$. The
@@ -259,7 +262,7 @@ body with uniform density, $k_p=0.4, k_{qp}=0.5$; for giant planets, $k_p\simeq
 0.25$ and $k_{qp}\simeq 0.17$ \citep[e.g.][]{lainey2016quantification}]. In
 Eq.~\eqref{eq:wld}, $n \equiv \sqrt{GM_\star/a_{\rm p}^3}$ is the planet's
 orbital mean motion, and we have assumed $r_d\gg a_p$ and included only the
-leading-order (quadrupole) interaction between the planet and disc. We define
+leading-order (quadrupole) interaction between the planet and disk. We define
 three relative inclination angles via
 \begin{equation}
   \uv{s} \cdot \uv{l}\equiv \cos\theta,\quad
@@ -476,22 +479,22 @@ Fig.~\ref{fig:eq_1contours}, where no separatrix exists.
 In this section, we study the evolution of the planetary obliquity $\theta$ when
 the parameter $\eta$ [or the disk mass $M_{\rm d}$; see Eqs.~\eqref{eq:eta}
 and~\eqref{eq:deta_dt}] decreases sufficiently slowly that the evolution is
-adiabatic. \textcolor{Corr}{Intuitively, this requires the disk evolution time
-$t_{\rm d}$ [Eq.~\eqref{eq:dmd_dt}] be larger than the spin precession period,
-$2\pi / \alpha$, i.e.\ $\epsilon = 1 / (\alpha t_{\rm d}) \lesssim 1/ (2\pi)$.}
+adiabatic. Intuitively, this requires the disk evolution time
+$t_{\rm d}$ [Eq.~\eqref{eq:dmd_dt}] be much larger than the spin precession
+period, $2\pi / \alpha$, i.e.\ $\epsilon = 1 / (\alpha t_{\rm d}) \ll 1/
+(2\pi)$.
 
-Strictly speaking, \textcolor{Corr}{adiabaticity} requires $t_{\rm d}$ be much
-larger than all timescales of the dynamical system governed by the Hamiltonian
+More rigorously, adiabaticity requires $t_{\rm d}$ be much larger than all
+timescales of the dynamical system governed by the Hamiltonian
 [Eq.~\eqref{eq:H}]. This is of course not possible in all cases, as the motion
 along the separatrix has an infinite period. In practice, as $\eta$ evolves, the
 system only crosses the separatrix once or twice, while it spends many orbits
 inside one of the three zones and far from the separatrix. Thus, a \emph{weak
 adiabaticity criterion} is that, for all equilibria/fixed points, the local
-circulation/libration periods are much shorter than the
-\textcolor{Corr}{timescale for the} motion of the equilibria
-\textcolor{Corr}{due to changing $\eta$}. If this criterion is satisfied, then
-the system will evolve adiabatically for most of its
-evolution save one or two separatrix crossings.
+circulation/libration periods are much shorter than the timescale for the motion
+of the equilibria due to changing $\eta$. If this criterion is satisfied, then
+the system will evolve adiabatically for most of its evolution save one or two
+separatrix crossings.
 
 As shown in Appendix~\ref{ss:eigens}, libration about CS2 is slower than that
 about CS1 or CS3. As such, it has the smallest characteristic frequency in the
@@ -500,7 +503,7 @@ requiring that, at all times other than separatrix crossing, the obliquity of
 CS2 ($\theta_2$) evolve over a longer timescale than the local libration period
 about CS2, i.e.
 \begin{equation}
-    \abs{\rd{\theta_2}{\tau}} \lesssim
+    \abs{\rd{\theta_2}{\tau}} \ll
         \frac{\omega_{\rm lib}}{2\pi},\label{eq:ad_base}
 \end{equation}
 where
@@ -508,12 +511,12 @@ where
     \omega_{\rm lib} = \sqrt{\eta\sin I \sin \theta_2
         \p{1 + \eta \sin I \csc^3 \theta_2}},\label{eq:w_lib}
 \end{equation}
-is the libration frequency about CS2 \textcolor{Corr}{for a given $\eta$}
+is the libration frequency about CS2 for a given $\eta$
 (Appendix~\ref{ss:eigens}). This formula differs from that given in
 \citet{millholland_disk}, where the $\csc^3\!\theta_2$ term is neglected and the
 square root is missing\footnote{The missing $\csc^3\!\theta_2$ term can be
 traced to a $\theta \gg I$ approximation made in Eq.~(3) of \citet{ward2004II}.
-Since $\theta_2 \sim I$ for $\eta \gtrsim 1$ (Fig.~\ref{fig:cs_locs}), this
+Since $\theta_2 \sim I$ for $\eta \gg 1$ (Fig.~\ref{fig:cs_locs}), this
 approximation is not always valid.}. Differentiating Eq.~\eqref{eq:cs_zero}
 gives
 \begin{equation}
@@ -521,21 +524,23 @@ gives
         \cos\p{2\theta_2} - \eta \cos\p{\theta_2 - I}},\label{eq:dq2dt}
 \end{equation}
 where $\epsilon = -\rdil{(\ln \eta)}{\tau}$ [Eq.~\eqref{eq:eps_def}].
-\textcolor{Corr}{Eq.~\eqref{eq:ad_base} is most constraining at $\eta \sim 1$,
-i.e.\ it is satisfied for all $\eta$ if it is satisfied near $\eta \sim 1$,
-$\abs{\rdil{\theta_2}{\tau}} \sim \epsilon$}. Thus, weak adiabiticity requires
-\textcolor{Corr}{
+Eq.~\eqref{eq:ad_base} is most constraining at $\eta \sim 1$, i.e.\ it will be
+satisfied for all $\eta$ if it is satisfied near $\eta \sim 1$, where
+$\abs{\rdil{\theta_2}{\tau}} \sim \epsilon$. Thus, weak adiabiticity requires
 \begin{equation}
-    \epsilon \lesssim \epsilon_{\rm c}
+    \epsilon \ll \epsilon_{\rm c}
         \equiv \p{\frac{\omega_{\rm lib}}{2\pi}}_{\eta = 1}
+            \simeq \frac{1}{2\pi\sqrt{2}}\sqrt{\sin I\p{1 + 8\sin I}},
             % =\frac{1}{2\pi}\sqrt{\sin I \sin \theta_{\rm 2c}
             %     \p{1 + \sin I \csc^3 \theta_{\rm 2c}}}
-            \sim 0.0433,\label{eq:ad_constr}
+            % \approx 0.0433,
+            \label{eq:ad_constr}
 \end{equation}
-where we have used $\sin \theta_{\rm 2} \sim 1/2$ when $\eta =
-1$ (for $I = 5^\circ$ and $\eta = 1$, $\theta_{\rm 2} \approx 31^\circ$)}. Since
-our criterion is only a weak condition for adiabaticity, we use $\epsilon = 3
-\times 10^{-4}$ in our ``adiabatic'' calculations below. We explore the
+where in the last equality we have used $\sin \theta_{\rm 2} \simeq 1/2$ at
+$\eta = 1$ (e.g.\ when $I = 5^\circ$ and $\eta = 1$, $\theta_{\rm 2} \approx
+31^\circ$). For $I = 5^\circ$, we obtain $\epsilon_{\rm c} \approx 0.0433$.
+Since our criterion is only a weak condition for adiabaticity, we use $\epsilon
+= 3 \times 10^{-4}$ in our ``adiabatic'' calculations below. We explore the
 consequences of nonadiabatic evolution in Section~\ref{s:nonad}.
 
 \subsection{Adiabatic Evolution Outcomes}\label{ss:ad_ensemble}
@@ -567,7 +572,7 @@ circular ring of points having angular distance $\theta_{\rm sd, i}$ from
 $\uv{l}_{\rm d}$ are not the same and will each enclose slightly different
 initial phase space areas $A_{\rm i}$. Since our analytical theory assumes exact
 conservation of the initially enclosed phase space area $A_{\rm i}$ for each
-$\theta_{\rm sd, i}$ (see Section~\ref{ss:zone_transitions}), this discrepancy
+$\theta_{\rm sd, i}$ (see Section~\ref{ss:zone_transitions}), this diskrepancy
 introduces an extra deviation from the analytical prediction. To guarantee all
 points for a particular $\theta_{\rm sd, i}$ have the same $A_{\rm i}$, we
 instead choose initial conditions on the libration cycle going through
@@ -588,7 +593,7 @@ $10^\circ$, and $20^\circ$ in
 Figs.~\ref{fig:ad_ensemble},~\ref{fig:3_ensemble_10_35},
 and~\ref{fig:3_ensemble_20_35} respectively. The blue dots represent the results
 of the numerical calculation. The colored tracks are calculated
-semi-analytically using the method discussed in the following subsection.
+semi-analytically using the method diskussed in the following subsection.
 
 \begin{figure}
     \centering
@@ -657,7 +662,7 @@ Complications arise when considering finite $\eta_{\rm i}$, as trajectories near
 CS2 or CS3 librate about these equilibria, rather than $\uv{l}_{\rm d}$, and
 Eq.~\eqref{eq:ai_qsd} is no longer exact. In practice, Eq.~\eqref{eq:ai_qsd}
 holds very well when defining $\theta_{\rm sd, i}$ as the angular distance to
-CS2; an exception is discussed in Section~\ref{sss:evol_traj}.
+CS2; an exception is diskussed in Section~\ref{sss:evol_traj}.
 
 Beginning at the last separatrix crossing, the final enclosed phase space area
 $A_{\rm f}$ will be conserved for all time. As $\eta \to 0$, trajectories
@@ -1066,7 +1071,7 @@ nonadiabatic regime $\epsilon \gtrsim \epsilon_{\rm c}$ (see
 Fig.~\ref{fig:nonad_3_scan}).
 
 The above calculation applies for a specific initial $\theta_{\rm i}$, but, as
-discussed at the beginning of Section~\ref{ss:ad_ensemble}, the initial spin
+diskussed at the beginning of Section~\ref{ss:ad_ensemble}, the initial spin
 orientation is more appropriately described by $\theta_{\rm sd, i}$ since
 $\eta_i\gg 1$. The correct way to predict the final obliquity for a given
 $\theta_{\rm sd, i}$ using Eq.~\eqref{eq:thetaf} is somewhat subtle but yields
@@ -1089,75 +1094,59 @@ the numerical results and Eq.~\eqref{eq:theta_2f} is excellent. For $\epsilon
 \ll \epsilon_{\rm c}$, we find $\theta_{\rm f} \simeq 90^\circ$, in agreement
 with the result of adiabatic evolution (see Fig.~\ref{fig:ad_ensemble}).
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.7\columnwidth]{plots_diskdisp/2_nonad_rot_cropped.png}
-    \caption{\textcolor{Corr}{Schematic depicting nonadiabatic obliquity
-    evolution when $\theta_{\rm sd, i} > 0$ assuming $\eta_{\rm i} \gg 1$. The
-    figure shows a projection onto the plane containing both $\uv{l}$ and
-    $\uv{l}_{\rm d}$. When $\theta_{\rm sd, i} = 0$, the initial spin vector
-    points along $\uv{l}_{\rm d}$ and evolves into the final spin vector (grey),
-    which has obliquity $\theta_{\rm 0f}$ [Eq.~\eqref{eq:theta_2f}]. When
-    $\theta_{\rm sd, i} \neq 0$, the set of initial conditions for the spin
-    vector forms a cone (solid red area) centered on $\uv{l}_{\rm d}$ with
-    opening half-angle $\theta_{\rm sd, i}$. Under nonadiabatic evolution, the
-    set of final spin vectors forms a new cone, still with opening half-angle
-    $\theta_{\rm sd, i}$, centered on $\theta_{\rm 0f}$ (light red
-    area).}}\label{fig:2nonadrot}
-\end{figure}
-
-When $\theta_{\rm sd, i}\neq 0$, \textcolor{Corr}{we find that the final
-obliquity $\theta_{\rm f}$ varies over a range of values for a given
-$\theta_{\rm sd, i}$, as can be seen in Fig.~\ref{fig:nonad_3_ensemble}. The
-range can be described by}
+When $\theta_{\rm sd, i}\neq 0$, we find that the final obliquity $\theta_{\rm
+f}$ spans a range of values for a given $\theta_{\rm sd, i}$, as can be
+seen in Fig.~\ref{fig:nonad_3_ensemble}. The range can be described by
 \begin{equation}
     \abs{\theta_{\rm 0f} - \theta_{\rm sd, i}}
         \lesssim \theta_{\rm f}
         \lesssim \theta_{\rm 0f} + \theta_{\rm sd, i}
     .\label{eq:nonad_q_f_dist}
 \end{equation}
-\textcolor{Corr}{
-This can be understood as follows (see Fig.~\ref{fig:2nonadrot}). In the
-beginning ($\eta = \eta_{\rm i} \gg 1$), the initial spin vector precesses
-around $\uv{l}_{\rm d}$ on a cone with opening half-angle $\theta_{\rm sd, i}$
-(more precisely, the cone is centered on CS2, which coincides with $\uv{l}_{\rm
-d}$ as $\eta_{\rm i} \to \infty$). Note that for $\eta \gg 1$, the adiabaticity
-condition is easily satisfied: Eq.~\eqref{eq:w_lib} gives $\omega_{\rm lib}
-\simeq \eta$ while Eq.~\eqref{eq:dq2dt} gives $\abs{\rdil{\theta_2}{\tau}} \sim
-\epsilon \tan\p{\theta_2 - I} \ll \eta$. As $\eta$ decreases, the system will
-transition from being adiabatic to being nonadiabatic, since $\epsilon \gtrsim
-\epsilon_{\rm c}$. The evolution of the system can thus be decomposed into
-two phases: (i) when the evolution is adiabatic, the spin vector will precess
-around the slowly-moving CS2, then (ii) when the evolution becomes nonadiabatic,
-the spin vector stops tracking the quickly-evolving CS2. During the adiabatic
-evolution of phase (i), the angle between CS2 and the spin vector is
-approximately unchanged due to conservation of phase space area}\footnote{
-\textcolor{Corr}{This approximation assumes sufficiently small $\theta_{\rm sd,
-i}$ such that libration about CS2 remains approximately circular throughout
-phase (i) (initially, when $\eta \to \infty$, all librations are circular about
-$\uv{l}_{\rm d}$). This assumption breaks down when $\theta_{\rm sd, i}$ is
-sufficiently large that librating orbits become non-circular as $\eta$ decreases
-before the end of phase (i) (Fig.~\ref{fig:eq_1contours} illustrates that
-libration cycles farther from CS2, corresponding to a larger $\theta_{\rm sd,
-i}$, are less circular for a given $\eta$).
+Eq.~\eqref{eq:nonad_q_f_dist} can be understood as follows (see
+Fig.~\ref{fig:2nonadrot}). In the beginning ($\eta = \eta_{\rm i} \gg 1$), the
+initial spin vector precesses around $\uv{l}_{\rm d}$ on a cone with opening
+half-angle $\theta_{\rm sd, i}$ (more precisely, the cone is centered on CS2,
+which coincides with $\uv{l}_{\rm d}$ as $\eta_{\rm i} \to \infty$). Note that
+for $\eta \gg 1$, the adiabaticity condition is easily satisfied: using
+$\theta_2 \simeq I + \eta^{-1}\sin I \cos I$ (see
+Section~\ref{s:s:local_dynamics}), Eq.~\eqref{eq:w_lib} gives $\omega_{\rm lib}
+\simeq \eta$ while Eq.~\eqref{eq:dq2dt} gives $\abs{\rdil{\theta_2}{\tau}}
+\simeq \p{\epsilon / \eta} \sin I \cos I \ll \omega_{\rm lib}$. As $\eta$
+decreases, the system will transition from being adiabatic to being
+nonadiabatic, since $\epsilon \gtrsim \epsilon_{\rm c}$. The evolution of the
+system can thus be decomposed into two phases: (i) when the evolution is
+adiabatic, the spin vector will precess around the slowly-moving CS2; (ii) when
+the evolution becomes nonadiabatic, the spin vector stops tracking the
+quickly-evolving CS2. During the adiabatic evolution of phase (i), the angle
+between CS2 and the spin vector is approximately unchanged due to conservation
+of phase space area\footnote{ This approximation assumes sufficiently small
+$\theta_{\rm sd, i}$ such that libration about CS2 remains approximately
+circular throughout phase (i) (initially, when $\eta \to \infty$, all librations
+are circular about $\uv{l}_{\rm d}$). This assumption breaks down when
+$\theta_{\rm sd, i}$ is sufficiently large that librating orbits become
+non-circular as $\eta$ decreases before the end of phase (i)
+(Fig.~\ref{fig:eq_1contours} illustrates that the libration cycles farther from
+CS2, corresponding to a larger $\theta_{\rm sd, i}$, are less circular for a
+given $\eta$).
 % Such deformations decrease the obliquity spanned by the cone (see
 % Fig.~\ref{fig:eq_1contours} for decreasing $\eta$; note that level curves of $H$
 % correspond to bases of cones), which causes the observed range of final
 % obliquities in Fig.~\ref{fig:nonad_3_ensemble} to be smaller than predicted by
 % Eq.~\eqref{eq:nonad_q_f_dist} when $\theta_{\rm sd, i} \gtrsim 45^\circ$.
-This causes the deviation of the data in Fig.~\ref{fig:nonad_3_ensemble} from
-Eq.~\eqref{eq:nonad_q_f_dist} for $\theta_{\rm sd, i} \gtrsim 45^\circ$.
-}}.
-\textcolor{Corr}{Once the evolution enters phase (ii), the precession axis
-quickly (on timescale $\ll 1 / \omega_{\rm lib}$) changes to $\uv{l}$ (as $\eta
-\to \eta_{\rm f} \ll 1$). Precession about $\uv{l}$ does not change the
+This causes the deviation of the numerical results in
+Fig.~\ref{fig:nonad_3_ensemble} from Eq.~\eqref{eq:nonad_q_f_dist} for
+$\theta_{\rm sd, i} \gtrsim 45^\circ$. }.
+Once the evolution enters phase (ii), the precession axis
+quickly (on timescale $\ll 1 / \omega_{\rm lib}$) changes to $\uv{l}$ (as $\eta$
+decreases to $\eta_{\rm f} \ll 1$). Precession about $\uv{l}$ does not change the
 obliquity, so the range of obliquities at the end of phase (i) is frozen in as
-the range of final obliquities.}
+the range of final obliquities.
 
-Fig.~\ref{fig:nonad_3_ensemble} shows the numerical result of $\theta_f$ vs
-$\theta_{\rm sd,i}$ for $I =5^\circ$ and $\epsilon = 0.3$. We see that
+Fig.~\ref{fig:nonad_3_ensemble} shows the numerical result of $\theta_{\rm f}$
+vs $\theta_{\rm sd,i}$ for $I =5^\circ$ and $\epsilon = 0.3$. We see that
 Eq.~\eqref{eq:nonad_q_f_dist} provides good lower and upper bounds of the final
-obliquity for $\theta_{\rm sd,i} \lesssim 45^\circ$.
+obliquity for $\theta_{\rm sd,i} \lesssim 45^\circ$ (see footnote 3).
 
 \begin{figure}
     \centering
@@ -1189,8 +1178,24 @@ obliquity for $\theta_{\rm sd,i} \lesssim 45^\circ$.
     analytical lower and upper bounds given by
     Eq.~\eqref{eq:nonad_q_f_dist}.}\label{fig:nonad_3_ensemble}
 \end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.47\textwidth]{plots_diskdisp/2_nonad_rot_cropped.png}
+    \caption{Schematic picture for understanding nonadiabatic obliquity
+    evolution when $\theta_{\rm sd, i} > 0$ assuming $\eta_{\rm i} \gg 1$. The
+    figure shows a projection onto the plane containing both $\uv{l}$ and
+    $\uv{l}_{\rm d}$. When $\theta_{\rm sd, i} = 0$, the initial spin vector
+    points along $\uv{l}_{\rm d}$ and evolves into the final spin vector (grey),
+    which has obliquity $\theta_{\rm 0f}$ [Eq.~\eqref{eq:theta_2f}]. When
+    $\theta_{\rm sd, i} \neq 0$, the set of initial conditions for the spin
+    vector forms a cone (solid red area) centered on $\uv{l}_{\rm d}$ with
+    opening half-angle $\theta_{\rm sd, i}$. Under nonadiabatic evolution, the
+    set of final spin vectors forms a new cone, still with opening half-angle
+    $\theta_{\rm sd, i}$, centered on $\theta_{\rm 0f}$ (light red
+    area).}\label{fig:2nonadrot}
+\end{figure}
 
-\section{Summary}\label{s:disc}
+\section{Summary}\label{s:disk}
 
 In this paper, we have studied the excitation of planetary obliquities due to
 gravitational interaction with an exterior, dissipating (mass-losing)
@@ -1209,13 +1214,13 @@ nonadiabatic limits:
 \begin{enumerate}
     \item In the adiabatic limit (i.e.\ the disk dissipates at a
         sufficiently slow rate), we reproduce the known result $\theta_{\rm f}
-        \simeq 90^\circ$ for $\theta_{\rm sd, i} \simeq 0$. We demonstrate via
-        numerical calculation and analytical argument the dual-valued behavior
-        of $\theta_{\rm f}$ for nonzero initial spin-disk misalignment angles
-        $\theta_{\rm sd, i}$ (see Fig.~\ref{fig:ad_ensemble}). We are able to
-        capture both the exact final $\theta_{\rm f}$ values and the
-        probabilities of achieving each value via careful accounting of
-        adiabatic invariance and separatrix crossing dynamics.
+        \simeq 90^\circ$ for $\theta_{\rm sd, i} \simeq 0$. We demonstrate (via
+        numerical calculation and analytical argument) the dual-valued behavior
+        of $\theta_{\rm f}$ for nonzero $\theta_{\rm sd, i}$ (see
+        Fig.~\ref{fig:ad_ensemble}). We analytically calculate both the exact
+        final $\theta_{\rm f}$ values and the probabilities of achieving each
+        value via careful accounting of adiabatic invariance and separatrix
+        crossing dynamics.
     \item As the disk dissipates more rapidly, the adiabatic condition
         [Eq.~\eqref{eq:ad_constr}] breaks down, we find that a broad range of
         final obliquities can be reached for a given $\theta_{\rm sd, i}$ (see
@@ -1231,11 +1236,11 @@ work goes beyond these previous works and provides the most general solution to
 the evolution of ``Colombo's top'' as the system evolves from the ``weak
 spin-orbit coupling'' regime ($\eta\gg 1$) to the ``strong spin-orbit coupling''
 regime ($\eta\ll 1$).  The new analytical results presented in this paper can be
-adapted for other applications.
+adapted to other applications.
 
 \section*{Acknowledgements}
 
-We thank Kassandra Anderson for discussion and assistance in the early phase of
+We thank Kassandra Anderson for diskussion and assistance in the early phase of
 this work. DL thanks the Dept.\ of Astronomy and the Miller Institute for Basic
 Science at UC Berkeley for hospitality while part of this work was carried out.
 This work has been supported in part by the NSF grant AST-17152 and NASA grant
@@ -1279,7 +1284,7 @@ These agree with Eq.~\eqref{eq:dsdt_base}.
 % are the most intuitive description for analytical work.
 
 % We next develop some approximate forms for the CS obliquities that will be
-% useful for guiding later discussion. Denote $\theta_{\rm cs}$ the obliquity of
+% useful for guiding later diskussion. Denote $\theta_{\rm cs}$ the obliquity of
 % some Cassini State (fixed point of Eqs.~\eqref{se:H_eom}).
 % \begin{enumerate}
 %     \item $\eta \ll 1, \cos \theta_{\rm cs} \ll 1$ --- This is the limiting case
