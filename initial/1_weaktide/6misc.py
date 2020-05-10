@@ -32,7 +32,7 @@ def get_cs_val(I, s_c, s):
             cs2_qs[idx] = cs_qs[0]
     return cs1_qs, cs2_qs
 
-def plot_equils(I, s_c):
+def plot_equils(I, s_c, verbose=True, fn_str='6equils%s'):
     ''' plot in (s, mu) space showing how the tCS arise '''
     s_lt = np.linspace(s_c / 10, 1, 200) # max eta = 10
     s_gt = np.linspace(1, 3, 200) # other interesting part of the interval
@@ -40,32 +40,41 @@ def plot_equils(I, s_c):
 
     cs1_qs, cs2_qs = get_cs_val(I, s_c, s_tot)
     cs1_exist_idx = np.where(cs1_qs > -1)[0]
-    plt.plot(s_tot, np.degrees(cs2_qs), 'r', label='CS2')
-    plt.plot(s_tot[cs1_exist_idx], np.degrees(-cs1_qs[cs1_exist_idx]),
-             'g', label='CS1')
     mu_equil_lt = [np.degrees(np.arccos(get_mu_equil(s))) for s in s_lt]
-    plt.plot(s_lt, mu_equil_lt, 'k:', label='ds=0')
+    plt.plot(s_lt, mu_equil_lt, 'k', label=r'$\dot{s}=0$', lw=4)
 
     s_dq = np.linspace(2, 3, 200)
-    plt.plot(s_dq, np.degrees(np.arccos(2 / s_dq)), 'b:', label='dq=0')
-
-    # overplot where CS2 gets destroyed by tides? Just do for a representative
-    # epsilon, want to see the scaling
-    eta_crit = lambda eps_val: (
-        -np.sin(I) + np.sqrt(np.sin(I)**2 + 4 * eps_val**2 * np.cos(I)**2)
-    ) / (2 * eps_val * np.cos(I)**2)
+    plt.plot(s_dq, np.degrees(np.arccos(2 / s_dq)), 'b',
+             label=r'$\dot{\theta} = 0$', lw=4)
 
     plt.xlabel(r'$s / \Omega_1$')
     plt.ylabel(r'$\theta$')
     plt.ylim([0, 90])
-    xlims = plt.xlim()
-    plt.axvline(s_c / eta_crit(1e-2), c='r', ls=':', lw=0.6,
-                label=r'$s_{\max}(10^{-2})$')
-    plt.axvline(s_c / eta_crit(1e-1), c='r', ls='--', lw=0.6,
-                label=r'$s_{\max}(10^{-1})$')
-    plt.xlim(xlims)
+    if verbose:
+        plt.plot(s_tot, np.degrees(cs2_qs), 'r', label='CS2', lw=2.5)
+        plt.plot(s_tot[cs1_exist_idx], np.degrees(-cs1_qs[cs1_exist_idx]),
+                 'y', label='CS1', lw=2.5)
+
+        # overplot where CS2 gets destroyed by tides? Just do for a representative
+        # epsilon, want to see the scaling
+
+        eta_crit = lambda eps_val: (
+            -np.sin(I) + np.sqrt(np.sin(I)**2 + 4 * eps_val**2 * np.cos(I)**2)
+        ) / (2 * eps_val * np.cos(I)**2)
+        xlims = plt.xlim()
+        plt.axvline(s_c / eta_crit(1e-2), c='r', ls=':', lw=0.6,
+                    label=r'$s_{\max}(10^{-2})$')
+        plt.axvline(s_c / eta_crit(1e-1), c='r', ls='--', lw=0.6,
+                    label=r'$s_{\max}(10^{-1})$')
+        plt.xlim(xlims)
+    plt.annotate('', xy=(1.5, 45), xytext=(2.5, 65),
+                 arrowprops={'fc': 'g', 'width': 10, 'headwidth': 25})
+    plt.annotate('', xy=(0.8, 10), xytext=(0.3, 20),
+                 arrowprops={'fc': 'g', 'width': 10, 'headwidth': 25})
+    plt.annotate('', xy=(2.5, 20), xytext=(3.0, 10),
+                 arrowprops={'fc': 'g', 'width': 10, 'headwidth': 25})
     plt.legend(loc='upper right', fontsize=10, ncol=2)
-    plt.savefig('6equils%s' % s_c_str(s_c), dpi=400)
+    plt.savefig(fn_str % s_c_str(s_c), dpi=400)
     plt.clf()
 
 def plot_phop(I, s_c):
@@ -159,8 +168,9 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
 if __name__ == '__main__':
     eps = 1e-3
     I = np.radians(5)
-    plot_equils(I, 0.06)
     plot_equils(I, 0.2)
+    plot_equils(I, 0.2, verbose=False, fn_str='6equils_half%s')
+    plot_equils(I, 0.06)
     plot_equils(I, 0.6)
     # plot_phop(I, 0.2)
     # plot_equil_dist_anal(I, 0.06, 10, eps)

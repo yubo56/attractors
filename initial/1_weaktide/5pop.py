@@ -12,7 +12,9 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('font', family='serif', size=14)
+plt.rc('font', family='serif', size=18)
+plt.rc('xtick', direction='in', top=True, bottom=True)
+plt.rc('ytick', direction='in', left=True, right=True)
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
     stringify, H, roots, get_H4, s_c_str, get_mu_equil, get_anal_caps,\
@@ -212,8 +214,8 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     plot scatter + theta-binned hist
     '''
     # set up axes
-    left, width = 0.1, 0.65
-    bottom, height = 0.1, 0.8
+    left, width = 0.15, 0.6
+    bottom, height = 0.1, 0.88
     spacing = 0.005
     rect_scatter = [left, bottom, width, height]
     rect_histy = [left + width + spacing, bottom, 0.2, height]
@@ -231,12 +233,13 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     mu2 = [ic[0] for ic in IC_eq2]
     phi1 = [ic[1] for ic in IC_eq1]
     phi2 = [ic[1] for ic in IC_eq2]
-    ax_scatter.scatter(phi1, mu1, c='r', label='EQ1', s=ms)
-    ax_scatter.scatter(phi2, mu2, c='g', label='EQ2', s=ms)
-    ax_scatter.set_xlabel(r'$\phi$')
-    ax_scatter.set_ylabel(r'$\cos \theta$')
+    ax_scatter.scatter(phi1, mu1, c='tab:olive', edgecolor='k',
+                       label='tCS1', s=ms)
+    ax_scatter.scatter(phi2, mu2, c='tab:red', label='tCS2', s=ms)
+    ax_scatter.set_xlabel(r'$\phi_{\rm i}$')
+    ax_scatter.set_ylabel(r'$\cos \theta_{\rm i}$')
     ax_scatter.legend(loc='lower left')
-    ax_scatter.set_title(r'$s_c = %.2f, I = %d^\circ$' % (s_c, np.degrees(I)))
+    # ax_scatter.set_title(r'$s_c = %.2f, I = %d^\circ$' % (s_c, np.degrees(I)))
     # overplot separatrix
     lw = 2
     n_pts = 50
@@ -257,7 +260,7 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
 
     # plot hist vs mu0 (significant blending, okay)
     n, bins, _ = ax_hist.hist(
-        [mu2, mu1], bins=60, color=['g', 'r'],
+        [mu2, mu1], bins=60, color=['tab:red', 'tab:olive'],
         orientation='horizontal', stacked=True)
     ax_hist.set_ylim(ax_scatter.get_ylim())
 
@@ -275,11 +278,14 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
         # p_caps = get_anal_caps(I, s_c, cross_dat, mu_vals)
         p_caps = get_num_caps(I, s_c, cross_dat, mu_vals)
         tot_probs = np.sum(p_caps / n_phi, axis=1)
-        plt.plot(mu_vals, tot_probs, 'k:')
+        plt.plot(mu_vals, tot_probs, 'b', alpha=0.7)
 
         bin_cents = (bins[ :-1] + bins[1: ]) / 2
         bin_probs = np.array(n[0]) / np.array(n[1])
-        plt.plot(bin_cents, bin_probs, 'bo', ms=2)
+        plt.plot(bin_cents, bin_probs, 'ro', ms=2)
+        plt.xlabel(r'$\cos \theta_{\rm i}$')
+        plt.ylabel(r'tCS2 Probability')
+        plt.tight_layout()
         plt.savefig('5pc_fits%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
         plt.close()
 
@@ -289,12 +295,13 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     '''
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
     # fig.subplots_adjust(hspace=0)
-    ax1.plot(s_c_vals, np.array(counts) / (N_THREADS * N_PTS), 'bo')
+    ax1.scatter(s_c_vals, np.array(counts) / (N_THREADS * N_PTS),
+                c='tab:red')
     ax1.set_ylim([0, 1])
     ax1.set_ylabel('tCS2 Probability')
     s_c_dense = np.linspace(min(s_c_vals), max(s_c_vals), 200)
-    A2s = np.array([get_areas_ward(I, s_c, s0)[1] for s_c in s_c_dense])
-    ax1.plot(s_c_dense, A2s / (4 * np.pi), 'r')
+    # A2s = np.array([get_areas_ward(I, s_c, s0)[1] for s_c in s_c_dense])
+    # ax1.plot(s_c_dense, A2s / (4 * np.pi), 'r')
 
     # calculate locations of equilibria in ~continuous way
     s_c_crit = get_etac(I) # etac = s_c_crit / (s = 1)
@@ -314,8 +321,9 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     cs1_idxs = np.where(cs1_equil_mu > -1)[0]
     ax2.plot(np.array(s_c_cont)[cs1_idxs],
              np.degrees(np.arccos(cs1_equil_mu[cs1_idxs])),
-             'g', label='tCS1')
-    ax2.plot(s_c_cont, np.degrees(np.arccos(cs2_equil_mu)), 'b', label='tCS2')
+             'tab:olive', label='tCS1', lw=2)
+    ax2.plot(s_c_cont, np.degrees(np.arccos(cs2_equil_mu)),
+             'tab:red', label='tCS2', lw=2)
     ax2.set_ylabel(r'$\theta$')
     ax2.set_xlabel(r'$s_c / \Omega_1$')
     ax2.legend()
@@ -395,8 +403,8 @@ def run():
                     else:
                         print('Unable to classify (s_f, mu_f):', s[-1], mu_f)
             counts.append(len(IC_eq2))
-            # plot_final_dists(I, s_c, s0, trajs)
-            # plot_eq_dists(I, s_c, s0, np.array(IC_eq1), np.array(IC_eq2))
+            plot_final_dists(I, s_c, s0, trajs)
+            plot_eq_dists(I, s_c, s0, np.array(IC_eq1), np.array(IC_eq2))
         plot_cum_probs(I, s_c_vals, s0, counts)
 
 if __name__ == '__main__':
