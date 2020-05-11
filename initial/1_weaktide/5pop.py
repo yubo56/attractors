@@ -12,7 +12,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('font', family='serif', size=18)
+plt.rc('font', family='serif', size=20)
 plt.rc('xtick', direction='in', top=True, bottom=True)
 plt.rc('ytick', direction='in', left=True, right=True)
 
@@ -214,12 +214,13 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     plot scatter + theta-binned hist
     '''
     # set up axes
-    left, width = 0.15, 0.6
+    left, width = 0.2, 0.55
     bottom, height = 0.1, 0.88
-    spacing = 0.005
+    spacing = 0.05
     rect_scatter = [left, bottom, width, height]
-    rect_histy = [left + width + spacing, bottom, 0.2, height]
-    plt.figure(figsize=(8, 8))
+    rect_histy = [left + width + spacing, bottom,
+                  0.98 - (left + width + spacing), height]
+    plt.figure(figsize=(6, 6))
     ax_scatter = plt.axes(rect_scatter)
     ax_scatter.tick_params(direction='in', top=True, right=True)
     ax_hist = plt.axes(rect_histy)
@@ -257,6 +258,8 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
         mu_sep_top[idx] = opt.brentq(dH, mu4, 1)
     ax_scatter.plot(phi_sep, mu_sep_bot, 'k', lw=lw)
     ax_scatter.plot(phi_sep, mu_sep_top, 'k', lw=lw)
+    ax_scatter.set_xticks([0, np.pi, 2 * np.pi])
+    ax_scatter.set_xticklabels([r'$0$', r'$\pi$', r'$2\pi$'])
 
     # plot hist vs mu0 (significant blending, okay)
     n, bins, _ = ax_hist.hist(
@@ -270,15 +273,15 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     # try to overplot the semi-analytical simulations I ran
     pkl_fn = '6pc_dist%s.pkl' % s_c_str(s_c)
     if os.path.exists(pkl_fn):
-        n_mu = 101
-        n_phi = 60
+        n_mu = 501
+        n_phi = 50
         mu_vals =  np.linspace(-0.99, 0.99, n_mu)
         with open(pkl_fn, 'rb') as f:
             cross_dat = pickle.load(f)
         # p_caps = get_anal_caps(I, s_c, cross_dat, mu_vals)
         p_caps = get_num_caps(I, s_c, cross_dat, mu_vals)
         tot_probs = np.sum(p_caps / n_phi, axis=1)
-        plt.plot(mu_vals, tot_probs, 'b', alpha=0.7)
+        plt.plot(mu_vals, tot_probs, 'b', alpha=0.5, lw=1.5)
 
         bin_cents = (bins[ :-1] + bins[1: ]) / 2
         bin_probs = np.array(n[0]) / np.array(n[1])
@@ -336,42 +339,42 @@ def run():
     s0 = 10
 
     s_c_vals_20 = [
-        2.0,
-        1.2,
-        1.0,
         0.7,
-        0.65,
-        0.6,
-        0.55,
-        0.5,
-        0.45,
-        0.4,
-        0.35,
-        0.3,
-        0.25,
         0.2,
         0.06,
+        # 2.0,
+        # 1.2,
+        # 1.0,
+        # 0.65,
+        # 0.6,
+        # 0.55,
+        # 0.5,
+        # 0.45,
+        # 0.4,
+        # 0.35,
+        # 0.3,
+        # 0.25,
     ]
 
     s_c_vals_5 = [
-        2.0,
-        1.2,
-        1.0,
-        0.85,
-        0.8,
-        0.75,
         0.7,
-        0.65,
-        0.6,
-        0.55,
-        0.5,
-        0.45,
-        0.4,
-        0.35,
-        0.3,
-        0.25,
         0.2,
         0.06,
+        # 2.0,
+        # 1.2,
+        # 1.0,
+        # 0.85,
+        # 0.8,
+        # 0.75,
+        # 0.65,
+        # 0.6,
+        # 0.55,
+        # 0.5,
+        # 0.45,
+        # 0.4,
+        # 0.35,
+        # 0.3,
+        # 0.25,
     ]
 
     for I, s_c_vals in [
@@ -403,9 +406,9 @@ def run():
                     else:
                         print('Unable to classify (s_f, mu_f):', s[-1], mu_f)
             counts.append(len(IC_eq2))
-            plot_final_dists(I, s_c, s0, trajs)
+            # plot_final_dists(I, s_c, s0, trajs)
             plot_eq_dists(I, s_c, s0, np.array(IC_eq1), np.array(IC_eq2))
-        plot_cum_probs(I, s_c_vals, s0, counts)
+        # plot_cum_probs(I, s_c_vals, s0, counts)
 
 if __name__ == '__main__':
     run()

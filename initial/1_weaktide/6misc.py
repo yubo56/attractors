@@ -123,8 +123,8 @@ def get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0):
 
 def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
     pkl_fn = '6pc_dist%s.pkl' % s_c_str(s_c)
-    n_mu = 101
-    n_phi = 60
+    n_mu = 501
+    n_phi = 50
     mu_vals =  np.linspace(-0.99, 0.99, n_mu)
     phi_vals = np.linspace(0, 2 * np.pi, n_phi, endpoint=False)
 
@@ -168,14 +168,14 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
 if __name__ == '__main__':
     eps = 1e-3
     I = np.radians(5)
-    plot_equils(I, 0.2)
-    plot_equils(I, 0.2, verbose=False, fn_str='6equils_half%s')
-    plot_equils(I, 0.06)
-    plot_equils(I, 0.6)
+    # plot_equils(I, 0.2)
+    # plot_equils(I, 0.2, verbose=False, fn_str='6equils_half%s')
+    # plot_equils(I, 0.06)
+    # plot_equils(I, 0.6)
     # plot_phop(I, 0.2)
-    # plot_equil_dist_anal(I, 0.06, 10, eps)
-    # plot_equil_dist_anal(I, 0.2, 10, eps)
-    # plot_equil_dist_anal(I, 0.7, 10, eps)
+    plot_equil_dist_anal(I, 0.06, 10, eps)
+    plot_equil_dist_anal(I, 0.2, 10, eps)
+    plot_equil_dist_anal(I, 0.7, 10, eps)
 
     # test cases
     # print(get_cross_dat(I, 0.7, 10, 1e-3, 8000, 0.9, np.pi)) # no cross

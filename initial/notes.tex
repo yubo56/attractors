@@ -42,6 +42,13 @@
     \newcommand*{\ang}[0]{\;\text{\AA}}
     \newcommand*{\mum}[0]{\;\upmu \mathrm{m}}
     \newcommand*{\at}[1]{\left.#1\right|}
+    \newcommand*{\bra}[1]{\left<#1\right|}
+    \newcommand*{\ket}[1]{\left|#1\right>}
+    \newcommand*{\abs}[1]{\left|#1\right|}
+    \newcommand*{\ev}[1]{\langle#1\rangle}
+    \newcommand*{\p}[1]{\left(#1\right)}
+    \newcommand*{\s}[1]{\left[#1\right]}
+    \newcommand*{\z}[1]{\left\{#1\right\}}
 
     \newtheorem{theorem}{Theorem}[section]
 
@@ -59,14 +66,6 @@
     \DeclareMathOperator*{\argmax}{argmax}
     \DeclareMathOperator{\sgn}{sgn}
     \DeclareMathOperator{\diag}{diag\;}
-
-    \DeclarePairedDelimiter\bra{\langle}{\rvert}
-    \DeclarePairedDelimiter\ket{\lvert}{\rangle}
-    \DeclarePairedDelimiter\abs{\lvert}{\rvert}
-    \DeclarePairedDelimiter\ev{\langle}{\rangle}
-    \DeclarePairedDelimiter\p{\lparen}{\rparen}
-    \DeclarePairedDelimiter\s{\lbrack}{\rbrack}
-    \DeclarePairedDelimiter\z{\lbrace}{\rbrace}
 
     % \everymath{\displaystyle} % biggify limits of inline sums and integrals
     \tikzstyle{circ} % usage: \node[circ, placement] (label) {text};
@@ -112,14 +111,14 @@ the spin precesses around $\vec{B}$.
 This Hamiltonian is Kassandras Eq.\ 13, in the co-rotating frame with the
 perturber's angular momentum:
 \begin{equation}
-    \mathcal{H} = -\frac{1}{2}\p*{\hat{s} \cdot \hat{l}}^2
-        + \eta \p*{\hat{s} \cdot \hat{l}_p}.
+    \mathcal{H} = -\frac{1}{2}\p{\hat{s} \cdot \hat{l}}^2
+        + \eta \p{\hat{s} \cdot \hat{l}_p}.
 \end{equation}
 In this frame, we can choose $\hat{l} \equiv \hat{z}$ fixed, and $\hat{l}_p =
 \cos I\hat{z} + \sin I\hat{x}$ fixed as well. Then
 \begin{equation*}
     \hat{s} = \cos\theta \hat{z}
-        - \sin\theta\p*{\sin \phi \hat{y} + \cos \phi \hat{x}}.
+        - \sin\theta\p{\sin \phi \hat{y} + \cos \phi \hat{x}}.
 \end{equation*}
 We can choose the convention for $\phi$ azimuthal angle requiring $\phi =
 0, \pi$ mean coplanarity between $\hat{s}, \hat{l}, \hat{l}_p$ in the $\hat{x},
@@ -130,7 +129,7 @@ $\hat{l}$. Then we can evaluate in coordinates
     \hat{s} \cdot \hat{l}_p
         &= \cos \theta \cos I - \sin I \sin \theta \cos \phi,\\
     \mathcal{H} &= -\frac{1}{2}\cos^2\theta
-        + \eta \p*{\cos \theta \cos I - \sin I \sin \theta \cos \phi}.
+        + \eta \p{\cos \theta \cos I - \sin I \sin \theta \cos \phi}.
 \end{align*}
 Note that if we take $\cos\theta$ to be our canonical variable, $\sin\theta =
 \sqrt{1 - \cos^2\theta}$ can be used.
@@ -143,17 +142,17 @@ on opposite sides of $\hat{l}$ from $\hat{l}_p$.
 The correct EOM comes from Kassandra's Eq.\ 12:
 \begin{align*}
     \rd{\hat{s}}{t} &=
-        \p*{\hat{s} \cdot \hat{l}}\p*{\hat{s} \times \hat{l}}
-            -\eta\p*{\hat{s} \times \hat{l}_p},\\
-        &= \p*{s_ys_z - \eta s_y\cos(I)}\hat{x}
-            - \p*{s_xs_z + \eta \p*{s_x\cos I - s_z\sin I}}\hat{y}
+        \p{\hat{s} \cdot \hat{l}}\p{\hat{s} \times \hat{l}}
+            -\eta\p{\hat{s} \times \hat{l}_p},\\
+        &= \p{s_ys_z - \eta s_y\cos(I)}\hat{x}
+            - \p{s_xs_z + \eta \p{s_x\cos I - s_z\sin I}}\hat{y}
             + \eta s_y \sin(I)\hat{z}.
 \end{align*}
 
 Alternatively, consider Hamilton's equations applied to the Hamiltonian:
 \begin{align}
     \pd{\phi}{t} = \pd{\mathcal{H}}{(\cos\theta)}
-        &= -\cos\theta + \eta\p*{\cos I + \sin I \cot \theta \cos \phi},\\
+        &= -\cos\theta + \eta\p{\cos I + \sin I \cot \theta \cos \phi},\\
     \pd{(\cos \theta)}{t} = -\pd{\mathcal{H}}{\phi}
         &= -\eta \sin I \sin \theta \sin \phi.\label{eq:H_eom}
 \end{align}
@@ -181,15 +180,15 @@ and two solutions near $\mu = 0$:
         $\epsilon = \eta \sin I$ again. This actually corresponds to $\theta =
         \pi - \eta \sin I$.
 
-    \item For $\mu \approx 0$, we have instead $\pd{\phi}{t} = -\mu\p*{1 - \eta
+    \item For $\mu \approx 0$, we have instead $\pd{\phi}{t} = -\mu\p{1 - \eta
         \sin I \cos \phi} + \eta \cos I = 0$. This forces $\mu_\pm = \frac{\eta
         \cos I}{1 \pm \eta \sin I}$, where $\phi_{\pm} = \pi, 0$ respectively.
 
         Note that $\phi = 0, \mu \approx 0$ is conventionally CS4. The
-        linearization locally has form $\pd{\delta \phi}{t} = -\delta \mu\p*{1 -
+        linearization locally has form $\pd{\delta \phi}{t} = -\delta \mu\p{1 -
         \eta \sin I}$ and $\pd{\delta \mu}{t} = -\eta \sin I \delta \phi$, so
         the eigenvalues are $\approx \mp \sqrt{\eta \sin I}$, and the two
-        eigenvectors are $\p*{1, \pm \sqrt{\eta \sin I}}$.
+        eigenvectors are $\p{1, \pm \sqrt{\eta \sin I}}$.
 \end{itemize}
 
 For $\eta \gg 1$, the solutions obviously just come from $\cos I \pm \sin I \cot
@@ -210,15 +209,15 @@ We notate $\mu = \cos\theta$; note that CS4 is $\mu_4 \approx \frac{\eta \cos
 I}{1 - \eta \sin I} \approx \eta \cos I$. Setting the Hamiltonian equal to its
 value at CS4 gives
 \begin{align*}
-    H_4 &\equiv H\p*{\mu_4, \phi_4}
+    H_4 &\equiv H\p{\mu_4, \phi_4}
         \approx -\frac{\mu_4^2}{2} + \eta \mu_4 \cos I - \eta \sin I,\\
         &= +\frac{\eta^2\cos^2 I}{2} - \eta \sin I,\\
     H(\mu_{sep}, \phi_{sep})
         &= H_4 = -\eta \sin I \cos \phi_{sep} - \frac{\mu_{sep}^2}{2} + \eta
             \mu_{sep} \cos I + \mathcal{O}(\eta^3),\\
     0 &\approx \frac{\mu_{sep}^2}{2} - \eta \mu_{sep} \cos I
-        - \eta \sin I\p*{1 - \cos \phi_{sep}} + \frac{\eta^2\cos^2I}{2},\\
-    \mu_{sep}\p*{\phi} &\approx \sqrt{2\eta \sin I\p*{1 - \cos \phi}}
+        - \eta \sin I\p{1 - \cos \phi_{sep}} + \frac{\eta^2\cos^2I}{2},\\
+    \mu_{sep}\p{\phi} &\approx \sqrt{2\eta \sin I\p{1 - \cos \phi}}
         + \mathcal{O}(\eta).
 \end{align*}
 
@@ -241,12 +240,12 @@ introduce a small and constant tidal dissipation, we should get a
 \subsection{Tidal Dissipation}
 
 We can add a tidal dissipation term; we write it in form
-$\p*{\rd{\hat{s}}{t}}_{tide} = \epsilon \hat{s} \times \p*{\hat{l} \times
-\hat{s}} = \epsilon\p*{\vec{l} - \p*{\vec{s} \cdot \vec{l}}\vec{s}}$. Expanding,
+$\p{\rd{\hat{s}}{t}}_{tide} = \epsilon \hat{s} \times \p{\hat{l} \times
+\hat{s}} = \epsilon\p{\vec{l} - \p{\vec{s} \cdot \vec{l}}\vec{s}}$. Expanding,
 \begin{align}
-    \p*{\rd{\hat{s}}{t}}_{tide} &= \epsilon \p*{\hat{z} - s_z\hat{s}}
+    \p{\rd{\hat{s}}{t}}_{tide} &= \epsilon \p{\hat{z} - s_z\hat{s}}
         ,\nonumber\\
-        &= \epsilon \p*{-s_z s_x\hat{x} - s_zs_y\hat{y} + \p*{1 - s_z^2}
+        &= \epsilon \p{-s_z s_x\hat{x} - s_zs_y\hat{y} + \p{1 - s_z^2}
             \hat{z}}.\label{eq:p1_eom}
 \end{align}
 We run numerical simulations for weaker $\epsilon \ll \eta \ll 1$ and stronger
@@ -255,21 +254,21 @@ $\epsilon \lesssim \eta \ll 1$.
 We can seek equilibria of the the system including tides, which requires
 \begin{align*}
     0 &= s_ys_z - \eta s_y\cos I - \epsilon s_zs_x,\\
-    0 &= -s_xs_z - \eta\p*{s_x \cos I - s_z \sin I} - \epsilon s_zs_y,\\
-    0 &= \eta s_y\sin(I) + \epsilon \p*{1 - s_z^2}.
+    0 &= -s_xs_z - \eta\p{s_x \cos I - s_z \sin I} - \epsilon s_zs_y,\\
+    0 &= \eta s_y\sin(I) + \epsilon \p{1 - s_z^2}.
 \end{align*}
 We expect at least two equilibria, based on the simulations: one near $s_z
 \approx 1$ and one $s_z \approx 0$.
 
 For near alignment/near Cassini state $1$, $1 - s_z \sim 1 - s_{\perp}^2$, so we
 can set $s_z = 1$ to first order: $s_y - \epsilon s_x - \eta s_y \cos I = -s_x -
-\eta\p*{s_x \cos I - \sin I} - \epsilon s_y = \eta s_y \sin I = 0$. This can be
-satisfied if we set $s_x = \tan(I) \ll 1, s_y = \mathcal{O}\p*{\epsilon s_x}$;
+\eta\p{s_x \cos I - \sin I} - \epsilon s_y = \eta s_y \sin I = 0$. This can be
+satisfied if we set $s_x = \tan(I) \ll 1, s_y = \mathcal{O}\p{\epsilon s_x}$;
 this coarsely corresponds to Cassini state $1$.
 
 The other solution should be near Cassini state $2$, where $s_x \approx 1$;
 dropping second order terms forces $\eta s_y + \epsilon s_z = -s_z -
-\eta\p*{\cos I - s_z\sin I} = \eta s_y \sin(I) + \epsilon = 0$. This can thus be
+\eta\p{\cos I - s_z\sin I} = \eta s_y \sin(I) + \epsilon = 0$. This can thus be
 satisfied for $s_y \approx -\frac{\epsilon}{\eta \sin(I)}$. Thus, this explains
 why as $\epsilon$ is increased, we first start to get points that don't converge
 to Cassini state $2$ in the absence of tides, before starting to see points that
@@ -282,12 +281,12 @@ We zoom in on Cassini State $4$, which has $\theta_4 =
 I}{1 - \eta \sin I}, \phi_4 = 0$. Then, using
 equations of motion
 \begin{align}
-    \pd{\phi}{t} &= -\mu + \eta\p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}}
+    \pd{\phi}{t} &= -\mu + \eta\p{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}}
         \cos \phi} ,\\
-    \pd{\mu}{t} &= -\eta \sin I \sin \phi + \s*{\epsilon \p*{1 - \mu^2}},
+    \pd{\mu}{t} &= -\eta \sin I \sin \phi + \s{\epsilon \p{1 - \mu^2}},
 \end{align}
 we can perturbatively require $\pd{\theta}{t} = 0$ for $\epsilon \neq 0$. This
-corresponds to $\eta \sin I \sin \p*{\phi_4 + \delta \phi} \approx \epsilon$, or
+corresponds to $\eta \sin I \sin \p{\phi_4 + \delta \phi} \approx \epsilon$, or
 $\delta \phi_4 = +\frac{\epsilon}{\eta \sin I}$. This is in agreement with
 Dong's result.
 
@@ -308,10 +307,10 @@ in the dissipation free problem. Introducing dissipation breaks the saddle
 connection by a distance that can be estimated with the Melnikov distance. This
 is G\&H Equation 4.5.11 or something:
 \begin{align}
-    d(t_0) &= \frac{\epsilon M(t_0)}{\abs*{f(q^0(0))}} + \mathcal{O}(\epsilon^2)
+    d(t_0) &= \frac{\epsilon M(t_0)}{\abs{f(q^0(0))}} + \mathcal{O}(\epsilon^2)
         ,\\
     M(t_0) &= \int\limits_{-\infty}^\infty
-        \s*{f \times g}_{hetero}\;\mathrm{d}t.
+        \s{f \times g}_{hetero}\;\mathrm{d}t.
 \end{align}
 
 This is not a hard formula to understand; along the separatrix, motion is
@@ -329,23 +328,23 @@ down our EOM in Melnikov form (we use canonical variables $\mu, \phi$):
     \rd{\hat{s}}{t}
         &= \underbrace{
             \pd{\mathcal{H}}{\mu}\hat{\phi} - \pd{\mathcal{H}}{\phi}\hat{\mu}}_f
-            + \epsilon \underbrace{\p*{1 - \mu^2}\hat{\mu}}_g.
+            + \epsilon \underbrace{\p{1 - \mu^2}\hat{\mu}}_g.
 \end{align}
-Then $f \times g = f_\phi g_\mu = \pd{\mathcal{H}}{\mu}\p*{1 - \mu^2}$. We then
+Then $f \times g = f_\phi g_\mu = \pd{\mathcal{H}}{\mu}\p{1 - \mu^2}$. We then
 want to integrate this along the heteroclinic orbit. We can make change of
 variables
 \begin{equation}
     M = \int\limits_0^{2\pi}\pd{\mathcal{H}}{\mu}
-        \p*{1 - \mu^2}\p*{\pd{\phi}{t}}^{-1}\;\mathrm{d}\phi.
+        \p{1 - \mu^2}\p{\pd{\phi}{t}}^{-1}\;\mathrm{d}\phi.
 \end{equation}
 But thankfully, $\pd{\mathcal{H}}{\mu} = \pd{\phi}{t}$ in the absence of
-dissipation, and so $M = 2\pi\p*{1 - \mu^2} \approx 2\pi$.
+dissipation, and so $M = 2\pi\p{1 - \mu^2} \approx 2\pi$.
 Thus, the Melnikov distance at point $q^0$, a point on the heteroclinic
 orbit of the unperturbed Hamiltonian, is just
 \begin{equation}
-    d(q^0) = \frac{2\pi \epsilon}{\abs*{f(q^0)}}.
+    d(q^0) = \frac{2\pi \epsilon}{\abs{f(q^0)}}.
 \end{equation}
-Note that the maximum value $\abs*{f(q^0)}$, which occurs at $\phi = \pi$, is
+Note that the maximum value $\abs{f(q^0)}$, which occurs at $\phi = \pi$, is
 just $f_{\max} \approx \sqrt{4\eta \sin I}$.
 
 It proves to be a bit difficult to make quantitative predictions though, since
@@ -376,15 +375,15 @@ expect $\mu > \mu_{sep}, \Delta \mu \sim C$, while $\mu < \mu_{sep}, \Delta
 
 My $\mu > \mu_{sep}$ simulations don't seem to work very well, so I'll focus on
 the $\delta \mu^{-1}$ case. In this case, define $\delta \mu_c: \Delta
-\mu\p*{\delta \mu_c} = -\delta \mu_c$, i.e.\ the point that jumps immediately to
+\mu\p{\delta \mu_c} = -\delta \mu_c$, i.e.\ the point that jumps immediately to
 the saddle point. Furthermore, assume the inbound distribution is flat between
-$\delta \mu_c, f^{-1}\p*{\delta \mu_c}$. TODO\@: empirically, $\mu_c \sim
+$\delta \mu_c, f^{-1}\p{\delta \mu_c}$. TODO\@: empirically, $\mu_c \sim
 \epsilon T$ is \emph{flat} with $\eta$, probably just because we're not getting
 sufficiently close to the saddle point for the $\propto \sqrt{\eta}$ to kick in.
 
 Then, we can compare the empirical Poincar\'e section of the points that cross
 the separatrix versus the total predicted interval width $\delta \mu_c,
-f^{-1}\p*{\delta \mu_c}$; this would predict $7.2\%, 18\%$. This does alright!
+f^{-1}\p{\delta \mu_c}$; this would predict $7.2\%, 18\%$. This does alright!
 
 \subsection{Consideration 4: Plotting Stable/Unstable
 manifolds}\label{ss:melnikov_success}
@@ -419,7 +418,7 @@ Now, let's reconsider the Melnikov integral when perturbing this finite
 (non-homoclinic orbit); this may no longer be an exact result but should give
 the correct scaling:
 \begin{equation}
-    M_c = \int\limits_0^T \pd{\phi}{t}\epsilon \p*{1 - \mu^2}\;\mathrm{d}t.
+    M_c = \int\limits_0^T \pd{\phi}{t}\epsilon \p{1 - \mu^2}\;\mathrm{d}t.
 \end{equation}
 Naively, we might claim that, since $\pd{\phi}{t}$ changes signs halfway through
 the interval of integration, that the only surviving component is $2\epsilon
@@ -427,14 +426,14 @@ the interval of integration, that the only surviving component is $2\epsilon
 $\mu'$ is the fluctuation. This gives
 \begin{equation}
     M_c = 2\int\limits_0^{2\pi}2\epsilon \frac{\eta \cos I}{1 + \eta \sin I}
-        \sqrt{2\eta \sin I \p*{1 - \cos \phi}}\;\mathrm{d}\phi.
+        \sqrt{2\eta \sin I \p{1 - \cos \phi}}\;\mathrm{d}\phi.
 \end{equation}
 Note that $M_c \propto \eta^{3/2}$, and since the gap opened $\Delta_c =
 \frac{M_c}{\pd{\phi}{t}} \propto \eta$, it seems like we're on the right track.
 Specifically:
 \begin{align}
     M_c &\approx \epsilon 2\eta \cos I A_{sep},\\
-    \Delta_c &\approx 2\epsilon \eta \cos I \p*{16 \sqrt{\eta \sin I}}
+    \Delta_c &\approx 2\epsilon \eta \cos I \p{16 \sqrt{\eta \sin I}}
         \frac{1}{\sqrt{4\eta \sin I}},\\
         &\approx 16\epsilon \eta \cos I.
 \end{align}
@@ -450,7 +449,7 @@ This agrees perfectly with the cases we've run.
 to be
 \begin{equation}
     P_{hop} = \frac{16\eta^{3/2}\cos I \sqrt{\sin I}}{\pi
-        \p*{1 - 2\eta \sin I - \eta^2 \cos^2 I}
+        \p{1 - 2\eta \sin I - \eta^2 \cos^2 I}
         + 8\eta^{3/2}\cos I \sqrt{\sin I}}.
 \end{equation}
 It bears noting this formula slightly overpredicts $P_{hop}$ compared to the
@@ -491,7 +490,7 @@ In order to probe the relevant physics here, we first cite without proof (refer
 to \autoref{ss:revisited} for this) that $\pd{\Delta H}{\alpha} =
 \frac{\mu^2}{2} - \frac{1}{2\alpha^2}\cos^2 I$. This implies that
 \begin{equation}
-    B_i = \int_{\mathcal{C}_i} \dot{\alpha}\s*{
+    B_i = \int_{\mathcal{C}_i} \dot{\alpha}\s{
         \frac{\mu^2}{2} - \frac{1}{2\alpha^2}\cos^2 I}
         \;\mathrm{d}t.
 \end{equation}
@@ -510,20 +509,20 @@ It should be noted that, upon careful calculation, $\dot{\eta} = -\epsilon \eta
 
 Our expression then becomes:
 \begin{align*}
-    B_i &= \int -\frac{\epsilon \mu}{2\alpha^2}\s*{
+    B_i &= \int -\frac{\epsilon \mu}{2\alpha^2}\s{
         \alpha^2 \mu^2 - \cos^2 I}\;\mathrm{d}t,\\
         &\approx -\frac{\epsilon}{2\alpha^2} \int
             \mu \frac{\alpha^2 \mu^2 - \cos^2 I}{
                 -\alpha \mu + \cos I}\;\mathrm{d}\phi,\\
         &\approx +\frac{\epsilon}{2\alpha^2}\int
-            \mu\p*{\alpha \mu + \cos I}\;\mathrm{d}\phi.
+            \mu\p{\alpha \mu + \cos I}\;\mathrm{d}\phi.
 \end{align*}
 Now, we can evaluate our two integrals. For some reason my usual arguments
 (taking symmetric/antisymmetric part etc.) don't seem to do too well here, there
 are too many terms, so we will keep as many terms as possible.
 
 First, we tackle the top integral. Here, the integrand is evaluated at
-$\mu_+(\phi) = \eta \cos I + \sqrt{2\eta \sin I\p*{1 - \cos \phi}}$\footnote{
+$\mu_+(\phi) = \eta \cos I + \sqrt{2\eta \sin I\p{1 - \cos \phi}}$\footnote{
 Bears noting that $\mu_{\pm} = \frac{\eta \cos I}{1 - \eta \sin I} \pm \dots$
 significantly improves accuracy, it appears. Too many replacements to fix}, so
 we can plug this in and compute
@@ -531,8 +530,8 @@ we can plug this in and compute
     B_{top}\frac{2\alpha^2}{\epsilon} &= \int\limits_{2\pi}^{0}
             \mu(\alpha \mu + \cos I)\;\mathrm{d}\phi,\\
         &= -\int\limits_0^{2\pi}
-            \p*{\eta \cos I + \sqrt{2\eta \sin I\p*{1 - \cos \phi}}}
-                \p*{2\cos I + \sqrt{2\sin I\p*{1 - \cos \phi}/\eta}}
+            \p{\eta \cos I + \sqrt{2\eta \sin I\p{1 - \cos \phi}}}
+                \p{2\cos I + \sqrt{2\sin I\p{1 - \cos \phi}/\eta}}
                 \;\mathrm{d}\phi.
 \end{align*}
 Let's track the four terms in FOIL (first, outer, inner, last) order. (F)
@@ -541,7 +540,7 @@ I}{2}A_{sep} = 8\cos I\sqrt{\eta \sin I}$, and (I) twice that. Lastly, (L)
 evaluates to $4\pi \sin I$. This agrees with our numerical check.
 
 We now track the bottom integral. Here, the integrand is instead evaluated at
-$\mu_-(\phi) = \eta \cos I - \sqrt{2\eta \sin I\p*{1 - \cos \phi}}$. This flips
+$\mu_-(\phi) = \eta \cos I - \sqrt{2\eta \sin I\p{1 - \cos \phi}}$. This flips
 the signs of the (O) and (I) terms above. Furthermore, the $\mathrm{d}\phi$
 direction changes, and so we arrive at capture probability
 \begin{equation}
@@ -568,27 +567,27 @@ $\frac{H/\eta^2}{\pd{H}{\eta}/\eta}$.
 For clarity, $H$ and $H_4$ are now
 \begin{align*}
     H &= -\frac{\mu^2}{2}
-            + \eta\p*{\mu \cos I - \sin I \sqrt{1 - \mu^2}\cos \phi}, &
+            + \eta\p{\mu \cos I - \sin I \sqrt{1 - \mu^2}\cos \phi}, &
     H_4 &= -\eta \sin I + \frac{\eta^2 \cos^2 I}{2}.
 \end{align*}
 Thus, our $B_i$ are
 \begin{align*}
     B_i &= \int_{\mathcal{C}_i} \epsilon \mu \eta
-            \s*{-\sin I + \eta \cos^2 I -
-                \p*{\mu \cos I - \sin I \sqrt{1 - \mu^2}\cos \phi}}
+            \s{-\sin I + \eta \cos^2 I -
+                \p{\mu \cos I - \sin I \sqrt{1 - \mu^2}\cos \phi}}
             \;\mathrm{d}t,\\
         &\approx \int_{\mathcal{C}_i} \epsilon \mu \eta
             \frac{\eta \cos^2 I - \mu \cos I
-                + \sin I\p*{\cos \phi \sqrt{1 - \mu^2} - 1}}{-\mu + \eta \cos I}
+                + \sin I\p{\cos \phi \sqrt{1 - \mu^2} - 1}}{-\mu + \eta \cos I}
             \;\mathrm{d}\phi,\\
         &= \int_{\mathcal{C}_i} \epsilon \mu \eta
-            \p*{\cos I + \sin I \frac{\cos \phi \sqrt{1 - \mu^2} - 1}{-\mu +
+            \p{\cos I + \sin I \frac{\cos \phi \sqrt{1 - \mu^2} - 1}{-\mu +
             \eta \cos I}} \;\mathrm{d}\phi.
 \end{align*}
 That the second term does not diverge requires some careful work:
 \begin{align*}
     \frac{\cos \phi\sqrt{1 - \mu^2} - 1}{\mu - \eta \cos I}
-        &\approx \frac{\sqrt{1 - 2\eta \sin I\p*{1 - \cos \phi}}\cos \phi
+        &\approx \frac{\sqrt{1 - 2\eta \sin I\p{1 - \cos \phi}}\cos \phi
             - 1}{\mu - \eta \cos I},\\
         &\approx \frac{(1 - \eta \sin I(1 - \cos \phi))\cos \phi - 1}{
             \mu - \eta \cos I},\\
@@ -596,7 +595,7 @@ That the second term does not diverge requires some careful work:
             (1 - \cos \phi)}},\\
         &\approx \mp\sqrt{\frac{1 - \cos \phi}{2\eta \sin I}},\\
     B_i &= \int_{\mathcal{C}_i} \epsilon \mu \eta
-            \p*{\cos I \pm \sin I
+            \p{\cos I \pm \sin I
                 \sqrt{\frac{1 - \cos \phi}{2\eta \sin I}}} \;\mathrm{d}\phi.
 \end{align*}
 Note that the plus sign corresponds to the top integral, where $\mu - \eta \cos
@@ -604,11 +603,11 @@ I > 0$. The top integral evaluates easily
 \begin{align*}
     B_{top} &= \int\limits_{2\pi}^0 \epsilon \mu \eta \cos I\;\mathrm{d}\phi
             + \frac{\epsilon}{2}\int\limits_{2\pi}^0
-                \mu\sqrt{2\eta \sin I\p*{1 - \cos \phi}}\;\mathrm{d}\phi,\\
-        &= -\epsilon \eta \cos I\p*{2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
-            - \frac{\epsilon}{2}\p*{\eta \cos I (8\sqrt{\eta \sin I})
+                \mu\sqrt{2\eta \sin I\p{1 - \cos \phi}}\;\mathrm{d}\phi,\\
+        &= -\epsilon \eta \cos I\p{2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
+            - \frac{\epsilon}{2}\p{\eta \cos I (8\sqrt{\eta \sin I})
             + 4\pi \eta \sin I},\\
-        &= -\epsilon \eta \s*{
+        &= -\epsilon \eta \s{
             2\pi \sin I + 12\sqrt{\eta \sin I}\cos I + 2\pi \eta \cos^2 I}.
 \end{align*}
 The bottom integral just flips the signs of the cross terms (the $\sqrt{\eta}$
@@ -628,7 +627,7 @@ For reference, let's also write down the $B_i$ in the $\dot{\eta} = \epsilon
 \begin{align*}
     B_{top} &= \int\limits_{2\pi}^0 \epsilon \eta \cos I\;\mathrm{d}\phi
             + \frac{\epsilon}{2}\int\limits_{2\pi}^0
-                \sqrt{2\eta \sin I\p*{1 - \cos \phi}}\;\mathrm{d}\phi,\\
+                \sqrt{2\eta \sin I\p{1 - \cos \phi}}\;\mathrm{d}\phi,\\
         &= -2\pi \epsilon \eta \cos I - \frac{\epsilon}{2}8\sqrt{\eta \sin I}.
 \end{align*}
 Along the bottom leg, the first term changes signs (both integrals have their
@@ -637,7 +636,7 @@ paths flipped, but the sign of the second integral also changes), and so
     B_{\pm} = \mp 2\pi \epsilon \eta \cos I
         - \frac{\epsilon}{2}8\sqrt{\eta \sin I}.
 \end{equation}
-Generally, since $\eta$ is small, $B_{+} + B_- < -\abs*{B_+}, -\abs*{B_-}$ which
+Generally, since $\eta$ is small, $B_{+} + B_- < -\abs{B_+}, -\abs{B_-}$ which
 implies guaranteed capture from both sides, as expected (note that in our actual
 paper, we compute changes for $h \equiv H^{(0)} - H_4$, while here we compute
 changes in $H_4 - H^{(0)}$, accounting for the change in sign).
@@ -657,16 +656,16 @@ We can now compute the $\Delta_{\pm}$ changes in $h \equiv H^{(0)} - H_4$
 (following my paper's convention, rather than those earlier in these notes),
 which are:
 \begin{equation}
-    \Delta_{\pm} = \epsilon\s*{\mp 2\pi \p*{1 - 2\eta \sin I - \eta^2 \cos^2 I} +
+    \Delta_{\pm} = \epsilon\s{\mp 2\pi \p{1 - 2\eta \sin I - \eta^2 \cos^2 I} +
         16\cos I\eta^{3/2}\sqrt{\sin I}} + f\epsilon
-            \s*{\pm 2\pi \eta \cos I + 4\sqrt{\eta \sin I}}.
+            \s{\pm 2\pi \eta \cos I + 4\sqrt{\eta \sin I}}.
 \end{equation}
 The two contributions are bracketed.
 
 \section{Weak Tidal Friction, changing $\eta$ and $\theta$}
 
 Previously, we took the effect of tides to simply be $\rd{\hat{s}}{t} = \epsilon
-\hat{s} \times \p*{\hat{l} \times \hat{s}}$, but in reality, tides will spin
+\hat{s} \times \p{\hat{l} \times \hat{s}}$, but in reality, tides will spin
 down the body (in our case, planet) at the same rate as aligning $\hat{s}$ to
 $\hat{l}$. We must treat more carefully.
 
@@ -679,10 +678,10 @@ evolves with its coupling to its orbital angular momentum and perturber. We
 obtain (maybe?)
 \begin{align}
     \rd{\hat{s}}{t}
-        &= \omega_{s1}\p*{\hat{s} \cdot \hat{l}_1}\p*{\hat{s} \times \hat{l}_1}
-            - \omega_{1p}\cos(I)\p*{\hat{s} \times \hat{l}_p},\\
-    \omega_{s1} &= \frac{3k_q}{2k}\frac{M_*}{m_1}\p*{\frac{R_1}{a_1}}^3 s,\\
-    \omega_{1p} &= \frac{3m_p}{4m_*}\p*{\frac{a_1}{a_p\sqrt{1 - e_p^2}}}^3 \Omega_1.
+        &= \omega_{s1}\p{\hat{s} \cdot \hat{l}_1}\p{\hat{s} \times \hat{l}_1}
+            - \omega_{1p}\cos(I)\p{\hat{s} \times \hat{l}_p},\\
+    \omega_{s1} &= \frac{3k_q}{2k}\frac{M_*}{m_1}\p{\frac{R_1}{a_1}}^3 s,\\
+    \omega_{1p} &= \frac{3m_p}{4m_*}\p{\frac{a_1}{a_p\sqrt{1 - e_p^2}}}^3 \Omega_1.
 \end{align}
 Note here that $s$ is the spin frequency and $\Omega_1 = \sqrt{GM_1/a_1^3}$ is
 the Keplerian orbital frequency. We may verify that these scalings are correct:
@@ -691,10 +690,10 @@ the Keplerian orbital frequency. We may verify that these scalings are correct:
         gravitational field that is out-of-plane from the host star. We estimate
         the scalings by comparing their relative gravitational strengths. For
         this, we need that the gravitational potential of a ring inside the ring
-        scales $\Phi'(r) \sim \frac{Gm_p}{a_p}\p*{\frac{r}{a_p}}^2$, and so
+        scales $\Phi'(r) \sim \frac{Gm_p}{a_p}\p{\frac{r}{a_p}}^2$, and so
         \begin{equation}
             \omega_{1p} \sim \frac{\Phi'}{\Phi_0}n
-                \sim \frac{m_p}{m}\p*{\frac{a_1}{a_p}}^3n.
+                \sim \frac{m_p}{m}\p{\frac{a_1}{a_p}}^3n.
         \end{equation}
 
         Recall the idea here is that we can compute some potential $\Phi(r)$ due
@@ -705,8 +704,8 @@ the Keplerian orbital frequency. We may verify that these scalings are correct:
         we get energy $U = \int \Phi(r) m_1(r) \;\mathrm{d}r$, and if $m_1$ only
         has $l$-multipole moments then $U$ only has to be computed against
         limited terms of the expansion of $\Phi$. The way we get the expansion
-        of $\Phi$ is just by expanding $\frac{1}{\abs*{\vec{r} - \vec{r}_d}}
-        \sim \frac{1}{\p*{r^2 - rr_d\cos\theta + r_d^2}^{1/2}}$ as a Taylor
+        of $\Phi$ is just by expanding $\frac{1}{\abs{\vec{r} - \vec{r}_d}}
+        \sim \frac{1}{\p{r^2 - rr_d\cos\theta + r_d^2}^{1/2}}$ as a Taylor
         series for small $\vec{r}_d$.
 
         I think that the vertical component of the inner ring, out of the plane
@@ -720,7 +719,7 @@ the Keplerian orbital frequency. We may verify that these scalings are correct:
         quadrupolar torque to the spin angular momentum of the planet, or
         \begin{align}
             \omega_{s1} &\sim \frac{GM_* J_2 m_1 R_1^2/a^3}{k_p m_1 R_1^2s},\\
-                &\sim \frac{k_{qp}}{k_p}\frac{M_*}{m_1} \p*{\frac{R_1}{a}}^3s.
+                &\sim \frac{k_{qp}}{k_p}\frac{M_*}{m_1} \p{\frac{R_1}{a}}^3s.
         \end{align}
         Note that $J_2 = \frac{k_{qp}s^2}{Gm_1/R_1^3}$, some constant times the
         spin frequency relative to breakup. This captures the scalings.
@@ -739,10 +738,10 @@ In the presence of tides, and further assuming $s \ll l_1$, we may write (Lai
 \begin{align}
     \frac{1}{s}\rd{s}{t}
         = \frac{1}{s}\rd{s}{t}
-        &= \frac{1}{t_s}\frac{L}{2S}\s*{\cos\theta
-            - \frac{s}{2\Omega_1}\p*{1 + \cos^2\theta}},\\
+        &= \frac{1}{t_s}\frac{L}{2S}\s{\cos\theta
+            - \frac{s}{2\Omega_1}\p{1 + \cos^2\theta}},\\
     \rd{\theta}{t} &= -\frac{1}{t_s}\frac{L}{2S}
-        \sin\theta\p*{1 - \frac{s}{2\Omega_1}\cos\theta}.
+        \sin\theta\p{1 - \frac{s}{2\Omega_1}\cos\theta}.
 \end{align}
 Note that $L = \mu a^2\Omega_1, S = Is$ are the orbital and spin angular momenta
 espectively.
@@ -753,14 +752,14 @@ It is perhaps easiest to define $\frac{s}{s_c} =
 \omega_{1p}\cos(I) t$, so that we obtain equations of motion
 \begin{align}
     \rd{\hat{s}}{\tau}
-        &= \frac{s}{s_c}\p*{\hat{s} \cdot \hat{l}_1}\p*{\hat{s} \times \hat{l}_1}
+        &= \frac{s}{s_c}\p{\hat{s} \cdot \hat{l}_1}\p{\hat{s} \times \hat{l}_1}
             - \hat{s} \times \hat{l}_p
             + \frac{\epsilon 2\Omega_1}{s}
-                \p*{1 - \frac{s}{2\Omega_1}\p*{\hat{l}_1 \cdot \hat{s}}}
-                    \hat{s} \times \p*{\hat{l}_1 \times \hat{s}},\\
+                \p{1 - \frac{s}{2\Omega_1}\p{\hat{l}_1 \cdot \hat{s}}}
+                    \hat{s} \times \p{\hat{l}_1 \times \hat{s}},\\
     \rd{s}{\tau}
-        &= \epsilon 2\Omega_1 \p*{\hat{s} \cdot \hat{l}_1 - \frac{s}{2\Omega_1}\p*{1
-            + \p*{\hat{s} \cdot \hat{l}_1}^2}}.
+        &= \epsilon 2\Omega_1 \p{\hat{s} \cdot \hat{l}_1 - \frac{s}{2\Omega_1}\p{1
+            + \p{\hat{s} \cdot \hat{l}_1}^2}}.
 \end{align}
 $s_c$ has the interpretation of being the critical spin such that the $s1$
 coupling is roughly equal strength to the $1p$ coupling. There then seem to be a
@@ -786,12 +785,12 @@ write down the EOM in $(\mu, \phi)$ coordinates again. The $\phi$ EOM does not
 change from the tide-free case, so we can reuse earlier equation:
 \begin{align}
     \pd{\phi}{\tau} &= -\frac{s}{s_c}\mu
-        + \p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}} \cos \phi} ,\\
+        + \p{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}} \cos \phi} ,\\
     \pd{\mu}{\tau} &= -\sin I \sin \phi +
-        \epsilon \frac{2\Omega_1}{s}\p*{1 - \mu^2}
-            \p*{1 - \frac{s}{2\Omega_1}\mu},\\
+        \epsilon \frac{2\Omega_1}{s}\p{1 - \mu^2}
+            \p{1 - \frac{s}{2\Omega_1}\mu},\\
     \rd{s}{\tau}
-        &= \epsilon 2\Omega_1 \p*{\mu - \frac{s}{2\Omega_1}\p*{1 + \mu^2}}.
+        &= \epsilon 2\Omega_1 \p{\mu - \frac{s}{2\Omega_1}\p{1 + \mu^2}}.
 \end{align}
 Assuming $s \gg s_c$ the strong spin-orbit coupling regime, let's first try
 assuming $\mu$ is roughly constant over the course of a precession period, then
@@ -799,12 +798,12 @@ we can average out the $\phi$ dependencies. Then $\phi$ drops out of the EOM,
 and we have approximate averaged equations
 \begin{subequations}\label{se:prec_avg}
     \begin{align}
-        \pd{\mu}{(\epsilon\tau)} &\approx \frac{2\Omega_1}{s}\p*{1 - \mu^2}
-                \p*{1 - \frac{s}{2\Omega_1}\mu},\nonumber\\
-            &\approx \p*{1 - \mu^2}
-                \p*{\frac{2\Omega_1}{s} - \mu},\\
+        \pd{\mu}{(\epsilon\tau)} &\approx \frac{2\Omega_1}{s}\p{1 - \mu^2}
+                \p{1 - \frac{s}{2\Omega_1}\mu},\nonumber\\
+            &\approx \p{1 - \mu^2}
+                \p{\frac{2\Omega_1}{s} - \mu},\\
         \frac{1}{\Omega_1}\rd{s}{(\epsilon\tau)}
-            &\approx 2\mu - \frac{s}{\Omega_1}\p*{1 + \mu^2}.
+            &\approx 2\mu - \frac{s}{\Omega_1}\p{1 + \mu^2}.
     \end{align}
 \end{subequations}
 These EOM produce roughly the phase portrait \autoref{fig:phi_avg}.
@@ -839,7 +838,7 @@ These EOM produce roughly the phase portrait \autoref{fig:phi_avg}.
     The only fixed point is $\mu = 1, s = \Omega_1$.}\label{fig:phi_avg}
 \end{figure}
 In the last term, we note $s \gtrsim 2\Omega_1$ initially, while $\mu \leq 1$,
-so we drop both the linear contribution from $\mu$ and approximate $\p*{1 +
+so we drop both the linear contribution from $\mu$ and approximate $\p{1 +
 \mu^2} \approx 1$ so that $\rd{(s/\Omega_1)}{(\epsilon\tau)} \approx
 -s/\Omega_1$.
 
@@ -867,13 +866,13 @@ to $\rd{\mu}{(\epsilon\tau)}$ in the precession-averaged equations. Thus,
             \rd{s}{(\epsilon\tau)},\\
         &\approx \frac{s_c}{s}\cos I.
 \end{align*}
-The precession averaged equations bound $\rd{\mu}{\p*{\epsilon\sigma}} <
+The precession averaged equations bound $\rd{\mu}{\p{\epsilon\sigma}} <
 \frac{2\Omega_1}{s}$, so in order for $\mu < \mu_4$ to approach the Cassini
 state, we need $\Omega_1 \gtrsim s_c$ by a reasonable margin.
 
 To be more precise, $\mu_4$ disappears at
 \begin{equation}
-    \eta = \eta_c \equiv \p*{\sin^{2/3}I + \cos^{2/3}I}^{-3/2}.
+    \eta = \eta_c \equiv \p{\sin^{2/3}I + \cos^{2/3}I}^{-3/2}.
 \end{equation}
 Thus, we can set $s = \frac{s_c}{\eta_c}$ and $\mu = \mu_4$ and integrate
 backwards \autoref{se:prec_avg} backwards in time to determine $\mu, s$ that are
@@ -900,7 +899,7 @@ I did a bunch of work w/o writing it up, so this is the basic gist.
         notice is that for a given trajectory, only times $\phi = 0$ are
         important for determining the final fate of the system. Call these
         $\mu_0$, then the dynamics of the system can be described by a map
-        $\mu_{0, i + 1}\p*{\mu_{0, i}, s}$. The reason $\mu_0$ is important is
+        $\mu_{0, i + 1}\p{\mu_{0, i}, s}$. The reason $\mu_0$ is important is
         that only when $\mu_0 = \mu_4(s)$ CS4 can separatrix hopping occur.
         Thus, whenever $\mu_0$ crosses $\mu_4(s)$, there is some probability of
         entering the separatrix and some probability of hopping over it.
@@ -917,21 +916,21 @@ I did a bunch of work w/o writing it up, so this is the basic gist.
         \begin{align}
             \rd{\mu_0}{t} &= \pd{\mu_0}{H}\rd{H}{t},\nonumber\\
                 &= \frac{\dot{\phi}}{\dot{\phi}(\phi = 0)}
-                    \p*{\epsilon\p*{1 - \mu^2}\p*{\frac{2\Omega_1}{s}
+                    \p{\epsilon\p{1 - \mu^2}\p{\frac{2\Omega_1}{s}
                         - \mu}},\nonumber\\
-            \ev*{\rd{\mu_0}{t}} &=
+            \ev{\rd{\mu_0}{t}} &=
                 \frac{1}{T}\int\limits_0^T
                     \frac{\dot{\phi}}{\dot{\phi}_0}
-                        \epsilon\p*{1 - \mu^2}\p*{\frac{2\Omega_1}{s} - \mu}
+                        \epsilon\p{1 - \mu^2}\p{\frac{2\Omega_1}{s} - \mu}
                             \;\mathrm{d}t,\nonumber\\
                 &= \frac{1}{T}\int\limits_0^{2\pi}
                     \frac{1}{\dot{\phi}_0}
-                        \epsilon\p*{1 - \mu^2}\p*{\frac{2\Omega_1}{s} - \mu}
+                        \epsilon\p{1 - \mu^2}\p{\frac{2\Omega_1}{s} - \mu}
                             \;\mathrm{d}\phi,\nonumber\\
                 &\sim \frac{\sqrt{\eta \cos I}}{2\pi}
                     \frac{1}{\dot{\phi}(\phi = 0)}
                     \int\limits_0^{2\pi}
-                        \epsilon\p*{1 - \mu^2}\p*{\frac{2\Omega_1}{s} - \mu}
+                        \epsilon\p{1 - \mu^2}\p{\frac{2\Omega_1}{s} - \mu}
                         \;\mathrm{d}\phi.\label{eq:final_approx}
         \end{align}
         We have substituted $\cos I/2\pi \sim 1/T$ a rough estimate
@@ -943,11 +942,11 @@ I did a bunch of work w/o writing it up, so this is the basic gist.
         \begin{equation}
             \rd{\mu_0}{t} =
                 \begin{cases}
-                    \rd{\mu_0}{t} & \abs*{\Delta \mu} \gtrsim
+                    \rd{\mu_0}{t} & \abs{\Delta \mu} \gtrsim
                         2\sqrt{\eta \sin I},\\
                     -\frac{\cot I}{2\pi \Delta \mu}
-                        \epsilon\p*{1 - \mu_{eff}^2}
-                            \p*{\frac{2\Omega_1}{s} - \mu_{eff}}
+                        \epsilon\p{1 - \mu_{eff}^2}
+                            \p{\frac{2\Omega_1}{s} - \mu_{eff}}
                             & \text{otherwise}.
                 \end{cases}
         \end{equation}
@@ -1042,8 +1041,8 @@ I did a bunch of work w/o writing it up, so this is the basic gist.
 
         On the other hand, when $s_c < S_0$, points below CS4 only get one
         chance at hopping. We can perform similar Melnikov calculation to above
-        by integrating the true tidal term $\pd{\mu^{(1)}}{t} = \epsilon\p*{1 -
-        \mu^2}\p*{2\Omega_1/s - \mu}$ and find that the hopping probability
+        by integrating the true tidal term $\pd{\mu^{(1)}}{t} = \epsilon\p{1 -
+        \mu^2}\p{2\Omega_1/s - \mu}$ and find that the hopping probability
         $P_{hop} \propto \frac{\mu}{2\Omega_1/s} \propto \sqrt{s}$ or in fact
         scaling with $\eta^{-1/2}$; the difference comes in the $1/s$ dependence
         in the single-leg integral and the $-\mu$ factor in the double-leg
@@ -1090,21 +1089,21 @@ First, we note that the two integrals that I earlier called $\Delta_m, \Delta_c$
 (garbage notation sorry) can be evaluated for the new weak tidal friction
 integrals as follows:
 \begin{align}
-    \Delta_M &= \int\limits_0^{2\pi}\epsilon\p*{1 - \mu^2}
-            \p*{\frac{2\Omega}{s} - \mu} \;\mathrm{d}\phi,\nonumber\\
-        &\sim 2\pi \epsilon \p*{\frac{2\Omega}{s}
+    \Delta_M &= \int\limits_0^{2\pi}\epsilon\p{1 - \mu^2}
+            \p{\frac{2\Omega}{s} - \mu} \;\mathrm{d}\phi,\nonumber\\
+        &\sim 2\pi \epsilon \p{\frac{2\Omega}{s}
             - \sqrt{2\frac{s_c}{s}\sin I}},\\
-    \Delta_c &= \oint \epsilon \p*{1 - \mu^2}\p*{\frac{2\Omega}{s} - \mu}
+    \Delta_c &= \oint \epsilon \p{1 - \mu^2}\p{\frac{2\Omega}{s} - \mu}
             \;\mathrm{d}\phi,\nonumber\\
         &= 2\int\limits_0^{2\pi}
-            \epsilon\sqrt{2\eta \sin I\p*{1 - \cos \phi}}\;\mathrm{d}\phi
+            \epsilon\sqrt{2\eta \sin I\p{1 - \cos \phi}}\;\mathrm{d}\phi
             ,\nonumber\\
         &= 16\epsilon\sqrt{\eta \sin I}.
 \end{align}
 Recalling that $\eta = s_c/s$, we arrive at
 \begin{equation}
     P_{hop} = \frac{4\sqrt{ss_c\sin I}}{\pi \Omega}
-        \p*{1 + \sqrt{\frac{s_cs\sin I}{2}}}.\label{eq:p_hop_sqrt_s}
+        \p{1 + \sqrt{\frac{s_cs\sin I}{2}}}.\label{eq:p_hop_sqrt_s}
 \end{equation}
 
 We evaluate the above at $s = s_\star$ for a given trajectory; we now want to
@@ -1124,7 +1123,7 @@ $\frac{2\Omega}{s} - \mu$; since $\mu < 0$ in Zone III, this term is always
 positive.
 
 Now, recall that we won't get a sensible answer this way, since the dynamics
-near the separatrix $\abs*{\mu - \mu_4} \sim \sqrt{2\eta \sin I}$ are governed
+near the separatrix $\abs{\mu - \mu_4} \sim \sqrt{2\eta \sin I}$ are governed
 by the piecewise map we defined before. However, if $s_c$ is truly small, then
 the majority of the separatrix approach will be governed by the above flow. If
 we also adopt the $\mu \lesssim \frac{2\Omega}{s}$ limit, in this spirit, then
@@ -1132,7 +1131,7 @@ an analytical solution can be approximated: we first observe that $\rd{\ln s}{t}
 \gtrsim \rd{\mu^{(1)}}{t}$ in this limit by a factor of $\frac{s}{2\Omega}$, so
 we approximate $s \approx s_0e^{-\epsilon t}$. This gives us
 \begin{equation*}
-    \mu(t) \approx \mu_0 + \frac{2\Omega}{s_0}\p*{e^{\epsilon t} - 1}.
+    \mu(t) \approx \mu_0 + \frac{2\Omega}{s_0}\p{e^{\epsilon t} - 1}.
 \end{equation*}
 If $\epsilon t \lesssim 1$, we can arrive at closed form $t_\star \approx
 \frac{s_0 \Delta \mu}{2\Omega \epsilon}$. Note that $\Delta \mu$ here should be
@@ -1144,13 +1143,13 @@ reasonably close to the measured $t_\star = 575$.
 
 If we are to use this prescription, then we can obtain
 \begin{equation}
-    P_{hop}\p*{\mu_\pi(t = 0)}
+    P_{hop}\p{\mu_\pi(t = 0)}
         = \frac{4\sqrt{s_c \sin I s_0}}{\pi \Omega}
             e^{-\frac{s_0}{4\Omega}\Delta \mu_\pi}.
 \end{equation}
 What is noteworthy is the \emph{exponential} dependence on $\Delta \mu_\pi$; we
 might expect similar behavior to manifest elsewhere thanks to the $\rd{\ln s}{t}
-\sim \epsilon, \rd{\mu}{t} \propto \z*{-\epsilon \mu, \epsilon/s}$ in both
+\sim \epsilon, \rd{\mu}{t} \propto \z{-\epsilon \mu, \epsilon/s}$ in both
 regimes of $\rd{\mu}{t}$. Further numerical testing to be performed.
 
 \textbf{Note:} This section's calculation may be inaccurate because $H$ is not
@@ -1191,8 +1190,8 @@ scenario. We summarize the similarities below:
         as $\Delta_M$ in the probabilistic case, and in the $s_c > S_{0}$ case
         we have exactly $B_1, B_2 < 0$ attraction.
 
-    \item Henrard in a later paper cites the formula $\Pr\p*{i \to j} =
-        \abs*{\pd{J_j}{t} / \pd{J_i}{t}}$. This can be related to the above
+    \item Henrard in a later paper cites the formula $\Pr\p{i \to j} =
+        \abs{\pd{J_j}{t} / \pd{J_i}{t}}$. This can be related to the above
         $B_i, \Delta_H$ by:
         \begin{equation}
             \Delta H = \int \pd{H}{\lambda}\dot{\lambda}\mathrm{d}t
@@ -1213,10 +1212,10 @@ may expand:
     \rd{H_4}{t} &= \pd{H_4}{s}\rd{s}{t},\\
     \rd{K}{\phi} &=
         \dot{\mu}^{(1)} + \frac{\dot{s}^{(1)}}{\dot{\phi}^{(0)}}
-            \p*{\pd{H}{s} - \pd{H_4}{s}},\\
+            \p{\pd{H}{s} - \pd{H_4}{s}},\\
     \Delta K_i &= \oint_{\mathcal{C}_i}
         \dot{\mu}^{(1)} + \frac{\dot{s}^{(1)}}{\dot{\phi}^{(0)}}
-            \p*{\pd{H}{s} - \pd{H_4}{s}}\;\mathrm{d}\phi.
+            \p{\pd{H}{s} - \pd{H_4}{s}}\;\mathrm{d}\phi.
 \end{align}
 We have arbitrarily added superscripts to indicate to what order in $\epsilon$
 our expansions proceed. Note the resemblance of this formula to Equation 41 of
@@ -1255,25 +1254,25 @@ $\alpha = s/s_c$ for brevity and compatibility with \autoref{s:p2}).
             + \frac{\cos^2 I}{\alpha - \sin I}
             - \sin I \frac{\sqrt{(\alpha - \sin I)^2 - \cos^2 I}}{
                 \alpha - \sin I},\\
-        &= \frac{1}{\p*{\alpha - \sin I}^2}
-            \s*{-\alpha \cos^2 I + \p*{\alpha - \sin I}
-                \p*{\cos^2 I - \sin I \sqrt{
+        &= \frac{1}{\p{\alpha - \sin I}^2}
+            \s{-\alpha \cos^2 I + \p{\alpha - \sin I}
+                \p{\cos^2 I - \sin I \sqrt{
                     (\alpha - \sin I)^2 - \cos^2 I}}},\\
-        &\approx \frac{1}{\p*{\alpha - \sin I}^2}
-            \s*{\frac{\alpha \cos^2 I}{2} -\sin I \cos^2 I - \alpha^2 \sin I
-                \p*{1 - \frac{2\alpha \sin I + \cos^2 I - \sin^2 I}{2\alpha^2}}
-                + \sin^2 I\alpha\p*{1 - \frac{2\alpha \sin I}{2\alpha^2}}},\\
-        &\approx \frac{1}{\alpha^2}\p*{1 + \frac{2\sin I}{\alpha}
-            + \frac{3\sin^2 I}{\alpha^2}}\p*{
+        &\approx \frac{1}{\p{\alpha - \sin I}^2}
+            \s{\frac{\alpha \cos^2 I}{2} -\sin I \cos^2 I - \alpha^2 \sin I
+                \p{1 - \frac{2\alpha \sin I + \cos^2 I - \sin^2 I}{2\alpha^2}}
+                + \sin^2 I\alpha\p{1 - \frac{2\alpha \sin I}{2\alpha^2}}},\\
+        &\approx \frac{1}{\alpha^2}\p{1 + \frac{2\sin I}{\alpha}
+            + \frac{3\sin^2 I}{\alpha^2}}\p{
                 -\alpha^2 \sin I + 2\sin^2 I\alpha
                     + \frac{\alpha \cos^2 I}{2}
                     - \frac{(\cos^2 I + 3\sin^2 I)\sin I}{2}},\\
         &\approx -\sin I + \frac{\cos^2 I}{2\alpha}
-            + \frac{1}{\alpha^2}\s*{
-                -3\sin^3 I - \frac{\p*{\cos^2 I + 3\sin^2 I}\sin I}{2}
+            + \frac{1}{\alpha^2}\s{
+                -3\sin^3 I - \frac{\p{\cos^2 I + 3\sin^2 I}\sin I}{2}
                     + 4\sin^3 I + \sin I \cos^2 I},\\
         &= -\sin I + \frac{\cos^2 I}{2\alpha}
-            + \frac{\p*{\cos^2 I - \sin^2 I}\sin I}{2\alpha^2}.
+            + \frac{\p{\cos^2 I - \sin^2 I}\sin I}{2\alpha^2}.
 \end{align*}
 
 While $s$ is actually a dynamical variable, it is a parameter to the 1D
@@ -1282,23 +1281,23 @@ Hamiltonian. Plugging these expressions into our above expression for $\rd{K}{t}
 \begin{align}
     \rd{(\Delta H)}{t} &= -\dot{\mu}^{(1)}\dot{\phi}^{(0)} - \dot{s}^{(1)}
             \pd{(\Delta H)}{s},\\
-    -\rd{(\Delta H)}{(\epsilon t)} &= (1 - \mu^2)\p*{\frac{2\Omega}{s} - \mu}
-            \dot{\phi}^{(0)} + 2\Omega\p*{1 + \frac{s}{2\Omega}(1 + \mu^2)}
-            \s*{\frac{\mu^2}{2s_c} - \frac{s_c}{2s^2}\cos^2 I}.
+    -\rd{(\Delta H)}{(\epsilon t)} &= (1 - \mu^2)\p{\frac{2\Omega}{s} - \mu}
+            \dot{\phi}^{(0)} + 2\Omega\p{1 + \frac{s}{2\Omega}(1 + \mu^2)}
+            \s{\frac{\mu^2}{2s_c} - \frac{s_c}{2s^2}\cos^2 I}.
 \end{align}
 Note that this expression is encouraging since both $\dot{\phi}^{(0)},
-\pd{\p*{\Delta H}}{s}$ vanish near CS4 (where $\mu_4 \approx \frac{s_c}{s}\cos
+\pd{\p{\Delta H}}{s}$ vanish near CS4 (where $\mu_4 \approx \frac{s_c}{s}\cos
 I$), which corresponds to separatrix approach slowing down (also consistent w/
 our plots). Now, if we evaluate far from the separatrix and for large $s$,
 similar to most of our initial conditions, we approximate $\dot{\phi} \approx
 \frac{s_c}{s}$ and we obtain
 \begin{align}
     \rd{(\Delta H)}{(\epsilon t)} &\approx
-            \p*{1 - \mu^2}\p*{\frac{2\Omega}{s} - \mu}\frac{s}{s_c}\mu
-                + s\p*{1 + \mu^2}\p*{\frac{\mu^2}{2s_c}},\nonumber\\
-        &\approx -\frac{s\mu^2}{2s_c} \p*{2(1 - \mu^2) - 1 + \mu^2}
+            \p{1 - \mu^2}\p{\frac{2\Omega}{s} - \mu}\frac{s}{s_c}\mu
+                + s\p{1 + \mu^2}\p{\frac{\mu^2}{2s_c}},\nonumber\\
+        &\approx -\frac{s\mu^2}{2s_c} \p{2(1 - \mu^2) - 1 + \mu^2}
             ,\nonumber\\
-        &= -\frac{s\mu^2}{2s_c}\p*{3 - \mu^2}.
+        &= -\frac{s\mu^2}{2s_c}\p{3 - \mu^2}.
 \end{align}
 The linear fit by eye on the plot corresponds to a slope of $-\rd{(\Delta H)}{t}
 \approx \frac{s_0/s_c}{1200}$ which is of the right order $-\epsilon
@@ -1344,17 +1343,17 @@ per recent developments)
             \pd{\Delta H}{s}\;\mathrm{d}\phi &=
         \int \dot{s}\frac{-\frac{\mu^2}{2s_c} + \frac{\cos^2 Is_c}{2s^2}}{
             -\frac{s}{s_c}\mu + \cos I}\;\mathrm{d}\phi,\\
-        &= \int \frac{\dot{s}s_c}{2s^2}\s*{\frac{s\mu}{s_c} + \cos
+        &= \int \frac{\dot{s}s_c}{2s^2}\s{\frac{s\mu}{s_c} + \cos
             I}\;\mathrm{d}\phi,\\
         &= \int \epsilon 2\Omega_1
-            \p*{\mu_{\pm} - \frac{s}{2\Omega_1}\p*{1 + \mu_{\pm}^2}}
-                \frac{s_c}{2s^2} \s*{
+            \p{\mu_{\pm} - \frac{s}{2\Omega_1}\p{1 + \mu_{\pm}^2}}
+                \frac{s_c}{2s^2} \s{
                     2\cos I \pm
-                    \sqrt{2\frac{s}{s_c} \sin I\p*{1 - \cos \phi}}}
+                    \sqrt{2\frac{s}{s_c} \sin I\p{1 - \cos \phi}}}
                 \;\mathrm{d}\phi,\\
         &\approx \epsilon \frac{s_c}{s^2} \int
-            \p*{\mu_{\pm} - \frac{s}{2}}
-                \s*{2\cos I \pm \sqrt{\frac{2 \sin I}{\eta}\p*{1 - \cos \phi}}}
+            \p{\mu_{\pm} - \frac{s}{2}}
+                \s{2\cos I \pm \sqrt{\frac{2 \sin I}{\eta}\p{1 - \cos \phi}}}
                 \;\mathrm{d}\phi.
 \end{align*}
 At this point, the integral is rather messy, so we have approximated $1 +
@@ -1364,90 +1363,89 @@ into three terms to evaluate the integral of the product: the $2\cos I$ term,
 the product of the two square root components. These three integrals are
 respectively
 \begin{align*}
-    \int_{\pm} 2\cos I \p*{\mu_{\pm} - \frac{s}{2}}\;\mathrm{d}\phi &=
-        -2\cos I\p*{\pm 2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
+    \int_{\pm} 2\cos I \p{\mu_{\pm} - \frac{s}{2}}\;\mathrm{d}\phi &=
+        -2\cos I\p{\pm 2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
         \pm 2\pi s\cos I,\\
-    \pm \int_{\pm} \p*{\mu_4 - \frac{s}{2}}
-            \sqrt{\frac{2\sin I}{\eta}\p*{1 - \cos \phi}} \;\mathrm{d}\phi &=
-        \eta \cos I \p*{-8\sqrt{\sin I / \eta}}
+    \pm \int_{\pm} \p{\mu_4 - \frac{s}{2}}
+            \sqrt{\frac{2\sin I}{\eta}\p{1 - \cos \phi}} \;\mathrm{d}\phi &=
+        \eta \cos I \p{-8\sqrt{\sin I / \eta}}
             + \frac{s}{2}8\sqrt{\sin I/\eta} ,\\
-    \int_{\pm} 2\sin I \p*{1 - \cos \phi}\;\mathrm{d}\phi &= \mp 4\pi \sin I.
+    \int_{\pm} 2\sin I \p{1 - \cos \phi}\;\mathrm{d}\phi &= \mp 4\pi \sin I.
 \end{align*}
 
 Indeed, the sum over the two legs is positive, which is expected: during
 spindown, the separatrix expands, so the separatrix must have $\Delta H > 0$
 owing just to adiabatic expansion.
 
-For the $\dot{\mu}$ integral, the integrand is $\p*{\frac{2\Omega}{s} - \mu}$
+For the $\dot{\mu}$ integral, the integrand is $\p{\frac{2\Omega}{s} - \mu}$
 times the original integrand; this means the final result is $\frac{2\Omega}{s}$
-times the old result plus a contribution $\int \epsilon \p*{1 - \mu^2}\p*{-\mu}
+times the old result plus a contribution $\int \epsilon \p{1 - \mu^2}\p{-\mu}
 \;\mathrm{d}\phi$. This second term can be evaluated exactly, and we obtain
 \begin{align*}
     \int_{\mathcal{C}_{\pm}}\dot{\mu}^{(1)}\;\mathrm{d}\phi
-        &\approx \epsilon\frac{2\Omega}{s}\p*{\mp 2\pi\p*{1 - 2\eta \sin I}
+        &\approx \epsilon\frac{2\Omega}{s}\p{\mp 2\pi\p{1 - 2\eta \sin I}
             + 16\cos I \eta^{3/2}\sqrt{\sin I}}
             + 8\epsilon\sqrt{\eta \sin I}
             \pm 2 \pi \eta \cos I
-            - \frac{64}{3}\epsilon \p*{\eta \sin I}^{3/2}.
+            - \frac{64}{3}\epsilon \p{\eta \sin I}^{3/2}.
 \end{align*}
 This is in agreement with our work from 5.1. Thus, the total expression is
 \begin{align}
     \frac{\Delta_{\pm}}{\epsilon} ={}&
-        -2\cos I\p*{\pm 2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
+        -2\cos I\p{\pm 2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
         \pm 2\pi s\cos I
-        + \eta \cos I \p*{-8\sqrt{\sin I / \eta}}
+        + \eta \cos I \p{-8\sqrt{\sin I / \eta}}
             + \frac{s}{2}8\sqrt{\sin I/\eta}\nonumber\\
-        &+ \frac{2\Omega}{s}\p*{\mp 2\pi\p*{1 - 2\eta \sin I}
+        &+ \frac{2\Omega}{s}\p{\mp 2\pi\p{1 - 2\eta \sin I}
             + 16\cos I \eta^{3/2}\sqrt{\sin I}}
             + 8\sqrt{\eta \sin I}
             \pm 2 \pi \eta \cos I
-            - \frac{64}{3} \p*{\eta \sin I}^{3/2},\\
+            - \frac{64}{3} \p{\eta \sin I}^{3/2},\\
     P_c ={}& \frac{\Delta_+ + \Delta_-}{\Delta_-}.
 \end{align}
 
 \subsection{Physical Parameters}
 
-Note that for Jupiter, $k_p \sim 0.27$ while $J_2 \sim \scinot{1.4}{-2}$ giving
-$k_{qp} \sim 0.0467$ since $k_{qp} \frac{\Omega}{\sqrt{GM_p/R_p^3}} = J_2$.
-Consider again the precession frequencies (we will take a hot Jupiter at
-$0.1\;\mathrm{AU}$ and a cold Earth at $1\;\mathrm{AU}$, roughly)
+The two key constraints we want are: (i) $\sim \frac{1}{5\omega_{\rm
+1p}\epsilon}$ the tidal synchronization timescale (we will now use $t_a$ to
+follow DL12 notation) should be faster than $\sim$ Gyr, (ii) $s_c$ ideally
+should not be too small to forbid separatrix crossings. Note that $3 / Q' = 2k_2
+/ Q$ ranges from around $10^{-2}$ for rocky Earths to $10^{-5}$ for Jupiters. We
+can then write down the following dimensionless scalings (checked against the
+dissipating disks paper w/ Dong):
+% in paper 1, s_c = 2.04e4, for m_p = 0.01 Msun, a1=5AU, rho1=1g/cm^3, ap=30AU
 \begin{align}
-    \omega_{s1} &= \frac{3k_{qp}}{2k_p}\frac{M_*}{m_1}
-            \p*{\frac{R_1}{a_1}}^3s,\\
-        &\approx 0.062\;\mathrm{yr^{-1}}
-            \p*{\frac{M_*/m_1}{300}}
-            \p*{\frac{5.5 k_{qp}}{k_p}}\p*{\frac{R_1}{R_J}}^3
-                \p*{\frac{a_1}{0.1\;\mathrm{AU}}}^{-9/2}
-                \p*{\frac{s/\Omega_1}{10}},\\
-    \omega_{1p} &= \frac{3m_p}{4m_1} \p*{\frac{a_1}{a_p\p*{1 - e_p^2}}}^3
-            \Omega_1,\\
-        &\approx 0.0047\;\mathrm{yr^{-1}}
-            \frac{m_p/m_1}{0.003}
-            \p*{\frac{a_1/a_p}{0.1}}
-            \frac{\Omega_1}{2\pi / 11.54\;\mathrm{days}}
-            \frac{1}{\p*{1 - e_p^2}^3}.
+    \frac{s_c}{\Omega_1} &= \frac{
+        \frac{3m_p}{4M_\star}\p{\frac{a_1}{\tilde{a}_{\rm p}}}^3
+            }{\frac{3k_{\rm qp}}{2k_{\rm p}}
+            \frac{M_\star}{M_1}\p{\frac{R_1}{a_1}}^3},\\
+        &= \frac{m_{\rm p}m_1}{2M_{\star}^2}
+            \p{\frac{k_{\rm p}}{k_{\rm qp}}}
+            \p{\frac{a_1^6}{R_1^3 \tilde{a}_p^3}},\\
+    \epsilon &=\frac{L}{2S}\frac{s}{2\Omega}\frac{1}{\omega_{\rm 1p}\cos I t_a}
+            ,\\
+    \frac{1}{t_a} &= \frac{9}{2Q'}\frac{M_\star}{m_{\rm 1}}
+        \p{\frac{R_1}{a_1}}^5\Omega,\\
+    \epsilon &= \frac{m_1a_1^2\Omega}{2(m_1R_1^2/4)s}\frac{s}{2\Omega}
+        \frac{1}{\cos I}\p{\frac{9}{2Q'}\frac{M_\star}{m_1}
+            \p{\frac{R_1}{a_1}}^5}
+            \p{\frac{4M_\star a_p^3}{3m_pa_1^3}},\\
+        &= \frac{1}{\cos I}
+            \frac{6}{Q'}\p{\frac{M_\star^2}{m_1m_p}}
+            \p{\frac{R_1^3a_p^3}{a_1^6}},\\
+        &= \frac{1}{\cos I}\frac{3}{Q'}\frac{\Omega_1}{s_c},\\
+% use paper I formula, change rho_1, mp, ap, a1
+    \frac{s_c}{n_1} &= 0.06 \p{\frac{k_{\rm 1}}{k_{\rm q1}}}
+            \p{\frac{m_{\rm p}}{0.001 M_{\odot}}}
+            \p{\frac{a_{\rm p}}{5 \;\mathrm{AU}}}^{-3}
+            \p{\frac{a_{\rm 1}}{0.3\;\mathrm{AU}}}^{6}
+            \p{\frac{\rho_{\rm 1}}{3 \; \mathrm{g/cm}^3}}
+            \p{\frac{M_\star}{M_{\odot}}}^{-2},\\
+    \epsilon &\sim 10^{-2} \p{\frac{2k_2/Q}{10^{-3}}}.
 \end{align}
-Note then that $s_c$ is where $\omega_{s1} = \omega_{1p}$, which is satisfied
-for $s_c \approx 0.76$.
-
-Let's also evaluate
-\begin{align}
-    \rd{\theta}{t} &\approx -\frac{1}{t_a}\frac{L}{2S}\sin \theta\p*{1 -
-        \frac{s}{2\Omega_1}\cos \theta},\\
-        &\approx 14\;\mathrm{Myr}\p*{\frac{P}{3\;\mathrm{d}}}^{16/3}
-            \p*{\frac{Q_p'}{10^7}}
-            \p*{\frac{M_*}{10^3M_p}}
-            \p*{\frac{a/r}{100}}^2
-            \p*{\frac{s}{2\pi / 10\;\mathrm{h}}}^{-1}
-            \p*{\frac{k_p}{0.25}}^{-1}
-            \sin \theta\p*{1 - \frac{s}{2\Omega_1}\cos \theta}.
-\end{align}
-Note that typically, when trapped in CS2 and $\eta \ll 1$, $\sin \theta \approx
-1$, while when at CS1, $\sin \theta \approx \sin I$. For reference, $\sin
-5^\circ \approx 0.087$.
-
-Again though, we see that if $s > \frac{2\Omega_1}{\cos\theta}$, then
-$\rd{\theta}{t}$ drives towards CS2.
+Note that $2k_2/Q = 3/Q'$ in Dong's notation. The timescales now work since
+$\omega_{\rm 1p} \sim 1.6\;\mathrm{Myr}$, so obliquities are driven to their
+extreme values in around $0.8\;\mathrm{Gyr}$.
 
 \section{Non-adiabatic Regime}
 
@@ -1457,35 +1455,35 @@ In the non-adiabatic regime, the Hamiltonian is much less useful, so we return
 to EOM in corotating frame (after dividing through by $\Omega_{sl}$ compared to
 Dong's notes)
 \begin{equation}
-    \rd{\hat{s}}{t} = \p*{\hat{s} \cdot \hat{l}}\p*{\hat{s} \times \hat{l}}
-        + \eta \cos I \p*{\hat{l}_d \times \hat{s}}.
+    \rd{\hat{s}}{t} = \p{\hat{s} \cdot \hat{l}}\p{\hat{s} \times \hat{l}}
+        + \eta \cos I \p{\hat{l}_d \times \hat{s}}.
 \end{equation}
 We adopt convention where $\Omega_{sl}, \Omega_{lp} > 0, \eta =
 \frac{\Omega_{ld}\cos I}{\Omega_{sl}}$, and time units are really $t \equiv
-\Omega_{sl}t$. In this decaying disk problem, $\eta\p*{-\infty} \gg 1,
-\eta\p*{+\infty} \ll 1$.
+\Omega_{sl}t$. In this decaying disk problem, $\eta\p{-\infty} \gg 1,
+\eta\p{+\infty} \ll 1$.
 
 Define again $\hat{l} = \hat{z}, \hat{l}_d = \hat{z} \cos I + \hat{x}\sin I$,
 then we go immediately into coordinates
 \begin{equation}
-    \rd{\hat{s}}{t} = \s*{
-        \p*{\eta \cos I - 1}\hat{z} + \eta \sin I \hat{x}} \times \hat{s}.
+    \rd{\hat{s}}{t} = \s{
+        \p{\eta \cos I - 1}\hat{z} + \eta \sin I \hat{x}} \times \hat{s}.
 \end{equation}
 
 Now, let's assume that $s_z \approx 1$ throughout the evolution of $\hat{s}$
 (maybe this can be relaxed later), which also requires $I \approx 0$. Then let's
 examine the evolution of quantity $S = s_x + is_y$ instead:
 \begin{equation}
-    \rd{S}{t} = i\p*{\eta\cos I - 1}S - i \eta \sin I.\label{eq:nonad_ode}
+    \rd{S}{t} = i\p{\eta\cos I - 1}S - i \eta \sin I.\label{eq:nonad_ode}
 \end{equation}
 Now this is a first-order ODE in $S$, albeit complex, which can be solved via
 an integrating factor
 \begin{align}
-    \Phi(t) &\equiv \int_{-\infty}^t \p*{1 - \eta(t') \cos I}
+    \Phi(t) &\equiv \int_{-\infty}^t \p{1 - \eta(t') \cos I}
         \mathrm{d}t',\\
     \at{S(t) e^{i\Phi(t)}}_{-\infty}^t
         &= \int\limits_{-\infty}^t e^{i\Phi(t')}
-            \p*{-i\eta(t')\sin I}\;\mathrm{d}t'\label{eq:nonad_int}
+            \p{-i\eta(t')\sin I}\;\mathrm{d}t'\label{eq:nonad_int}
 \end{align}
 We now invoke stationary phase, asserting that $e^{i\Phi(t)}$ is dominated by
 its contribution where $\dot{\Phi} = 0$ (the phases add constructively). But
@@ -1501,24 +1499,24 @@ Now at this point, let's choose $\eta(0) = 1/\cos I, \at{\rd{\eta}{t}}_{t=0} =
         \begin{cases}
             0 & t < 0,\\
             \frac{1}{\cos I}e^{i\Phi(0)}\int\limits_{-\infty}^\infty
-                \exp\s*{\frac{i}{2}\epsilon t^2}\;\mathrm{d}t
+                \exp\s{\frac{i}{2}\epsilon t^2}\;\mathrm{d}t
                 & t > 0.
         \end{cases}\\
     \int\limits_{-\infty}^\infty
-                \exp\s*{\frac{i}{2}\epsilon t^2}\;\mathrm{d}t
+                \exp\s{\frac{i}{2}\epsilon t^2}\;\mathrm{d}t
         &= \int\limits_{-\infty}^\infty e^{-\tau^2}\;\mathrm{d}\tau
             \sqrt{\frac{2}{i\epsilon}},\\
         &= \sqrt{\frac{2\pi}{i\epsilon}}.
 \end{align*}
 
 Now, it should be noted that $e^{i\Phi}$ is just a phase; all we really care
-about is $\abs*{S} = \sqrt{1 - s_z^2}$. Thus, taking the absolute value of both
+about is $\abs{S} = \sqrt{1 - s_z^2}$. Thus, taking the absolute value of both
 sides of \autoref{eq:nonad_int} we obtain
 \begin{align}
-    \abs*{S}(t) &= \tan I\sqrt{\frac{2\pi}{\epsilon}}\Theta(t).
+    \abs{S}(t) &= \tan I\sqrt{\frac{2\pi}{\epsilon}}\Theta(t).
         \label{eq:nonad_dong}
 \end{align}
-It should be noted that $\theta_{sl, f} \approx \abs*{S}(\infty)$, and so we
+It should be noted that $\theta_{sl, f} \approx \abs{S}(\infty)$, and so we
 recover Dong's result $\theta_f = \sqrt{2\pi/\epsilon}\tan I$.
 
 To compare to data, let's define a few more things: $\theta_{sl, f} = \hat{s}
@@ -1532,7 +1530,7 @@ initially librates around $\hat{l}_d$ with oscillation amplitude $\theta_{sd,
 i}$. So if $\theta_{sd, i} = 0$ produces \autoref{eq:nonad_dong}, we might
 expect small deviations of amplitude $\theta_{sd, i}$ about CS2 to be ``frozen
 in'' as the disk dissipates non-adiabatically. Thus, $\theta_{sl, f} \in
-\theta_{sl, f, 0} + \s*{\pm \theta_{sd, i}}$.
+\theta_{sl, f, 0} + \s{\pm \theta_{sd, i}}$.
 
 More importantly though, we want to find leading order corrections to the above
 result for: nonzero $I$, and somewhat smaller $\epsilon$. The problems with
@@ -1561,16 +1559,16 @@ breaks down. We investigate the effect of these below.
 
 Perhaps the easiest correction to make is, instead of assuming $s_z = 1$, to
 hold it constant at $s_z \approx \cos I$, which just changes the inhomogeneous
-term in \autoref{eq:nonad_ode} to $\p*{-i\eta \sin I \cos I}$; this is a very
+term in \autoref{eq:nonad_ode} to $\p{-i\eta \sin I \cos I}$; this is a very
 small change since $\cos I \approx 1$ for nearly all physical parameter space,
 but does improve the fit slightly.
 
 One other observation is that the LHS of \autoref{eq:nonad_int} should really be
-$\abs*{S\p*{t}e^{i\Phi(t)} - S\p*{-\infty}e^{i\Phi(-\infty)}}$, but we don't
-really know $e^{i\Phi}$ since it oscillates so quickly. Thus, only when $S\p*{t}
-\gg S\p*{-\infty}$ or $\theta_{sl, f} \gg I$ is the LHS easily evaluated. But at
-the very least we can claim that $\theta_{sl, f} = \max\p*{\abs*{S}, I}$, so
-that at very small $\abs*{S}$ we just use $I$ the approximate location of CS2.
+$\abs{S\p{t}e^{i\Phi(t)} - S\p{-\infty}e^{i\Phi(-\infty)}}$, but we don't
+really know $e^{i\Phi}$ since it oscillates so quickly. Thus, only when $S\p{t}
+\gg S\p{-\infty}$ or $\theta_{sl, f} \gg I$ is the LHS easily evaluated. But at
+the very least we can claim that $\theta_{sl, f} = \max\p{\abs{S}, I}$, so
+that at very small $\abs{S}$ we just use $I$ the approximate location of CS2.
 This seems to be in pretty good agreement if we look at
 \lstinline{2_toy2/3Iscan} plots.
 
@@ -1604,13 +1602,13 @@ in Millholland \& Batygin \emph{Primordial Obliquities} is (their Equation 15)
 \begin{equation}
     \dot{\alpha} - \dot{g} \lesssim \alpha g \sin \theta \sin I.
 \end{equation}
-Noting $\dot{\eta} = \p*{\frac{\dot{g}}{g} - \frac{\dot{\alpha}}{\alpha}}\eta$,
+Noting $\dot{\eta} = \p{\frac{\dot{g}}{g} - \frac{\dot{\alpha}}{\alpha}}\eta$,
 where $\eta = \frac{g\cos I}{\alpha}$ ($g, \alpha$ follow their definitions),
 and that at crossing they define $g \approx \alpha$, then
 \begin{align*}
     \frac{\dot{\alpha}}{\alpha} - \frac{\dot{g}}{g}
         &\lesssim g\sin\theta\sin I,\\
-    -\s*{\frac{\dot{\alpha}}{\alpha} - \frac{\dot{g}}{g}}\cos I = \dot{\eta}
+    -\s{\frac{\dot{\alpha}}{\alpha} - \frac{\dot{g}}{g}}\cos I = \dot{\eta}
         = -\epsilon \alpha \eta &\gtrsim -g\sin\theta\sin I\cos I,\\
     \epsilon &\lesssim \frac{\sin \theta \sin I \cos I}{\eta}
         \approx \sin\theta \sin I.
@@ -1623,45 +1621,45 @@ This is overplotted in the vertical blue line in \autoref{fig:nonad_scan}.
 
 Consider canonical coordinates $x = 2\sin \frac{\theta}{2}\cos \phi, y = 2\sin
 \frac{\theta}{2}\sin \phi$ (these can be verified to be canonical by evaluating
-PB $\z*{y, x}_{\cos \theta, \phi} = 1$), then the Hamiltonian can be written
+PB $\z{y, x}_{\cos \theta, \phi} = 1$), then the Hamiltonian can be written
 \begin{align}
     H &= -\frac{1}{2}\cos^2\theta
-        + \eta \p*{\cos \theta \cos I - \sin I \sin \theta \cos \phi}
+        + \eta \p{\cos \theta \cos I - \sin I \sin \theta \cos \phi}
         ,\nonumber\\
-        &= -\frac{1}{2}\p*{1 - 2\sin^2\frac{\theta}{2}}^2
-            + \eta\p*{\p*{1 - 2\sin^2\frac{\theta}{2}}\cos I
+        &= -\frac{1}{2}\p{1 - 2\sin^2\frac{\theta}{2}}^2
+            + \eta\p{\p{1 - 2\sin^2\frac{\theta}{2}}\cos I
             - 2 \sin \frac{\theta}{2}\cos \phi \cos \frac{\theta}{2}\sin I}
             ,\nonumber\\
-        &= -\frac{1}{2}\p*{1 - \frac{x^2 + y^2}{2}}^2
-            + \eta\p*{\p*{1 - \frac{x^2 + y^2}{2}}\cos I
+        &= -\frac{1}{2}\p{1 - \frac{x^2 + y^2}{2}}^2
+            + \eta\p{\p{1 - \frac{x^2 + y^2}{2}}\cos I
                 - \sin I x\sqrt{1 - \frac{x^2 + y^2}{4}}}.
 \end{align}
 This is in agreement w/ Millholland \& Batygin 2019's Eq.~26. These have EOM
 \begin{align*}
     \dot{y} = -\pd{H}{x} &=
-        -x\p*{1 - \frac{x^2 + y^2}{2}} - \eta\p*{
-            -x \cos I + \frac{x^2\sin I}{4}\p*{1 - \frac{x^2 + y^2}{4}}^{-1/2}
+        -x\p{1 - \frac{x^2 + y^2}{2}} - \eta\p{
+            -x \cos I + \frac{x^2\sin I}{4}\p{1 - \frac{x^2 + y^2}{4}}^{-1/2}
             - \sin I \sqrt{1 - \frac{x^2 + y^2}{4}}},\\
     \dot{x} = \pd{H}{y} &=
-        y\p*{1 - \frac{x^2 + y^2}{2}} + \eta\p*{
-            -y \cos I + \frac{xy\sin I}{4}\p*{1 - \frac{x^2 + y^2}{4}}^{-1/2}
+        y\p{1 - \frac{x^2 + y^2}{2}} + \eta\p{
+            -y \cos I + \frac{xy\sin I}{4}\p{1 - \frac{x^2 + y^2}{4}}^{-1/2}
             },\\
 \end{align*}
 The signs can be confirmed by considering that $\theta, x, y \approx 0$ in the
 $\eta \to 0$ limit results in $\dot{\phi} < 0$, or at $\phi \approx 0, y \propto
 \sin \phi \propto \phi$ and $\dot{y} < 0$. It bears noting that $x^2 + y^2 \in
 [0, 4]$, so the EOM diverge as $\theta \to \pi$. This is one fewer singularity
-than the naive $\p*{\cos\theta, \phi}$ covering, but full cartesian $\hat{s} =
-\p*{s_x, s_y, s_z}$ still has no singularities.
+than the naive $\p{\cos\theta, \phi}$ covering, but full cartesian $\hat{s} =
+\p{s_x, s_y, s_z}$ still has no singularities.
 
 \subsection{Destruction of CS via Tides}
 
 Let's return to the simple EOM considered in the constant $\eta$ tides case,
 where
 \begin{align}
-    \pd{\phi}{t} &= -\mu + \eta\p*{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}}
+    \pd{\phi}{t} &= -\mu + \eta\p{\cos I + \sin I \frac{\mu}{\sqrt{1 - \mu^2}}
         \cos \phi} ,\\
-    \pd{\mu}{t} &= -\eta \sin I \sin \phi + \s*{\epsilon \p*{1 - \mu^2}},
+    \pd{\mu}{t} &= -\eta \sin I \sin \phi + \s{\epsilon \p{1 - \mu^2}},
 \end{align}
 We want to determine where tides destroys CS2. We saw before that tides tends to
 shift CS2/CS4 towards each other. In fact, we can immediately see where they
@@ -1671,7 +1669,7 @@ will collide: in the $\dot{\mu}$ equation, no $\phi$ is stationary if
 \end{equation}
 Note that we can invert this to find, for a given $\epsilon$, the smallest value
 of $\eta$ for which CS2 is still stable, which must satisfy $\eta \sin I =
-\epsilon\p*{1 - \eta^2\cos^2 I}$, or
+\epsilon\p{1 - \eta^2\cos^2 I}$, or
 \begin{equation}
     \eta_{\min} \equiv \frac{-\sin I + \sqrt{\sin^2I
             + 4\epsilon^2 \cos^2 I}}{2\epsilon \cos^2 I}
@@ -1689,20 +1687,20 @@ Of course, we can also solve perturbatively to higher order for the corrections
 to CS2/CS4 about their $\epsilon = 0$ values; we have already found before the
 first order correction to $\phi$
 \begin{equation}
-    \phi_{4, 2} = \z*{0, \pi} \pm \frac{\epsilon\p*{1 - \mu^2}}{\eta \sin I}
-        \approx \z*{0, \pi} \pm \frac{\epsilon}{\eta \sin I} +
-        \mathcal{O}\p*{\epsilon^2}.
+    \phi_{4, 2} = \z{0, \pi} \pm \frac{\epsilon\p{1 - \mu^2}}{\eta \sin I}
+        \approx \z{0, \pi} \pm \frac{\epsilon}{\eta \sin I} +
+        \mathcal{O}\p{\epsilon^2}.
 \end{equation}
 This can then be substituted back in to find the correction to $\mu_{4, 2}$
 \begin{equation}
     \mu_{4, 2} \approx \frac{\eta \cos I}{1 \mp \eta \sin I}
         \mp \frac{1}{2}\frac{\eta^2 \sin I \cos I}{1 \mp \eta \sin I}
-            \p*{\frac{\epsilon}{\eta \sin I}}^2 + \mathcal{O}\p*{\epsilon^3}.
+            \p{\frac{\epsilon}{\eta \sin I}}^2 + \mathcal{O}\p{\epsilon^3}.
 \end{equation}
 These corrections and $\epsilon_c$ can be found in good agreement w/ numerics in
 \lstinline{99_misc/0_stab.png}.
 
-In fact, we can really do better: just let $\sin \phi = \frac{\epsilon\p*{1 -
+In fact, we can really do better: just let $\sin \phi = \frac{\epsilon\p{1 -
 z_0^2}}{\eta \sin I}$, then $\mu = \frac{\eta \cos I}{1 - \eta \sin I \cos \phi
 \frac{1}{\sqrt{1 - z_0}}}$ where $z_0 = \eta \cos I$ is the zeroth order
 estimate. This is what is plotted in the aforementioned plot.
@@ -1725,7 +1723,7 @@ The eigenvalue equation for this first-order system reads
 \end{equation}
 This has real solutions if
 \begin{equation}
-    \p*{\eta^2 \sin I \cos I}^2 \mp \eta \sin I \Delta \phi > 0.
+    \p{\eta^2 \sin I \cos I}^2 \mp \eta \sin I \Delta \phi > 0.
 \end{equation}
 If $\epsilon \sim \epsilon_c / 2$, i.e.\ not too close to critical, then
 $\Delta \phi^2 \sim 1$, so except for $\epsilon_c - \epsilon \ll \epsilon_c$,
@@ -1736,7 +1734,7 @@ corresponding to the two CSs. Otherwise, we can identify that for
     \epsilon_c - \epsilon &\leq \frac{\eta^7 \sin^3 I \cos^4 I}{2},
 \end{align*}
 the eigenvalues become real. However, for CS2, since the eigenvalue equation
-reads $\lambda^2 + b\lambda + c = 0$ and the eigenvalues take form $\p*{-b \pm
+reads $\lambda^2 + b\lambda + c = 0$ and the eigenvalues take form $\p{-b \pm
 \sqrt{b^2 - 4c}}/2$, no eigenvalue w/ positive real part ever appears, so it
 remains forever stable. We can also numerically validate this via
 \lstinline{99_misc/0_stab.py}.
@@ -1750,7 +1748,7 @@ Consider if $\eta$ crosses $\eta_c$ with $\eta(t = 0) > \eta_c$, and there is no
 dissipation, only variation of $\eta$. The area contained within the separatrix
 when it first forms is given in Ward \& Hamilton Paper I\@:
 \begin{equation}
-    A_{crit} = 4\pi \s*{1 - \p*{1 + \tan^{2/3}I}^{-3/2}}.
+    A_{crit} = 4\pi \s{1 - \p{1 + \tan^{2/3}I}^{-3/2}}.
 \end{equation}
 We are interested in states that start nearly aligned w/ the disk, so in Zone II
 by our designation. Then, once three states appear, Zone II continues to shrink
@@ -1763,7 +1761,7 @@ integrating $\mu\;\mathrm{d}\phi$. From here, the states will precess uniformly
 at some $\theta_f = J_f / 2\pi$.
 
 We can investigate the values of $\theta_f$ given some initial mutual
-inclination $\hat{s} \cdot \hat{l}_p \equiv \theta_{sp, i}$ ($J_i = 2\pi\p*{1 -
+inclination $\hat{s} \cdot \hat{l}_p \equiv \theta_{sp, i}$ ($J_i = 2\pi\p{1 -
 \cos \epsilon}$ where $\epsilon$ is the initial mutual inclination). To do this,
 we need to understand what the possible transitions are. When the separatrix
 first appears to the final state, the transitions are $A_2 \to A_3, A_2 \to A_1,
@@ -1780,8 +1778,8 @@ forms of these three areas below:
     \end{align*}
     \begin{align}
         A_2 &= 8\rho + 4\arctan T - 8z_0 \arctan \frac{1}{\chi},\\
-        A_1 &= 2\pi\p*{1 - z_0} - \frac{A_2}{2},\\
-        A_3 &= 2\pi\p*{1 + z_0} - \frac{A_2}{2}.
+        A_1 &= 2\pi\p{1 - z_0} - \frac{A_2}{2},\\
+        A_3 &= 2\pi\p{1 + z_0} - \frac{A_2}{2}.
     \end{align}
 \end{subequations}
 To determine which of the transition histories we fall under (to get an
@@ -1791,7 +1789,7 @@ encounter. A guess for numerical root-finding can be put together for
 trajectories that encounter from $A_2$ via (inverting the separatrix area
 formula for small $\eta$)
 \begin{equation*}
-    \eta_\star\p*{A_2} = \p*{A_2/16}^2 / \sin I,
+    \eta_\star\p{A_2} = \p{A_2/16}^2 / \sin I,
 \end{equation*}
 while for trajectories that encounter from $A_3$ we can solve the quadratic $A_3
 = 2\pi \eta \cos I - 8\sqrt{\eta \sin I} = 4\pi - J$ and obtain
@@ -1815,12 +1813,12 @@ the five possible trajectories, we have the following transitions:
         approximate $\mu_f$ can be estimated by conservation of adiabatic
         invariant
         \begin{align*}
-            \eta_\star &\approx \p*{\frac{2\pi\p*{1 - \cos \theta_{sp,i}}}{
+            \eta_\star &\approx \p{\frac{2\pi\p{1 - \cos \theta_{sp,i}}}{
                         16}}^2 / \sin I&
-                    &\approx \p*{\frac{\pi \theta_{sp, i}^2}{16}}^2/\sin I,\\
+                    &\approx \p{\frac{\pi \theta_{sp, i}^2}{16}}^2/\sin I,\\
             \mu_{f, 23} &\approx \eta_\star \cos I
                     - \frac{4\sqrt{\eta_\star \sin I}}{\pi} &
-                &\approx\p*{\frac{\pi \theta_{sp, i}^2}{16}}^2 \cot I
+                &\approx\p{\frac{\pi \theta_{sp, i}^2}{16}}^2 \cot I
                     - \frac{\theta_{sp, i}^2}{4}.
         \end{align*}
 
@@ -1828,19 +1826,19 @@ the five possible trajectories, we have the following transitions:
         \eta_{\star} \cos I + 4\sqrt{\eta_{\star}\sin
         I}}{8\sqrt{\eta_{\star}\sin I}}$ and can happen so long as $\theta_{sp,
         i}$ is small enough to fit inside $A_{crit}$ when the separatrix first
-        appears, i.e.\ $2\pi\p*{1 - \cos \theta_{sl, i}} < A_{crit}$ (where
+        appears, i.e.\ $2\pi\p{1 - \cos \theta_{sl, i}} < A_{crit}$ (where
         $\theta_{sl, i}$ is defined in the $\eta \to \infty$ limit, and since
         there is no separatrix the enclosed area is conserved as $\eta$
         approaches $\eta_c$ from above).
 
         The resulting formulas for $\mu_{f, 21}$ are very similar to those above
         \begin{align*}
-            \eta_\star &\approx \p*{\frac{2\pi\p*{1 - \cos \theta_{sp,i}}}{
+            \eta_\star &\approx \p{\frac{2\pi\p{1 - \cos \theta_{sp,i}}}{
                         16}}^2 / \sin I&
-                    &\approx \p*{\frac{\pi \theta_{sp, i}^2}{16}}^2/\sin I,\\
+                    &\approx \p{\frac{\pi \theta_{sp, i}^2}{16}}^2/\sin I,\\
             \mu_{f, 21} &\approx \eta_\star \cos I
                     + \frac{4\sqrt{\eta_\star \sin I}}{\pi} &
-                &\approx\p*{\frac{\pi \theta_{sp, i}^2}{16}}^2 \cot I
+                &\approx\p{\frac{\pi \theta_{sp, i}^2}{16}}^2 \cot I
                     + \frac{\theta_{sp, i}^2}{4}.
         \end{align*}
 
@@ -1849,7 +1847,7 @@ the five possible trajectories, we have the following transitions:
         encounter at all, so it remains in $A_3$ forever.
 
     \item $A_3 \to A_1$: This transition occurs when $\theta_{sl, i}$ satisfies
-        $2\pi\p*{1 - \cos \theta_{sl, i}} > A_{crit}$, so the trajectory starts
+        $2\pi\p{1 - \cos \theta_{sl, i}} > A_{crit}$, so the trajectory starts
         in $A_3$. It then has probability to hop to $A_1$ (TODO).
 
     \item $A_3 \to A_2 \to A_1$: This transition also occurs when $J_i$ is
