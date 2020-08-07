@@ -86,9 +86,10 @@ def solve_ic(I, eta, tide, y0, tf, method='RK45', rtol=1e-6, **kwargs):
                         rtol=rtol, method=method, jac=jac, **kwargs)
     return time.time() - time_i, ret.t, ret.y
 
-def get_four_subplots():
+def get_four_subplots(**kwargs):
     ''' keep using four subplots w/ same settings '''
-    f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True)
+    f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True,
+                                               **kwargs)
     axs = [ax1, ax2, ax3, ax4]
     for ax in axs:
         ax.set_xlim([0, 2 * np.pi])
@@ -107,8 +108,12 @@ def plot_point(ax, q, *args, **kwargs):
     ''' plot Cassini state including wrap around logic '''
     phi = get_phi(q)
     phi_arr = [phi] if abs(phi % (2 * np.pi)) > 0.5 else [phi, phi + 2 * np.pi]
-    for phi_plot in phi_arr:
-        ax.plot(phi_plot, np.cos(q), *args, **kwargs)
+    for idx, phi_plot in enumerate(phi_arr):
+        if idx == 0:
+            ax.plot(phi_plot, np.cos(q), *args, **kwargs)
+        else:
+            del kwargs['label']
+            ax.plot(phi_plot, np.cos(q), *args, **kwargs)
 
 def H(I, eta, x, phi):
     return -0.5 * x**2 + eta * (

@@ -1172,16 +1172,17 @@ def plot_manys():
     # sim_for_many(np.radians(5), eps=-3e-4, n_pts=101, n_dqs=51, extra_plot=True)
     # sim_for_many(np.radians(10), eps=-3e-4, n_pts=101, n_dqs=51,
     #              two_panel=False, extra_plot=True)
-    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51, #              two_panel=False, extra_plot=True)
+    # sim_for_many(np.radians(20), eps=-3e-4, n_pts=101, n_dqs=51,
+    #              two_panel=False, extra_plot=True)
     # sim_for_many(I, eps=-1e-3, n_pts=101, n_dqs=51, two_panel=False)
     # sim_for_many(I, eps=-3e-3, n_pts=101, n_dqs=51, two_panel=False)
     # sim_for_many(I, eps=-1e-2, n_pts=101, n_dqs=101, dqmin=0.01,
     #              two_panel=False)
-    # sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
-    #              two_panel=False, dqmin=0.01)
+    sim_for_many(I, eps=-3e-2, n_pts=101, n_dqs=101,
+                 two_panel=False, dqmin=0.01)
 
-    sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
-                 adiabatic=False, dqmin=0.01)
+    # sim_for_many(I, eps=-3e-1, n_pts=101, n_dqs=101,
+    #              adiabatic=False, dqmin=0.01)
     # sim_for_many(I, eps=-2e-1, n_pts=101, n_dqs=101,
     #              adiabatic=False, dqmin=0.01)
     # sim_for_many(I, eps=-1e-1, n_pts=101, n_dqs=101,
@@ -1189,8 +1190,8 @@ def plot_manys():
 
 if __name__ == '__main__':
     I = np.radians(5)
-    plot_singles(I)
-    # plot_manys()
+    # plot_singles(I)
+    plot_manys()
 
     # testing high epsilon
     # eta_c = get_etac(I)

@@ -1,0 +1,71 @@
+> This paper explores the dynamics of "Colombo's top" problem, which involves the motion of a planet's spin axis while its orbit undergoes uniform orbital precession due to a perturber. The dynamics are envisioned to take place early on in the system's lifetime, and the perturber is the protoplanetary disk. As the disk loses mass, a spin-orbit resonance is crossed, and the planetary obliquity is excited. While Colombo's top is not a new set-up, this paper presents several new and interesting components of the general problem. Overall, I think the authors do a great job with their analytical explorations, as all components are very thorough, and they appear correct as far as I can tell. My comments here are generally minor and are mostly directed at enhancing clarity for the readers, since the paper is fairly technically-challenging. I will present the most substantial comments first, before moving onto the more minor ones.
+
+We thank the reviewer for their encouraging and insightful comments. We give our responses to each of the reviewer's concerns below, and mark changes to the text in red text (except for the change in notation A => \mathcal{A} for the unsigned areas of Zones I-III).
+
+
+> 1) Given that Colombo's top problem has been studied in much previous literature, it would be helpful to specify more explicitly which parts of this paper are completely novel (particularly regarding the phase space area evolution in the adiabatic regime).
+
+We have added sentences to the introduction and summary describing the parts of the paper that are novel.
+
+> 2) This is primarily a matter of preference, but I suggest considering the usage of the polar depiction of the phase space, as opposed to using \phi and \cos\theta as the x and y axes. The polar view can assist in seeing where and when the separatrix emerges. In addition, the calculations of phase space areas tend to be more intuitive, and it could also help the reader better interpret the scenarios in Figures 8-11.
+
+Yes, there are definitely many advantages to the polar depiction of phase space. However, we tried in this paper to highlight the detailed behavior near separatrix crossing, and it seems much easier to zoom in to the vicinity of the separatrix in (\phi, \cos\theta) coordinates. There is precedent using these coordinates for this reason, e.g. https://doi.org/10.1093/mnras/stw3018.
+
+> 3) There is an interesting difference between separatrix crossings that change the obliquity with an impulsive and large jump (e.g. III->I, III->II->I) versus those that do not affect the obliquity evolution in a significant way (e.g. II->I, II->III). Is this distinction fundamental enough to be emphasized in the text?
+
+This is an interesting observation and distinction, and we have added a few sentences to discuss this.
+
+> 4) The whole set-up assumes a single planet in the disk. Can the authors comment (briefly) on what changes when multiple planets are present? Similarly, are there any interesting dependencies on the timing at which the resonance encounter occurs? (E.g. closer planets encounter the resonance earlier than more distant ones.)
+
+This is a great comment, and we have added a paragraph to the discussion outlining the possible consequences of multiple interior planets.
+
+Smaller comments:
+> - State references for equations 3 and 4.
+
+* Added
+
+> - In equation 3 and 4, it is more customary in previous literature to label k_2 = 3 k_{qp}, where k_2 is the Love number. In addition, conventional notation for k_p is \lambda or C.
+
+* Our notation follows the notation used in our references, though we have added equivalences and references for the more common choices of notation
+
+> - In equations 17, A_2 should be labeled A_{II}.
+
+* Fixed
+
+> - Please cite the references you used for equations 14, 15, 16, and 17. Much of equations 16 and 17, for example, are written in the notation of Ward & Hamilton (2004).
+
+* Added
+
+> - Add a legend with the colors of the Cassini states in Figure 3. (It's not easy to remember them from the previous figure.)
+
+* Added
+
+> - Figure 4 is plotted for I=5 deg, correct? Can you please include this in the figure caption? Also in Figure 4, it would be helpful to label the allowed regions for each of the separatrix crossing sequences, as delineated/summarized in the left column of page 9. Finally, it would also be helpful to include an additional y-axis label in Figure 4 for \theta_sd, given the equation 23 relation between \theta_sd and the initial phase space area. This can help the reader understand why each evolutionary track can only occur for a distinct range of \theta_sd.
+
+* Added inclination to captions for Figs 4 & 5
+
+Regarding the final two points, the unsigned areas A_{I,II,III} and the signed phase space areas cannot be easily directly compared, so such a y-axis label would be misleading (and the allowed regions difficult to label). This confusion seems to arise from our use of A for both quantities. We have changed the notation to use \mathcal{A} for unsigned areas, and A for signed areas, as well as a note describing this change. This also addresses a later concern from the reviewer.
+
+> - Figures 6 and 7 look very similar, and it does not seem to add much to have both of them. I would suggest either removing one or making Figure 7 an even larger angle than I=20 deg.
+
+* removed Figure 6, leaving only I = 20
+
+> - In section 3.2.2, whenever the probability is between 0 and 1, how does the phase factor into determining which track the system ends up following? Is the phase the only factor that influences which side the trajectory will come out on?
+
+This is a great question. Strictly speaking, in the pure adiabatic limit, the phase cannot affect the evolution of the system. Instead, the result from Henrard 1982 (Eqs. 25) shows that the true outcome depends on the value of the Hamiltonian modulo a small quantity ~epsilon, e.g. whether H \mod epsilon = 0.2 epsilon or H \mod epsilon = 0.8 epsilon dictates whether the system ends up in one track or the other. When epsilon is sufficiently small, this is effectively probabilistic, rather than deterministic. We have added a footnote summarizing this relavant result.
+
+> - There is an extra partial derivative at the top of page 8 shortly before equation 30.
+
+* Removed
+
+> - Whether the area A_I is positive or negative depends on the direction of the trajectory in the phase space. It would be helpful to clarify this in a couple areas in Section 3.2.3. It is understandable upon examination of the figures, but at first look at the text, it is confusing why area A_I is sometimes denoted as negative (e.g. just before equation 26) and other times positive (e.g. just before equation 28).
+
+* We believe this confusion is largely remedied by the change in notation to differentiate between unsigned areas (a la Ward & Hamilton) and signed phase space areas, c.f. 6th small comment
+
+> - On Figures 8-11 and 14, it might be helpful to maintain a uniform y-axis range, since the evolution of the phase space and separatrix crossings would be clearer.
+
+We believe a very narrow y-axis is necessary to show the evolution of the trajectory relative to the changing separatrix and how separatrix crossing is executed. However, we note the reviewer's concern that the plots do not convey the phase space area evolution very well, so we choose to zoom the plots out slightly, to better convey the message that the shaded areas extend to the poles.
+
+> - In Figure 13, why does the vertical banding not extend all the way to the green III->I track? Is it because the libration cycles deviate more strongly from circular in this regime?
+
+This is a great observation. Firstly, our calculations only assume the libration cycles are circular initially; at later times, we use conservation of phase space area to compare the phase space area at any time to the analytical A_{I,II,III}s. Instead, since this plot describes the messy intermediate regime, we have two possible explanations for the observed deviation: (i) it is likely that phase space area conservation is simply imperfect, and (ii) since the separatrix is changing so much during the separatrix-crossing orbit, approximating eta_star as a constant during this orbit is invalid. This hurts the accuracy of our calculations, as we calculate analytical phase space areas using eta from the start of the separatrix crossing orbit. This observation illustrates the caveats of our calculations well, so we have made note of it in the manuscript.

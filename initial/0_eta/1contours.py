@@ -22,8 +22,9 @@ def plot_H_for_eta(f, ax, eta, I, idx):
 
     thetas, phis = roots(I, eta)
     colors = ['y', 'r', 'm', 'c'] if len(thetas) == 4 else ['r', 'm']
-    for color, theta, phi in zip(colors, thetas, phis):
-        plot_point(ax, theta, '%so' % color, markersize=6)
+    labels = ['CS1', 'CS2', 'CS3', 'CS4'] if len(thetas) == 4 else ['CS2', 'CS3']
+    for color, theta, phi, label in zip(colors, thetas, phis, labels):
+        plot_point(ax, theta, '%so' % color, markersize=6, label=label)
 
     shade = '0.8' # shade interior of separatrix
     font_height = 0.15 # ~font height so y loc is center of text, not base
@@ -80,24 +81,31 @@ def plot_H_for_eta(f, ax, eta, I, idx):
 
     ax.set_title(r'(%s) $\eta = %.2f$' % (letters[idx], eta), fontsize=14)
 
-    plt.suptitle(r'$I = %d^\circ$' % np.degrees(I))
+    # plt.suptitle(r'$I = %d^\circ$' % np.degrees(I))
 
 if __name__ == '__main__':
     I = np.radians(5)
-    f, axs = get_four_subplots()
+    f, axs = get_four_subplots(figsize=(7, 7))
     # Figures 3b-3e of Kassandra's paper
     for idx, (ax, eta) in enumerate(zip(axs, [0.1, 0.5, 0.75, 2])):
         plot_H_for_eta(f, ax, eta, I, idx)
 
-    plt.suptitle(r'$\eta_c = %.3f$' % get_etac(I))
-    plt.savefig('1contours.png', dpi=400)
+    axs[0].legend(loc='lower right', ncol=2, fontsize=10)
+    axs[3].legend(loc='lower right', ncol=2, fontsize=10)
+
+    plt.tight_layout()
+    plt.savefig('1contours.png', dpi=300)
     plt.clf()
 
-    f, axs = get_four_subplots()
+    f, axs = get_four_subplots(figsize=(7, 7))
     for idx, (ax, eta) in enumerate(zip(axs, [2, 0.73, 0.4, 0.1])):
         plot_H_for_eta(f, ax, eta, I, idx)
 
-    plt.savefig('1contours_flip.png', dpi=400)
+    axs[0].legend(loc='lower right', ncol=2, fontsize=10)
+    axs[1].legend(loc='lower right', ncol=2, fontsize=10)
+
+    plt.tight_layout()
+    plt.savefig('1contours_flip.png', dpi=300)
     plt.clf()
 
     # f, ax = plt.subplots(1, 1)
