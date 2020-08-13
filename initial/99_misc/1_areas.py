@@ -9,7 +9,8 @@ import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 LW=2.0
 plt.rc('lines', lw=LW)
-plt.rc('font', family='serif', size=20)
+plt.rc('font', family='serif', size=16)
+plt.rc('text.latex', preamble=r'\usepackage{newtxmath}')
 
 def get_etac(I):
     return (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
@@ -93,7 +94,7 @@ def plot_areas(I=np.radians(5), filename='1_areas'):
     ax1.legend(loc='upper left', fontsize=12,
                bbox_to_anchor=(0.05, xlims[1] + 0.035))
     ax1.set_xlabel(r'$\eta$')
-    ax1.set_ylabel(r'$A / 4\pi$')
+    ax1.set_ylabel(r'$\mathcal{A} / 4\pi$')
     ax1.set_xticks([0, 0.3, 0.6, 0.9])
     ax1.set_xticklabels([r'$0$', r'$0.3$', r'$0.6$', r'$0.9$'])
     old_ylims = ax1.get_ylim()

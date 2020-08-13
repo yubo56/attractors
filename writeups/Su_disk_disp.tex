@@ -1,4 +1,4 @@
-% rm -f plots_diskdisp/*.png; for i in % ../initial/99_misc/2_nonad_rot_cropped.png ../initial/99_misc/2_nonad_rot.png ../initial/99_misc/2_3vec.png ../initial/99_misc/2_cs_locs.png ../initial/0_eta/1contours_flip.png ../initial/99_misc/1_areas.png ../initial/2_toy2/3_ensemble_05_35.png ../initial/2_toy2/3_ensemble_20_35.png ../initial/2_toy2/3testo21.png ../initial/2_toy2/3testo21_subplots.png ../initial/2_toy2/3testo23.png ../initial/2_toy2/3testo23_subplots.png ../initial/2_toy2/3testo31.png ../initial/2_toy2/3testo31_subplots.png ../initial/2_toy2/3testo321.png ../initial/2_toy2/3testo321_subplots.png ../initial/2_toy2/3_ensemble_05_25.png ../initial/2_toy2/3_ensemble_05_15.png ../initial/2_toy2/3testo_nonad.png ../initial/2_toy2/3testo_nonad_subplots.png ../initial/2_toy2/3_ensemble_05_05.png ../initial/2_toy2/3scan.png ../initial/2_toy2/3scan_20.png ../initial/99_misc/2_lambdas.png; do cp $i plots_diskdisp; done
+% rm -f plots_diskdisp/*.png; for i in ../initial/99_misc/2_nonad_rot_cropped.png ../initial/99_misc/2_nonad_rot.png ../initial/99_misc/2_3vec.png ../initial/99_misc/2_cs_locs.png ../initial/0_eta/1contours_flip.png ../initial/99_misc/1_areas.png ../initial/2_toy2/3_ensemble_05_35.png ../initial/2_toy2/3_ensemble_20_35.png ../initial/2_toy2/3testo21.png ../initial/2_toy2/3testo21_subplots.png ../initial/2_toy2/3testo23.png ../initial/2_toy2/3testo23_subplots.png ../initial/2_toy2/3testo31.png ../initial/2_toy2/3testo31_subplots.png ../initial/2_toy2/3testo321.png ../initial/2_toy2/3testo321_subplots.png ../initial/2_toy2/3_ensemble_05_25.png ../initial/2_toy2/3_ensemble_05_15.png ../initial/2_toy2/3testo_nonad.png ../initial/2_toy2/3testo_nonad_subplots.png ../initial/2_toy2/3_ensemble_05_05.png ../initial/2_toy2/3scan.png ../initial/2_toy2/3scan_20.png ../initial/99_misc/2_lambdas.png; do cp $i plots_diskdisp; done
     \documentclass[twocolumn,twocolappendix]{aastex63}
     \usepackage{
         amsmath,
@@ -169,11 +169,11 @@ evolves toward the ``final'' value as the exterior disk dissipates. We provide
 an analytical framework for understanding the final planetary obliquity for
 arbitrary initial spin-disk misalignment angles. We also consider various
 dissipation timescales, and examine both ``adiabatic'' (slow disk dissipation)
-and ``non-adiabatic'' evolution. \textcolor{Corr}{Our chief results include
-that: (i) careful accounting of phase space area across separatrix
-crossings is able to explain the rich dynamics of adiabatic evolution, and (ii)
-the concept of ``partial adiabatic resonance advection'' fully explains dynamics
-in the non-adiabatic limit.} We calibrate our analytical results with numerical
+and ``non-adiabatic'' evolution. \textcolor{Corr}{Our chief new results include
+that: (i) careful accounting of phase space area across separatrix crossings can
+analytically describe the rich dynamics of adiabatic evolution, and (ii) the
+concept of ``partial adiabatic resonance advection'' fully captures dynamics in
+the non-adiabatic limit.} We calibrate our analytical results with numerical
 calculations.
 
 It is important to note that while we focus on a specific scenario of
@@ -287,7 +287,7 @@ and the frequency ratio $\eta$
 % alpha = 1/(106700 yr) 1 / (3/2 * (1 solar mass / (5AU)^3) / (4*pi / 3 * 1g/cm^3) * (2pi / (10 hours)))
 % ((3 * 0.01 / 4) * (1 / 30AU)^3 * (10 hours * sqrt(G * (solar mass)) / (2pi)) / (1.5 * (1 solar mass / (5AU)^(9/2)) / (4 * pi / 3 * (1g/cm^3))))
 where $\rho_p = 3M_p/(4\pi R_p^3)$ and $P_p = 2\pi/\Omega_p$ is the planet's
-rotation period. . In Eq.~\eqref{eq:eta}, we have introduced the fiducial values
+rotation period. In Eq.~\eqref{eq:eta}, we have introduced the fiducial values
 of variable parameters for the application considered in this paper.
 Eq.~\eqref{eq:dsdt_rot} then becomes
 \begin{equation}
@@ -395,25 +395,23 @@ zones I and III circulate.
     \centering
     \includegraphics[width=0.8\textwidth]{plots_diskdisp/1contours_flip.png}
     \caption{Level curves of $\mathcal{H}\p{\phi, \cos \theta}$
-    [Eq.~\eqref{eq:H}] for $I = 5^\circ$, where warmer colors denote more
-    positive values. The black solid line is the separatrix, which only exists
-    for $\eta < \eta_{\rm c} = 0.766$. The three zones (I, II, III), divided by
-    the separatrix, are labeled. The Cassini states are denoted by filled
-    circles and have the same colors as in Fig.~\ref{fig:cs_locs}. The interior
-    of the separatrix, shaded in grey, is formally only defined for $\eta <
-    \eta_{\rm c}$, but we may identify the points in phase space that flow into
-    zone II when evolved forward in time (decreasing $\eta$ adiabatically); this
-    is the shaded region in panel (a), bounded by the black dotted
-    line.}\label{fig:eq_1contours}
+    [Eq.~\eqref{eq:H}] \textcolor{Corr}{for $I = 5^\circ$}, where warmer colors
+    denote more positive values. The black solid line is the separatrix, which
+    only exists for $\eta < \eta_{\rm c} = 0.766$. The three zones (I, II, III),
+    divided by the separatrix, are labeled. The Cassini states are denoted by
+    filled circles and have the same colors as in Fig.~\ref{fig:cs_locs}. The
+    interior of the separatrix, shaded in grey, is formally only defined for
+    $\eta < \eta_{\rm c}$, but we may identify the points in phase space that
+    flow into zone II when evolved forward in time (decreasing $\eta$
+    adiabatically); this is the shaded region in panel (a), bounded by the black
+    dotted line.}\label{fig:eq_1contours}
 \end{figure*}
 
 Since $\p{\phi, \cos \theta}$ are canonically conjugate, the integral $\oint
 \cos \theta\;\mathrm{d}\phi$ along a trajectory is an adiabatic invariant (see
 Section~\ref{s:ad}). The unsigned areas $\p{\abs{\int \cos \theta
 \;\mathrm{d}\phi}}$ of the three zones (as defined in
-Fig.~\ref{fig:eq_1contours}) can be computed analytically
-\citep{henrard1987,ward2004I}. \textcolor{Corr}{As given in
-\citet{ward2004I}, if we define}
+Fig.~\ref{fig:eq_1contours}) can be computed analytically. If we define
 \begin{subequations}
     \begin{align}
         z_0 &= \eta\cos I, &
@@ -424,7 +422,8 @@ Fig.~\ref{fig:eq_1contours}) can be computed analytically
             \chi^2 \cos^2\theta_4 - 1},
     \end{align}
 \end{subequations}
-\textcolor{Corr}{then} the areas for $\eta < \eta_{\rm c}$ are given by
+\textcolor{Corr}{then the areas for $\eta < \eta_{\rm c}$ are given by
+\citep{ward2004I}}
 \begin{subequations}\label{se:area_ward}
     \begin{align}
         \mathcal{A}_{\rm I} &= 2\pi\p{1 - z_0} - \frac{\mathcal{A}_{\rm II}}{2},
@@ -448,17 +447,17 @@ line in panel (a) of Fig.~\ref{fig:eq_1contours}, where no separatrix exists.
     \centering
     \includegraphics[width=0.47\textwidth]{plots_diskdisp/1_areas.png}
     \caption{Plot of fractional areas of each of the zones
-    $\mathcal{A}_{\rm j}(\eta) / 4\pi$ as given by Eqs.~\eqref{se:area_ward} for
-    $I = 5^\circ$. The colored dotted lines correspond to small $\eta$
-    approximations used in Appendix~\ref{s:ad_approx}. The colored dashed lines
-    for $\eta > \eta_{\rm c}$ are the effective values of $\mathcal{A}_{\rm II},
-    \mathcal{A}_{\rm III}$ for $\eta > \eta_{\rm c}$, denoting the points that
-    would flow into either area under adiabatic decrease of $\eta$ from $\eta >
-    \eta_{\rm c}$ (see the text). The vertical black dashed lines correspond to
-    $\eta = \eta_{\rm c}$ [Eq.\eqref{eq:etac}] and the values of $\eta$ for
-    which $\mathcal{A}_{\rm II}$ is maximized ($\eta_{\rm \max, II}$) and for
-    which $\mathcal{A}_{\rm III}$ is minimized ($\eta_{\rm \min, III}$,
-    Eq.~\eqref{eq:eta_minIII}).}\label{fig:eq_areas}
+    $\mathcal{A}_{\rm j}(\eta) / 4\pi$ as given by Eqs.~\eqref{se:area_ward}
+    \textcolor{Corr}{for $I = 5^\circ$}. The colored dotted lines correspond to
+    small $\eta$ approximations used in Appendix~\ref{s:ad_approx}. The colored
+    dashed lines for $\eta > \eta_{\rm c}$ are the effective values of
+    $\mathcal{A}_{\rm II}, \mathcal{A}_{\rm III}$ for $\eta > \eta_{\rm c}$,
+    denoting the points that would flow into either area under adiabatic
+    decrease of $\eta$ from $\eta > \eta_{\rm c}$ (see the text). The vertical
+    black dashed lines correspond to $\eta = \eta_{\rm c}$ [Eq.\eqref{eq:etac}]
+    and the values of $\eta$ for which $\mathcal{A}_{\rm II}$ is maximized
+    ($\eta_{\rm \max, II}$) and for which $\mathcal{A}_{\rm III}$ is minimized
+    ($\eta_{\rm \min, III}$, Eq.~\eqref{eq:eta_minIII}).}\label{fig:eq_areas}
 \end{figure}
 
 \section{Adiabatic Evolution}\label{s:ad}
@@ -586,22 +585,23 @@ semi-analytically using the method discussed in the following subsection.
     \includegraphics[width=0.47\textwidth]{plots_diskdisp/3_ensemble_05_35.png}
     \caption{Top: The final spin obliquity $\theta_{\rm f}$ as a function of the
     initial spin-disk misalignment angle $\theta_{\rm sd, i}$ for systems
-    evolving from initial $\eta_{\rm i} \gg 1$ to $\eta_{\rm f} \ll 1$, for $I =
-    5^\circ$. The blue dots are results of numerical calculations
-    (Section~\ref{ss:ad_ensemble}), and the colored tracks are semi-analytical
-    results (Section~\ref{ss:zone_transitions}). Bottom: The probabilities of
-    different outcomes. Where a particular $\theta_{\rm sd, i}$ corresponds to
-    multiple tracks, the system evolves probabilistically. The track that a
-    particular system evolves along in a numerical simulation can be measured by
-    examining its final obliquity. The dots represent the inferred probabilities
-    from measured final obliquities in our simulations, while the colored tracks
-    denote the semi-analytic probability of the system evolving along each
-    track. There are five regimes of $\theta_{\rm sd, i}$ values for which
-    different tracks are accessible. In both plots, the vertical dashed black
-    lines denote semi-analytical calculations of the boundaries of these regimes
-    (see Section~\ref{ss:zone_transitions}), while the black dotted lines
-    represent analytical approximations valid in the small-$\theta_{\rm sd, i}$
-    limit (see Appendix~\ref{s:ad_approx}).}\label{fig:ad_ensemble}
+    evolving from initial $\eta_{\rm i} \gg 1$ to $\eta_{\rm f} \ll 1$,
+    \textcolor{Corr}{for $I = 5^\circ$}. The blue dots are results of numerical
+    calculations (Section~\ref{ss:ad_ensemble}), and the colored tracks are
+    semi-analytical results (Section~\ref{ss:zone_transitions}). Bottom: The
+    probabilities of different outcomes. Where a particular $\theta_{\rm sd, i}$
+    corresponds to multiple tracks, the system evolves probabilistically. The
+    track that a particular system evolves along in a numerical simulation can
+    be measured by examining its final obliquity. The dots represent the
+    inferred probabilities from measured final obliquities in our simulations,
+    while the colored tracks denote the semi-analytic probability of the system
+    evolving along each track. There are five regimes of $\theta_{\rm sd, i}$
+    values for which different tracks are accessible. In both plots, the
+    vertical dashed black lines denote semi-analytical calculations of the
+    boundaries of these regimes (see Section~\ref{ss:zone_transitions}), while
+    the black dotted lines represent analytical approximations valid in the
+    small-$\theta_{\rm sd, i}$ limit (see
+    Appendix~\ref{s:ad_approx}).}\label{fig:ad_ensemble}
 \end{figure}
 \begin{figure}
     \centering
@@ -628,13 +628,16 @@ convention where
 \begin{equation}
     A \equiv \oint \p{1 - \cos \theta}\;\mathrm{d}\phi.\label{eq:a_oint}
 \end{equation}
-This definition of $A$ has two advantages: (i) it is continuous across
-transitions from circulating to librating that cross the North pole ($\cos
-\theta = 1$), and (ii) the areas of the three zones are equal in absolute value
-to the expressions given in Eqs.~\eqref{se:area_ward}. The path over which the
-integral is taken is either a libration or circulation cycle. When $\eta_{\rm i}
-\gg 1$, trajectories librate about $\uv{l}_{\rm d}$ with constant $\theta_{\rm
-sd}$, meaning they enclose initial phase space area
+\textcolor{Corr}{Note that $A$ can be negative when $\rdil{\phi}{t} < 0$, unlike
+the unsigned areas $\mathcal{A}_{\rm i}$ [Eqs.~\eqref{se:area_ward}] which are
+positive by definition.} This definition
+of $A$ has two advantages: (i) it is continuous across transitions from
+circulating to librating that cross the North pole ($\cos \theta = 1$), and (ii)
+the areas of the three zones are equal in absolute value to the expressions
+given in Eqs.~\eqref{se:area_ward}. The path over which the integral is taken is
+either a libration or circulation cycle. When $\eta_{\rm i} \gg 1$, trajectories
+librate about $\uv{l}_{\rm d}$ with constant $\theta_{\rm sd}$, meaning they
+enclose initial phase space area
 \begin{equation}
     A_{\rm i} = 2\pi\p{1 - \cos \theta_{\rm sd, i}}.\label{eq:ai_qsd}
 \end{equation}
@@ -663,11 +666,18 @@ Pictorially, this can be seen in the bottom panels of Fig.~\ref{fig:ad_21}.
 \subsubsection{Governing Principle: Probabilistic Separatrix Crossing}
 
 When a trajectory experiences separatrix crossing, it transitions into nearby
-zones probabilistically. This process is studied by \citet{henrard1982} and
-\citet{henrard1987}. Their results may be summarized as follows: if zone $i$
-is shrinking while adjacent zones $j, k$ are expanding such that the sum of
-their areas is constant, the probabilities of transition from zone $i$ to zones
-$j$ and $k$ are given by
+zones probabilistically. This process is studied \textcolor{Corr}{in the
+adiabatic limit} by \citet{henrard1982} and \citet{henrard1987}. Their results
+may be summarized as follows: if zone $i$ is shrinking while adjacent zones $j,
+k$ are expanding such that the sum of their areas is constant, the probabilities
+of transition from zone $i$ to zones $j$ and $k$ are given by\footnote{
+\textcolor{Corr}{Interestingly, the probabilistic nature of separatrix crossing
+is not because the outcome depends on the phase $\phi$ of the system at
+crossing. Instead, the transition the system takes is determined by the value of
+$H$ at the start of a separatrix-crossing orbit \citep{henrard1982}. Since $H$
+only changes by $\propto \epsilon$ over a circulation/libration cycle, $\sim
+\epsilon$ changes to initial conditions affect the final outcome. As such, as
+$\epsilon \to 0$, the outcome effectively becomes probabilistic.}}
 \begin{subequations}\label{eq:henrard_hop}
     \begin{align}
         \Pr\p{i \to j} = -\frac{\pdil{\mathcal{A}_{\rm
@@ -914,8 +924,8 @@ nonadiabatic effects.
 \epsilon_{\rm c}$}\label{ss:transition}
 
 To illustrate the transition to nonadiabaticity, we carried out a suite of
-numerical calculations for several values of $\epsilon$. The results for two of these
-values are shown in Figs.~\ref{fig:3_ensemble_05_25}
+numerical calculations for several values of $\epsilon$. The results for two of
+these values are shown in Figs.~\ref{fig:3_ensemble_05_25}
 and~\ref{fig:3_ensemble_05_15}.
 
 As $\epsilon$ increases (see Fig.~\ref{fig:3_ensemble_05_25}), nonadiabaticity
@@ -927,8 +937,10 @@ $\theta_2$ is smaller for these trajectories, and the adiabaticity criterion is
 stricter [see Eq.~\eqref{eq:ad_constr}]. Physically, approaching the
 adiabaticity criterion corresponds to the separatrix crossing process becoming
 sensitive to the \emph{phase} of the libration/circulation cycle at the
-crossing: if the trajectory crosses the separatrix when the obliquity is at its
-maximum, the final obliquity will also be relatively larger.
+crossing \textcolor{Corr}{(as noted in Section~3.2.2, the phase does not affect
+separatrix crossing in the adiabatic limit)}: if the trajectory crosses the
+separatrix when the obliquity is at its maximum, the final obliquity will also
+be relatively larger.
 
 As $\epsilon$ increases further (see Fig.~\ref{fig:3_ensemble_05_15}) but still
 marginally satisfies the weak adiabaticity criterion [Eq.~\eqref{eq:ad_constr}],
@@ -936,7 +948,12 @@ the scatter in $\theta_{\rm f}$ continues to widen. The horizontal banded
 structure of the final obliquities is a consequence of even stronger phase
 sensitivity during separatrix crossing: trajectories cross the separatrix at
 similar phases evolve to similar final obliquities that only depend weakly on
-on $\theta_{\rm sd, i}$.
+on $\theta_{\rm sd, i}$. \textcolor{Corr}{Finally, the bottom edge
+of the data and the III $\to$ I track deviate very noticeably. This
+non-adiabatic effect is the result of the separatrix evolving significantly
+within the separatrix-crossing orbit, as the tracks computed in
+Section~\ref{s:ad} assume $\eta$ is constant throughout the separatrix-crossing
+orbit.}
 
 \begin{figure}
     \centering
@@ -955,7 +972,7 @@ on $\theta_{\rm sd, i}$.
     \caption{Same as Fig.~\ref{fig:3_ensemble_05_25} but for $\epsilon =
     10^{-1.5}$ (i.e.\ larger non-adiabaticity effect). Some small resemblance to
     the adiabatic tracks remains, and the deviations appear to have a banded
-    structure. }\label{fig:3_ensemble_05_15}
+    structure.}\label{fig:3_ensemble_05_15}
 \end{figure}
 
 A sample trajectory following in the style of Fig.~\ref{fig:ad_21} but for
@@ -1125,7 +1142,8 @@ Once the evolution enters phase (ii), the precession axis
 quickly (on timescale $\ll 1 / \omega_{\rm lib}$) changes to $\uv{l}$ (as $\eta$
 decreases to $\eta_{\rm f} \ll 1$). Precession about $\uv{l}$ does not change the
 obliquity, so the range of obliquities at the end of phase (i) is frozen in as
-the range of final obliquities.
+the range of final obliquities. \textcolor{Corr}{We refer to this two-phase
+evolution as \emph{partial adiabatic resonance advection}.}
 
 Fig.~\ref{fig:nonad_3_ensemble} shows the numerical result of $\theta_{\rm f}$
 vs $\theta_{\rm sd,i}$ for $I =5^\circ$ and $\epsilon = 0.3$. We see that
@@ -1201,15 +1219,19 @@ nonadiabatic limits:
         \simeq 90^\circ$ for $\theta_{\rm sd, i} \simeq 0$. We demonstrate (via
         numerical calculation and analytical argument) the dual-valued behavior
         of $\theta_{\rm f}$ for nonzero $\theta_{\rm sd, i}$ (see
-        Fig.~\ref{fig:ad_ensemble}). We analytically calculate both the exact
-        final $\theta_{\rm f}$ values and the probabilities of achieving each
-        value via careful accounting of adiabatic invariance and separatrix
-        crossing dynamics.
+        Fig.~\ref{fig:ad_ensemble}). We \textcolor{Corr}{show for the first time
+        that} both the final $\theta_{\rm f}$ values and the probabilities of
+        achieving each value \textcolor{Corr}{can be understood analytically}
+        via careful accounting of adiabatic invariance and separatrix crossing
+        dynamics.
+
     \item As the disk dissipates more rapidly, the adiabatic condition
         [Eq.~\eqref{eq:ad_constr}] breaks down, we find that a broad range of
         final obliquities can be reached for a given $\theta_{\rm sd, i}$ (see
-        Fig.~\ref{fig:nonad_3_ensemble}). We provide an analytical expression of
-        the bounds on $\theta_{\rm f}$ in Eq.~\eqref{eq:nonad_q_f_dist}.
+        Fig.~\ref{fig:nonad_3_ensemble}). We \textcolor{Corr}{understand this
+        via the novel concept of partial adiabatic resonance advection and}
+        provide an analytical expression of the bounds on $\theta_{\rm f}$ in
+        Eq.~\eqref{eq:nonad_q_f_dist}.
 \end{enumerate}
 
 As noted in Section~\ref{s:intro}, while in this paper we have examined a
@@ -1222,10 +1244,25 @@ spin-orbit coupling'' regime ($\eta\gg 1$) to the ``strong spin-orbit coupling''
 regime ($\eta\ll 1$).  The new analytical results presented in this paper can be
 adapted to other applications.
 
+\textcolor{Corr}{In practice, planets are not expected to form in isolation.
+\citet{millholland_disk} point out that one effect of a companion planet is that
+$g$ and $\eta$ for the planet of interest never decay below the Laplace-Lagrange
+secular nodal precession frequency. This does not affect the methodology of our
+analysis, but has some small effects on our detailed results: (i) the
+adiabaticity criterion must be modified slightly as $\rdil{\ln \eta}{t}$ is no
+longer constant but asymptotes to zero as $\eta$ decreases, (ii) the planet may
+never undergo separatrix crossing if their $\eta_{\star}$ (which depends on
+$\theta_{\rm sd, i}$) in the absence of the companions is too small, and (iii)
+the planetary obliquities will oscillate even when the disk has fully evaporated
+(as $\uv{l}$ is no longer constant). An interesting consequence of (ii) is that
+an outer planet may experience separatrix crossing before an inner planet does.
+The dynamics can be even more complex if the two planets are in mean motion
+resonance \citep[e.g.][]{millholland2019obliquity}.}
+
 \section*{Acknowledgements}
 
 We thank \textcolor{Corr}{the anonymous reviewer for their detailed and
-insightful comments that improved this work, and} Kassandra Anderson for
+insightful comments that improved this work and} Kassandra Anderson for
 discussion and assistance in the early phase of this work. DL thanks the Dept.\
 of Astronomy and the Miller Institute for Basic Science at UC Berkeley for
 hospitality while part of this work was carried out. This work has been

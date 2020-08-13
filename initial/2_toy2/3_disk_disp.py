@@ -453,8 +453,8 @@ def plot_single(I, eps, tf, eta0, q0, filename, dq=0.3,
         # give a small bit of extra space (don't do this twice, only for left
         # plots)
         if idx % 2 == 0:
-            ylims = (max(ylims[0] - 0.1 * abs(ylims[0]), -1),
-                     min(ylims[1] + 0.1 * abs(ylims[1]), 1))
+            ylims = (max(ylims[0] - 0.4 * abs(ylims[0]), -1),
+                     min(ylims[1] + 0.4 * abs(ylims[1]), 1))
             ax.set_ylim(ylims)
         if abs(phi_uw[-1] - phi_uw[0]) > np.pi:
             # circulating, if phi increasing, shade grey, else red
@@ -1190,8 +1190,8 @@ def plot_manys():
 
 if __name__ == '__main__':
     I = np.radians(5)
-    # plot_singles(I)
-    plot_manys()
+    plot_singles(I)
+    # plot_manys()
 
     # testing high epsilon
     # eta_c = get_etac(I)
