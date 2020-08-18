@@ -169,12 +169,14 @@ evolves toward the ``final'' value as the exterior disk dissipates. We provide
 an analytical framework for understanding the final planetary obliquity for
 arbitrary initial spin-disk misalignment angles. We also consider various
 dissipation timescales, and examine both ``adiabatic'' (slow disk dissipation)
-and ``non-adiabatic'' evolution. \textcolor{Corr}{Our chief new results include
-that: (i) careful accounting of phase space area across separatrix crossings can
-analytically describe the rich dynamics of adiabatic evolution, and (ii) the
-concept of ``partial adiabatic resonance advection'' fully captures dynamics in
-the non-adiabatic limit.} We calibrate our analytical results with numerical
-calculations.
+and ``non-adiabatic'' evolution. We calibrate these analytical results with
+numerical calculations. \textcolor{Corr}{ On the technical side, our paper
+extends previous works \citep[such as][]{henrard1982, henrard1987,
+millholland_disk} in several aspects. Two of our main results are: (i) a careful
+accounting of the phase space area across sepratrix to analytically describe the
+rich dynamics of adiabatic evolution, and (ii) using the concept of ``partial
+adiabatic resonance advection'' to fully capture the dynamics in the
+non-adiabatic limit.}
 
 It is important to note that while we focus on a specific scenario of
 generating/modifying planetary obliquities from planet-disk interactions, our
@@ -242,9 +244,9 @@ constant) the rotation-induced (dimensionless) quadrupole of the planet [for a
 body with uniform density, $k_p=0.4, k_{qp}=0.5$; for giant planets, $k_p\simeq
 0.25$ and $k_{qp}\simeq 0.17$ \citep[e.g.][]{lainey2016quantification}].
 \textcolor{Corr}{In other studies, $3k_{\rm qp} / 2 k_{\rm p}$ is often notated
-$k_2 / 2C$ \citep[e.g.][]{millholland_disk}}. In Eq.~\eqref{eq:wld}, $n \equiv
-\sqrt{GM_\star/a_{\rm p}^3}$ is the planet's orbital mean motion, and we have
-assumed $r_d\gg a_p$ and included only the leading-order (quadrupole)
+as $k_2 / 2C$ \citep[e.g.][]{millholland_disk}}. In Eq.~\eqref{eq:wld}, $n
+\equiv \sqrt{GM_\star/a_{\rm p}^3}$ is the planet's orbital mean motion, and we
+have assumed $r_d\gg a_p$ and included only the leading-order (quadrupole)
 interaction between the planet and disk. We define three relative inclination
 angles via
 \begin{equation}
@@ -675,9 +677,9 @@ of transition from zone $i$ to zones $j$ and $k$ are given by\footnote{
 is not because the outcome depends on the phase $\phi$ of the system at
 crossing. Instead, the transition the system takes is determined by the value of
 $H$ at the start of a separatrix-crossing orbit \citep{henrard1982}. Since $H$
-only changes by $\propto \epsilon$ over a circulation/libration cycle, $\sim
-\epsilon$ changes to initial conditions affect the final outcome. As such, as
-$\epsilon \to 0$, the outcome effectively becomes probabilistic.}}
+only changes by $\propto \epsilon$ over a circulation/libration cycle, an order
+$\sim \epsilon$ change to the initial condition affects the final outcome. As
+such, as $\epsilon \to 0$, the outcome effectively becomes probabilistic.}}
 \begin{subequations}\label{eq:henrard_hop}
     \begin{align}
         \Pr\p{i \to j} = -\frac{\pdil{\mathcal{A}_{\rm
@@ -948,12 +950,12 @@ the scatter in $\theta_{\rm f}$ continues to widen. The horizontal banded
 structure of the final obliquities is a consequence of even stronger phase
 sensitivity during separatrix crossing: trajectories cross the separatrix at
 similar phases evolve to similar final obliquities that only depend weakly on
-on $\theta_{\rm sd, i}$. \textcolor{Corr}{Finally, the bottom edge
-of the data and the III $\to$ I track deviate very noticeably. This
-non-adiabatic effect is the result of the separatrix evolving significantly
-within the separatrix-crossing orbit, as the tracks computed in
-Section~\ref{s:ad} assume $\eta$ is constant throughout the separatrix-crossing
-orbit.}
+on $\theta_{\rm sd, i}$. \textcolor{Corr}{Finally, in
+Fig.~\ref{fig:3_ensemble_05_15}, the bottom edge of the data and the III $\to$ I
+track deviate very noticeably. This non-adiabatic effect is the result of the
+separatrix evolving significantly within the separatrix-crossing orbit, as the
+tracks computed in Section~\ref{s:ad} assume that $\eta$ is constant throughout
+the separatrix-crossing orbit.}
 
 \begin{figure}
     \centering
@@ -1229,9 +1231,9 @@ nonadiabatic limits:
         [Eq.~\eqref{eq:ad_constr}] breaks down, we find that a broad range of
         final obliquities can be reached for a given $\theta_{\rm sd, i}$ (see
         Fig.~\ref{fig:nonad_3_ensemble}). We \textcolor{Corr}{understand this
-        via the novel concept of partial adiabatic resonance advection and}
-        provide an analytical expression of the bounds on $\theta_{\rm f}$ in
-        Eq.~\eqref{eq:nonad_q_f_dist}.
+        result via the novel concept of partial adiabatic resonance advection
+        and} provide an analytical expression of the bounds on $\theta_{\rm f}$
+        in Eq.~\eqref{eq:nonad_q_f_dist}.
 \end{enumerate}
 
 As noted in Section~\ref{s:intro}, while in this paper we have examined a
@@ -1244,31 +1246,30 @@ spin-orbit coupling'' regime ($\eta\gg 1$) to the ``strong spin-orbit coupling''
 regime ($\eta\ll 1$).  The new analytical results presented in this paper can be
 adapted to other applications.
 
-\textcolor{Corr}{In practice, planets are not expected to form in isolation.
-\citet{millholland_disk} point out that one effect of a companion planet is that
-$g$ for the planet of interest never decays below the Laplace-Lagrange
-secular nodal precession frequency. Therefore, $\eta$ has a minimum value at
-late times. This does not affect the methodology of our analysis, but has some
-small effects on our detailed results: (i) the adiabaticity criterion must be
-modified slightly as $\rdil{\ln \eta}{t}$ is no longer constant but asymptotes
-to zero as $\eta$ decreases, (ii) the planet may never undergo separatrix
-crossing if their $\eta_{\star}$ (which depends on $\theta_{\rm sd, i}$) in the
-absence of the companions is too small, and (iii) the planetary obliquities will
-oscillate even when the disk has fully evaporated (as $\uv{l}$ is no longer
-constant). An interesting consequence of (ii) is that an outer planet may
-experience separatrix crossing before an inner planet does. The dynamics can be
-even more complex if the two planets are in mean motion resonance
+\textcolor{Corr}{Concerning the production of planetary obliquity with a
+dissipating disk, when there are multiple planets in a system, the nodal
+precession rate $g$ for the planet of interest never decays below the
+Laplace-Lagrange rate driven by planet-planet secular interactions
+\citep{millholland_disk}. Therefore, $\eta$ has a minimum value at late times.
+This does not affect the methodology of our analysis, but can affect the
+detailed results. For example, the adiabaticity criterion must be modified
+slightly as $\rdil{\ln \eta}{t}$ is no longer constant but asymptotes to zero as
+$\eta$ decreases; the planet may never undergo separatrix crossing if their
+$\eta_{\star}$ (which depends on $\theta_{\rm sd, i}$) in the absence of the
+companions is too small; the planetary obliquity will oscillate even when the
+disk has fully evaporated (as $\uv{l}$ is no longer constant). The spin dynamics
+can be even more complex if the two planets are in mean motion resonance
 \citep[e.g.][]{millholland2019obliquity}.}
 
 \section*{Acknowledgements}
 
-We thank \textcolor{Corr}{the anonymous reviewer for their detailed and
-insightful comments that improved this work and} Kassandra Anderson for
-discussion and assistance in the early phase of this work. DL thanks the Dept.\
-of Astronomy and the Miller Institute for Basic Science at UC Berkeley for
-hospitality while part of this work was carried out. This work has been
-supported in part by the NSF grant AST-17152 and NASA grant 80NSSC19K0444. YS is
-supported by the NASA FINESST grant 19-ASTRO19-0041.% chktex 8
+We thank \textcolor{Corr}{the anonymous reviewer for detailed comments that
+improved this work and} Kassandra Anderson for discussion and assistance in the
+early phase of this work. DL thanks the Dept.\ of Astronomy and the Miller
+Institute for Basic Science at UC Berkeley for hospitality while part of this
+work was carried out. This work has been supported in part by the NSF grant
+AST-17152 and NASA grant 80NSSC19K0444. YS is supported by the NASA FINESST
+grant 19-ASTRO19-0041.% chktex 8
 
 \bibliography{Su_disk_disp}
 \bibliographystyle{aasjournal}
