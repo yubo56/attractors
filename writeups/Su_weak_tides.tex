@@ -12,6 +12,7 @@
     }
     \usepackage[T1]{fontenc}
 
+    \newcommand*{\uv}[1]{\hat{\bsmb{#1}}}
     \newcommand*{\rd}[2]{\frac{\mathrm{d}#1}{\mathrm{d}#2}}
     \newcommand*{\rtd}[2]{\frac{\mathrm{d}^2#1}{\mathrm{d}#2^2}}
     \newcommand*{\pd}[2]{\frac{\partial#1}{\partial#2}}
@@ -22,7 +23,6 @@
     \newcommand*{\abs}[1]{\left|#1\right|}
     \newcommand*{\ev}[1]{\langle#1\rangle}
     \newcommand*{\bsmb}[1]{\boldsymbol{\mathbf{#1}}}
-    \newcommand*{\uv}[1]{\hat{\bsmb{#1}}}
     \newcommand*{\p}[1]{\left(#1\right)}
     \newcommand*{\s}[1]{\left[#1\right]}
     \newcommand*{\z}[1]{\left\{#1\right\}}
@@ -65,45 +65,81 @@ of Astronomy, Cornell University, Ithaca, NY 14853, USA}
 
 \section{Introduction}
 
-Separatrix crossing was studied by \citep{henrard1982}.
+\begin{itemize}
+    \item Studying planetary obliquities is important. Cassini States are key.
+
+    \item In CS, resonance when two frequencies $g$ and $\alpha \cos \theta$
+        become commensurate, $g \simeq \alpha \cos \theta$, where $\theta$ is
+        the planetary obliquity.
+
+    \item Many works consider entry into a CS by having $g$ or $\alpha$ vary
+        over time to effect resonance capture \citep[e.g.][]{anderson2018teeter,
+        millholland_disk, su2020, anderson2020excitation}. However, a third
+        possibility exists: $\theta$ can evolve and sweep through a resonance,
+        e.g.\ under tidal friction.
+
+    \item Resonance capture via separatrix crossing was first considered by
+        \citep{henrard1982} for non-dissipative perturbations
+        \citep[e.g.][]{su2020}. However, tidal friction is dissipative, so this
+        formalism does not apply. We show that this generalizes.
+\end{itemize}
 
 \section{Theory and Equations}\label{s:theory}
 
 In this section, we first briefly lay out the spin dynamics of the planet,
 introducing the Cassini State spin-orbit resonance \citep[for more details,
 see][]{su2020}. We then introduce the equilibrium tide model of weak tidal
-friction used in this work, though much of our analysis does not depend on the
-detailed tidal model used.
+friction used in this work \citep{lai2012}. While there are many models of tidal
+dissipation that may be more accurate (e.g. CITE), our qualitative conclusions
+do not depend on the specific model used, so we use the equilibrium tide model
+for simplicity.
 
 \subsection{Spin Dynamics Without Tidal Friction}\label{ss:theory_spin}
 
-We study an oblate planet orbiting around a star hosting a further out planet.
-The equations of motion in the absence of dissipation are:
+We consider a star of mass $M_\star$ hosting an inner oblate planet of mass $m$
+and radius $R$ with semi-major axis $a$ and an outer planet of mass $m_{\rm p}$
+with semi-major axis $a_{\rm p}$ and eccentricity $e_{\rm p}$. Let the inner
+planet be spinning with spin $\bsmb{s}$ (with $s \equiv \abs{\bsmb{s}}$ the spin
+angular velocity and $\uv{s}$ the spin orientation), and call the unit angular
+momenta of the inner and outer planets' orbits $\uv{l}$ and $\uv{l}_{\rm p}$
+respectively. The equations of motion in the absence of tidal friction are:
 \begin{align}
-    \rd{\hat{s}}{t}
-        &= \omega_{s1}\p{\hat{s} \cdot \hat{l}_1}\p{\hat{s} \times \hat{l}_1}
-            - \omega_{1p}\cos I\p{\hat{s} \times \hat{l}_p},\\
-    \omega_{s1} &= \frac{3k_q}{2k}\frac{M_*}{m_1}\p{\frac{R_1}{a_1}}^3 s,\\
-    \omega_{1p} &= \frac{3m_p}{4m_*}\p{\frac{a_1}{a_p\sqrt{1 - e_p^2}}}^3 \Omega_1.
+    \rd{\uv{s}}{t}
+        &= \omega_{\rm sl}\p{\uv{s} \cdot \uv{l}}\p{\uv{s} \times \uv{l}}
+            - \omega_{\rm lp}\cos I\p{\uv{s} \times \uv{l}_{\rm p}},\\
+    \omega_{\rm sl} &\equiv \frac{3GJ_2 mR^2 M_\star}{2a^3 I\Omega}
+        = \frac{3k_q}{2k}\frac{M_\star}{m}\p{\frac{R}{a}}^3 s,
+            \label{eq:wsl}\\
+    \omega_{\rm lp} &= \frac{3m_p}{4M_\star}\p{\frac{a}{a_{\rm p}\sqrt{1 -
+            e_{\rm p}^2}}}^3 n.\label{eq:wlp}
 \end{align}
+In Eq.~\eqref{eq:wsl}, $I = k mR^2$ (with $k$ a constant) is the moment of
+inertia and $J_2=k_{\rm q}s^2 (R^3/Gm)$ (with $k_{q}$ a constant) the
+rotation-induced (dimensionless) quadrupole of the planet [for a body with
+uniform density, $k=0.4, k_{q}=0.5$; for rocky planets, $k\simeq 0.2$ and
+$k_{qp}\simeq 0.17$ \citep[e.g.][]{lainey2016quantification} \textcolor{Corr}{?
+not sure}]. In other studies, $3k_{\rm qp} / 2 k_{\rm p}$ is often notated as
+$k_2 / 2C$ \citep[e.g.][]{millholland_disk}. In Eq.~\eqref{eq:wlp}, $n \equiv
+\sqrt{GM_\star/a^3}$ is the inner planet's orbital mean motion, and we have
+assumed $a_{\rm p}\gg a$ and included only the leading-order (quadrupole)
+interaction between the planet and disk. Following standard notation, we define
+$\alpha = \omega_{\rm sl}$ and $g \equiv -\omega_{\rm 1p} \cos I$
+\citep[e.g.][]{colombo1966}.
 
-We define $s_c$ to be the critical spin where the precession frequencies
-$\omega_{s1}$ and $\omega_{1p}$ are equal, or
+We define $s_{\rm c}$ to be the critical spin where
 \begin{equation}
-    \at{\omega_{s1}}_{s = s_c} = \omega_{1p}\cos I.
+    \at{\alpha}_{s = s_{\rm c}} = -g.
 \end{equation}
-rhroughout this paper, we often set the orbital frequency of the inner planet
-$\Omega_1 = 1$.
 
 \subsection{Cassini States}\label{ss:cs_theory}
 
 Equilibria of spin dynamics are \emph{Cassini States} (CSs). Refer to Su \& Lai
 2020 for more detailed discussion. In the notation of the previous paper,
 \begin{equation}
-    \eta \equiv -\frac{g}{\alpha} = s_c / s.
+    \eta \equiv -\frac{g}{\alpha} = \frac{s_{\rm c}}{s}.
 \end{equation}
 
-Plots of CS locations as always in \autoref{fig:cs_locs}.
+Plots of CS locations as always in Fig.~\ref{fig:cs_locs}.
 \begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../initial/99_misc/2_cs_locs.png}
@@ -111,14 +147,14 @@ Plots of CS locations as always in \autoref{fig:cs_locs}.
 \end{figure}
 
 Note that $\phi$ is conjugate to $\cos \theta$, and thus the spin dynamics
-exhibit Hamiltonian:
+obey Hamiltonian:
 \begin{equation}
-    H(\mu, \phi; s) = -\frac{s}{s_c}\frac{\mu^2}{2}
+    H(\mu, \phi; s) = -\frac{s}{s_{\rm c}}\frac{\mu^2}{2}
         + \mu \cos I - \sin I \sqrt{1 - \mu^2}\cos \phi.
 \end{equation}
 
 Plot of level curves of Hamiltonian as before, including $\mathcal{C}_{\pm}$
-notation in \autoref{fig:1contours}.
+notation in Fig.~\ref{fig:1contours}.
 \begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../initial/0_eta/1contours.png}
@@ -127,19 +163,30 @@ notation in \autoref{fig:1contours}.
 
 \subsection{Weak Tidal Friction}\label{ss:weak_tides}
 
-We use the weak tidal friction model \citep{lai2012}. The EOM for $\theta, s$
-become:
+We implement the weak friction theory of equilibrium tides \citep{lai2012},
+under which both $\theta$ and $s$ evolve. We define the dimensionless time
+\begin{equation}
+    \tau \equiv gt.
+\end{equation}
+The full equations of motion including weak tidal friction are then
 \begin{align}
-    \rd{\hat{s}}{\tau}
-        &= \frac{s}{s_c}\p{\hat{s} \cdot \hat{l}_1}\p{\hat{s} \times
-                \hat{l}_1} - \hat{s} \times \hat{l}_p
-            + \frac{\epsilon 2\Omega_1}{s}
-                \p{1 - \frac{s}{2\Omega_1}\p{\hat{l}_1 \cdot \hat{s}}}
-                    \hat{s} \times \p{\hat{l}_1 \times \hat{s}},\\
+    \rd{\uv{s}}{\tau}
+        ={}& \frac{s}{s_c}\p{\uv{s} \cdot \uv{l}}\p{\uv{s} \times
+                \uv{l}} - \uv{s} \times \uv{l}_{\rm p}\nonumber\\
+            &+ \frac{\epsilon 2n}{s}
+                \p{1 - \frac{s}{2n}\p{\uv{l} \cdot \uv{s}}}
+                    \uv{s} \times \p{\uv{l} \times \uv{s}},\\
     \rd{s}{\tau}
-        &= \epsilon 2\Omega_1 \p{\hat{s} \cdot \hat{l}_1 -
-            \frac{s}{2\Omega_1}\p{1 + \p{\hat{s} \cdot \hat{l}_1}^2}}.
+        ={}& \epsilon 2n \p{\uv{s} \cdot \uv{l} -
+            \frac{s}{2n}\p{1 + \p{\uv{s} \cdot \uv{l}}^2}},
 \end{align}
+where $\epsilon$ measures the tidal dissipation rate and is given by
+\begin{align}
+    \epsilon &\equiv -\frac{1}{gt_a}\frac{L}{2S} \frac{s}{2n},\\
+    \frac{1}{t_a} &= \frac{3k_2}{Q}\p{\frac{m}{M}}\p{\frac{R}{a}}^5 n.
+\end{align}
+Here, $L$ and $S$ are the orbital and spin angular momenta of the inner planet,
+respectively.
 
 The phase portrait for these EOM in $\p{s, \theta}$ space is shown in
 Fig.~\ref{fig:quiver}.
@@ -187,7 +234,7 @@ spin $\hat{s}$ in Section~\ref{ss:s_c_dist}.
 
 \subsection{Distribution As a Function of $\theta$}\label{ss:q_dist}
 
-As a result of \autoref{ss:tidal_eqs}, the tCE are the only possible final
+As a result of Section~\ref{ss:tidal_eqs}, the tCE are the only possible final
 outcomes. We generate initial spin vectors $\hat{s}$ for isotropic initial
 distribution $\p{\cos \theta, \phi}$, and average over $\phi$ in histograms.
 This gives histograms in
@@ -260,7 +307,7 @@ is shown below for $I = 5^\circ$
 Note that while only the results for an isotropic distribution of initial
 $\hat{s}$ are shown, in principle arbitrary distributions $P\p{\theta_i}$ can be
 convolved against the $P_{tCE2}\p{\theta_i}$ distributions shown in
-\autoref{ss:q_dist}.
+Section~\ref{ss:q_dist}.
 
 \section{Summary and Discussion}\label{s:summary}
 
