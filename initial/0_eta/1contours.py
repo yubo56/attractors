@@ -9,7 +9,7 @@ from utils import roots, get_four_subplots, plot_point, H, get_grids, get_etac,\
     get_sep_area
 
 letters = ['a', 'b', 'c', 'd']
-def plot_H_for_eta(f, ax, eta, I, idx):
+def plot_H_for_eta(f, ax, eta, I, idx, plot_dashed=True):
     '''
     Hamiltonian is H = 1/2 cos^2(theta) + eta * sin(phi)
     canonical variables are (phi, x = cos(theta))
@@ -24,7 +24,7 @@ def plot_H_for_eta(f, ax, eta, I, idx):
     colors = ['y', 'r', 'm', 'c'] if len(thetas) == 4 else ['r', 'm']
     labels = ['CS1', 'CS2', 'CS3', 'CS4'] if len(thetas) == 4 else ['CS2', 'CS3']
     for color, theta, phi, label in zip(colors, thetas, phis, labels):
-        plot_point(ax, theta, '%so' % color, markersize=6, label=label)
+        plot_point(ax, theta, '%so' % color, markersize=10, label=label)
 
     shade = '0.8' # shade interior of separatrix
     font_height = 0.15 # ~font height so y loc is center of text, not base
@@ -46,6 +46,9 @@ def plot_H_for_eta(f, ax, eta, I, idx):
         if eta < 0.8 * eta_c:
             # if Zone I is sufficiently large, place it inside zone
             ax.text(0.3, np.cos(thetas[3]) + 0.4 - font_height, 'I')
+            gap = 0.15 if eta > 0.2 else 0
+            ax.text(5, np.cos(thetas[3]) + 0.3 + gap - font_height, r'$\mathcal{C}_+$')
+            ax.text(5, np.cos(thetas[3]) - 0.25 - gap, r'$\mathcal{C}_-$')
         else:
             # else draw an arrow
             y = (2 * np.cos(thetas[0]) + np.cos(thetas[3])) / 3
@@ -56,13 +59,12 @@ def plot_H_for_eta(f, ax, eta, I, idx):
             ax.text(x + dx + 0.1, y - font_height, 'I')
         ax.text(2 * np.pi / 3, np.cos(thetas[3]) + 0.05 - font_height, 'II')
         ax.text(0.3, np.cos(thetas[3]) - 0.6, 'III')
-    else:
+    elif plot_dashed:
         # estimate the location of zone II
         # fractional area (/4pi) enclosed by separatrix @ appearance
         area_frac = 1 - (1 + np.tan(I)**(2/3))**(-3/2)
         # estimate location of separatrix curve via 2pi(1 - cos(dq)) = A_crit
         dq = np.arccos(1 - 2 * area_frac)
-        print(np.cos(thetas[0]), thetas[0], dq, area_frac)
         H_sep = H(I, eta, np.cos(thetas[0] + dq), np.pi)
         ax.contour(phi_grid,
                    x_grid,
@@ -85,10 +87,10 @@ def plot_H_for_eta(f, ax, eta, I, idx):
 
 if __name__ == '__main__':
     I = np.radians(5)
-    f, axs = get_four_subplots(figsize=(7, 7))
+    f, axs = get_four_subplots(figsize=(6, 6))
     # Figures 3b-3e of Kassandra's paper
     for idx, (ax, eta) in enumerate(zip(axs, [0.1, 0.5, 0.75, 2])):
-        plot_H_for_eta(f, ax, eta, I, idx)
+        plot_H_for_eta(f, ax, eta, I, idx, plot_dashed=False)
 
     axs[0].legend(loc='lower right', ncol=2, fontsize=10)
     axs[3].legend(loc='lower right', ncol=2, fontsize=10)
@@ -97,16 +99,16 @@ if __name__ == '__main__':
     plt.savefig('1contours.png', dpi=300)
     plt.clf()
 
-    f, axs = get_four_subplots(figsize=(7, 7))
-    for idx, (ax, eta) in enumerate(zip(axs, [2, 0.73, 0.4, 0.1])):
-        plot_H_for_eta(f, ax, eta, I, idx)
+    # f, axs = get_four_subplots(figsize=(7, 7))
+    # for idx, (ax, eta) in enumerate(zip(axs, [2, 0.73, 0.4, 0.1])):
+    #     plot_H_for_eta(f, ax, eta, I, idx)
 
-    axs[0].legend(loc='lower right', ncol=2, fontsize=10)
-    axs[1].legend(loc='lower right', ncol=2, fontsize=10)
+    # axs[0].legend(loc='lower right', ncol=2, fontsize=10)
+    # axs[1].legend(loc='lower right', ncol=2, fontsize=10)
 
-    plt.tight_layout()
-    plt.savefig('1contours_flip.png', dpi=300)
-    plt.clf()
+    # plt.tight_layout()
+    # plt.savefig('1contours_flip.png', dpi=300)
+    # plt.clf()
 
     # f, ax = plt.subplots(1, 1)
     # ax.set_ylabel(r'$\cos \theta$')

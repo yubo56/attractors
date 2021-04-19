@@ -10,6 +10,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=16)
+from scipy.optimize import brenth
+from scipy.interpolate import interp1d
 
 POOL_SIZE = 50
 
@@ -34,6 +36,7 @@ def get_cs_val(I, s_c, s):
 
 def plot_equils(I, s_c, verbose=True, fn_str='6equils%s'):
     ''' plot in (s, mu) space showing how the tCS arise '''
+    fig = plt.figure(figsize=(6, 6))
     s_lt = np.linspace(s_c / 10, 1, 200) # max eta = 10
     s_gt = np.linspace(1, 3, 200) # other interesting part of the interval
     s_tot = np.concatenate((s_lt, s_gt))
@@ -41,14 +44,11 @@ def plot_equils(I, s_c, verbose=True, fn_str='6equils%s'):
     cs1_qs, cs2_qs = get_cs_val(I, s_c, s_tot)
     cs1_exist_idx = np.where(cs1_qs > -1)[0]
     mu_equil_lt = [np.degrees(np.arccos(get_mu_equil(s))) for s in s_lt]
-    plt.plot(s_lt, mu_equil_lt, 'k', label=r'$\dot{s}=0$', lw=4)
 
     s_dq = np.linspace(2, 3, 200)
-    plt.plot(s_dq, np.degrees(np.arccos(2 / s_dq)), 'b',
-             label=r'$\dot{\theta} = 0$', lw=4)
 
-    plt.xlabel(r'$s / \Omega_1$')
-    plt.ylabel(r'$\theta$')
+    plt.xlabel(r'$\Omega_{\rm s} / n$')
+    plt.ylabel(r'$\theta$ (deg)')
     plt.ylim([0, 90])
     if verbose:
         plt.plot(s_tot, np.degrees(cs2_qs), 'r', label='CS2', lw=2.5)
@@ -62,19 +62,32 @@ def plot_equils(I, s_c, verbose=True, fn_str='6equils%s'):
             -np.sin(I) + np.sqrt(np.sin(I)**2 + 4 * eps_val**2 * np.cos(I)**2)
         ) / (2 * eps_val * np.cos(I)**2)
         xlims = plt.xlim()
-        plt.axvline(s_c / eta_crit(1e-2), c='r', ls=':', lw=0.6,
-                    label=r'$s_{\max}(10^{-2})$')
-        plt.axvline(s_c / eta_crit(1e-1), c='r', ls='--', lw=0.6,
-                    label=r'$s_{\max}(10^{-1})$')
+        plt.axvline(s_c / eta_crit(1e-2), c='r', ls=':', lw=1.5)
+        plt.axvline(s_c / eta_crit(1e-1), c='r', ls='--', lw=1.5)
         plt.xlim(xlims)
+    plt.plot(s_lt, mu_equil_lt, 'k', label='$\Omega_{\\rm s}\' = 0$', lw=4)
+    plt.plot(s_dq, np.degrees(np.arccos(2 / s_dq)), 'b',
+             label='$\\theta\' = 0$', lw=4)
     plt.annotate('', xy=(1.5, 45), xytext=(2.5, 65),
                  arrowprops={'fc': 'g', 'width': 10, 'headwidth': 25})
     plt.annotate('', xy=(0.8, 10), xytext=(0.3, 20),
                  arrowprops={'fc': 'g', 'width': 10, 'headwidth': 25})
     plt.annotate('', xy=(2.5, 20), xytext=(3.0, 10),
                  arrowprops={'fc': 'g', 'width': 10, 'headwidth': 25})
-    plt.legend(loc='upper right', fontsize=10, ncol=2)
-    plt.savefig(fn_str % s_c_str(s_c), dpi=400)
+    plt.legend(loc='upper right', bbox_to_anchor=(1, 0.93), fontsize=14, ncol=2)
+
+    dS_interp = interp1d(s_lt, mu_equil_lt)
+    CS2_interp = interp1d(s_tot, np.degrees(cs2_qs))
+    CS1_interp = interp1d(s_tot[cs1_exist_idx],
+                          np.degrees(-cs1_qs[cs1_exist_idx]))
+    tce2_s = brenth(lambda s: dS_interp(s) - CS2_interp(s), 0.3, 1)
+    tce1_s = brenth(lambda s: dS_interp(s) - CS1_interp(s), 0.3, 1)
+    plt.plot(tce2_s, dS_interp(tce2_s), 'go', ms=14, mfc='none', mew=3)
+    plt.plot(tce1_s, dS_interp(tce1_s), 'go', ms=14, mfc='none', mew=3)
+
+
+    plt.tight_layout()
+    plt.savefig(fn_str % s_c_str(s_c), dpi=300)
     plt.clf()
 
 def plot_phop(I, s_c):
@@ -159,7 +172,8 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
         plt.ylim([0, 1])
         plt.xticks([-1, -0.5, 0, 0.5, 1])
         plt.legend()
-        plt.savefig('6pc_dist%s' % s_c_str(s_c), dpi=400)
+        plt.tight_layout()
+        plt.savefig('6pc_dist%s' % s_c_str(s_c), dpi=300)
         plt.clf()
     except Exception as e: # on remote, can't plot, just return
         print(e)

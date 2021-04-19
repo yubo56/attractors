@@ -324,7 +324,7 @@ def plot_nonad_diagram():
     plt.clf()
 
 if __name__ == '__main__':
-    # plot_cs(np.radians(5))
+    plot_cs(np.radians(5))
     # plot_eigens(np.radians(5))
-    plot_3vec()
+    # plot_3vec()
     # plot_nonad_diagram()

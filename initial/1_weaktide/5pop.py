@@ -234,12 +234,16 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     mu2 = [ic[0] for ic in IC_eq2]
     phi1 = [ic[1] for ic in IC_eq1]
     phi2 = [ic[1] for ic in IC_eq2]
-    ax_scatter.scatter(phi1, mu1, c='tab:olive', edgecolor='k',
-                       label='tCS1', s=ms)
-    ax_scatter.scatter(phi2, mu2, c='tab:red', label='tCS2', s=ms)
+    ax_scatter.scatter(phi1, mu1, c='tab:olive', s=ms)
+    ax_scatter.scatter(phi2, mu2, c='tab:red', s=ms)
     ax_scatter.set_xlabel(r'$\phi_{\rm i}$')
     ax_scatter.set_ylabel(r'$\cos \theta_{\rm i}$')
-    ax_scatter.legend(loc='lower left')
+    ylim = ax_scatter.get_ylim()
+    ax_scatter.scatter(3, -10, c='tab:olive',
+                       label='tCE1', s=20)
+    ax_scatter.scatter(3, -10, c='tab:red', label='tCE2', s=20)
+    ax_scatter.legend(loc='lower left', fontsize=14)
+    ax_scatter.set_ylim(ylim)
     # ax_scatter.set_title(r'$s_c = %.2f, I = %d^\circ$' % (s_c, np.degrees(I)))
     # overplot separatrix
     lw = 2
@@ -267,12 +271,13 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
         orientation='horizontal', stacked=True)
     ax_hist.set_ylim(ax_scatter.get_ylim())
 
-    plt.savefig('5Hhists%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
+    plt.savefig('5Hhists%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=300)
     plt.close()
 
     # try to overplot the semi-analytical simulations I ran
     pkl_fn = '6pc_dist%s.pkl' % s_c_str(s_c)
     if os.path.exists(pkl_fn):
+        fig = plt.figure(figsize=(6, 6))
         n_mu = 501
         n_phi = 50
         mu_vals =  np.linspace(-0.99, 0.99, n_mu)
@@ -281,13 +286,13 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
         # p_caps = get_anal_caps(I, s_c, cross_dat, mu_vals)
         p_caps = get_num_caps(I, s_c, cross_dat, mu_vals)
         tot_probs = np.sum(p_caps / n_phi, axis=1)
-        plt.plot(mu_vals, tot_probs, 'b', alpha=0.5, lw=1.5)
+        plt.plot(mu_vals, tot_probs, 'b', alpha=0.8, lw=3.5)
 
         bin_cents = (bins[ :-1] + bins[1: ]) / 2
         bin_probs = np.array(n[0]) / np.array(n[1])
-        plt.plot(bin_cents, bin_probs, 'ro', ms=2)
+        plt.plot(bin_cents, bin_probs, 'ro', ms=3)
         plt.xlabel(r'$\cos \theta_{\rm i}$')
-        plt.ylabel(r'tCS2 Probability')
+        plt.ylabel(r'tCE2 Probability')
         plt.tight_layout()
         plt.savefig('5pc_fits%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
         plt.close()
@@ -301,7 +306,7 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     ax1.scatter(s_c_vals, np.array(counts) / (N_THREADS * N_PTS),
                 c='tab:red')
     ax1.set_ylim([0, 1])
-    ax1.set_ylabel('tCS2 Probability')
+    ax1.set_ylabel('tCE2 Probability')
     s_c_dense = np.linspace(min(s_c_vals), max(s_c_vals), 200)
     # A2s = np.array([get_areas_ward(I, s_c, s0)[1] for s_c in s_c_dense])
     # ax1.plot(s_c_dense, A2s / (4 * np.pi), 'r')
@@ -324,11 +329,11 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     cs1_idxs = np.where(cs1_equil_mu > -1)[0]
     ax2.plot(np.array(s_c_cont)[cs1_idxs],
              np.degrees(np.arccos(cs1_equil_mu[cs1_idxs])),
-             'tab:olive', label='tCS1', lw=2)
+             'tab:olive', label='tCE1', lw=2)
     ax2.plot(s_c_cont, np.degrees(np.arccos(cs2_equil_mu)),
-             'tab:red', label='tCS2', lw=2)
+             'tab:red', label='tCE2', lw=2)
     ax2.set_ylabel(r'$\theta$')
-    ax2.set_xlabel(r'$s_c / \Omega_1$')
+    ax2.set_xlabel(r'$\Omega_{\rm c} / n$')
     ax2.legend()
     plt.tight_layout()
     plt.savefig('5probs_%d' % np.degrees(I), dpi=400)
@@ -342,39 +347,39 @@ def run():
         0.7,
         0.2,
         0.06,
-        # 2.0,
-        # 1.2,
-        # 1.0,
-        # 0.65,
-        # 0.6,
-        # 0.55,
-        # 0.5,
-        # 0.45,
-        # 0.4,
-        # 0.35,
-        # 0.3,
-        # 0.25,
+        2.0,
+        1.2,
+        1.0,
+        0.65,
+        0.6,
+        0.55,
+        0.5,
+        0.45,
+        0.4,
+        0.35,
+        0.3,
+        0.25,
     ]
 
     s_c_vals_5 = [
         0.7,
         0.2,
         0.06,
-        # 2.0,
-        # 1.2,
-        # 1.0,
-        # 0.85,
-        # 0.8,
-        # 0.75,
-        # 0.65,
-        # 0.6,
-        # 0.55,
-        # 0.5,
-        # 0.45,
-        # 0.4,
-        # 0.35,
-        # 0.3,
-        # 0.25,
+        2.0,
+        1.2,
+        1.0,
+        0.85,
+        0.8,
+        0.75,
+        0.65,
+        0.6,
+        0.55,
+        0.5,
+        0.45,
+        0.4,
+        0.35,
+        0.3,
+        0.25,
     ]
 
     for I, s_c_vals in [
@@ -408,7 +413,7 @@ def run():
             counts.append(len(IC_eq2))
             # plot_final_dists(I, s_c, s0, trajs)
             plot_eq_dists(I, s_c, s0, np.array(IC_eq1), np.array(IC_eq2))
-        # plot_cum_probs(I, s_c_vals, s0, counts)
+        plot_cum_probs(I, s_c_vals, s0, counts)
 
 if __name__ == '__main__':
     run()
