@@ -14,7 +14,10 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('font', family='serif', size=14)
+plt.rc('font', family='serif', size=20)
+plt.rc('lines', lw=2.5)
+plt.rc('xtick', direction='in', top=True, bottom=True)
+plt.rc('ytick', direction='in', left=True, right=True)
 from utils import roots, to_cart, to_ang, solve_ic, get_four_subplots,\
     plot_point, H, get_grids, get_phi, get_phis, is_below, get_sep_area
 import matplotlib.lines as mlines
@@ -109,85 +112,54 @@ def run_for_tide(tide=1e-3,
         with open(dat_fn, 'rb') as dat_file:
             conv_data, zeros, mults = pickle.load(dat_file)
 
-    f, axs = get_four_subplots()
+    fig = plt.figure(figsize=(6, 5))
     qs, phis = roots(I, eta)
 
     # points below the separatrix, where do they converge to?
     below_convs = []
-    for q, phi, ax, conv_pts in zip(qs, phis, axs, conv_data):
+    colors = ['y', 'r', 'm', 'c']
+    for q, phi, conv_pts, c in zip(qs, phis, conv_data, colors):
         if conv_pts:
             q_plot, phi_plot = np.array(conv_pts).T
             below_convs.append(sum(is_below(I, eta, q_plot, phi_plot)))
             phis_plot = get_phis(q_plot, phi_plot)
-            ax.plot(phis_plot,
-                    np.cos(q_plot),
-                    'ko',
-                    markersize=0.5)
+            plt.plot(phis_plot,
+                     np.cos(q_plot),
+                     '%so' % c,
+                     markersize=1)
         else:
             below_convs.append(0)
-        plot_point(ax, q, 'ro', markersize=8)
+        # plot_point(plt.gca(), q, '%so' % c, markersize=8)
+    for idx, c in enumerate(colors):
+        plt.plot(0, -10, '%so' % c, markersize=3, label='CS%d' % (idx + 1))
+    plt.ylim([-1, 1])
+    plt.legend(fontsize=12, loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.ylabel(r'$\cos \theta_0$')
+    plt.xlabel(r'$\phi_0$')
+    plt.xticks([0, np.pi, 2 * np.pi],
+               ['0', r'$\pi$', r'$2\pi$'])
 
-        x_grid, phi_grid = get_grids()
-        H_grid = H(I, eta, x_grid, phi_grid)
-        ax.contour(phi_grid,
-                   x_grid,
-                   H_grid,
-                   levels=[H(I, eta, np.cos(qs[3]), phis[3])],
-                   colors=['k'],
-                   linewidths=1.6)
+    x_grid, phi_grid = get_grids()
+    H_grid = H(I, eta, x_grid, phi_grid)
+    plt.contour(phi_grid,
+                x_grid,
+                H_grid,
+                levels=[H(I, eta, np.cos(qs[3]), phis[3])],
+                colors=['k'],
+                linewidths=3,
+                linestyles='solid')
 
-    if len(zeros):
-        q_zeros, phi_zeros = np.array([tup[0] for tup in zeros]).T
-        belows_zero = sum(is_below(I, eta, q_zeros, phi_zeros))
-    else:
-        belows_zero = 0
-
-    tot_pts = sum([len(pts) for pts in conv_data]) + len(zeros)
-    tot_belows = sum(below_convs) + belows_zero
-    for q, phi, belows, conv_pts, ax in\
-            zip(qs, phis, below_convs, conv_data, axs):
-        ax.set_title(
-            r'$(\phi_0, \theta_0, P_T, P_<) = (%.2f, %.2f) (%.3f, %.3f)$'
-            % (get_phi(q), q, len(conv_pts) / tot_pts, belows / tot_belows),
-            fontsize=8)
-
-    for (q0, _phi0), (x, y, z) in zeros:
-        phi0 = get_phi(q0, _phi0)
-        axs[3].plot(phi0,
-                    np.cos(q0),
-                    'bo',
-                    markersize=0.5)
-        q, _phi = to_ang(x, y, z)
-        phi = get_phi(q, _phi)
-        axs[3].plot(phi,
-                    np.cos(q),
-                   'mo',
-                    markersize=4)
-        axs[3].set_title(
-            r'$(\phi_0, \theta_0, P_T, P_<) = (%.2f, %.2f) (%.3f, %.3f)$'
-            % (get_phi(qs[3]), qs[3],
-               len(zeros) / tot_pts, belows_zero / tot_belows),
-            fontsize=8)
-        ln1 = mlines.Line2D([], [], color='b', marker='o', markersize=0.5,
-                            linewidth=0, label='Init')
-        ln2 = mlines.Line2D([], [], color='m', marker='o', markersize=4,
-                            linewidth=0, label=r'Final')
-        axs[3].legend(handles=[ln1, ln2], fontsize=6, loc='upper left')
-
-    plt.suptitle((r'(I, $\eta$, $\epsilon$, N)=($%d^\circ$, %.1f, %.1e, %d)' +
-                 r', A = %.3f')
-                 % (np.degrees(I), eta, tide, NUM_RUNS, get_sep_area(eta, I)),
-                 fontsize=10)
+    plt.tight_layout()
     plt.savefig('3stats%s.png' % prefix, dpi=400)
 
 if __name__ == '__main__':
-    run_for_tide(tide=3e-2)
-    run_for_tide(tide=1e-2)
-    run_for_tide(tide=3e-3)
-    run_for_tide(tide=1e-3)
-    run_for_tide(tide=3e-4, NUM_RUNS=10000)
-    run_for_tide(tide=1e-4, NUM_RUNS=10000)
-    run_for_tide(tide=3e-5, NUM_RUNS=10000)
+    # run_for_tide(tide=3e-2)
+    # run_for_tide(tide=1e-2)
+    # run_for_tide(tide=3e-3)
+    # run_for_tide(tide=1e-3)
+    # run_for_tide(tide=3e-4, NUM_RUNS=10000)
+    # run_for_tide(tide=1e-4, NUM_RUNS=10000)
+    # run_for_tide(tide=3e-5, NUM_RUNS=10000)
     run_for_tide(tide=3e-4, eta=0.2, NUM_RUNS=10000)
-    run_for_tide(tide=3e-4, eta=0.05, NUM_RUNS=10000)
-    run_for_tide(tide=3e-4, eta=0.025, NUM_RUNS=10000)
+    # run_for_tide(tide=3e-4, eta=0.05, NUM_RUNS=10000)
+    # run_for_tide(tide=3e-4, eta=0.025, NUM_RUNS=10000)

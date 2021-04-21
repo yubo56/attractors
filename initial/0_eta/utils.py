@@ -112,7 +112,8 @@ def plot_point(ax, q, *args, **kwargs):
         if idx == 0:
             ax.plot(phi_plot, np.cos(q), *args, **kwargs)
         else:
-            del kwargs['label']
+            if 'label' in kwargs:
+                del kwargs['label']
             ax.plot(phi_plot, np.cos(q), *args, **kwargs)
 
 def H(I, eta, x, phi):
