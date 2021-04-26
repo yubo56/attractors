@@ -1,17 +1,20 @@
 import os
+import pickle
 import scipy.optimize as opt
 from scipy import integrate
 from scipy.interpolate import interp1d
 import numpy as np
 import multiprocessing as mp
 
+import numpy as np
 import matplotlib
-import pickle
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
-plt.rc('font', family='serif', size=12)
-
+plt.rc('font', family='serif', size=20)
+plt.rc('lines', lw=2.5)
+plt.rc('xtick', direction='in', top=True, bottom=True)
+plt.rc('ytick', direction='in', left=True, right=True)
 PLOT_DIR = '1plots'
 from utils import to_cart, to_ang, solve_ic, get_areas, get_plot_coords,\
     roots, H
@@ -263,7 +266,47 @@ def run_stats(I_deg, delta, p=None):
                 dpi=400)
     plt.close(fig)
 
+def plot_0():
+    I = np.radians(20)
+    n_q = 151
+    PKL_FN = '1dat%s.pkl' % my_fmt(20, 0)
+    with open(PKL_FN, 'rb') as f:
+        res_arr = pickle.load(f)
+
+    captures, escapes = [], []
+    for res in res_arr:
+        for eta_cross, capture in res:
+            if capture:
+                captures.append(eta_cross)
+            else:
+                escapes.append(eta_cross)
+
+    fig = plt.figure(figsize=(6, 6))
+    plt.xlabel(r'$\eta$')
+
+    n, bins = np.histogram(captures, bins=40)
+    n2, _ = np.histogram(escapes, bins=bins)
+    ntot = n + n2
+
+    eta_vals = (bins[ :-1] + bins[1: ]) / 2
+    # ax2.plot(eta_vals, n[0] / n[1])
+    nonzero_idxs = np.where(n != 0)[0]
+    plt.plot(eta_vals[nonzero_idxs],
+                 n[nonzero_idxs] / ntot[nonzero_idxs],
+                 'ko', label='Sim')
+
+    # overplot fits
+    fit_anal = get_hop_anal(I, eta_vals, 0)
+    plt.plot(eta_vals, fit_anal, 'r', linewidth=2, label='Theory')
+
+    plt.ylabel(r'$P_{\rm III \to II}$')
+    plt.legend(fontsize=14, loc='lower right')
+    plt.tight_layout()
+    plt.savefig('1hist_toy', dpi=300)
+    plt.close()
+
 if __name__ == '__main__':
-    p = mp.Pool(4)
-    for delta in [0, 0.3, 0.5, 0.7]:
-        run_stats(20, delta, p)
+    # p = mp.Pool(4)
+    # for delta in [0, 0.3, 0.5, 0.7]:
+    #     run_stats(20, delta, p)
+    plot_0()

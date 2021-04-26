@@ -1,7 +1,7 @@
 '''
 plot stable/unstable manifolds
 '''
-from utils import solve_ic, roots, to_cart, to_ang, get_dydt
+from utils import solve_ic, roots, to_cart, to_ang, get_dydt, H, get_grids
 from scipy.interpolate import interp1d
 import os, pickle, lzma
 import numpy as np
@@ -15,8 +15,6 @@ plt.rc('xtick', direction='in', top=True, bottom=True)
 plt.rc('ytick', direction='in', left=True, right=True)
 
 from scipy.optimize import root
-
-
 def plot_manifolds(eta):
     plt_fn = '6manifolds%s' % ('%.2f' % eta).replace('.', '_')
 
@@ -30,10 +28,10 @@ def plot_manifolds(eta):
         np.array([0, np.sin(tide / (eta * np.sin(I))), 0])
     dydt = lambda s: get_dydt(I, eta, tide)(0, s)
     cs4 = root(dydt, _cs4).x
+    cs4_q, cs4_phi = to_ang(*cs4)
 
     def get_displaced(sign_q, sign_phi):
         # sign of sign_q is backwards from what is expected
-        cs4_q, cs4_phi = to_ang(*cs4)
         small = 0.001
         eigen = np.sqrt(eta * np.sin(I))
         return to_cart(cs4_q - small * sign_q,
@@ -55,7 +53,7 @@ def plot_manifolds(eta):
     q1, _phi1 = to_ang(*s1)
     phi1 = np.unwrap(_phi1 + np.pi) - 2 * np.pi
     term1 = np.where(phi1 < 0)[0][0]
-    plt.plot(phi1[ :term1], s1[2, :term1], 'g',
+    plt.plot(phi1[ :term1], s1[2, :term1], 'b--',
              label=r'CS4$_{\rm L}^-$', linewidth=1.5, alpha=0.7)
 
     # forwards from CS4^0
@@ -77,7 +75,7 @@ def plot_manifolds(eta):
     q3, _phi3 = to_ang(*s3)
     phi3 = np.unwrap(_phi3 + np.pi)
     term3 = np.where(phi3 < 0)[0][0]
-    plt.plot(phi3[ :term3], s3[2, :term3], 'k',
+    plt.plot(phi3[ :term3], s3[2, :term3], 'k--',
              label=r'CS4$_{\rm R}^-$', linewidth=1.5, alpha=0.7)
 
     # forwards from CS4^1
@@ -86,7 +84,7 @@ def plot_manifolds(eta):
     q4, _phi4 = to_ang(*s4)
     phi4 = np.unwrap(_phi4 + np.pi)
     term4 = np.where(phi4 < 0)[0][0]
-    plt.plot(phi4[ :term4], s4[2, :term4], 'r',
+    plt.plot(phi4[ :term4], s4[2, :term4], 'k',
              label=r'CS4$_{\rm R}^-$', linewidth=1.5, alpha=0.7)
 
     plt.xlim([0, 2 * np.pi])
@@ -129,30 +127,50 @@ def plot_manifolds(eta):
                      inner_interp_below(phi_zone2),
                      facecolor='r', alpha=a1)
     # plot extension of probabilistic region
-    phi_shift = phi1 + 2 * np.pi
-    next_capture_line = np.where(np.logical_and(
-        phi_shift > 0,
-        phi_shift < 2 * np.pi))
-    plt.plot(phi_shift[next_capture_line], s1[2][next_capture_line],
-             'g', linewidth=1.5, alpha=0.7)
+    # phi_shift = phi1 + 2 * np.pi
+    # next_capture_line = np.where(np.logical_and(
+    #     phi_shift > 0,
+    #     phi_shift < 2 * np.pi))
+    # plt.plot(phi_shift[next_capture_line], s1[2][next_capture_line],
+    #          'b--', linewidth=1.5, alpha=0.7)
     # first, white it out so no double coloring
-    plt.fill_between(phi_shift[next_capture_line][1: -1],
-                     s1[2][next_capture_line][1: -1],
-                     bot_interp(phi_shift[next_capture_line][1: -1]),
-                     facecolor='white')
-    plt.fill_between(phi_shift[next_capture_line][1: -1],
-                     s1[2][next_capture_line][1: -1],
-                     bot_interp(phi_shift[next_capture_line][1: -1]),
-                     facecolor='r', alpha=a2)
+    # plt.fill_between(phi_shift[next_capture_line][1: -1],
+    #                  s1[2][next_capture_line][1: -1],
+    #                  bot_interp(phi_shift[next_capture_line][1: -1]),
+    #                  facecolor='white')
+    # plt.fill_between(phi_shift[next_capture_line][1: -1],
+    #                  s1[2][next_capture_line][1: -1],
+    #                  bot_interp(phi_shift[next_capture_line][1: -1]),
+    #                  facecolor='r', alpha=a2)
     # just plot the line evolved backwards in time in Zone III, should be plenty
     # convincing
-    for idx in range(2, 100):
+    for idx in range(1, 100):
         phi_shift = phi1 + 2 * idx * np.pi
         next_capture_line = np.where(np.logical_and(
             phi_shift > 0,
             phi_shift < 2 * np.pi))
         plt.plot(phi_shift[next_capture_line], s1[2][next_capture_line],
-                 'r', linewidth=1.5 * np.sqrt(2 / idx), alpha=a1)
+                 'r:', linewidth=1.5 * np.sqrt(2 / idx), alpha=a1)
+
+    # plot separatrix
+    x_grid, phi_grid = get_grids()
+    H_grid = H(I, eta, x_grid, phi_grid)
+    H_sep = H(I, eta, np.cos(cs4_q), cs4_phi - np.pi)
+    plt.contour(phi_grid,
+                x_grid,
+                H_grid,
+                levels=[H_sep],
+                colors=['g'],
+                linewidths=3,
+                alpha=0.5,
+                linestyles='solid')
+    # overplot CS4 and location of H = H_sep - \Delta H_-
+    plt.plot(0, np.cos(cs4_q), 'ko', markersize=10)
+    plt.plot(2 * np.pi, np.cos(cs4_q), 'ko', markersize=10)
+    plt.plot(phi1[term1], s1[2, term1], 'k*', markersize=15)
+    plt.plot(phi1[term1] + 2 * np.pi, s1[2, term1], 'k*', markersize=15)
+    plt.plot(phi3[term3], s3[2, term3], 'kx', markersize=15)
+    plt.plot(phi3[term3] + 2 * np.pi, s3[2, term3], 'kx', markersize=15)
 
     plt.xlabel(r'$\phi$')
     plt.ylabel(r'$\cos \theta$')

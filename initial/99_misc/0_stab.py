@@ -15,7 +15,7 @@ plt.rc('xtick', direction='in', top=True, bottom=True)
 plt.rc('ytick', direction='in', left=True, right=True)
 
 I = np.radians(5)
-eta = 0.15
+eta = 0.2
 mu2 = eta * np.cos(I) / (1 + eta * np.sin(I))
 mu4 = eta * np.cos(I) / (1 - eta * np.sin(I))
 eps_crit = eta * np.sin(I) / (1 - (eta * np.cos(I))**2)
@@ -30,9 +30,9 @@ def get_dydt(tide):
         ])
     return dydt
 
-def get_cs2(eps, tol=1e-10, log=False, method='hybr'):
+def get_cs2(eps, eta=eta, tol=1e-10, log=False, method='hybr'):
     cs2 = [np.sqrt(1 - mu2**2), 0, mu2]
-    ret = opt.root(get_dydt(eps), cs2, tol=tol)
+    ret = opt.root(get_dydt(eps), cs2, tol=tol, method=method)
     if log and not ret.success:
         print('get_cs2 did not succeed')
         print(ret)
@@ -79,7 +79,7 @@ def to_cart(q, phi):
 
 def get_cs1(eps, tol=1e-10, log=False, method='hybr'):
     cs1 = [0, 0, 1]
-    ret = opt.root(get_dydt(eps), cs1, tol=tol)
+    ret = opt.root(get_dydt(eps), cs1, tol=tol, method=method)
     if log and not ret.success:
         print('get_cs2 did not succeed')
         print(ret)
@@ -87,7 +87,7 @@ def get_cs1(eps, tol=1e-10, log=False, method='hybr'):
 
 def get_cs3(eps, tol=1e-10, log=False, method='hybr'):
     cs3 = [0, 0, -1]
-    ret = opt.root(get_dydt(eps), cs3, tol=tol)
+    ret = opt.root(get_dydt(eps), cs3, tol=tol, method=method)
     if log and not ret.success:
         print('get_cs2 did not succeed')
         print(ret)
@@ -95,7 +95,7 @@ def get_cs3(eps, tol=1e-10, log=False, method='hybr'):
 
 def get_cs4(eps, tol=1e-10, log=False, method='hybr'):
     cs4 = [-np.sqrt(1 - mu4**2), 0, mu4]
-    ret = opt.root(get_dydt(eps), cs4, tol=tol)
+    ret = opt.root(get_dydt(eps), cs4, tol=tol, method=method)
     if log and not ret.success:
         print('get_cs4 did not succeed')
         print(ret)
@@ -143,17 +143,17 @@ def plot_cs_pts():
 
     fig, (ax1, ax2) = plt.subplots(
         2, 1,
-        figsize=(5, 8),
-        gridspec_kw={'height_ratios': [2, 1]},
+        figsize=(6, 6),
+        gridspec_kw={'height_ratios': [1, 1]},
         sharex=True)
     for ax in [ax1, ax2]:
         # ax.axvline(eps_crit, color='m', label=r'$\epsilon_{c,an}$')
         ax.axvline(eps_crit_num, color='k', ls='--', lw=0.7)
 
     idxs = np.where(eps_vals < eps_crit)
-    ax1.plot(eps_vals, mu1s - 0.8, 'y', label=r'CS1 ($-0.8$)', alpha=0.8)
+    ax1.plot(eps_vals, mu1s - 0.75, 'y', label=r'CS1 ($-0.75$)', alpha=0.8)
     ax1.plot(eps_vals[idxs], mu2s[idxs], 'r', label=r'CS2', alpha=0.8)
-    ax1.plot(eps_vals, mu3s + 1.1, 'm', label=r'CS3 ($+1.1$)', alpha=0.8)
+    ax1.plot(eps_vals, mu3s + 1.15, 'm', label=r'CS3 ($+1.15$)', alpha=0.8)
     ax1.plot(eps_vals[idxs], mu4s[idxs], 'c', label=r'CS4', alpha=0.8)
     ax1.set_ylabel(r'$\cos \theta_{\rm cs}$')
     ax1.legend(fontsize=14)
@@ -180,7 +180,7 @@ def plot_cs_pts():
     # ax2.plot(eps_vals, phi2_th, 'r:')
     # ax2.plot(eps_vals, phi4_th, 'b:')
 
-    ax1.set_title(r'$\eta = %.1f$' % eta)
+    # ax1.set_title(r'$\eta = %.1f$' % eta)
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.02)
     plt.savefig('0_stab.png', dpi=300)

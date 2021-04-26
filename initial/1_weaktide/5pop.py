@@ -301,7 +301,7 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     '''
     plot probabilities of ending up in tCS2 and the obliquities of the two
     '''
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 5), sharex=True)
     # fig.subplots_adjust(hspace=0)
     ax1.scatter(s_c_vals, np.array(counts) / (N_THREADS * N_PTS),
                 c='tab:red')
@@ -333,9 +333,10 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     ax2.plot(s_c_cont, np.degrees(np.arccos(cs2_equil_mu)),
              'tab:red', label='tCE2', lw=2)
     ax2.set_ylabel(r'$\theta$')
-    ax2.set_xlabel(r'$\Omega_{\rm c} / n$')
+    ax2.set_xlabel(r'$\eta_{\rm sync}$')
     ax2.legend()
     plt.tight_layout()
+    fig.subplots_adjust(hspace=0.02)
     plt.savefig('5probs_%d' % np.degrees(I), dpi=400)
     plt.close()
 

@@ -117,7 +117,7 @@ def run_for_tide(tide=1e-3,
 
     # points below the separatrix, where do they converge to?
     below_convs = []
-    colors = ['y', 'r', 'm', 'c']
+    colors = ['y', 'r', 'y', 'c']
     for q, phi, conv_pts, c in zip(qs, phis, conv_data, colors):
         if conv_pts:
             q_plot, phi_plot = np.array(conv_pts).T
@@ -130,7 +130,7 @@ def run_for_tide(tide=1e-3,
         else:
             below_convs.append(0)
         # plot_point(plt.gca(), q, '%so' % c, markersize=8)
-    for idx, c in enumerate(colors):
+    for idx, c in enumerate(colors[ :2]):
         plt.plot(0, -10, '%so' % c, markersize=3, label='CS%d' % (idx + 1))
     plt.ylim([-1, 1])
     plt.legend(fontsize=12, loc='center left', bbox_to_anchor=(1, 0.5))

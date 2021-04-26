@@ -49,7 +49,7 @@ def plot_equils(I, s_c, verbose=True, fn_str='6equils%s'):
 
     plt.xlabel(r'$\Omega_{\rm s} / n$')
     plt.ylabel(r'$\theta$ (deg)')
-    plt.ylim([0, 90])
+    plt.ylim([0, 180])
     if verbose:
         plt.plot(s_tot, np.degrees(cs2_qs), 'r', label='CS2', lw=2.5)
         plt.plot(s_tot[cs1_exist_idx], np.degrees(-cs1_qs[cs1_exist_idx]),
@@ -65,16 +65,16 @@ def plot_equils(I, s_c, verbose=True, fn_str='6equils%s'):
         plt.axvline(s_c / eta_crit(1e-2), c='r', ls=':', lw=1.5)
         plt.axvline(s_c / eta_crit(1e-1), c='r', ls='--', lw=1.5)
         plt.xlim(xlims)
-    plt.plot(s_lt, mu_equil_lt, 'k', label='$\Omega_{\\rm s}\' = 0$', lw=4)
+    plt.plot(s_lt, mu_equil_lt, 'k', label=r'$\dot{\Omega}_{\rm s} = 0$', lw=4)
     plt.plot(s_dq, np.degrees(np.arccos(2 / s_dq)), 'b',
-             label='$\\theta\' = 0$', lw=4)
-    plt.annotate('', xy=(1.5, 45), xytext=(2.5, 65),
+             label=r'$\dot{\theta} = 0$', lw=4)
+    plt.annotate('', xy=(1.5, 90), xytext=(2.5, 120),
                  arrowprops={'fc': 'g', 'width': 10, 'headwidth': 25})
-    plt.annotate('', xy=(0.8, 10), xytext=(0.3, 20),
+    plt.annotate('', xy=(0.8, 10), xytext=(0.3, 30),
                  arrowprops={'fc': 'g', 'width': 10, 'headwidth': 25})
     plt.annotate('', xy=(2.5, 20), xytext=(3.0, 10),
                  arrowprops={'fc': 'g', 'width': 10, 'headwidth': 25})
-    plt.legend(loc='upper right', bbox_to_anchor=(1, 0.93), fontsize=14, ncol=2)
+    plt.legend(loc='upper left', bbox_to_anchor=(0.15, 1), fontsize=14)
 
     dS_interp = interp1d(s_lt, mu_equil_lt)
     CS2_interp = interp1d(s_tot, np.degrees(cs2_qs))
@@ -182,14 +182,14 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
 if __name__ == '__main__':
     eps = 1e-3
     I = np.radians(5)
-    # plot_equils(I, 0.2)
+    plot_equils(I, 0.2)
     # plot_equils(I, 0.2, verbose=False, fn_str='6equils_half%s')
     # plot_equils(I, 0.06)
     # plot_equils(I, 0.6)
     # plot_phop(I, 0.2)
-    plot_equil_dist_anal(I, 0.06, 10, eps)
-    plot_equil_dist_anal(I, 0.2, 10, eps)
-    plot_equil_dist_anal(I, 0.7, 10, eps)
+    # plot_equil_dist_anal(I, 0.06, 10, eps)
+    # plot_equil_dist_anal(I, 0.2, 10, eps)
+    # plot_equil_dist_anal(I, 0.7, 10, eps)
 
     # test cases
     # print(get_cross_dat(I, 0.7, 10, 1e-3, 8000, 0.9, np.pi)) # no cross
