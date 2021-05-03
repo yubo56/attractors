@@ -1,13 +1,13 @@
 '''
 plot distributions of s, q_f for the three populations Z1/Z2/Z3-cross/Z3-hop
 '''
-import os
+import os, pickle, lzma
 import numpy as np
 from multiprocessing import Pool
 import scipy.optimize as opt
+from scipy.interpolate import interp1d
 from scipy import integrate
 
-import pickle
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -234,14 +234,14 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     mu2 = [ic[0] for ic in IC_eq2]
     phi1 = [ic[1] for ic in IC_eq1]
     phi2 = [ic[1] for ic in IC_eq2]
-    ax_scatter.scatter(phi1, mu1, c='tab:olive', s=ms)
-    ax_scatter.scatter(phi2, mu2, c='tab:red', s=ms)
-    ax_scatter.set_xlabel(r'$\phi_{\rm i}$')
-    ax_scatter.set_ylabel(r'$\cos \theta_{\rm i}$')
+    ax_scatter.scatter(phi1, mu1, c='orange', s=ms)
+    ax_scatter.scatter(phi2, mu2, c='tab:green', s=ms)
+    ax_scatter.set_xlabel(r'$\phi_{\rm i}$ (deg)', fontsize=16)
+    ax_scatter.set_ylabel(r'$\cos \theta_{\rm i}$', fontsize=16)
     ylim = ax_scatter.get_ylim()
-    ax_scatter.scatter(3, -10, c='tab:olive',
+    ax_scatter.scatter(3, -10, c='orange',
                        label='tCE1', s=20)
-    ax_scatter.scatter(3, -10, c='tab:red', label='tCE2', s=20)
+    ax_scatter.scatter(3, -10, c='tab:green', label='tCE2', s=20)
     ax_scatter.legend(loc='lower left', fontsize=14)
     ax_scatter.set_ylim(ylim)
     # ax_scatter.set_title(r'$s_c = %.2f, I = %d^\circ$' % (s_c, np.degrees(I)))
@@ -263,11 +263,20 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     ax_scatter.plot(phi_sep, mu_sep_bot, 'k', lw=lw)
     ax_scatter.plot(phi_sep, mu_sep_top, 'k', lw=lw)
     ax_scatter.set_xticks([0, np.pi, 2 * np.pi])
-    ax_scatter.set_xticklabels([r'$0$', r'$\pi$', r'$2\pi$'])
+    ax_scatter.set_xticklabels([r'$0$', r'$180$', r'$360$'])
+
+    ax_scatter.text(np.pi, mu4, 'II', backgroundcolor=(1, 1, 1, 0.9),
+                    fontsize=14, ha='center', va='center')
+    ax_scatter.text(np.pi, np.max(mu_sep_top) + 0.1, 'I',
+                    backgroundcolor=(1, 1, 1, 0.9), fontsize=14, ha='center',
+                    va='center')
+    ax_scatter.text(np.pi, np.min(mu_sep_bot) - 0.1, 'III',
+                    backgroundcolor=(1, 1, 1, 0.9), fontsize=14, ha='center',
+                    va='center')
 
     # plot hist vs mu0 (significant blending, okay)
     n, bins, _ = ax_hist.hist(
-        [mu2, mu1], bins=60, color=['tab:red', 'tab:olive'],
+        [mu2, mu1], bins=60, color=['tab:green', 'orange'],
         orientation='horizontal', stacked=True)
     ax_hist.set_ylim(ax_scatter.get_ylim())
 
@@ -277,7 +286,7 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     # try to overplot the semi-analytical simulations I ran
     pkl_fn = '6pc_dist%s.pkl' % s_c_str(s_c)
     if os.path.exists(pkl_fn):
-        fig = plt.figure(figsize=(6, 6))
+        fig = plt.figure(figsize=(6, 4))
         n_mu = 501
         n_phi = 50
         mu_vals =  np.linspace(-0.99, 0.99, n_mu)
@@ -294,6 +303,9 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
         plt.xlabel(r'$\cos \theta_{\rm i}$')
         plt.ylabel(r'tCE2 Probability')
         plt.tight_layout()
+        s_c_text = '%.1f' % s_c if s_c > 0.1 else '%.2f' % s_c
+        plt.text(1, 1, r'$\eta_{\rm sync} = %s$' % s_c_text,
+                 ha='right', va='top', fontsize=16)
         plt.savefig('5pc_fits%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
         plt.close()
 
@@ -301,20 +313,43 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     '''
     plot probabilities of ending up in tCS2 and the obliquities of the two
     '''
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 5), sharex=True)
+    fig, (ax2, ax1) = plt.subplots(
+        2, 1, figsize=(7, 6),
+        gridspec_kw={'height_ratios': [2, 3]},
+        sharex=True)
     # fig.subplots_adjust(hspace=0)
-    ax1.scatter(s_c_vals, np.array(counts) / (N_THREADS * N_PTS),
-                c='tab:red')
+    probs_dat = np.array(counts) / (N_THREADS * N_PTS)
     ax1.set_ylim([0, 1])
     ax1.set_ylabel('tCE2 Probability')
     s_c_dense = np.linspace(min(s_c_vals), max(s_c_vals), 200)
-    # A2s = np.array([get_areas_ward(I, s_c, s0)[1] for s_c in s_c_dense])
-    # ax1.plot(s_c_dense, A2s / (4 * np.pi), 'r')
+    A2s = np.array([get_areas_ward(I, s_c, s0)[1] for s_c in s_c_dense])
+    A3s = np.array([get_areas_ward(I, s_c, s0)[2] for s_c in s_c_dense])
+    ax1.fill_between(s_c_dense, A2s / (4 * np.pi), facecolor='tab:blue', alpha=0.2)
+    A2_interp = interp1d(s_c_dense, A2s / (4 * np.pi))
+    A3_interp = interp1d(s_c_dense, A3s / (4 * np.pi))
+    idxs = np.argsort(s_c_vals)
+    A2frac = A2_interp(np.array(s_c_vals))
+    A3frac = A3_interp(np.array(s_c_vals))
+    ax1.fill_between(np.array(s_c_vals)[idxs],
+                     A2frac[idxs],
+                     np.minimum(probs_dat, A2frac + A3frac)[idxs],
+                     facecolor='tab:green',
+                     alpha=0.2)
+    ax1.fill_between(np.array(s_c_vals)[idxs],
+                     np.minimum(probs_dat, A2frac + A3frac)[idxs],
+                     probs_dat[idxs],
+                     facecolor='orange',
+                     alpha=0.2)
+    ax1.text(2.0, 0.05, 'Inititially zone II', fontsize=14, ha='right')
+    ax1.text(2.0, 0.5, 'Initially zone III', fontsize=14, ha='right')
+    ax1.text(2.0, 0.9, 'Initially zone I', fontsize=14, ha='right')
 
     # calculate locations of equilibria in ~continuous way
     s_c_crit = get_etac(I) # etac = s_c_crit / (s = 1)
+    ax1.axvline(s_c_crit, c='k', lw=1.0, ls='--')
+    ax2.axvline(s_c_crit, c='k', lw=1.0, ls='--')
     s_c_cont = np.concatenate((
-        np.linspace(min(s_c_vals), s_c_crit * 0.8, 30),
+        np.linspace(min(s_c_vals) / 10, s_c_crit * 0.8, 30),
         np.linspace(s_c_crit * 0.8, s_c_crit * 0.99, 30),
         np.linspace(s_c_crit * 1.01, max(s_c_vals), 30)
     ))
@@ -329,59 +364,75 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     cs1_idxs = np.where(cs1_equil_mu > -1)[0]
     ax2.plot(np.array(s_c_cont)[cs1_idxs],
              np.degrees(np.arccos(cs1_equil_mu[cs1_idxs])),
-             'tab:olive', label='tCE1', lw=2)
+             'orange', label='tCE1', lw=2)
     ax2.plot(s_c_cont, np.degrees(np.arccos(cs2_equil_mu)),
-             'tab:red', label='tCE2', lw=2)
+             'tab:green', label='tCE2', lw=2)
     ax2.set_ylabel(r'$\theta$')
-    ax2.set_xlabel(r'$\eta_{\rm sync}$')
-    ax2.legend()
+
+    # eta_arr = (s_c_cont * np.sin(I) + np.sqrt(
+    #         s_c_cont**2 * np.sin(I)**2
+    #         + 8 * np.cos(I) * s_c_cont)) / (4 * np.cos(I))
+    # tce2_anal = np.degrees(np.arccos(
+    #     eta_arr * np.cos(I) / (1 + eta_arr * np.sin(I))
+    #     ))
+    # eta_arr = np.sqrt(s_c_cont / (2 * np.cos(I)))
+    # tce2_anal = np.degrees(np.arccos(
+    #     eta_arr * np.cos(I)
+    #     ))
+    # ax2.plot(s_c_cont, tce2_anal, 'k--', lw=1.5)
+    ax2.set_ylim(0, 90)
+    ax2.set_yticks([0, 45, 90])
+    ax2.set_yticklabels(['0', '45', '90'])
+    ax1.set_xlim(left=-0.1)
+
+    ax1.set_xlabel(r'$\eta_{\rm sync}$')
+    ax1.scatter(s_c_vals, probs_dat, c='tab:red')
+    ax2.legend(ncol=2, fontsize=14, loc='upper right')
     plt.tight_layout()
-    fig.subplots_adjust(hspace=0.02)
-    plt.savefig('5probs_%d' % np.degrees(I), dpi=400)
+    fig.subplots_adjust(hspace=0.1)
+    plt.savefig('5probs_%d' % np.degrees(I), dpi=300)
     plt.close()
 
 def run():
+    s_c_vals_20 = [
+        # 0.7,
+        0.2,
+        0.06,
+        # 2.0,
+        # 1.2,
+        # 1.0,
+        # 0.65,
+        # 0.6,
+        # 0.55,
+        0.5,
+        # 0.45,
+        # 0.4,
+        # 0.35,
+        # 0.3,
+        # 0.25,
+    ]
+    s_c_vals_5 = [
+        # 0.7,
+        # 0.2,
+        # 0.06,
+        # 2.0,
+        # 1.2,
+        # 1.0,
+        # 0.85,
+        # 0.8,
+        # 0.75,
+        # 0.65,
+        # 0.6,
+        # 0.55,
+        # 0.5,
+        # 0.45,
+        # 0.4,
+        # 0.35,
+        # 0.3,
+        # 0.25,
+    ]
     eps = 1e-3
     s0 = 10
-
-    s_c_vals_20 = [
-        0.7,
-        0.2,
-        0.06,
-        2.0,
-        1.2,
-        1.0,
-        0.65,
-        0.6,
-        0.55,
-        0.5,
-        0.45,
-        0.4,
-        0.35,
-        0.3,
-        0.25,
-    ]
-
-    s_c_vals_5 = [
-        0.7,
-        0.2,
-        0.06,
-        2.0,
-        1.2,
-        1.0,
-        0.85,
-        0.8,
-        0.75,
-        0.65,
-        0.6,
-        0.55,
-        0.5,
-        0.45,
-        0.4,
-        0.35,
-        0.3,
-        0.25,
-    ]
 
     for I, s_c_vals in [
             [np.radians(5), s_c_vals_5],
@@ -414,10 +465,119 @@ def run():
             counts.append(len(IC_eq2))
             # plot_final_dists(I, s_c, s0, trajs)
             plot_eq_dists(I, s_c, s0, np.array(IC_eq1), np.array(IC_eq2))
+
+def plot_all_cumprobs():
+    s_c_vals_20 = [
+        0.7,
+        0.2,
+        0.06,
+        2.0,
+        1.2,
+        1.0,
+        0.65,
+        0.6,
+        0.55,
+        0.5,
+        0.45,
+        0.4,
+        0.35,
+        0.3,
+        0.25,
+    ]
+    s_c_vals_5 = [
+        0.7,
+        0.2,
+        0.06,
+        2.0,
+        1.2,
+        1.0,
+        0.85,
+        0.8,
+        0.75,
+        0.65,
+        0.6,
+        0.55,
+        0.5,
+        0.45,
+        0.4,
+        0.35,
+        0.3,
+        0.25,
+    ]
+    eps = 1e-3
+    s0 = 10
+
+    for Id, s_c_vals in [
+            [5, s_c_vals_5],
+            [20, s_c_vals_20],
+    ]:
+        I = np.radians(Id)
+        pkl_fn = '5cum_probs_%d.pkl' % Id
+        if not os.path.exists(pkl_fn):
+            print('Running %s' % pkl_fn)
+            counts = []
+            for s_c in s_c_vals:
+                mu_cs_cache = []
+                IC_eq1 = []
+                IC_eq2 = []
+                trajs = run_sim(I, eps, s_c, s0=s0, num_threads=N_THREADS)
+                count = 0
+                for outcome_trajs in trajs:
+                    for mu, s, mu0, phi0 in outcome_trajs:
+                        mu_f = mu[-1]
+                        for s_key, mu_cs_cand in mu_cs_cache:
+                            if abs(s_key - s[-1]) < 1e-3:
+                                mu_cs = mu_cs_cand
+                                break
+                        else:
+                            mu_cs = np.cos(roots(I, s_c, s[-1]))
+                            mu_cs_cache.append((s[-1], mu_cs))
+                        if len(mu_cs) == 4 and abs(mu_f - mu_cs[0]) < 1e-3:
+                            IC_eq1.append((mu0, phi0))
+                        elif len(mu_cs) == 2 or\
+                            (len(mu_cs) == 4 and abs(mu_f - mu_cs[1]) < 1e-3):
+                            IC_eq2.append((mu0, phi0))
+                        else:
+                            print('Unable to classify (s_f, mu_f):', s[-1], mu_f)
+                counts.append(len(IC_eq2))
+            with lzma.open(pkl_fn, 'wb') as f:
+                pickle.dump(counts, f)
+        else:
+            with lzma.open(pkl_fn, 'rb') as f:
+                print('Loading %s' % pkl_fn)
+                counts = pickle.load(f)
         plot_cum_probs(I, s_c_vals, s0, counts)
+
+def plot_anal_cs_equils(I=np.radians(20), s_c=0.2):
+    s_c_crit = get_etac(I)
+    s_c_cont = np.geomspace(s_c_crit / 100, 3, 100)
+    cs1_equil_mu = -np.ones_like(s_c_cont) # -1 = does not exist
+    cs2_equil_mu = np.zeros_like(s_c_cont)
+    for idx, s_c in enumerate(s_c_cont):
+        cs1_crit_mu, cs2_crit_mu = get_crit_mus(I, s_c)
+        cs2_equil_mu[idx] = cs2_crit_mu
+        if cs1_crit_mu is not None:
+            cs1_equil_mu[idx] = cs1_crit_mu
+    eta_arr = (s_c_cont * np.sin(I) + np.sqrt(
+            s_c_cont**2 * np.sin(I)**2
+            + 8 * np.cos(I) * s_c_cont)) / (4 * np.cos(I))
+    plt.semilogx(s_c_cont, np.degrees(np.arccos(
+        eta_arr * np.cos(I) / (1 + eta_arr * np.sin(I))
+        )), 'k', lw=3)
+    cs1_idxs = np.where(cs1_equil_mu > -1)[0]
+    plt.plot(np.array(s_c_cont)[cs1_idxs],
+             np.degrees(np.arccos(cs1_equil_mu[cs1_idxs])),
+             'orange', label='tCE1', lw=2)
+    eta_num = s_c_cont * ((1 + cs2_equil_mu**2) / (2 * cs2_equil_mu))
+    plt.plot(s_c_cont, np.degrees(np.arccos(cs2_equil_mu)),
+             'tab:green', label='tCE2', lw=2)
+    plt.savefig('5anal_cs_equils', dpi=300)
+    plt.close()
 
 if __name__ == '__main__':
     run()
+    plot_all_cumprobs()
+    # plot_anal_cs_equils()
 
     # bunch of debugging cases...
     # seems to be the "top edge too close to 1 case", cannot integrate well

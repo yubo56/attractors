@@ -1414,6 +1414,7 @@ should not be too small to forbid separatrix crossings. Note that $3 / Q' = 2k_2
 can then write down the following dimensionless scalings (checked against the
 dissipating disks paper w/ Dong):
 % in paper 1, s_c = 2.04e4, for m_p = 0.01 Msun, a1=5AU, rho1=1g/cm^3, ap=30AU
+% NB: ta has masses flipped compared to Lai 2012, like Millholland 2020
 \begin{align}
     \frac{s_c}{\Omega_1} &= \frac{
         \frac{3m_p}{4M_\star}\p{\frac{a_1}{\tilde{a}_{\rm p}}}^3
@@ -1741,6 +1742,79 @@ remains forever stable. We can also numerically validate this via
 
 We can illustrate the trajectories at $\phi_{2, \epsilon}$ when turning on
 $\epsilon$ by examining \lstinline{99_misc/3_trajs.py}.
+
+\subsubsection{Physical Numbers}
+
+We focus on the USP regime. In the notation of the paper, we need
+\begin{align}
+    1
+        &\approx \frac{2n / \Omega_{\rm s} - \cos \theta
+            }{\abs{g}t_{\rm a}\sin I}.
+\end{align}
+One tricky thing about this calculation is that $\eta$ depends on $\Omega_{\rm
+s}$ which depends on $\cos \theta$ which depends on $\eta$:
+\begin{align}
+    \eta &= \eta_{\rm sync} \frac{n}{\Omega_{\rm s}},\\
+    \frac{n}{\Omega_{\rm s}} &= \frac{1 + \cos^2\theta}{2 \cos \theta},\\
+    \cos \theta &\approx \frac{\eta \cos I}{1 + \eta \sin I}.
+\end{align}
+This requires that
+\begin{align}
+    \frac{\eta}{\eta_{\rm sync}} &\approx \frac{1 + \eta \sin I
+        }{2\eta \cos I},\\
+    2\eta^2 \cos I &\approx \eta_{\rm sync} + \eta_{\rm sync}\eta \sin I,\\
+    \eta &= \frac{\eta_{\rm sync}\sin I + \sqrt{
+        \eta_{\rm sync}^2 \sin^2 I + 8\cos I \eta_{\rm sync}}}{
+            4 \cos I}.
+\end{align}
+It proves sufficient to use the simpler form of this:
+\begin{align}
+    \eta &\approx \sqrt{\frac{\eta_{\rm sync}}{2\cos I}},\\
+    t_{\rm a, c} &= \frac{2n / \Omega_{\rm s}}{\abs{g}\sin I},\\
+        &= \frac{2}{\abs{g}\sin I\sqrt{2\eta_{\rm sync} \cos I}}.
+\end{align}
+Thus, we can continue to evaluate
+\begin{align}
+    1
+        &\approx \frac{2\eta / \eta_{\rm sync} - \eta \cos I
+            }{\abs{g}t_{\rm a}\sin I},\\
+        &\approx \frac{1}{\sin I\sqrt{\eta_{\rm sync}\cos I}}
+            0.003 \frac{1}{\cos I}\p{\frac{2 k_2 / Q}{10^{-3}}}
+                \p{\frac{m_{\rm p}}{M_{\rm J}}}^{-1}
+                \p{\frac{a_{\rm p}}{5\;\mathrm{AU}}}^{3}
+                \p{\frac{a}{0.4\;\mathrm{AU}}}^{-6}
+                \p{\frac{\rho}{3\;\mathrm{g/cm^3}}}^{-1}
+                \p{\frac{M_{\star}}{M_{\odot}}}^2,\\
+        &\approx \frac{0.005}{\sin I \cos^{3/2}I}
+            \p{\frac{k}{k_q}}^{-1/2}
+            \p{\frac{2 k_2 / Q}{10^{-3}}}
+            \p{\frac{m_{\rm p}}{M_{\rm J}}}^{-3/2}
+            \p{\frac{a_{\rm p}}{5\;\mathrm{AU}}}^{9/2}
+            \p{\frac{a}{0.4\;\mathrm{AU}}}^{-9}
+            \p{\frac{\rho}{3\;\mathrm{g/cm^3}}}^{-3/2}
+            \p{\frac{M_{\star}}{M_{\odot}}}^3,\\
+        &\approx \frac{3 \times 10^{-7}}{\sin I \cos^{3/2}I}
+            \p{\frac{k}{k_q}}^{-1/2}
+            \p{\frac{2 k_2 / Q}{10^{-3}}}
+            % 1/5000
+            \p{\frac{m_{\rm p}}{M_{\rm \oplus}}}^{-3/2}
+            % 1e-9
+            \p{\frac{a_{\rm p}}{0.05\;\mathrm{AU}}}^{9/2}
+            % 1e9
+            \p{\frac{a}{0.04\;\mathrm{AU}}}^{-9}
+            % 1/3
+            \p{\frac{\rho}{6\;\mathrm{g/cm^3}}}^{-3/2}
+            \p{\frac{M_{\star}}{M_{\odot}}}^3,\\
+    a_{\rm break}
+        &\approx 0.01\;\mathrm{AU}
+            \p{\frac{k}{k_q}}^{-1/18}
+            \p{\frac{2 k_2 / Q}{10^{-3}}}^{1/9}
+            \p{\frac{m_{\rm p}}{M_{\rm \oplus}}}^{-1/6}
+            \p{\frac{a_{\rm p}}{0.05\;\mathrm{AU}}}^{1/2}
+            \p{\frac{\rho}{6\;\mathrm{g/cm^3}}}^{-1/6}
+            \p{\frac{M_{\star}}{M_{\odot}}}^{1/3}.
+\end{align}
+for $I = 5^\circ$. This seems a little bit on the low end.
 
 \subsection{Dissipating Disk: $\theta_f$ Distribution}
 

@@ -106,6 +106,45 @@ def plot_cs(I=np.radians(5)):
     plt.savefig('2_cs_locs_flip', dpi=400)
     plt.clf()
 
+def plot_cs_phi(I=np.radians(5)):
+    etas, cs_vals, etas_four, etac = get_cs(I)
+
+    def fix_d(rads):
+        if rads[0] < 0:
+            return -np.degrees(rads)
+        return np.degrees(rads)
+    plt.semilogx(etas_four, fix_d(cs_vals[0]), 'orange', lw=LW)
+    plt.semilogx(etas, fix_d(cs_vals[1]), 'tab:green', lw=LW)
+    plt.semilogx(etas, fix_d(cs_vals[2]), 'tab:blue', lw=LW)
+    plt.semilogx(etas_four, fix_d(cs_vals[3]), 'tab:purple', lw=LW)
+    fs = 16
+    plt.text(etas_four[0] * 1.1, fix_d(cs_vals[0])[0] + 5, r'CS1 ($\phi = 0$)',
+             fontsize=fs, color='orange', va='bottom')
+    plt.text(etas_four[0] * 1.1, fix_d(cs_vals[3])[0], r'CS4 ($\phi = 0$)',
+             fontsize=fs, color='tab:purple', va='bottom')
+    plt.text(etas[-1] / 1.1, fix_d(cs_vals[1])[-1] + 8, r'CS2 ($\phi = \pi$)',
+             fontsize=fs, ha='right', color='tab:green', va='bottom')
+    plt.text(etas[-1] / 1.1, fix_d(cs_vals[2])[-1] + 5, r'CS3 ($\phi = 0$)',
+             fontsize=fs, ha='right', color='tab:blue', va='bottom')
+    plt.xlabel(r'$\eta$', fontsize=22)
+    plt.ylabel(r'$\theta$ (deg)', fontsize=22)
+    plt.xlim([min(etas), max(etas)])
+    plt.yticks([0, 90, 180],
+               [r'$0$', r'$90$', r'$180$'])
+    # place upper right corner of legend flush against eta -> infinity asymptote
+    # (np.degrees(I))
+    ymin, ymax = plt.ylim()
+    y_perc = (np.degrees(I) - ymin) / (ymax - ymin)
+    plt.axvline(etac, c='k', lw='0.8', ls='dashed')
+    axtwin = plt.gca().twinx()
+    axtwin.set_ylim([ymin, ymax])
+    axtwin.set_yticks([180 - np.degrees(I), np.degrees(I)])
+    axtwin.set_yticklabels([r'$%d$' % (-np.degrees(I) + 180),
+                            r'$%d$' % np.degrees(I)])
+    plt.tight_layout()
+    plt.savefig('2_cs_locs_phi', dpi=300)
+    plt.close()
+
 def plot_eigens(I=np.radians(5)):
     etas, cs_vals, etas_four, etac = get_cs(I, num_pts=200)
     def lambda2(eta, q, sign):
@@ -117,22 +156,22 @@ def plot_eigens(I=np.radians(5)):
     plt.semilogx(etas_four,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas_four, cs_vals[0])],
-                 'y', label='1', lw=LW)
+                 'orange', label='CS1', lw=LW)
     plt.semilogx(etas,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas, cs_vals[1])],
-                  'r', label='2', lw=LW)
+                 'tab:green', label='CS2', lw=LW)
     plt.semilogx(etas,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas, cs_vals[2])],
-                  'm', label='3', lw=LW)
+                 'tab:blue', label='CS3', lw=LW)
     plt.semilogx(etas_four,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas_four, cs_vals[3])],
-                  'c', label='4', lw=LW)
+                 'tab:purple', label='CS4', lw=LW)
     # plt.yscale('symlog', linthreshy=1e-5)
     plt.xlabel(r'$\eta$')
-    plt.ylabel(r'$\lambda^2/ (1 + \eta^2)$')
+    plt.ylabel(r'$\lambda_0^2/ (1 + \eta^2)$')
     legend = plt.legend(loc='upper left', fontsize=14,
                bbox_to_anchor=(0.5, 0.7))
     plt.xlim([min(etas), max(etas)])
@@ -144,46 +183,29 @@ def plot_eigens(I=np.radians(5)):
 
     # add plots for other values of phi
     legend.remove()
-    plt.legend(loc='upper right', fontsize=12, ncol=2,
-               bbox_to_anchor=(plt.xlim()[1], 0),
+    plt.legend(loc='center left', fontsize=14, ncol=1,
+               bbox_to_anchor=(etac, -1),
                bbox_transform=plt.gca().transData)
     lw = 0.4 * LW
     plt.semilogx(etas_four,
                  [lambda2(e, q, -1 / 2)
                   for e, q in zip(etas_four, cs_vals[0])],
-                 'y--', lw=lw, alpha=0.5)
+                 color='orange', ls='--', lw=lw, alpha=0.5)
     plt.semilogx(etas,
                  [lambda2(e, q, -1 / 2)
                   for e, q in zip(etas, cs_vals[1])],
-                  'r--', lw=lw, alpha=0.5)
+                 color='tab:green', ls='--', lw=lw, alpha=0.5)
     plt.semilogx(etas,
                  [lambda2(e, q, -1 / 2)
                   for e, q in zip(etas, cs_vals[2])],
-                  'm--', lw=lw, alpha=0.5)
+                 color='tab:blue', ls='--', lw=lw, alpha=0.5)
     plt.semilogx(etas_four,
                  [lambda2(e, q, -1 / 2)
                   for e, q in zip(etas_four, cs_vals[3])],
-                  'c--', lw=lw, alpha=0.5)
-    # plt.semilogx(etas_four,
-    #              [lambda2(e, q, -np.sqrt(3) / 2)
-    #               for e, q in zip(etas_four, cs_vals[0])],
-    #              'y:', lw=lw, alpha=0.5)
-    # plt.semilogx(etas,
-    #              [lambda2(e, q, -np.sqrt(3) / 2)
-    #               for e, q in zip(etas, cs_vals[1])],
-    #              'r:', lw=lw, alpha=0.5)
-    # plt.semilogx(etas,
-    #              [lambda2(e, q, -np.sqrt(3) / 2)
-    #               for e, q in zip(etas, cs_vals[2])],
-    #              'm:', lw=lw, alpha=0.5)
-    # plt.semilogx(etas_four,
-    #              [lambda2(e, q, -np.sqrt(3) / 2)
-    #               for e, q in zip(etas_four, cs_vals[3])],
-    #              'c:', lw=lw, alpha=0.5)
-    plt.yscale('symlog', linthresh=0.1)
+                 color='tab:purple', ls='--', lw=lw, alpha=0.5)
     plt.tight_layout()
     plt.savefig('2_lambdas_full.png', dpi=300)
-    plt.clf()
+    plt.close()
 
 def get_xy(angle, mag=1):
     return 1 - mag * np.sin(np.radians(angle)), mag * np.cos(np.radians(angle))
@@ -367,6 +389,7 @@ def plot_nonad_diagram():
 
 if __name__ == '__main__':
     # plot_cs(np.radians(5))
-    plot_eigens(np.radians(5))
+    plot_cs_phi(np.radians(20))
+    plot_eigens(np.radians(20))
     # plot_3vec()
     # plot_nonad_diagram()

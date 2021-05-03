@@ -32,7 +32,7 @@ def run_single(I, tf, eta0, q0, delta):
 
 def stats_runner(I, q0, delta):
     tf = 3000
-    n_eta = 201
+    n_eta = 61
 
     def result_single(tf, eta0):
         ret = run_single(I, tf, eta0, q0, delta)
@@ -205,13 +205,12 @@ def get_hop_traj(I, eta_i, delta):
     bot = integrate.simps(bot_vals, x=phi_vals)
     return (bot - top) / bot
 
-def run_stats(I_deg, delta, p=None):
+def run_stats(I_deg, delta, p=None, n_q=151, pkl_template='1dat%s.pkl'):
     I = np.radians(I_deg)
-    n_q = 151
 
-    PKL_FN = '1dat%s.pkl' % my_fmt(I_deg, delta)
+    PKL_FN = pkl_template % my_fmt(I_deg, delta)
     if not os.path.exists(PKL_FN):
-        q_vals = -np.pi / 2 - np.linspace(0.1, 0.3, n_q)
+        q_vals = -np.pi / 2 - np.linspace(0.3, 0.4, n_q)
 
         if p:
             res_arr = p.starmap(stats_runner, [(I, q0, delta) for q0 in q_vals])
@@ -266,10 +265,9 @@ def run_stats(I_deg, delta, p=None):
                 dpi=400)
     plt.close(fig)
 
-def plot_0():
+def plot_0(n_q=151):
     I = np.radians(20)
-    n_q = 151
-    PKL_FN = '1dat%s.pkl' % my_fmt(20, 0)
+    PKL_FN = '1dat_many%s.pkl' % my_fmt(20, 0)
     with open(PKL_FN, 'rb') as f:
         res_arr = pickle.load(f)
 
@@ -306,7 +304,8 @@ def plot_0():
     plt.close()
 
 if __name__ == '__main__':
-    # p = mp.Pool(4)
+    p = mp.Pool(8)
     # for delta in [0, 0.3, 0.5, 0.7]:
     #     run_stats(20, delta, p)
-    plot_0()
+    run_stats(20, 0, p, pkl_template='1dat_many%s.pkl', n_q=1000)
+    plot_0(n_q=1000)

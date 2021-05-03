@@ -117,7 +117,8 @@ def run_for_tide(tide=1e-3,
 
     # points below the separatrix, where do they converge to?
     below_convs = []
-    colors = ['y', 'r', 'y', 'c']
+    # HACK HACK everything but CS1/2 are green as well
+    colors = ['orange', 'tab:green', 'orange', 'tab:purple']
     for q, phi, conv_pts, c in zip(qs, phis, conv_data, colors):
         if conv_pts:
             q_plot, phi_plot = np.array(conv_pts).T
@@ -125,19 +126,27 @@ def run_for_tide(tide=1e-3,
             phis_plot = get_phis(q_plot, phi_plot)
             plt.plot(phis_plot,
                      np.cos(q_plot),
-                     '%so' % c,
-                     markersize=1)
+                     mfc=c, mec=c, marker='o', ls='',
+                     markersize=2)
         else:
             below_convs.append(0)
         # plot_point(plt.gca(), q, '%so' % c, markersize=8)
     for idx, c in enumerate(colors[ :2]):
-        plt.plot(0, -10, '%so' % c, markersize=3, label='CS%d' % (idx + 1))
+        plt.plot(0, -10, c=c, marker='o', ls='',
+                 markersize=5, label='CS%d' % (idx + 1))
     plt.ylim([-1, 1])
-    plt.legend(fontsize=12, loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.legend(fontsize=16, loc='center left', bbox_to_anchor=(1, 0.5))
     plt.ylabel(r'$\cos \theta_0$')
-    plt.xlabel(r'$\phi_0$')
+    plt.xlabel(r'$\phi_0$ (deg)')
     plt.xticks([0, np.pi, 2 * np.pi],
-               ['0', r'$\pi$', r'$2\pi$'])
+               ['0', r'$180$', r'$360$'])
+    plt.text(np.pi, np.cos(qs[1]), 'II', backgroundcolor=(1, 1, 1, 0.9),
+             ha='center', va='center')
+    sepwidth = 2 * np.sqrt(eta * np.sin(I))
+    plt.text(np.pi, np.cos(qs[1]) + 1.2 * sepwidth, 'I',
+             backgroundcolor=(1, 1, 1, 0.9), ha='center', va='center')
+    plt.text(np.pi, np.cos(qs[1]) - 1.2 * sepwidth, 'III',
+             backgroundcolor=(1, 1, 1, 0.9), ha='center', va='center')
 
     x_grid, phi_grid = get_grids()
     H_grid = H(I, eta, x_grid, phi_grid)

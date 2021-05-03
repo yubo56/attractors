@@ -260,6 +260,8 @@ def get_mu_equil(s):
     '''
     solve quadratic mu / (1 + mu^2) = s / 2
     assumes s <= 1 everywhere, else will fail
+
+    1 + mu^2 - 2mu / s = 0
     '''
     if s > 1:
         raise ValueError('Cannot get equil mu for s > 1')
@@ -279,7 +281,7 @@ def get_crit_mus(I, s_c):
         mu_cs = np.cos(roots(I, s_c, s))
         mu_equil = get_mu_equil(s)
         return mu_cs[0] - mu_equil
-    cs2_equil_mu = opt.bisect(dmu_cs2_equil, 0.1, 1)
+    cs2_equil_mu = get_mu_equil(opt.bisect(dmu_cs2_equil, 0.1, 1))
     # if CS1 just before disappearing is below mu_equil, we won't have an
     # intersection
     s_etac = s_c / (0.9999 * s_c_crit)
@@ -288,7 +290,10 @@ def get_crit_mus(I, s_c):
         cs1_crit_mu = np.cos(roots(I, s_c, s_etac)[0])
         mu_equil_etac = get_mu_equil(s_etac)
         if cs1_crit_mu > mu_equil_etac:
-            return opt.bisect(dmu_cs1_equil, s_etac, 1), cs2_equil_mu
+            return (
+                get_mu_equil(opt.bisect(dmu_cs1_equil, s_etac, 1)),
+                cs2_equil_mu,
+            )
     return None, cs2_equil_mu
 
 def get_eta_cutoff(I):

@@ -14,10 +14,10 @@ plt.rc('lines', lw=2.5)
 plt.rc('xtick', direction='in', top=True, bottom=True)
 plt.rc('ytick', direction='in', left=True, right=True)
 
-I = np.radians(5)
+I = np.radians(20)
 eta = 0.2
-mu2 = eta * np.cos(I) / (1 + eta * np.sin(I))
-mu4 = eta * np.cos(I) / (1 - eta * np.sin(I))
+mu2 = eta * np.cos(I)# / (1 + eta * np.sin(I))
+mu4 = eta * np.cos(I)# / (1 - eta * np.sin(I))
 eps_crit = eta * np.sin(I) / (1 - (eta * np.cos(I))**2)
 
 def get_dydt(tide):
@@ -94,7 +94,7 @@ def get_cs3(eps, tol=1e-10, log=False, method='hybr'):
     return ret
 
 def get_cs4(eps, tol=1e-10, log=False, method='hybr'):
-    cs4 = [-np.sqrt(1 - mu4**2), 0, mu4]
+    cs4 = [-np.sqrt(1 - mu4**2), 0, mu4 + 0.02]
     ret = opt.root(get_dydt(eps), cs4, tol=tol, method=method)
     if log and not ret.success:
         print('get_cs4 did not succeed')
@@ -131,10 +131,10 @@ def plot_cs_pts():
     plot the locations of CS2/4 for increasingly large tides
     '''
     eps_crit = eps_crit_num
-    offsets = 0.9 * eps_crit * np.exp(np.linspace(0, -5, 40))
+    offsets = eps_crit * np.geomspace(0.9, 1e-3, 100)
     eps_vals = np.concatenate((
         eps_crit - offsets + min(offsets),
-        (eps_crit + 10 * (offsets - min(offsets)))[1: ],
+        (eps_crit + 10 * (offsets - min(offsets)))[1:][::-1],
     ))
     rets = []
     for eps in eps_vals:
@@ -146,44 +146,51 @@ def plot_cs_pts():
         figsize=(6, 6),
         gridspec_kw={'height_ratios': [1, 1]},
         sharex=True)
-    for ax in [ax1, ax2]:
-        # ax.axvline(eps_crit, color='m', label=r'$\epsilon_{c,an}$')
-        ax.axvline(eps_crit_num, color='k', ls='--', lw=0.7)
 
     idxs = np.where(eps_vals < eps_crit)
-    ax1.plot(eps_vals, mu1s - 0.75, 'y', label=r'CS1 ($-0.75$)', alpha=0.8)
-    ax1.plot(eps_vals[idxs], mu2s[idxs], 'r', label=r'CS2', alpha=0.8)
-    ax1.plot(eps_vals, mu3s + 1.15, 'm', label=r'CS3 ($+1.15$)', alpha=0.8)
-    ax1.plot(eps_vals[idxs], mu4s[idxs], 'c', label=r'CS4', alpha=0.8)
-    ax1.set_ylabel(r'$\cos \theta_{\rm cs}$')
-    ax1.legend(fontsize=14)
+    eps_vals_norm = eps_vals / (eta * np.sin(I))
+    mu1ds = np.degrees(np.arccos(mu1s))
+    mu2ds = np.degrees(np.arccos(mu2s))
+    mu3ds = np.degrees(np.arccos(mu3s))
+    mu4ds = np.degrees(np.arccos(mu4s))
+    ax1.plot(eps_vals_norm, mu1ds + 70, 'orange', alpha=0.8)
+    ax1.plot(eps_vals_norm[idxs], mu2ds[idxs], 'tab:green', alpha=0.8)
+    ax1.plot(eps_vals_norm, mu3ds - 95, 'tab:blue', alpha=0.8)
+    ax1.plot(eps_vals_norm[idxs], mu4ds[idxs], 'tab:purple', alpha=0.8)
+    ax1.set_ylabel(r'$\theta_{\rm cs}$ (deg)')
+    ax1.text(eps_vals_norm[-1], mu1ds[-1] + 72, 'CS1 ($+70^\circ$)',
+             color='orange', ha='right', va='top')
+    ax1.text(eps_vals_norm[0], mu2ds[0] + 0.1, 'CS2', color='tab:green', va='bottom')
+    ax1.text(eps_vals_norm[-1], mu3ds[-1] - 96.5, 'CS3 ($-95^\circ$)',
+             color='tab:blue', ha='right')
+    ax1.text(eps_vals_norm[0], mu4ds[0] - 0.3, 'CS4', color='tab:purple', va='top')
 
-    ax2.plot(eps_vals, phi1s, 'y', alpha=0.8)
-    ax2.plot(eps_vals[idxs], phi2s[idxs], 'r', alpha=0.8)
-    ax2.plot(eps_vals, phi3s, 'm', alpha=0.8)
-    ax2.plot(eps_vals[idxs], phi4s[idxs], 'c', alpha=0.8)
-    ax2.set_ylabel(r'$\phi_{\rm cs}$')
-    ax2.set_xlabel(r'$(gt_{\rm s})^{-1}$')
-    ax2.set_yticks([0, np.pi / 2, np.pi])
-    ax2.set_yticklabels(['0', '$\pi / 2$', '$\pi$'])
+    ax2.plot(eps_vals_norm, np.degrees(phi1s), 'orange', alpha=0.8)
+    ax2.plot(eps_vals_norm[idxs], np.degrees(phi2s[idxs]), 'tab:green', alpha=0.5)
+    ax2.plot(eps_vals_norm, np.degrees(phi3s), 'tab:blue', alpha=0.8)
+    ax2.plot(eps_vals_norm[idxs], np.degrees(phi4s[idxs]), 'tab:purple', alpha=0.5)
+    ax2.set_ylabel(r'$\phi_{\rm cs}$ (deg)')
+    ax2.set_xlabel(r'$|gt_{\rm s}\sin I|^{-1}$')
+    ax2.set_yticks([0, 90, 180])
+    ax2.set_yticklabels(['0', '$90$', '$180$'])
     ax2.set_xscale('log')
 
     # "exact" sols
-    # phi2_th = np.pi - np.arcsin(eps_vals * (1 - mu2**2) / (eta * np.sin(I)))
-    # phi4_th = np.arcsin(eps_vals * (1 - mu4**2) / (eta * np.sin(I)))
+    phi2_th = np.pi - np.arcsin(eps_vals[idxs] * (1 - mu2**2) / (eta * np.sin(I)))
+    phi4_th = np.arcsin(eps_vals[idxs] * (1 - mu4**2) / (eta * np.sin(I)))
     # mu2_th = eta * np.cos(I) / (
     #     1 - eta * np.sin(I) * np.cos(phi2_th) / np.sqrt(1 - mu2**2))
     # mu4_th = eta * np.cos(I) / (
     #     1 - eta * np.sin(I) * np.cos(phi4_th) / np.sqrt(1 - mu4**2))
-    # ax1.plot(eps_vals, mu2_th, 'r:')
-    # ax1.plot(eps_vals, mu4_th, 'b:')
-    # ax2.plot(eps_vals, phi2_th, 'r:')
-    # ax2.plot(eps_vals, phi4_th, 'b:')
+    # ax1.plot(eps_vals[idxs], mu2_th, 'r:')
+    # ax1.plot(eps_vals[idxs], mu4_th, 'b:')
+    ax2.plot(eps_vals_norm[idxs], np.degrees(phi2_th), 'g--')
+    ax2.plot(eps_vals_norm[idxs], np.degrees(phi4_th), 'r--')
 
     # ax1.set_title(r'$\eta = %.1f$' % eta)
     plt.tight_layout()
-    fig.subplots_adjust(hspace=0.02)
-    plt.savefig('0_stab.png', dpi=300)
+    fig.subplots_adjust(hspace=0.06)
+    plt.savefig('0_stab', dpi=300)
 
 def get_stab():
     eps_crit_exact = get_eps_crit_num()

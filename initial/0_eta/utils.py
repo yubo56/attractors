@@ -86,28 +86,42 @@ def solve_ic(I, eta, tide, y0, tf, method='RK45', rtol=1e-6, **kwargs):
                         rtol=rtol, method=method, jac=jac, **kwargs)
     return time.time() - time_i, ret.t, ret.y
 
-def get_four_subplots(**kwargs):
+def get_four_subplots(use_degrees=False, **kwargs):
     ''' keep using four subplots w/ same settings '''
     f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True,
                                                **kwargs)
     axs = [ax1, ax2, ax3, ax4]
     for ax in axs:
-        ax.set_xlim([0, 2 * np.pi])
+        if use_degrees:
+            ax.set_xlim([0, 360])
+        else:
+            ax.set_xlim([0, 2 * np.pi])
         ax.set_ylim([-1, 1])
     f.subplots_adjust(wspace=0.15)
     ax1.set_ylabel(r'$\cos \theta$')
-    ax3.set_xlabel(r'$\phi$')
-    ax.set_xticks([0, np.pi, 2 * np.pi])
-    ax3.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
+    ax3.set_xlabel(r'$\phi$ (deg)')
+    if use_degrees:
+        ax.set_xticks([0, 180, 360])
+        ax3.set_xticklabels(['0', r'$180$', r'$360$'])
+    else:
+        ax.set_xticks([0, np.pi, 2 * np.pi])
+        ax3.set_xticklabels(['0', r'$\pi$', r'$2\pi$'])
     ax3.set_ylabel(r'$\cos \theta$')
-    ax4.set_xlabel(r'$\phi$')
+    ax4.set_xlabel(r'$\phi$ (deg)')
 
     return f, axs
 
 def plot_point(ax, q, *args, **kwargs):
     ''' plot Cassini state including wrap around logic '''
+    if 'use_degrees' in kwargs:
+        use_degrees = kwargs['use_degrees']
+        del kwargs['use_degrees']
+    else:
+        use_degrees=False
     phi = get_phi(q)
     phi_arr = [phi] if abs(phi % (2 * np.pi)) > 0.5 else [phi, phi + 2 * np.pi]
+    if use_degrees:
+        phi_arr = np.degrees(phi_arr)
     for idx, phi_plot in enumerate(phi_arr):
         if idx == 0:
             ax.plot(phi_plot, np.cos(q), *args, **kwargs)

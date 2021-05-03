@@ -54,7 +54,7 @@ def plot_manifolds(eta):
     phi1 = np.unwrap(_phi1 + np.pi) - 2 * np.pi
     term1 = np.where(phi1 < 0)[0][0]
     plt.plot(phi1[ :term1], s1[2, :term1], 'b--',
-             label=r'CS4$_{\rm L}^-$', linewidth=1.5, alpha=0.7)
+             label=r'CS4$_{\phi=0}^-$', linewidth=1.5, alpha=0.7)
 
     # forwards from CS4^0
     init = get_displaced(-1, 1)
@@ -67,7 +67,7 @@ def plot_manifolds(eta):
         phi2 < 1,
     ))[0][0]
     plt.plot(phi2[ :term2], s2[2, :term2], 'b',
-             label=r'CS4$_{\rm L}^+$', linewidth=1.5, alpha=0.7)
+             label=r'CS4$_{\phi=0}^+$', linewidth=1.5, alpha=0.7)
 
     # backwards from CS4^1
     init = get_displaced(-1, -1)
@@ -76,7 +76,7 @@ def plot_manifolds(eta):
     phi3 = np.unwrap(_phi3 + np.pi)
     term3 = np.where(phi3 < 0)[0][0]
     plt.plot(phi3[ :term3], s3[2, :term3], 'k--',
-             label=r'CS4$_{\rm R}^-$', linewidth=1.5, alpha=0.7)
+             label=r'CS4$_{\phi=360}^-$', linewidth=1.5, alpha=0.7)
 
     # forwards from CS4^1
     init = get_displaced(1, -1)
@@ -85,22 +85,22 @@ def plot_manifolds(eta):
     phi4 = np.unwrap(_phi4 + np.pi)
     term4 = np.where(phi4 < 0)[0][0]
     plt.plot(phi4[ :term4], s4[2, :term4], 'k',
-             label=r'CS4$_{\rm R}^-$', linewidth=1.5, alpha=0.7)
+             label=r'CS4$_{\phi=360}^+$', linewidth=1.5, alpha=0.7)
 
     plt.xlim([0, 2 * np.pi])
     plt.xticks([0, np.pi, 2 * np.pi],
-               ['0', r'$\pi$', r'$2\pi$'])
+               ['0', r'$180$', r'$360$'])
 
     ylim = plt.ylim()
     a1 = 0.4 # inner alpha
     a2 = 0.2 # Z3 alpha
     # fill Zone I with yellow
     plt.fill_between(phi4[ :term4], s4[2, :term4], np.ones_like(s4[2, :term4]),
-                     facecolor='y', alpha=a1)
+                     facecolor='orange', alpha=a1)
     top_interp = interp1d(phi4[ :term4], s4[2, :term4])
     # fill Zone III with yellow for now
     plt.fill_between(phi3[ :term3], s3[2, :term3], -np.ones_like(s3[2, :term3]),
-                     color='y', alpha=a2)
+                     color='orange', alpha=a2)
     bot_interp = interp1d(phi3[ :term3], s3[2, :term3])
     # fill flow into zone I with yellow
     phi_inner = phi1[ :term1]
@@ -108,15 +108,15 @@ def plot_manifolds(eta):
     rightmost = np.argmax(phi_inner)
     plt.fill_between(phi_inner[ :rightmost], mu_inner_outboundary[ :rightmost],
                      top_interp(phi_inner[ :rightmost]),
-                     facecolor='y', alpha=a1)
+                     facecolor='orange', alpha=a1)
     plt.fill_between(phi_inner[rightmost: ], mu_inner_outboundary[rightmost: ],
                      bot_interp(phi_inner[rightmost: ]),
-                     facecolor='y', alpha=a1)
+                     facecolor='orange', alpha=a1)
     phi_farright = np.linspace(phi_inner[rightmost], 2 * np.pi, 20)
     top_farright = top_interp(phi_farright)
     bot_farright = bot_interp(phi_farright)
     plt.fill_between(phi_farright, top_farright, bot_farright,
-                     facecolor='y', alpha=a1)
+                     facecolor='orange', alpha=a1)
     # fill Zone II with red
     inner_interp_above = interp1d(phi_inner[ :rightmost],
                                   mu_inner_outboundary[ :rightmost])
@@ -125,7 +125,7 @@ def plot_manifolds(eta):
     phi_zone2 = phi_inner[ :rightmost]
     plt.fill_between(phi_zone2, inner_interp_above(phi_zone2),
                      inner_interp_below(phi_zone2),
-                     facecolor='r', alpha=a1)
+                     facecolor='tab:green', alpha=a1)
     # plot extension of probabilistic region
     # phi_shift = phi1 + 2 * np.pi
     # next_capture_line = np.where(np.logical_and(
@@ -141,7 +141,7 @@ def plot_manifolds(eta):
     # plt.fill_between(phi_shift[next_capture_line][1: -1],
     #                  s1[2][next_capture_line][1: -1],
     #                  bot_interp(phi_shift[next_capture_line][1: -1]),
-    #                  facecolor='r', alpha=a2)
+    #                  facecolor='tab:green', alpha=a2)
     # just plot the line evolved backwards in time in Zone III, should be plenty
     # convincing
     for idx in range(1, 100):
@@ -150,29 +150,40 @@ def plot_manifolds(eta):
             phi_shift > 0,
             phi_shift < 2 * np.pi))
         plt.plot(phi_shift[next_capture_line], s1[2][next_capture_line],
-                 'r:', linewidth=1.5 * np.sqrt(2 / idx), alpha=a1)
+                 c='tab:green', linewidth=np.sqrt(2 / idx),
+                 alpha=a1)
 
     # plot separatrix
-    x_grid, phi_grid = get_grids()
-    H_grid = H(I, eta, x_grid, phi_grid)
-    H_sep = H(I, eta, np.cos(cs4_q), cs4_phi - np.pi)
-    plt.contour(phi_grid,
-                x_grid,
-                H_grid,
-                levels=[H_sep],
-                colors=['g'],
-                linewidths=3,
-                alpha=0.5,
-                linestyles='solid')
+    # x_grid, phi_grid = get_grids()
+    # H_grid = H(I, eta, x_grid, phi_grid)
+    # H_sep = H(I, eta, np.cos(cs4_q), cs4_phi - np.pi)
+    # plt.contour(phi_grid,
+    #             x_grid,
+    #             H_grid,
+    #             levels=[H_sep],
+    #             colors=['r'],
+    #             linewidths=3,
+    #             alpha=0.5,
+    #             linestyles='solid')
     # overplot CS4 and location of H = H_sep - \Delta H_-
-    plt.plot(0, np.cos(cs4_q), 'ko', markersize=10)
-    plt.plot(2 * np.pi, np.cos(cs4_q), 'ko', markersize=10)
-    plt.plot(phi1[term1], s1[2, term1], 'k*', markersize=15)
-    plt.plot(phi1[term1] + 2 * np.pi, s1[2, term1], 'k*', markersize=15)
-    plt.plot(phi3[term3], s3[2, term3], 'kx', markersize=15)
-    plt.plot(phi3[term3] + 2 * np.pi, s3[2, term3], 'kx', markersize=15)
+    plt.plot(0, np.cos(cs4_q), marker='o', mfc='purple', mec='k',
+             markersize=10)
+    plt.plot(2 * np.pi, np.cos(cs4_q), marker='o', mfc='purple',
+             mec='k', markersize=10)
+    plt.plot(phi1[term1], s1[2, term1], 'bo', markersize=10)
+    plt.plot(phi3[term3], s3[2, term3], 'ko', markersize=10)
 
-    plt.xlabel(r'$\phi$')
+    # label three zones
+    qs, phis = roots(I, eta)
+    sepwidth = 2 * np.sqrt(eta * np.sin(I))
+    plt.text(np.pi, np.cos(qs[1]) + 0.6 * sepwidth, 'II', backgroundcolor=(1, 1, 1, 0.9),
+             ha='center', va='center')
+    plt.text(1.0, np.cos(qs[1]) + 0.8 * sepwidth, 'I',
+             backgroundcolor=(1, 1, 1, 0.9), ha='center', va='center')
+    plt.text(1.0, np.cos(qs[1]) - 0.8 * sepwidth, 'III',
+             backgroundcolor=(1, 1, 1, 0.9), ha='center', va='center')
+
+    plt.xlabel(r'$\phi$ (deg)')
     plt.ylabel(r'$\cos \theta$')
 
     plt.ylim(ylim)
