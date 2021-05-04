@@ -26,7 +26,7 @@ def plot_H_for_eta(f, ax, eta, I, idx, plot_dashed=True, label_C=False,
                       cmap='RdBu_r', linewidths=2.0, levels=5)
 
     thetas, phis = roots(I, eta)
-    colors = ['orange', 'tab:green', 'tab:blue', 'tab:purple']
+    colors = ['darkorange', 'tab:green', 'tab:blue', 'tab:purple']
     if len(thetas) == 2:
         colors = colors[1:3]
     labels = ['CS1', 'CS2', 'CS3', 'CS4'] if len(thetas) == 4 else ['CS2', 'CS3']

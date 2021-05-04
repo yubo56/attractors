@@ -113,13 +113,13 @@ def plot_cs_phi(I=np.radians(5)):
         if rads[0] < 0:
             return -np.degrees(rads)
         return np.degrees(rads)
-    plt.semilogx(etas_four, fix_d(cs_vals[0]), 'orange', lw=LW)
+    plt.semilogx(etas_four, fix_d(cs_vals[0]), 'darkorange', lw=LW)
     plt.semilogx(etas, fix_d(cs_vals[1]), 'tab:green', lw=LW)
     plt.semilogx(etas, fix_d(cs_vals[2]), 'tab:blue', lw=LW)
     plt.semilogx(etas_four, fix_d(cs_vals[3]), 'tab:purple', lw=LW)
     fs = 16
     plt.text(etas_four[0] * 1.1, fix_d(cs_vals[0])[0] + 5, r'CS1 ($\phi = 0$)',
-             fontsize=fs, color='orange', va='bottom')
+             fontsize=fs, color='darkorange', va='bottom')
     plt.text(etas_four[0] * 1.1, fix_d(cs_vals[3])[0], r'CS4 ($\phi = 0$)',
              fontsize=fs, color='tab:purple', va='bottom')
     plt.text(etas[-1] / 1.1, fix_d(cs_vals[1])[-1] + 8, r'CS2 ($\phi = \pi$)',
@@ -156,7 +156,7 @@ def plot_eigens(I=np.radians(5)):
     plt.semilogx(etas_four,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas_four, cs_vals[0])],
-                 'orange', label='CS1', lw=LW)
+                 'darkorange', label='CS1', lw=LW)
     plt.semilogx(etas,
                  [lambda2(e, q, -1)
                   for e, q in zip(etas, cs_vals[1])],
@@ -190,7 +190,7 @@ def plot_eigens(I=np.radians(5)):
     plt.semilogx(etas_four,
                  [lambda2(e, q, -1 / 2)
                   for e, q in zip(etas_four, cs_vals[0])],
-                 color='orange', ls='--', lw=lw, alpha=0.5)
+                 color='darkorange', ls='--', lw=lw, alpha=0.5)
     plt.semilogx(etas,
                  [lambda2(e, q, -1 / 2)
                   for e, q in zip(etas, cs_vals[1])],

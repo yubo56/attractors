@@ -1773,48 +1773,100 @@ It proves sufficient to use the simpler form of this:
     t_{\rm a, c} &= \frac{2n / \Omega_{\rm s}}{\abs{g}\sin I},\\
         &= \frac{2}{\abs{g}\sin I\sqrt{2\eta_{\rm sync} \cos I}}.
 \end{align}
-Thus, we can continue to evaluate
+Thus, we can continue to evaluate laboriously:
 \begin{align}
-    1
-        &\approx \frac{2\eta / \eta_{\rm sync} - \eta \cos I
-            }{\abs{g}t_{\rm a}\sin I},\\
-        &\approx \frac{1}{\sin I\sqrt{\eta_{\rm sync}\cos I}}
-            0.003 \frac{1}{\cos I}\p{\frac{2 k_2 / Q}{10^{-3}}}
-                \p{\frac{m_{\rm p}}{M_{\rm J}}}^{-1}
-                \p{\frac{a_{\rm p}}{5\;\mathrm{AU}}}^{3}
-                \p{\frac{a}{0.4\;\mathrm{AU}}}^{-6}
-                \p{\frac{\rho}{3\;\mathrm{g/cm^3}}}^{-1}
-                \p{\frac{M_{\star}}{M_{\odot}}}^2,\\
-        &\approx \frac{0.005}{\sin I \cos^{3/2}I}
-            \p{\frac{k}{k_q}}^{-1/2}
-            \p{\frac{2 k_2 / Q}{10^{-3}}}
-            \p{\frac{m_{\rm p}}{M_{\rm J}}}^{-3/2}
-            \p{\frac{a_{\rm p}}{5\;\mathrm{AU}}}^{9/2}
-            \p{\frac{a}{0.4\;\mathrm{AU}}}^{-9}
-            \p{\frac{\rho}{3\;\mathrm{g/cm^3}}}^{-3/2}
-            \p{\frac{M_{\star}}{M_{\odot}}}^3,\\
-        &\approx \frac{3 \times 10^{-7}}{\sin I \cos^{3/2}I}
-            \p{\frac{k}{k_q}}^{-1/2}
-            \p{\frac{2 k_2 / Q}{10^{-3}}}
-            % 1/5000
-            \p{\frac{m_{\rm p}}{M_{\rm \oplus}}}^{-3/2}
-            % 1e-9
-            \p{\frac{a_{\rm p}}{0.05\;\mathrm{AU}}}^{9/2}
-            % 1e9
-            \p{\frac{a}{0.04\;\mathrm{AU}}}^{-9}
-            % 1/3
-            \p{\frac{\rho}{6\;\mathrm{g/cm^3}}}^{-3/2}
-            \p{\frac{M_{\star}}{M_{\odot}}}^3,\\
-    a_{\rm break}
-        &\approx 0.01\;\mathrm{AU}
-            \p{\frac{k}{k_q}}^{-1/18}
-            \p{\frac{2 k_2 / Q}{10^{-3}}}^{1/9}
-            \p{\frac{m_{\rm p}}{M_{\rm \oplus}}}^{-1/6}
-            \p{\frac{a_{\rm p}}{0.05\;\mathrm{AU}}}^{1/2}
-            \p{\frac{\rho}{6\;\mathrm{g/cm^3}}}^{-1/6}
-            \p{\frac{M_{\star}}{M_{\odot}}}^{1/3}.
+    \frac{1}{t_{\rm s, c}} &= \abs{g}\sin I \sqrt{\frac{\eta_{\rm sync} \cos
+        I}{2}},\\
+    g &= \frac{3m_p}{4M_{\star}}\p{\frac{a}{a_{\rm p}}}^3 n,\\
+    \frac{1}{t_{\rm s}} &= \frac{1}{4k}\frac{3k_2}{Q} \frac{M_{\star}}{m}
+        \p{\frac{R}{a}}^3 n,\\
+    \eta_{\rm sync} &= \s{\frac{3m_p}{4M_{\star}}\p{\frac{a}{a_{\rm p}}}^3 n}
+        \Bigg/ \s{\frac{3k_q}{2k} \frac{M_\star}{m}\p{\frac{R}{a}}^3 n},\\
+        &= \frac{m_pm}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^3
+            \p{\frac{a}{R}}^3,\\
+    \frac{1}{4k}\frac{3k_2}{Q}\frac{M_\star}{m}\p{\frac{R}{a}}^3
+        &= \frac{3m_{\rm p}}{4M_{\star}}\p{\frac{a}{a_{\rm p}}}^3
+            \sin I \sqrt{\frac{\cos I}{2}}
+            \sqrt{\frac{m_pm}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^3
+                \p{\frac{a}{R}}^3 \frac{k}{k_q}},\\
+    a^9 &= 4\frac{2k_2}{Q} \frac{M_\star^3}{(mm_{\rm p})^{3/2}}
+        \p{Ra_{\rm p}}^{9/2}\frac{1}{\sin I \sqrt{\cos I}}
+        \p{\frac{k}{k_{\rm q}}}^{-1/2},\\
+% (4 * 1e-3 * (Msun / (8 Mearth))^3 * ((2 Rearth) * (0.05 AU))^(9/2))^(1/9) / (1 AU)
+% = 0.0387
+    a_{\rm break} &\approx 0.038 \;\mathrm{AU}
+        \p{\frac{2k_2/Q}{10^{-3}}}^{1/9}
+        \p{\frac{M_\star}{M_{\odot}}}^{1/3}
+        \p{\frac{8M_{\oplus}}{m}}^{-1/3}
+        \p{\frac{R}{2R_{\oplus}}}^{1/2}
+        \p{\frac{a_{\rm p}}{0.05\;\mathrm{AU}}}^{1/2}
+        \p{\frac{1}{\sin I \sqrt{\cos I}}}^{1/9},\\
+% ((8 Mearth)^2 / (Msun)^2) / 2 * (1.3)^(-2) * ((0.035 AU) / (2 Rearth))^3
+% = 0.011845
+    \eta_{\rm sync} &= \frac{m_pm}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^3
+            \p{\frac{a}{R}}^3,\\
+        &= 0.012 \p{\frac{k}{k_{\rm q}}}
+                \p{\frac{m}{8 M_{\oplus}}}^2
+                \p{\frac{M_\star}{M_{\odot}}}^{-2}
+            \p{\frac{a}{0.035 \;\mathrm{AU}}}^{3}
+                \p{\frac{P_{j + 1} / P_j}{1.5}}^{-2}
+                \p{\frac{R}{2R_{\oplus}}}^{-3}.
 \end{align}
-for $I = 5^\circ$. This seems a little bit on the low end.
+For WASP-12b, we instead can solve for
+\begin{align}
+    \frac{m_{\rm p}^{3/2}}{a_{\rm p}^{9/2}}
+        &= 4\frac{2k_2}{Q} \frac{M_\star^3}{m^{3/2}}
+        \p{\frac{R}{a^2}}^{9/2}\frac{1}{\sin I \sqrt{\cos I}}
+        \p{\frac{k}{k_{\rm q}}}^{-1/2},\\
+    \frac{m_{\rm p}}{a_{\rm p}^3}
+        &\gtrsim 0.0002 \;\mathrm{kg/m^3}
+            \p{\frac{2k_2/Q}{10^{-7}}}^{2/3}
+            \p{\frac{M_\star}{1.36 M_{\odot}}}^{2}
+            \p{\frac{m}{1.41 M_{\rm J}}}^{-1}
+            \p{\frac{R}{1.89R_{\rm J}}}^{3}
+            \p{\frac{a}{0.023\;\mathrm{AU}}}^{-6}
+            \p{\frac{1}{\sin I \sqrt{\cos I}}}^{2/3}.
+\end{align}
+If WASP-12b is in tCE2, then this must be satisfied by the perturber.
+
+However, recall here that $I$ should really be the angle between $\bm{L}$ and
+$\bm{L}_{\rm tot} = \bm{L} + \bm{L}_{\rm out}$. When $L \gg L_{\rm out}$ as in
+this case, we must reduce $\sin I = (L_{\rm out} / L) \sin I_{\rm tot}$, where
+$I_{\rm tot}$ is the mutual inclination between the orbits. For circular orbits
+and small $I_{\rm tot}$, we can write
+\begin{align}
+    \frac{L_{\rm out}}{L} \approx{}& \frac{m_{\rm p}}{m}
+            \sqrt{\frac{a_{\rm p}}{a}}\nonumber\\
+        &= 0.132,\\
+    \p{\frac{m_{\rm p}}{40 M_{\oplus}}}\p{\frac{a_{\rm
+        p}}{0.05\;\mathrm{AU}}}^{-3} \gtrsim {}& 0.4
+            \p{\frac{2k_2/Q}{10^{-7}}}^{2/3}
+            \p{\frac{M_\star}{1.36 M_{\odot}}}^{2}
+            \p{\frac{m}{1.41 M_{\rm J}}}^{-1}
+            \p{\frac{R}{1.89R_{\rm J}}}^{3}\nonumber\\
+        &\times \p{\frac{a}{0.023\;\mathrm{AU}}}^{-6}
+            \p{\frac{m}{m_{\rm p}} \sqrt{\frac{a}{a_{\rm p}}}
+                \frac{1}{\sin I_{\rm tot}}}^{2/3},\\
+    \p{\frac{m_{\rm p}}{40 M_{\oplus}}}^{5/3}\p{\frac{a_{\rm
+        p}}{0.05\;\mathrm{AU}}}^{-8/3} \gtrsim {}& 1.5
+            \p{\frac{2k_2/Q}{10^{-7}}}^{2/3}
+            \p{\frac{M_\star}{1.36 M_{\odot}}}^{2}
+            \p{\frac{m}{1.41 M_{\rm J}}}^{-1}
+            \p{\frac{R}{1.89R_{\rm J}}}^{3}\nonumber\\
+        &\times \p{\frac{a}{0.023\;\mathrm{AU}}}^{-6}
+            \p{\frac{1}{\sin I_{\rm tot}}}^{2/3}.
+\end{align}
+
+What is the corresponding RV signal of such a planet? The RV signal in the star
+is given as a velocity, which is just $n_{\rm p} \times a_{\rm p}\frac{m_{\rm
+p}}{M_{\star}}$. Including the projection effect by an angle $i$, we should find
+that
+\begin{align}
+    \text{RV semi-amplitude} &\approx
+            n_{\rm p}a_{\rm p}\frac{m_{\rm p}}{M_{\star}} \sin i,\\
+        &\approx 10\;\mathrm{m/s} \frac{\sin i}{1/\sqrt{2}}
+\end{align}
+This is in agreement with Fig 3 of Millholland's plot.
 
 \subsection{Dissipating Disk: $\theta_f$ Distribution}
 

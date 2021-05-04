@@ -96,11 +96,11 @@ def plot_manifolds(eta):
     a2 = 0.2 # Z3 alpha
     # fill Zone I with yellow
     plt.fill_between(phi4[ :term4], s4[2, :term4], np.ones_like(s4[2, :term4]),
-                     facecolor='orange', alpha=a1)
+                     facecolor='darkorange', alpha=a1)
     top_interp = interp1d(phi4[ :term4], s4[2, :term4])
     # fill Zone III with yellow for now
     plt.fill_between(phi3[ :term3], s3[2, :term3], -np.ones_like(s3[2, :term3]),
-                     color='orange', alpha=a2)
+                     color='darkorange', alpha=a2)
     bot_interp = interp1d(phi3[ :term3], s3[2, :term3])
     # fill flow into zone I with yellow
     phi_inner = phi1[ :term1]
@@ -108,15 +108,15 @@ def plot_manifolds(eta):
     rightmost = np.argmax(phi_inner)
     plt.fill_between(phi_inner[ :rightmost], mu_inner_outboundary[ :rightmost],
                      top_interp(phi_inner[ :rightmost]),
-                     facecolor='orange', alpha=a1)
+                     facecolor='darkorange', alpha=a1)
     plt.fill_between(phi_inner[rightmost: ], mu_inner_outboundary[rightmost: ],
                      bot_interp(phi_inner[rightmost: ]),
-                     facecolor='orange', alpha=a1)
+                     facecolor='darkorange', alpha=a1)
     phi_farright = np.linspace(phi_inner[rightmost], 2 * np.pi, 20)
     top_farright = top_interp(phi_farright)
     bot_farright = bot_interp(phi_farright)
     plt.fill_between(phi_farright, top_farright, bot_farright,
-                     facecolor='orange', alpha=a1)
+                     facecolor='darkorange', alpha=a1)
     # fill Zone II with red
     inner_interp_above = interp1d(phi_inner[ :rightmost],
                                   mu_inner_outboundary[ :rightmost])

@@ -234,12 +234,12 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     mu2 = [ic[0] for ic in IC_eq2]
     phi1 = [ic[1] for ic in IC_eq1]
     phi2 = [ic[1] for ic in IC_eq2]
-    ax_scatter.scatter(phi1, mu1, c='orange', s=ms)
+    ax_scatter.scatter(phi1, mu1, c='darkorange', s=ms)
     ax_scatter.scatter(phi2, mu2, c='tab:green', s=ms)
     ax_scatter.set_xlabel(r'$\phi_{\rm i}$ (deg)', fontsize=16)
     ax_scatter.set_ylabel(r'$\cos \theta_{\rm i}$', fontsize=16)
     ylim = ax_scatter.get_ylim()
-    ax_scatter.scatter(3, -10, c='orange',
+    ax_scatter.scatter(3, -10, c='gold',
                        label='tCE1', s=20)
     ax_scatter.scatter(3, -10, c='tab:green', label='tCE2', s=20)
     ax_scatter.legend(loc='lower left', fontsize=14)
@@ -276,7 +276,7 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
 
     # plot hist vs mu0 (significant blending, okay)
     n, bins, _ = ax_hist.hist(
-        [mu2, mu1], bins=60, color=['tab:green', 'orange'],
+        [mu2, mu1], bins=60, color=['tab:green', 'darkorange'],
         orientation='horizontal', stacked=True)
     ax_hist.set_ylim(ax_scatter.get_ylim())
 
@@ -338,7 +338,7 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     ax1.fill_between(np.array(s_c_vals)[idxs],
                      np.minimum(probs_dat, A2frac + A3frac)[idxs],
                      probs_dat[idxs],
-                     facecolor='orange',
+                     facecolor='darkorange',
                      alpha=0.2)
     ax1.text(2.0, 0.05, 'Inititially zone II', fontsize=14, ha='right')
     ax1.text(2.0, 0.5, 'Initially zone III', fontsize=14, ha='right')
@@ -364,7 +364,7 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     cs1_idxs = np.where(cs1_equil_mu > -1)[0]
     ax2.plot(np.array(s_c_cont)[cs1_idxs],
              np.degrees(np.arccos(cs1_equil_mu[cs1_idxs])),
-             'orange', label='tCE1', lw=2)
+             'darkorange', label='tCE1', lw=2)
     ax2.plot(s_c_cont, np.degrees(np.arccos(cs2_equil_mu)),
              'tab:green', label='tCE2', lw=2)
     ax2.set_ylabel(r'$\theta$')
@@ -375,11 +375,11 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     # tce2_anal = np.degrees(np.arccos(
     #     eta_arr * np.cos(I) / (1 + eta_arr * np.sin(I))
     #     ))
-    # eta_arr = np.sqrt(s_c_cont / (2 * np.cos(I)))
-    # tce2_anal = np.degrees(np.arccos(
-    #     eta_arr * np.cos(I)
-    #     ))
-    # ax2.plot(s_c_cont, tce2_anal, 'k--', lw=1.5)
+    eta_arr = np.sqrt(s_c_cont / (2 * np.cos(I)))
+    tce2_anal = np.degrees(np.arccos(
+        np.sqrt(s_c_cont * np.cos(I) / 2)
+        ))
+    ax2.plot(s_c_cont, tce2_anal, 'b--', lw=1.5)
     ax2.set_ylim(0, 90)
     ax2.set_yticks([0, 45, 90])
     ax2.set_yticklabels(['0', '45', '90'])
@@ -567,7 +567,7 @@ def plot_anal_cs_equils(I=np.radians(20), s_c=0.2):
     cs1_idxs = np.where(cs1_equil_mu > -1)[0]
     plt.plot(np.array(s_c_cont)[cs1_idxs],
              np.degrees(np.arccos(cs1_equil_mu[cs1_idxs])),
-             'orange', label='tCE1', lw=2)
+             'darkorange', label='tCE1', lw=2)
     eta_num = s_c_cont * ((1 + cs2_equil_mu**2) / (2 * cs2_equil_mu))
     plt.plot(s_c_cont, np.degrees(np.arccos(cs2_equil_mu)),
              'tab:green', label='tCE2', lw=2)

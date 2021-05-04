@@ -64,14 +64,14 @@ def plot_equils(I, s_c, verbose=True, fn_str='6equils%s'):
         dash_idx = np.where(s_tot[cs1_exist_idx] > 2)[0]
         solid_idx = np.where(s_tot[cs1_exist_idx] < 2)[0]
         plt.plot(s_tot[cs1_exist_idx][dash_idx],
-                 np.degrees(-cs1_qs[cs1_exist_idx][dash_idx]), 'orange',
+                 np.degrees(-cs1_qs[cs1_exist_idx][dash_idx]), 'darkorange',
                  label='CS1', lw=2.5, ls='--')
         plt.plot(s_tot[cs1_exist_idx][solid_idx],
-                 np.degrees(-cs1_qs[cs1_exist_idx][solid_idx]), 'orange',
+                 np.degrees(-cs1_qs[cs1_exist_idx][solid_idx]), 'darkorange',
                  label='CS1', lw=2.5)
         plt.text(s_tot[-1], np.degrees(cs2_qs)[-1], 'CS2', c='tab:green',
                  fontsize=14, va='bottom', ha='right')
-        plt.text(s_tot[-1], -np.degrees(cs1_qs)[-1], 'CS1', c='orange',
+        plt.text(s_tot[-1], -np.degrees(cs1_qs)[-1], 'CS1', c='darkorange',
                  fontsize=14, va='bottom', ha='right')
     plt.plot(s_lt, mu_equil_lt, 'k', lw=4)
     plt.plot(s_dq, np.degrees(np.arccos(2 / s_dq)), 'b', lw=4)
@@ -99,9 +99,9 @@ def plot_equils(I, s_c, verbose=True, fn_str='6equils%s'):
              ms=15, mew=3)
     plt.text(tce2_s, dS_interp(tce2_s) + 10, 'tCE2', c='tab:green', va='bottom',
              ha='center')
-    plt.plot(tce1_s, dS_interp(tce1_s), mec='orange', mfc='none',
+    plt.plot(tce1_s, dS_interp(tce1_s), mec='darkorange', mfc='none',
              marker='o', ms=15, mew=3)
-    plt.text(tce1_s * 1.1, dS_interp(tce1_s) + 3, 'tCE1', c='orange',
+    plt.text(tce1_s * 1.1, dS_interp(tce1_s) + 3, 'tCE1', c='darkorange',
              va='bottom', ha='left')
 
 

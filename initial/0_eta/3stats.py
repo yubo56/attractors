@@ -118,7 +118,7 @@ def run_for_tide(tide=1e-3,
     # points below the separatrix, where do they converge to?
     below_convs = []
     # HACK HACK everything but CS1/2 are green as well
-    colors = ['orange', 'tab:green', 'orange', 'tab:purple']
+    colors = ['darkorange', 'tab:green', 'darkorange', 'tab:purple']
     for q, phi, conv_pts, c in zip(qs, phis, conv_data, colors):
         if conv_pts:
             q_plot, phi_plot = np.array(conv_pts).T
@@ -127,7 +127,7 @@ def run_for_tide(tide=1e-3,
             plt.plot(phis_plot,
                      np.cos(q_plot),
                      mfc=c, mec=c, marker='o', ls='',
-                     markersize=2)
+                     markersize=2, alpha=0.7)
         else:
             below_convs.append(0)
         # plot_point(plt.gca(), q, '%so' % c, markersize=8)
