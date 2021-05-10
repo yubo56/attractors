@@ -34,79 +34,89 @@ def get_cs_val(I, s_c, s):
             cs2_qs[idx] = cs_qs[0]
     return cs1_qs, cs2_qs
 
-def plot_equils(I, s_c, verbose=True, fn_str='6equils%s'):
+def plot_equils(I, s_cs, fn_str='6equils'):
     ''' plot in (s, mu) space showing how the tCS arise '''
-    fig = plt.figure(figsize=(5, 5))
-    s_lt = np.linspace(s_c / 10, 1, 200) # max eta = 10
-    s_gt = np.linspace(1, 3, 200) # other interesting part of the interval
-    s_tot = np.concatenate((s_lt, s_gt))
-
-    cs1_qs, cs2_qs = get_cs_val(I, s_c, s_tot)
-    cs1_exist_idx = np.where(cs1_qs > -1)[0]
-    mu_equil_lt = [np.degrees(np.arccos(get_mu_equil(s))) for s in s_lt]
 
     s_dq = np.linspace(2, 3, 200)
 
-    plt.xlabel(r'$\Omega_{\rm s} / n$')
-    plt.ylabel(r'$\theta$ (deg)')
-    plt.ylim([0, 180])
+    fig, axs = plt.subplots(
+        len(s_cs), 1,
+        figsize=(6, 2 + 3 * len(s_cs)),
+        sharex=True)
+    axs[-1].set_xlabel(r'$\Omega_{\rm s} / n$')
 
-    s_search_min = np.min(s_tot[cs1_exist_idx])
-    dS_interp = interp1d(s_lt, mu_equil_lt)
-    CS2_interp = interp1d(s_tot, np.degrees(cs2_qs))
-    CS1_interp = interp1d(s_tot[cs1_exist_idx],
-                          np.degrees(-cs1_qs[cs1_exist_idx]))
-    tce2_s = brenth(lambda s: dS_interp(s) - CS2_interp(s), s_search_min, 1)
-    tce1_s = brenth(lambda s: dS_interp(s) - CS1_interp(s), s_search_min, 1)
+    for ax, s_c, in zip(axs, s_cs):
+        s_lt = np.linspace(s_c / 10, 1, 200) # max eta = 10
+        s_gt = np.linspace(1, 3, 200) # other interesting part of the interval
+        s_tot = np.concatenate((s_lt, s_gt))
 
-    if verbose:
-        plt.plot(s_tot, np.degrees(cs2_qs), 'tab:green', label='CS2', lw=2.5)
+        cs1_qs, cs2_qs = get_cs_val(I, s_c, s_tot)
+        cs1_exist_idx = np.where(cs1_qs > -1)[0]
+        mu_equil_lt = [np.degrees(np.arccos(get_mu_equil(s))) for s in s_lt]
+
+        ax.set_ylabel(r'$\theta$ (deg)')
+        ax.set_ylim([0, 120])
+
+        dS_interp = interp1d(s_lt, mu_equil_lt)
+        CS2_interp = interp1d(s_tot, np.degrees(cs2_qs))
+        tce2_s = brenth(lambda s: dS_interp(s) - CS2_interp(s), np.min(s_tot), 1)
+
+        ax.plot(s_tot, np.degrees(cs2_qs), 'tab:green', label='CS2', lw=2.5)
         dash_idx = np.where(s_tot[cs1_exist_idx] > 2)[0]
         solid_idx = np.where(s_tot[cs1_exist_idx] < 2)[0]
-        plt.plot(s_tot[cs1_exist_idx][dash_idx],
+        ax.plot(s_tot[cs1_exist_idx][dash_idx],
                  np.degrees(-cs1_qs[cs1_exist_idx][dash_idx]), 'darkorange',
                  label='CS1', lw=2.5, ls='--')
-        plt.plot(s_tot[cs1_exist_idx][solid_idx],
+        ax.plot(s_tot[cs1_exist_idx][solid_idx],
                  np.degrees(-cs1_qs[cs1_exist_idx][solid_idx]), 'darkorange',
                  label='CS1', lw=2.5)
-        plt.text(s_tot[-1], np.degrees(cs2_qs)[-1], 'CS2', c='tab:green',
+        ax.text(s_tot[-1], np.degrees(cs2_qs)[-1], 'CS2', c='tab:green',
                  fontsize=14, va='bottom', ha='right')
-        plt.text(s_tot[-1], -np.degrees(cs1_qs)[-1], 'CS1', c='darkorange',
+        ax.text(s_tot[-1], -np.degrees(cs1_qs)[-1], 'CS1', c='darkorange',
                  fontsize=14, va='bottom', ha='right')
-    plt.plot(s_lt, mu_equil_lt, 'k', lw=4)
-    plt.plot(s_dq, np.degrees(np.arccos(2 / s_dq)), 'b', lw=4)
-    # plt.annotate('', xy=(1.5, 90), xytext=(2.5, 120),
-    #              arrowprops={'fc': 'g', 'width': 10, 'headwidth': 25})
-    # plt.annotate('', xy=(0.8, 10), xytext=(0.3, 30),
-    #              arrowprops={'fc': 'g', 'width': 10, 'headwidth': 25})
-    # plt.annotate('', xy=(2.5, 20), xytext=(3.0, 10),
-    #              arrowprops={'fc': 'g', 'width': 10, 'headwidth': 25})
-    # plt.legend(loc='upper left', bbox_to_anchor=(0.15, 1), fontsize=14)
+        ax.plot(s_lt, mu_equil_lt, 'k', lw=4)
+        ax.plot(s_dq, np.degrees(np.arccos(2 / s_dq)), 'b', lw=4)
 
-    # label text along boundaries
-    if s_c == 0.2:
-        plt.text(0.80, 47, r'$\dot{\Omega}_{\rm s} < 0$', c='k', fontsize=14,
-                 rotation=-60)
-        plt.text(0.56, 37, r'$\dot{\Omega}_{\rm s} > 0$', c='k', fontsize=14,
-                 rotation=-60)
+        # label text along boundaries
+        if s_c < 0.4:
+            ax.text(0.85, 45, r'$\dot{\Omega}_{\rm s} < 0$', c='k', fontsize=14,
+                     rotation=-63)
+            ax.text(0.6, 40, r'$\dot{\Omega}_{\rm s} > 0$', c='k', fontsize=14,
+                     rotation=-63)
+        else:
+            ax.text(0, 66, r'$\dot{\Omega}_{\rm s} < 0$', c='k', fontsize=14,
+                     rotation=-40)
+            ax.text(0.1, 81, r'$\dot{\Omega}_{\rm s} > 0$', c='k', fontsize=14,
+                     rotation=-40)
 
-        plt.text(2.45, 43, r'$\dot{\theta}_{\rm tide} < 0$', c='b', fontsize=14,
-                 rotation=20)
-        plt.text(2.55, 28, r'$\dot{\theta}_{\rm tide} > 0$', c='b', fontsize=14,
-                 rotation=20)
+        ax.text(2.45, 43, r'$\dot{\theta}_{\rm tide} < 0$', c='b', fontsize=14,
+                 rotation=30)
+        ax.text(2.55, 29, r'$\dot{\theta}_{\rm tide} > 0$', c='b', fontsize=14,
+                 rotation=30)
 
-    plt.plot(tce2_s, dS_interp(tce2_s), mec='tab:green', mfc='none', marker='o',
-             ms=15, mew=3)
-    plt.text(tce2_s, dS_interp(tce2_s) + 10, 'tCE2', c='tab:green', va='bottom',
-             ha='center')
-    plt.plot(tce1_s, dS_interp(tce1_s), mec='darkorange', mfc='none',
-             marker='o', ms=15, mew=3)
-    plt.text(tce1_s * 1.1, dS_interp(tce1_s) + 3, 'tCE1', c='darkorange',
-             va='bottom', ha='left')
+        ax.plot(tce2_s, dS_interp(tce2_s), mec='tab:green', mfc='none', marker='o',
+                 ms=15, mew=3)
+        ax.text(tce2_s, dS_interp(tce2_s) + 10, 'tCE2', c='tab:green', va='bottom',
+                 ha='center')
+        ax.text(np.max(s_dq), 115, r'$\eta_{\rm sync} = %.2f$' % s_c,
+                va='top', ha='right')
 
+        etac = get_etac(I)
+        if s_c < etac:
+            s1_search_min = np.min(s_tot[cs1_exist_idx])
+            s1_search_max = min(np.max(s_tot[cs1_exist_idx]), 1)
+            CS1_interp = interp1d(s_tot[cs1_exist_idx],
+                                  np.degrees(-cs1_qs[cs1_exist_idx]))
+            tce1_s = brenth(lambda s: dS_interp(s) - CS1_interp(s), s1_search_min,
+                            s1_search_max)
+            ax.plot(tce1_s, dS_interp(tce1_s), mec='darkorange', mfc='none',
+                     marker='o', ms=15, mew=3)
+            ax.text(tce1_s * 1.1, dS_interp(tce1_s) + 3, 'tCE1', c='darkorange',
+                     va='bottom', ha='left')
 
     plt.tight_layout()
-    plt.savefig(fn_str % s_c_str(s_c), dpi=300)
+    fig.subplots_adjust(hspace=0.06)
+    plt.savefig(fn_str, dpi=300)
     plt.clf()
 
 def plot_phop(I, s_c):
@@ -201,10 +211,7 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
 if __name__ == '__main__':
     eps = 1e-3
     I = np.radians(20)
-    plot_equils(I, 0.2)
-    # plot_equils(I, 0.2, verbose=False, fn_str='6equils_half%s')
-    # plot_equils(I, 0.06)
-    # plot_equils(I, 0.6)
+    plot_equils(I, [0.06, 0.5, 0.7])
     # plot_phop(I, 0.2)
     # plot_equil_dist_anal(I, 0.06, 10, eps)
     # plot_equil_dist_anal(I, 0.2, 10, eps)

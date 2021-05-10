@@ -33,6 +33,8 @@
     \newcommand*{\dotp}[2]{\left<#1\,\middle|\,#2\right>}
     \newcommand*{\rd}[2]{\frac{\mathrm{d}#1}{\mathrm{d}#2}}
     \newcommand*{\pd}[2]{\frac{\partial#1}{\partial#2}}
+    \newcommand*{\rdil}[2]{\mathrm{d}#1 / \mathrm{d}#2}
+    \newcommand*{\pdil}[2]{\partial#1 / \partial#2}
     \newcommand*{\rtd}[2]{\frac{\mathrm{d}^2#1}{\mathrm{d}#2^2}}
     \newcommand*{\ptd}[2]{\frac{\partial^2 #1}{\partial#2^2}}
     \newcommand*{\md}[2]{\frac{\mathrm{D}#1}{\mathrm{D}#2}}
@@ -49,6 +51,7 @@
     \newcommand*{\p}[1]{\left(#1\right)}
     \newcommand*{\s}[1]{\left[#1\right]}
     \newcommand*{\z}[1]{\left\{#1\right\}}
+    \newcommand*{\uv}[1]{\hat{\bm{#1}}}
 
     \newtheorem{theorem}{Theorem}[section]
 
@@ -84,7 +87,6 @@
 
 \begin{document}
 
-\def\Snospace~{\S{}} % hack to remove the space left after autorefs
 \renewcommand*{\sectionautorefname}{\Snospace}
 \renewcommand*{\appendixautorefname}{\Snospace}
 \renewcommand*{\figureautorefname}{Fig.}
@@ -1246,7 +1248,7 @@ domain and so is the maximum value for $\Delta H = H_4 - H_0$. Note that
 I accidentally did some extra algebra and computed to one extra order in
 $\frac{s_c}{s}$, so I might as well leave it in. We will compute carefully,
 noting that $\mu_4 = \frac{\cos I}{\alpha - \sin I}, \phi_4 = 0$ is exact (where
-$\alpha = s/s_c$ for brevity and compatibility with \autoref{s:p2}).
+$\alpha = s/s_c$ for brevity and compatibility with Section~\ref{s:p2}).
 \begin{align*}
     H_4 &= -\alpha \frac{\mu_4^2}{2} + \mu_4 \cos I - \sin I \sqrt{1 - \mu_4^2}
             \cos \phi_4,\\
@@ -1743,131 +1745,6 @@ remains forever stable. We can also numerically validate this via
 We can illustrate the trajectories at $\phi_{2, \epsilon}$ when turning on
 $\epsilon$ by examining \lstinline{99_misc/3_trajs.py}.
 
-\subsubsection{Physical Numbers}
-
-We focus on the USP regime. In the notation of the paper, we need
-\begin{align}
-    1
-        &\approx \frac{2n / \Omega_{\rm s} - \cos \theta
-            }{\abs{g}t_{\rm a}\sin I}.
-\end{align}
-One tricky thing about this calculation is that $\eta$ depends on $\Omega_{\rm
-s}$ which depends on $\cos \theta$ which depends on $\eta$:
-\begin{align}
-    \eta &= \eta_{\rm sync} \frac{n}{\Omega_{\rm s}},\\
-    \frac{n}{\Omega_{\rm s}} &= \frac{1 + \cos^2\theta}{2 \cos \theta},\\
-    \cos \theta &\approx \frac{\eta \cos I}{1 + \eta \sin I}.
-\end{align}
-This requires that
-\begin{align}
-    \frac{\eta}{\eta_{\rm sync}} &\approx \frac{1 + \eta \sin I
-        }{2\eta \cos I},\\
-    2\eta^2 \cos I &\approx \eta_{\rm sync} + \eta_{\rm sync}\eta \sin I,\\
-    \eta &= \frac{\eta_{\rm sync}\sin I + \sqrt{
-        \eta_{\rm sync}^2 \sin^2 I + 8\cos I \eta_{\rm sync}}}{
-            4 \cos I}.
-\end{align}
-It proves sufficient to use the simpler form of this:
-\begin{align}
-    \eta &\approx \sqrt{\frac{\eta_{\rm sync}}{2\cos I}},\\
-    t_{\rm a, c} &= \frac{2n / \Omega_{\rm s}}{\abs{g}\sin I},\\
-        &= \frac{2}{\abs{g}\sin I\sqrt{2\eta_{\rm sync} \cos I}}.
-\end{align}
-Thus, we can continue to evaluate laboriously:
-\begin{align}
-    \frac{1}{t_{\rm s, c}} &= \abs{g}\sin I \sqrt{\frac{\eta_{\rm sync} \cos
-        I}{2}},\\
-    g &= \frac{3m_p}{4M_{\star}}\p{\frac{a}{a_{\rm p}}}^3 n,\\
-    \frac{1}{t_{\rm s}} &= \frac{1}{4k}\frac{3k_2}{Q} \frac{M_{\star}}{m}
-        \p{\frac{R}{a}}^3 n,\\
-    \eta_{\rm sync} &= \s{\frac{3m_p}{4M_{\star}}\p{\frac{a}{a_{\rm p}}}^3 n}
-        \Bigg/ \s{\frac{3k_q}{2k} \frac{M_\star}{m}\p{\frac{R}{a}}^3 n},\\
-        &= \frac{m_pm}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^3
-            \p{\frac{a}{R}}^3,\\
-    \frac{1}{4k}\frac{3k_2}{Q}\frac{M_\star}{m}\p{\frac{R}{a}}^3
-        &= \frac{3m_{\rm p}}{4M_{\star}}\p{\frac{a}{a_{\rm p}}}^3
-            \sin I \sqrt{\frac{\cos I}{2}}
-            \sqrt{\frac{m_pm}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^3
-                \p{\frac{a}{R}}^3 \frac{k}{k_q}},\\
-    a^9 &= 4\frac{2k_2}{Q} \frac{M_\star^3}{(mm_{\rm p})^{3/2}}
-        \p{Ra_{\rm p}}^{9/2}\frac{1}{\sin I \sqrt{\cos I}}
-        \p{\frac{k}{k_{\rm q}}}^{-1/2},\\
-% (4 * 1e-3 * (Msun / (8 Mearth))^3 * ((2 Rearth) * (0.05 AU))^(9/2))^(1/9) / (1 AU)
-% = 0.0387
-    a_{\rm break} &\approx 0.038 \;\mathrm{AU}
-        \p{\frac{2k_2/Q}{10^{-3}}}^{1/9}
-        \p{\frac{M_\star}{M_{\odot}}}^{1/3}
-        \p{\frac{8M_{\oplus}}{m}}^{-1/3}
-        \p{\frac{R}{2R_{\oplus}}}^{1/2}
-        \p{\frac{a_{\rm p}}{0.05\;\mathrm{AU}}}^{1/2}
-        \p{\frac{1}{\sin I \sqrt{\cos I}}}^{1/9},\\
-% ((8 Mearth)^2 / (Msun)^2) / 2 * (1.3)^(-2) * ((0.035 AU) / (2 Rearth))^3
-% = 0.011845
-    \eta_{\rm sync} &= \frac{m_pm}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^3
-            \p{\frac{a}{R}}^3,\\
-        &= 0.012 \p{\frac{k}{k_{\rm q}}}
-                \p{\frac{m}{8 M_{\oplus}}}^2
-                \p{\frac{M_\star}{M_{\odot}}}^{-2}
-            \p{\frac{a}{0.035 \;\mathrm{AU}}}^{3}
-                \p{\frac{P_{j + 1} / P_j}{1.5}}^{-2}
-                \p{\frac{R}{2R_{\oplus}}}^{-3}.
-\end{align}
-For WASP-12b, we instead can solve for
-\begin{align}
-    \frac{m_{\rm p}^{3/2}}{a_{\rm p}^{9/2}}
-        &= 4\frac{2k_2}{Q} \frac{M_\star^3}{m^{3/2}}
-        \p{\frac{R}{a^2}}^{9/2}\frac{1}{\sin I \sqrt{\cos I}}
-        \p{\frac{k}{k_{\rm q}}}^{-1/2},\\
-    \frac{m_{\rm p}}{a_{\rm p}^3}
-        &\gtrsim 0.0002 \;\mathrm{kg/m^3}
-            \p{\frac{2k_2/Q}{10^{-7}}}^{2/3}
-            \p{\frac{M_\star}{1.36 M_{\odot}}}^{2}
-            \p{\frac{m}{1.41 M_{\rm J}}}^{-1}
-            \p{\frac{R}{1.89R_{\rm J}}}^{3}
-            \p{\frac{a}{0.023\;\mathrm{AU}}}^{-6}
-            \p{\frac{1}{\sin I \sqrt{\cos I}}}^{2/3}.
-\end{align}
-If WASP-12b is in tCE2, then this must be satisfied by the perturber.
-
-However, recall here that $I$ should really be the angle between $\bm{L}$ and
-$\bm{L}_{\rm tot} = \bm{L} + \bm{L}_{\rm out}$. When $L \gg L_{\rm out}$ as in
-this case, we must reduce $\sin I = (L_{\rm out} / L) \sin I_{\rm tot}$, where
-$I_{\rm tot}$ is the mutual inclination between the orbits. For circular orbits
-and small $I_{\rm tot}$, we can write
-\begin{align}
-    \frac{L_{\rm out}}{L} \approx{}& \frac{m_{\rm p}}{m}
-            \sqrt{\frac{a_{\rm p}}{a}}\nonumber\\
-        &= 0.132,\\
-    \p{\frac{m_{\rm p}}{40 M_{\oplus}}}\p{\frac{a_{\rm
-        p}}{0.05\;\mathrm{AU}}}^{-3} \gtrsim {}& 0.4
-            \p{\frac{2k_2/Q}{10^{-7}}}^{2/3}
-            \p{\frac{M_\star}{1.36 M_{\odot}}}^{2}
-            \p{\frac{m}{1.41 M_{\rm J}}}^{-1}
-            \p{\frac{R}{1.89R_{\rm J}}}^{3}\nonumber\\
-        &\times \p{\frac{a}{0.023\;\mathrm{AU}}}^{-6}
-            \p{\frac{m}{m_{\rm p}} \sqrt{\frac{a}{a_{\rm p}}}
-                \frac{1}{\sin I_{\rm tot}}}^{2/3},\\
-    \p{\frac{m_{\rm p}}{40 M_{\oplus}}}^{5/3}\p{\frac{a_{\rm
-        p}}{0.05\;\mathrm{AU}}}^{-8/3} \gtrsim {}& 1.5
-            \p{\frac{2k_2/Q}{10^{-7}}}^{2/3}
-            \p{\frac{M_\star}{1.36 M_{\odot}}}^{2}
-            \p{\frac{m}{1.41 M_{\rm J}}}^{-1}
-            \p{\frac{R}{1.89R_{\rm J}}}^{3}\nonumber\\
-        &\times \p{\frac{a}{0.023\;\mathrm{AU}}}^{-6}
-            \p{\frac{1}{\sin I_{\rm tot}}}^{2/3}.
-\end{align}
-
-What is the corresponding RV signal of such a planet? The RV signal in the star
-is given as a velocity, which is just $n_{\rm p} \times a_{\rm p}\frac{m_{\rm
-p}}{M_{\star}}$. Including the projection effect by an angle $i$, we should find
-that
-\begin{align}
-    \text{RV semi-amplitude} &\approx
-            n_{\rm p}a_{\rm p}\frac{m_{\rm p}}{M_{\star}} \sin i,\\
-        &\approx 10\;\mathrm{m/s} \frac{\sin i}{1/\sqrt{2}}
-\end{align}
-This is in agreement with Fig 3 of Millholland's plot.
-
 \subsection{Dissipating Disk: $\theta_f$ Distribution}
 
 Consider if $\eta$ crosses $\eta_c$ with $\eta(t = 0) > \eta_c$, and there is no
@@ -1981,6 +1858,379 @@ the five possible trajectories, we have the following transitions:
         \argmax A_2(\eta)$, such that $A_2$ is expanding during the first
         separatrix encounter. The bound on this is not exactly analytic though.
 \end{itemize}
+
+\section{Paper Discussion Section Calculations}
+
+\subsection{Compact Multi-Planet Systems}
+
+\subsubsection{Our calculation}
+
+We focus on the USP regime. In the notation of the paper, we need
+\begin{align}
+    1
+        &\approx \frac{2n / \Omega_{\rm s} - \cos \theta
+            }{\abs{g}t_{\rm s}\sin I}.
+\end{align}
+One tricky thing about this calculation is that $\eta$ depends on $\Omega_{\rm
+s}$ which depends on $\cos \theta$ which depends on $\eta$:
+\begin{align}
+    \eta &= \eta_{\rm sync} \frac{n}{\Omega_{\rm s}},\\
+    \frac{n}{\Omega_{\rm s}} &= \frac{1 + \cos^2\theta}{2 \cos \theta},\\
+    \cos \theta &\approx \frac{\eta \cos I}{1 + \eta \sin I}.
+\end{align}
+This requires that
+\begin{align}
+    \frac{\eta}{\eta_{\rm sync}} &\approx \frac{1 + \eta \sin I
+        }{2\eta \cos I},\\
+    2\eta^2 \cos I &\approx \eta_{\rm sync} + \eta_{\rm sync}\eta \sin I,\\
+    \eta &= \frac{\eta_{\rm sync}\sin I + \sqrt{
+        \eta_{\rm sync}^2 \sin^2 I + 8\cos I \eta_{\rm sync}}}{
+            4 \cos I}.
+\end{align}
+It proves sufficient to use the simpler form of this:
+\begin{align}
+    \eta &\approx \sqrt{\frac{\eta_{\rm sync}}{2\cos I}},\\
+    t_{\rm s, c} &= \frac{2n / \Omega_{\rm s}}{\abs{g}\sin I},\\
+        &= \frac{2}{\abs{g}\sin I\sqrt{2\eta_{\rm sync} \cos I}}.
+\end{align}
+Thus, we can continue to evaluate laboriously:
+\begin{align}
+    \frac{1}{t_{\rm s, c}} &= \abs{g}\sin I \sqrt{\frac{\eta_{\rm sync} \cos
+        I}{2}},\\
+    g &= \frac{3m_p}{4M_{\star}}\p{\frac{a}{a_{\rm p}}}^3 n\cos I,\\
+    \frac{1}{t_{\rm s}} &= \frac{1}{4k}\frac{3k_2}{Q} \frac{M_{\star}}{m}
+        \p{\frac{R}{a}}^3 n,\\
+    \eta_{\rm sync} &= \s{\frac{3m_p}{4M_{\star}}\p{\frac{a}{a_{\rm p}}}^3 n
+        \cos I}
+        \Bigg/ \s{\frac{3k_q}{2k} \frac{M_\star}{m}\p{\frac{R}{a}}^3 n},\\
+        &= \frac{m_pm}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^3
+            \p{\frac{a}{R}}^3 \cos I,\\
+    \frac{1}{4k}\frac{3k_2}{Q}\frac{M_\star}{m}\p{\frac{R}{a}}^3
+        &= \frac{3m_{\rm p}}{4M_{\star}}\p{\frac{a}{a_{\rm p}}}^3
+            \cos I \sin I \sqrt{\frac{\cos I}{2}}
+            \sqrt{\frac{m_pm}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^3
+                \p{\frac{a}{R}}^3 \frac{k}{k_q}\cos I},\\
+        &= \frac{3}{8}\sqrt{\frac{m_{\rm p}^3m}{M_\star^4}
+            \frac{a^{12}}{a_{\rm p}^9 R^3}
+            \frac{k}{k_{\rm q}}}
+            \sin I \cos^2 I,\\
+    a^9 &= \frac{2k_2}{Q} \frac{M_\star^3}{(mm_{\rm p})^{3/2}}
+        \p{Ra_{\rm p}}^{9/2}\frac{1}{\sin I \cos^2 I}
+        \p{\frac{k}{k_{\rm q}}}^{-1/2},\\
+% (1e-3 * (Msun / (8 Mearth))^3 * ((2 Rearth) * (0.05 AU))^(9/2))^(1/9) / (1 AU)
+% = 0.033198
+    a_{\rm break} &\approx 0.033 \;\mathrm{AU}
+        \p{\frac{2k_2/Q}{10^{-3}}}^{1/9}
+        \p{\frac{M_\star}{M_{\odot}}}^{1/3}
+        \p{\frac{8M_{\oplus}}{m}}^{-1/3}
+        \p{\frac{R}{2R_{\oplus}}}^{1/2}
+        \p{\frac{a_{\rm p}}{0.05\;\mathrm{AU}}}^{1/2}
+        \p{\frac{1}{\sin I \cos^2 I}}^{1/9},\\
+% ((8 Mearth)^2 / (Msun)^2) / 2 * (1.3)^(-2) * ((0.035 AU) / (2 Rearth))^3
+% = 0.011845
+    \eta_{\rm sync} &= \frac{m_pm}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^3
+            \p{\frac{a}{R}}^3,\\
+        &= 0.012 \p{\frac{k}{k_{\rm q}}}
+                \p{\frac{m}{8 M_{\oplus}}}^2
+                \p{\frac{M_\star}{M_{\odot}}}^{-2}
+            \p{\frac{a}{0.035 \;\mathrm{AU}}}^{3}
+                \p{\frac{P_{j + 1} / P_j}{1.3}}^{-2}
+                \p{\frac{R}{2R_{\oplus}}}^{-3}.
+\end{align}
+
+\subsubsection{Revised Calculation following Millholland more closely}
+
+We consider a detailed calculation of the $\eta_{\rm sync}$ for an inner planet
+of a compact, multi-planet system, with an eye towards applying it to the
+Millholland runaway USP formation scenario. In this scenario, $\rdil{\uv{s}}{t}$
+does not change, and is still given by
+\begin{align}
+    \rd{\uv{s}}{t} &= \omega_{\rm sl}\p{\uv{s} \cdot \uv{l}}
+            \p{\uv{s} \times \uv{l}},\\
+    \omega_{\rm sl} \equiv \alpha &= \frac{3k_q}{2k}\frac{M_\star}{m}
+        \p{\frac{R}{a}}^3 \Omega_{\rm s},\\
+        &\approx n10^{-3} \p{\frac{M_{\star}}{M_{\odot}}}
+            \p{\frac{m}{8 M_{\oplus}}}^{-1}
+            \p{\frac{R}{2 R_{\oplus}}}^3
+            \p{\frac{a}{0.035\;\mathrm{AU}}}^3
+            \p{\frac{\Omega_{\rm s}}{n}}.
+\end{align}
+Note, for future reference, $3k_q = k_2$.
+
+On the other hand, the evolution of $\uv{l}$ must be done more carefully, using
+secular L-L theory. If we follow Millholland's formulation (which basically
+includes a $J_2$ precession term from the star on top of the LL theory), we find
+that the angular momentum vectors (inclination vectors) evolve by the matrix
+$\bm{B}$, which has entries
+\begin{align}
+    B_{jj} ={}& -n_j\s{
+        \frac{3}{2}J_{2\star} \p{\frac{R_\star}{a_j}}^2
+        - \frac{27}{8}J_{2\star}^2\p{\frac{R_\star}{a_j}}^4
+        + \frac{1}{4}\sum\limits_{k \neq j}
+            \frac{M_{p, k}}{M_\star + M_{p, j}}
+            \alpha_{jk} \bar{\alpha}_{jk}
+            b_{3/2}^{(1)}\p{\alpha_{jk}}},\\
+        \approx{}&
+            -n_{j}\Bigg(\frac{3}{2}10^{-3}\frac{1}{60}
+                \p{\frac{k_{2\star}}{0.2}}
+                \p{\frac{P_{\star}}{\mathrm{day}}}^{-2}
+                \p{\frac{R_{\star}}{R_{\odot}}}^5
+                \p{\frac{M_\star}{M_{\odot}}}^{-1}
+                \p{\frac{a_j}{0.035\;\mathrm{AU}}}^2\nonumber\\
+            &+ \frac{1}{4} \p{2 \times 10^{-5}}
+                \sum\limits_{k \neq j}
+                \p{\frac{M_{p, k}}{8 M_{\oplus}}}
+                \p{\frac{M_\star}{M_{\odot}}}^{-1}
+                \alpha_{jk}\bar{\alpha}_{jk}b_{3/2}^{(1)}\p{\alpha_{jk}}
+            \Bigg).
+            &\\
+    B_{jk} ={}& \frac{1}{4}n_j
+            \frac{M_{p, k}}{M_\star + M_{p, j}}
+            \alpha_{jk} \bar{\alpha}_{jk}
+            b_{3/2}^{(1)}\p{\alpha_{jk}},\\
+        ={}& n_j\frac{1}{4} \p{2 \times 10^{-5}}
+                \p{\frac{M_{p, k}}{8 M_{\oplus}}}
+                \p{\frac{M_\star}{M_{\odot}}}^{-1}
+                \alpha_{jk}\bar{\alpha}_{jk}b_{3/2}^{(1)}\p{\alpha_{jk}}.
+\end{align}
+Above, $\alpha_{jk} = a_{\min} / a_{\max}$, $\bar{a}_{jk} = \min(\alpha_{jk},
+1)$, and, in the case of $j < k$:
+\begin{equation}
+    \alpha_{jk}\bar{\alpha}_{jk}b_{3/2}^{(1)}
+        \approx 3\p{\frac{a_j}{a_k}}^3 + \frac{43}{8}\p{\frac{a_j}{a_k}}^5
+            + \dots
+\end{equation}
+
+For the fiducial values, the $J_2$ term is mildly dominant in the diagonal
+terms, but as the Millholland paper uses $J_2 = 10^{-4}$ intsead, we see that it
+is mildly subdominant, and we will ignore it here. Calling $n \equiv n_0$ the
+mean motion of the innermost planet, we can express
+\begin{align}
+    \frac{B_{jj}}{n \p{2 \times 10^{-5}}}
+        \p{\frac{m}{8 M_{\oplus}}}^{-1}
+        \p{\frac{M_\star}{M_{\odot}}}
+        &= -\p{\frac{P_j}{P_{j + 1}}}^{j} \sum\limits_{k \neq j}
+            \frac{3}{4}\p{\frac{P_j}{P_{j+1}}}^{2(k - j)q/3},\\
+    \frac{B_{jk}}{n \p{2 \times 10^{-5}}}
+        \p{\frac{m}{8 M_{\oplus}}}^{-1}
+        \p{\frac{M_\star}{M_{\odot}}}
+        &= \p{\frac{P_j}{P_{j + 1}}}^{j}
+            \frac{3}{4}\p{\frac{P_j}{P_{j+1}}}^{2|k - j|q/3}.
+\end{align}
+Here, $q = 3$ when $j < k$ else $2$. For instance, for a 3 planet system,
+defining the period ratio $< 1$ to be $\gamma$:
+\begin{equation}
+    \bm{B} = n\p{1.5 \times 10^{-5}}
+        \p{\frac{m}{8 M_{\oplus}}}
+        \p{\frac{M_\star}{M_{\odot}}}^{-1}
+        \begin{bmatrix}
+            -(\gamma^2 + \gamma^4) & \gamma^2 & \gamma^{4}\\
+            \gamma^{7/3} & -(\gamma^{7/3} + \gamma^3) & \gamma^3\\
+            \gamma^{14/3} & \gamma^{10/3} & -\p{\gamma^{14/3} - \gamma^{10/3}}
+    \end{bmatrix}
+\end{equation}
+Empirically, we find that the most negative eigenvalue of the matrix scales with
+$\gamma^{2}$, or $\p{a / a_{\rm p}}^{3}$, indeed, as expected. Approximately the
+maximum eigenvalue is $2\p{\frac{a_j}{a_{j + 1}}}^3$. Thus, we arrive at
+\begin{equation}
+    g_{\max} \approx \cos I 10^{-5}n\p{\frac{m}{8M_{\oplus}}}
+        \p{\frac{M_{\star}}{M_{\odot}}}^{-1}\p{\frac{P_{j + 1} /
+        P_j}{1.5}}^{-2}.
+\end{equation}
+Indeed, we thus see that $\eta_{\rm sync} \sim 10^{-2}$, as we calculated
+before.
+
+\subsection{WASP-12b}
+
+\subsubsection{$\eta_{\rm sync}$}
+
+First, we calculate the $g$ precession frequency correctly. Let's just use
+vector notation for now, and consider the mutual precession of $\uv{l}$ and
+$\uv{l}_{\rm p}$:
+\begin{align}
+    \rd{\uv{l}}{t} &= \omega_{\rm lp}\p{\uv{l} \cdot \uv{l}_{\rm p}}
+        \p{\uv{l} \times \uv{l}_{\rm p}},\\
+    \rd{\uv{l}_{\rm p}}{t} &= -\frac{L}{L_{\rm p}}\omega_{\rm lp}\p{\uv{l} \cdot
+        \uv{l}_{\rm p}} \p{\uv{l} \times \uv{l}_{\rm p}}.
+\end{align}
+It is clear that the conserved quantity is $\bm{J} = \bm{L} + \bm{L}_{\rm p}$,
+so we rewrite
+\begin{align}
+    \rd{\uv{l}}{t} &= \omega_{\rm lp} \cos I\p{\uv{l} \times
+            \frac{\bm{L} + \bm{L}_{\rm p}}{L_{\rm p}}}\nonumber\\
+        &= \omega_{\rm lp} \cos I
+            \frac{J}{L_{\rm p}}\p{\uv{l} \times \uv{j}}.
+\end{align}
+Thus, the actual precession frequency to be used should be $g = \omega_{\rm lp}
+\cos I \p{J / L_{\rm p}}$. For future reference, we also have that $\sin i /
+L_{\rm p} = \sin i_{\rm p} / L = \sin I / J$, note from Fig.~\ref{fig:angles}.
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \filldraw (0,0) circle(1pt);
+        \draw[->] (0, 0)--(-1.2, 5);
+        \node[above left] at (-1.2, 5) {$L$};
+        \draw[->] (0, 0)--(1.2, 0.2);
+        \node[above right] at (1.2, 0.2) {$L_{\rm p}$};
+        \draw[->] (0, 0)--(0, 5.2);
+        \node[above] at (0, 5.2) {$J$};
+        \draw[->, dashed] (-1.2, 5) -- (0, 5.2);
+        \node[above] at (-0.2, 1.6) {$i$};
+        \node[above right] at (0, 0) {$i_{\rm p}$};
+        \node[below left] at (0, 5.2) {$i_{\rm p}$};
+        \node[right] at (-1.2, 4.8) {$I$};
+    \end{tikzpicture}
+    \caption{Picture of angles.}\label{fig:angles}
+\end{figure}
+
+What then is $\eta_{\rm sync}$? Well, in the case of WASP-12b, $J / L_{\rm p}
+\approx L / L_{\rm p} \approx (m/m_{\rm p})\sqrt{a / a_{\rm p}}$
+\begin{align}
+    \eta_{\rm sync} &\approx
+            \frac{k}{k_q}\frac{m_pm}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^3
+            \p{\frac{a}{R}}^3\frac{L}{L_{\rm p}}\cos I\nonumber\\
+        &\approx
+            \frac{k}{k_q}\frac{m^2}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^{7/2}
+            \p{\frac{a}{R}}^3\cos I\nonumber\\
+        &\approx
+% 1/2 * (1.41 Mjup)^2 / (1.36 Msun)^2 * ((0.023 AU) / (1.89 Rjup))^3 * (0.023 / 0.05)^(3.5)
+            \scinot{5}{-4} \cos I\p{\frac{m}{1.41M_J}}^2
+                \p{\frac{M_\star}{1.36M_{\odot}}}^{-2}
+                \p{\frac{a}{0.023\;\mathrm{AU}}}^{13/2}
+                \p{\frac{a_{\rm p}}{0.05\;\mathrm{AU}}}^{-7/2}
+                \p{\frac{R}{1.89R_{J}}}^{-3}.
+\end{align}
+
+\subsubsection{Constraint: Tidal Decay Rate}
+
+We compute $\dot{a} / a$ for tidal dissipation in the HJ\@. Note here that
+$M_\odot R_{\rm J}^5/M_J \approx 10 M_{\rm J} / M_\odot R_{\rm J}^5$, and so if
+$Q \lesssim Q_\star$ then this is the dominant source of orbital decay.
+According to the Millholland paper, $Q / Q_\star \approx 0.1$, and so planetary
+tides can dominate if the planetary obliquity is substantial compared to the
+stellar obliquity (and indeed, the stellar tidal dissipation alone struggles to
+explain the boserved orbital decay). We thus obtain:
+\begin{align}
+    \frac{\dot{a}}{a} &= \frac{3k_2}{Q}\frac{M_\star}{m} \p{\frac{R}{a}}^5n
+            \p{1 - \frac{\Omega_{\rm s}}{n}\cos \theta},\\
+% 1 / (1.5 * 1e-7 * (1.36 Msun) / (1.41 Mjup) * ((1.89 Rjup) / (0.023 AU))^5 * (G * (1.36 Msun) / (0.023 AU)^3)^(1/2) * (1 yr))
+        &= \frac{1}{\scinot{3.8}{6}\;\mathrm{yr}}
+            \p{\frac{2k_2/Q}{10^{-6}}}
+            \p{\frac{M_\star}{1.36 M_{\odot}}}^{3/2}
+            \p{\frac{m}{1.41M_J}}^{-1}
+            \p{\frac{R}{1.89R_j}}^5
+            \p{\frac{a}{0.023\;\mathrm{AU}}}^{-13/2}
+            \p{1 - \frac{\Omega_{\rm s}}{n}\cos \theta}.
+\end{align}
+Note that for $a = 0.038\;\mathrm{AU}$, the tidal decay rate is $\sim
+\mathrm{Gyr}$. Since $\dot{a} \propto a^{-11/2}$, $a(t) \sim (C - t\dot{a} /
+a)^{2/13}$ for some constant $C$, so we see that we really can't start afford to
+start with the HJ any further out than $\sim 0.038\;\mathrm{AU}$
+
+\subsection{RV Constraint}
+
+What is the corresponding RV signal of a perturber? The RV signal in the star
+is given as a velocity, which is just $n_{\rm p} \times a_{\rm p}\frac{m_{\rm
+p}}{M_{\star}}$. Including the projection effect by an angle $i$, we should find
+that
+\begin{align}
+    \text{RV semi-amplitude} &\approx
+            n_{\rm p}a_{\rm p}\frac{m_{\rm p}}{M_{\star}} \sin i,\\
+%(G * (1.36 Msun) / (0.05 AU))^(1/2) * (50 Mearth) / (1.36 Msun) / 2^(1/2)
+        &\approx 12\;\mathrm{m/s}
+            \p{\frac{M_\star}{1.36M_{\odot}}}^{-1/2}
+            \p{\frac{a_{\rm p}}{0.05\;\mathrm{AU}}}^{-1/2}
+            \p{\frac{m_{\rm p}}{50M_{\oplus}}}
+            \frac{\sin i}{1/\sqrt{2}}
+\end{align}
+
+\subsubsection{Constraint of being in tCE2}
+
+In order for WASP-12b to be in tCE2, we require that:
+
+\begin{align}
+    \frac{1}{t_{\rm s}} &\lesssim \abs{g} \sin I
+        \sqrt{\frac{\eta_{\rm sync}\cos I}{2}},\\
+    \frac{1}{4k}\frac{3k_2}{Q}\frac{M_\star}{m}\p{\frac{R}{a}}^3
+        &\lesssim \frac{L}{L_{\rm p}}
+            \frac{3m_{\rm p}}{4M_{\star}}\p{\frac{a}{a_{\rm p}}}^3
+            \sin I \cos I\sqrt{\frac{\cos I}{2}}
+            \sqrt{\frac{m^2}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^{7/2}
+                \p{\frac{a}{R}}^3 \frac{k}{k_q}\cos I}\nonumber\\
+        &\lesssim \frac{3m}{4M_{\star}}\p{\frac{a}{a_{\rm p}}}^{7/2}
+            \sin I \cos I\sqrt{\frac{\cos I}{2}}
+            \sqrt{\frac{m^2}{2M_\star^2}\p{\frac{a}{a_{\rm p}}}^{7/2}
+                \p{\frac{a}{R}}^3 \frac{k}{k_q}\cos I}\nonumber\\
+    \p{\frac{a_{\rm p}}{a}}^{21/4} &\lesssim
+        \frac{3m}{4M_{\star}}
+            \frac{4k}{3}\p{\frac{2k_2}{Q}}^{-1}
+            \frac{m}{M_{\star}}
+            \p{\frac{a}{R}}^3
+            \sin I \cos^2 I
+            \sqrt{\frac{m^2}{M_\star^2}
+                \p{\frac{a}{R}}^3 \frac{k}{k_q}}\nonumber\\
+% (3/4 * ((1.41 * Mjup) / (1.36 * Msun))^3 * (1/3) * 1e6 * ((0.023 AU) / (1.89 Rjup))^(9/2))^(4/21)
+% = 3.3469
+    \frac{a_{\rm p}}{a} &\lesssim 3.3
+            \p{\frac{m}{1.41 M_J}}^{12/21}
+            \p{\frac{M_\star}{1.36 M_{\odot}}}^{-12/21}
+            \p{\frac{2k_2/Q}{10^{-6}}}^{-4/21}
+            \p{\frac{a}{0.023\;\mathrm{AU}}}^{6/7}
+            \p{\frac{R}{1.89 R_J}}^{-6/7}.
+\end{align}
+Indeed, this is not a very difficult constraint to satisfy. If anything, it is
+harder to satisfy the angular momentum constraint, that
+\begin{equation}
+    \frac{L}{L_{\rm p}} = \frac{m}{m_{\rm p}}\sqrt{\frac{a}{a_{\rm p}}} \gg 1.
+\end{equation}
+
+\subsubsection{Constraint: Initial Orbital Stability}
+
+With the constraint of being in tCE2 seeming relatively easy to satisfy, we also
+require that the system be initially stable, which sets a minimum $a_{\rm p}$.
+If the Hill radius criterion is used:
+\begin{equation}
+    a_2 - a_1 > 2\sqrt{3}\frac{a_1 + a_2}{2}\p{\frac{m_1 + m_2}{3m_0}}^{1/3},
+\end{equation}
+then we can calculate in the regime $m_2 \ll m_1$ to find:
+\begin{equation}
+    a_{\rm p} \gtrsim 0.049\;\mathrm{AU}.
+\end{equation}
+
+\subsubsection{Putting it all together}
+
+Thus, the system must satisfy all of: (i) starts with an initial tidal decay
+rate $\lesssim \;\mathrm{Gyr}$, (ii) the present-day tCE2 must be stable to
+tidal dissipation, and (iii) cannot have a perturber above the RV noise
+threshold. These constraints together give that: (i) the initial $a_{\rm i}
+\lesssim 0.038\;\mathrm{AU}$, (ii) the perturber $a_{\rm p} \lesssim
+0.076\;\mathrm{AU}$, and, if the perturber distance is maximal, (iii) $m_{\rm p}
+\lesssim 80 M_{\oplus}$.
+
+We verify that the angular momentum ratio of the perturber is indeed negligible:
+$L / L_{\rm p} \approx 3$, which is marginally satisfied (and is better
+satisfied if $a_{\rm p}$ is smaller).
+
+Finally, re-evaluating $\eta_{\rm sync}$ at the start of the orbital decay for
+the most optimistic initial conditions, where $a_{\rm p} = 0.049\;\mathrm{AU}$
+and $a = 0.038\;\mathrm{AU}$, we find:
+% 1/2 * (1.41 Mjup)^2 / (1.36 Msun)^2 * ((0.038 AU) / (1.89 Rjup))^3 * (0.038 / 0.049)^(3.5)
+% 0.016
+\begin{equation}
+    \eta_{\rm sync} = 0.016 \cos I\p{\frac{m}{1.41M_J}}^2
+            \p{\frac{M_\star}{1.36M_{\odot}}}^{-2}
+            \p{\frac{a}{0.038\;\mathrm{AU}}}^{13/2}
+            \p{\frac{a_{\rm p}}{0.049\;\mathrm{AU}}}^{-7/2}
+            \p{\frac{R}{1.89R_{J}}}^{-3}.
+\end{equation}
+% 1/2 * (Mjup)^2 / (Msun)^2 * ((0.04 AU) / Rjup)^3 * (0.04 / 0.08)^(3.5)
+Note, if we use Dong's values that we indeed get $\eta_{\rm sync} = 0.025$, in
+agreement. Note that if the HJ was initially less inflated, the tidal decay rate
+constraint implies that $R^5 / a^{13/2}$ must be a constant, thus, using a
+smaller $R$ actually even \emph{further} decreases $\eta_{\rm sync}$ Thus, even
+with the most optimistic parameter choices, we see that the formation
+probability of WASP-12b due to weak tidal friction out of an initially isotropic
+spin is quite improbable.
 
 \end{document}
 

@@ -67,48 +67,89 @@ planet-star interactions
 
 \section{Introduction}\label{s:intro}
 
-\begin{itemize}
-    \item Studying planetary obliquities (define) is important. Cassini States
-        are key. More introduction.
+% (i) What is obliquity? Why is it important, esp in exoplanetary systems?
+% (ii) what are the dynamics of obliquity?
+% (iii) Introduce Paper I
 
-    \item Resonance capture via separatrix crossing was first considered by
-        \citep{henrard1982} for non-dissipative perturbations
-        \citep[e.g.][]{su2020}. However, tidal friction is dissipative, so this
-        formalism does not apply. We generalize this calculation and show that
-        it reproduces results.
-\end{itemize}
+It is well recognized that the obliquity of a planet, the angle between the spin
+and orbital axes, likely reflects its dynamical history. In our Solar
+System, planetary obliquities (hereafter just ``obliquities'') range from
+$3.1^\circ$ for Jupiter to $26.7^\circ$ for Saturn to $98^\circ$ for Uranus. The
+obliquities of exoplanets are challinging to measure, and so far only loose
+constraints have been obtained for the obliquity of a faraway ($\gtrsim
+50\;\mathrm{AU}$) planetary-mass companion \citep{bryan2020obliquity}.
+Nevertheless, there are prospects for better constraints on exoplanetary
+obliquities in the coming years, such as using high-resolution spectroscopy to
+measure $v\sin i$ for a planet \citep{snellen2014fast, bryan2018constraints} and
+using high-precision photometry to measure the asphericity of a planet
+\citep{seager2002constraining}. Substantial obliquities are of increasing
+theoretical interest for their proposed role in explaining peculiar thermal
+phase curves \citep[see e.g.][]{millholland_signatures, ohno_infer_obl}, in
+enhancing tidal dissipation in hot Jupiters \citep{millholland_wasp12b} and
+super-Earths \citep{millholland2019obliquity}, and in the formation of
+ultra-short-period planets \citep[USPs;][]{millholland2020formation} .
 
-In Section XXX\dots
+While nonzero obliquities are sometimes attributed to one or many giant impacts
+\citep[e.g.]{original_gi, benz1989tilting, korycansky1990one, morbidelli_gi},
+some studies suggest that large planetary obliquities may be due to encountering
+spin-orbit resonances. In this scenario, a rotating planet is subjected to a
+gravitational torque from its host star, making its spin axis precess around its
+orbital (angular momentum) axis. At the same time, the orbital axis precesses
+around another fixed axis under the gravitational influence of other masses in
+the system, e.g.\ additional planets or a protoplanetary disk. When the two
+precession frequencies become commensurate, a resonance can occur that excites
+the obliquity to large values. This model is known as ``Colombo's Top'' after
+the seminal work of \citet{colombo1966}, and subsequent works have investigated
+the rich dynamics of this system \citep{peale1969, peale1974possible,
+ward1975tidal, henrard1987}. Such resonances have been invoked to explain the
+obliquities of both the Solar System gas giants \citep{ward2004I, ward2004II,
+ward_jupiter, vokrouhlicky2015tilting, saillenfest2020future,
+saillenfest2021large} and the ice giants \citep{hamilton_tilting_ice}.
+
+In a previous paper \citep[hereafter Paper I]{su2020}, we presented a systematic
+and general investigation of the dynamics of Colombo's Top when the two
+precession frequencies of the system evolve through a commensurability. We
+applied our results to investigate the generation of exoplanetary obliquities
+via a dissipating protoplanetary disk. However, our model did not consider the
+effect of additional torques in the system. Often, tidal dissipation in the
+planet both causes the planet's spin frequency to approach its orbital frequency
+and drives the planet's spin axis towards its orbital axis, complicating the
+evolution of Colombo's Top \citep{fabrycky_otides, peale2008obliquity}. In this
+paper, we extend the approach of Paper I to include tidal dissipation. Our new
+results include a simplified formulation of the effect of tidal dissipation on
+the equilibria of the system (Cassini States) and a novel, complete description
+of the resonance encounter process.
+
+In Section~\ref{s:theory}, we briefly review Colombo's Top. In
+Section~\ref{s:toy_model}, we investigate the effect of adding a simple
+alignment torque to Colombo's Top. The resulting dynamics are illustrative of
+the new behavior that emerges due to tidal dissipation. In
+Section~\ref{s:full_tide_prob}, we solve for the dynamics of the system
+including a realistic model of tidal dissipation. In Section~\ref{s:summary}, we
+apply our results to three astrophysical scenarios of interest: (i) a super
+Earth with a cold Jupiter companion, (ii) the formation of USPs, and (iii) the
+rapid orbital decay of WASP-12b. We summarize and discuss in
+Section~\ref{s:summary}.
 
 \section{Spin Evolution Equations and Cassini States: Review}\label{s:theory}
 
-In this section, we first briefly lay out the spin dynamics of the planet,
-introducing the Cassini State spin-orbit resonance \citep[for more details,
-see][]{su2020}. We then introduce the weak friction theory of equilibrium tides
-used in this work \citep{lai2012}. While many different tidal effects may
-dominate in different planetary systems, our qualitative conclusions do not
-depend on the specific form of the tidal dissipation, so we use the classic weak
-friction theory for simplicity.
-
-\subsection{Spin Dynamics in the Absence of Tides}\label{ss:theory_spin}
-
-\subsubsection{Equations of Motion}
-
-We consider a star of mass $M_\star$ hosting an inner oblate planet of mass $m$
-and radius $R$ on a circular orbit with semi-major axis $a$ and an outer
-perturber of mass $m_{\rm p}$ on a circular orbit with semi-major axis $a_{\rm
-p}$. We assume that the two orbits are mildly misaligned with mutual inclination
-$I$. Denote $\bm{S}$ the spin angular momentum and $\bm{L}$ the orbital angular
-momentum of the planet, and $\bm{L}_{\rm p}$ the angular momentum of the
-perturber. The corresponding unit vectors are $\uv{s} \equiv \bm{S} / S$,
-$\uv{l} \equiv \bm{L} / L$, and $\uv{l}_{\rm p} \equiv \bm{L}_{\rm p} / L_{\rm
-p}$. The spin axis $\uv{s}$ of the planet tends to precess around its orbital
-(angular momentum) axis $\uv{l}$, driven by the gravitational torque from the
-host star acting on the planet's rotational bulge. On the other hand, $\uv{l}$
-and the disk axis $\uv{l}_{\rm p}$ precess around each other due to
-gravitational interactions. We assume $S \ll L \ll L_{\rm p}$, so $\uv{l}_{\rm
-p}$ and $\uv{l}$ are nearly constant. The equations of motion for $\uv{s}$ and
-$\uv{l}$ in this limit are \citep{anderson2018teeter, su2020}
+In this section, we briefly introduce the spin dynamics of the planet (for a
+more detailed treatment, see Paper I). We consider a star of mass $M_\star$
+hosting an inner oblate planet of mass $m$ and radius $R$ on a circular orbit
+with semi-major axis $a$ and an outer perturber of mass $m_{\rm p}$ on a
+circular orbit with semi-major axis $a_{\rm p}$. We assume that the two orbits
+are mutually inclined by the angle $I$. Denote $\bm{S}$ the spin angular
+momentum and $\bm{L}$ the orbital angular momentum of the planet, and
+$\bm{L}_{\rm p}$ the angular momentum of the perturber. The corresponding unit
+vectors are $\uv{s} \equiv \bm{S} / S$, $\uv{l} \equiv \bm{L} / L$, and
+$\uv{l}_{\rm p} \equiv \bm{L}_{\rm p} / L_{\rm p}$. The spin axis $\uv{s}$ of
+the planet tends to precess around its orbital (angular momentum) axis $\uv{l}$,
+driven by the gravitational torque from the host star acting on the planet's
+rotational bulge. On the other hand, $\uv{l}$ and the disk axis $\uv{l}_{\rm p}$
+precess around each other due to gravitational interactions. We assume $S \ll L
+\ll L_{\rm p}$, so $\uv{l}_{\rm p}$ and $\uv{l}$ are nearly constant. The
+equations of motion for $\uv{s}$ and $\uv{l}$ in this limit are
+(\citealp{anderson2018teeter}, Paper I)
 \begin{align}
     \rd{\uv{s}}{t}
         &= \omega_{\rm sl}\p{\uv{s} \cdot \uv{l}}\p{\uv{s} \times \uv{l}}
@@ -127,12 +168,12 @@ where
         n.\label{eq:wlp}
 \end{align}
 In Eq.~\eqref{eq:wsl}, $\Omega_{\rm s}$ is the spin frequency of the inner
-planet, $I = k mR^2$ (with $k$ a constant) is its moment of inertia and $J_2 =
-k_{\rm q}\Omega_{\rm s}^2 (R^3/Gm)$ (with $k_{q}$ a constant) is its rotation-induced
-(dimensionless) quadrupole moment [for a body with uniform density, $k=0.4,
-k_{\rm q}=0.5$; for rocky planets, $k\simeq 0.2$ and $k_{\rm q}\simeq 0.17$
-\citep[e.g.][]{lainey2016quantification} \textcolor{red}{? not sure}]. In other
-studies, $3k_{\rm q} / 2 k$ is often notated as $k_2 / 2C$
+planet, $\mathcal{I} = k mR^2$ (with $k$ a constant) is its moment of inertia
+and $J_2 = k_{\rm q}\Omega_{\rm s}^2 (R^3/Gm)$ (with $k_{q}$ a constant) is its
+rotation-induced (dimensionless) quadrupole moment [for a body with uniform
+density, $k=0.4, k_{\rm q}=0.5$; for rocky planets, $k\simeq 0.2$ and $k_{\rm
+q}\simeq 0.17$ \citep[e.g.][]{lainey2016quantification}]. In other studies,
+$3k_{\rm q} / 2 k$ is often notated as $k_2 / 2C$
 \citep[e.g.][]{millholland_disk}. In Eq.~\eqref{eq:wlp}, $n \equiv
 \sqrt{GM_\star/a^3}$ is the inner planet's orbital mean motion,  and we have
 assumed $a_{\rm p}\gg a$ and included only the leading-order (quadrupole)
@@ -140,7 +181,7 @@ interaction between the inner planet and perturber. Following standard notation,
 we define $\alpha = \omega_{\rm sl}$ and $g \equiv -\omega_{\rm 1p} \cos I$
 \citep[e.g.][]{colombo1966}.
 
-As in \citet{su2020}, we combine Eqs.~(\ref{eq:dsdt1}--\ref{eq:dldt1}) into a
+As in Paper I, we combine Eqs.~(\ref{eq:dsdt1}--\ref{eq:dldt1}) into a
 single equation by transforming into a frame rotating about $\uv{l}_{\rm p}$
 with frequency $g$. In this frame, $\uv{l}_{\rm p}$ and $\uv{l}$ are both fixed,
 and $\uv{s}$ evolves as:
@@ -152,22 +193,23 @@ and $\uv{s}$ evolves as:
 In this reference frame, we choose the coordinate system such that $\uv{z} =
 \uv{l}$ and $\uv{l}_{\rm p}$ lies in the $\uv{x}$-$\uv{z}$ plane. We describe
 $\uv{s}$ in spherical coordinates using the polar angle $\theta$, the planet's
-obliquity, and $\phi$, the precessional phase of $\uv{s}$ about $\uv{l}$.
+obliquity, and $\phi$, the precessional phase of $\uv{s}$ about $\uv{l}$,
+defined so that when $\phi = 0^\circ$, $\uv{l}_{\rm p}$ and $\uv{s}$ are on
+opposide sides of $\uv{l}$.
 
 The equilibria of Eq.~\eqref{eq:dsdt_rot} are referred to as \emph{Cassini
 States} \citep[CSs;][]{colombo1966, peale1969}. We follow the notation of
-\citet{su2020}, where the parameter
+Paper I, where the parameter
 \begin{equation}
     \eta \equiv -\frac{g}{\alpha},\label{eq:def_eta}
 \end{equation}
-is used. For a given value of $\eta$, there can be either two or four CSs, all
-of which require $\uv{s}$ lie in the plane of $\uv{l}$ and $\uv{l}_{\rm p}$.
-Following the standard nomenclature, $\uv{s}$ and
-$\uv{l}_{\rm p}$ are on opposite sides of $\uv{l}$ for CSs 1, 3, and 4, and are
-on the same side for CS2. We depart from the standard convention
-and simply label the CSs in spherical coordinates: figure~\ref{fig:cs_locs}
-shows the CS obliquities as a function of $\eta$. CS1 and CS4 do not exist when
-$\eta > \eta_{\rm c}$, where
+is introduced. For a given value of $\eta$, there can be either two or four CSs,
+all of which require $\uv{s}$ lie in the plane of $\uv{l}$ and $\uv{l}_{\rm p}$.
+Following the standard nomenclature, $\uv{s}$ and $\uv{l}_{\rm p}$ are on
+opposite sides of $\uv{l}$ for CSs 1, 3, and 4, and are on the same side for
+CS2. We depart from the standard convention and simply label the CSs in
+spherical coordinates: Figure~\ref{fig:cs_locs} shows the CS obliquities as a
+function of $\eta$. CS1 and CS4 do not exist when $\eta > \eta_{\rm c}$, where
 \begin{equation}
     \eta_{\rm c} \equiv \p{\sin^{2/3}\!I + \cos^{2/3}\!I}^{-3/2}.
         \label{eq:def_etac}
@@ -195,12 +237,11 @@ The Hamiltonian corresponding to Eq.~\eqref{eq:dsdt_rot} is
 Here, $\cos \theta$ and $\phi$ form a canonically conjugate pair of variables.
 Figure~\ref{fig:1contours} shows the level curves of this Hamiltonian for $I =
 20^\circ$, for which $\eta_{\rm c} \approx 0.574$ (Eq.~\ref{eq:def_etac}). When $\eta
-< \eta_{\rm c}$, CS4 exists and is a saddle point. The two trajectories
-originating and ending at CS4 are the only two infinite-period orbits in the
-phase space. Together, these two critical trajectories are referred to as the
-\emph{separatrix} and divide phase space into three zones. Trajectories in zone
-II librate about CS2 while those in zones I and III circulate. On the other
-hand, when $\eta > \eta_{\rm c}$, all trajectories circulate. When the
+< \eta_{\rm c}$, CS4 exists and is a saddle point. The infinite-period orbits
+originating and ending at CS4 form the \emph{separatrix} and divide phase space
+into three zones. $\phi$ librates for trajectories in zone II and circulates for
+trajectories in zones I and III\@. On the other hand, when $\eta > \eta_{\rm
+c}$, the separatrix is absent and all trajectories circulate. When the
 separatrix exists, we divide it into two curves: $\mathcal{C}_+$, the boundary
 between zones I and II, and $\mathcal{C}_-$, the boundary between zones II and
 III\@.
@@ -219,11 +260,11 @@ III\@.
 
 \section{Spin Evolution with Alignment Torque}\label{s:toy_model}
 
-In this section, we consider a simplified model of equilibrium tides that
-isolates the important new phenomenon presented in this paper. We assume that
-the spin magnitude of the planet is constant, so $\alpha$ and $g$ are both
-fixed, while the spin orientation $\uv{s}$ experiences an alignment torque
-towards $\uv{l}$ on the alignment timescale $t_{\rm al}$:
+In this section, we consider a simplified dissipative torque that isolates the
+important new phenomenon presented in this paper. We assume that the spin
+magnitude of the planet is constant, so $\alpha$ and $g$ are both fixed, while
+the spin orientation $\uv{s}$ experiences an alignment torque towards $\uv{l}$
+on the alignment timescale $t_{\rm al}$:
 \begin{equation}
     \p{\rd{\uv{s}}{t}}_{\rm tide}
         = \frac{1}{t_{\rm al}} \uv{s} \times \p{\uv{l} \times \uv{s}}.
@@ -238,31 +279,33 @@ can be written:
         - g\p{\cos I + \sin I \cot \theta \cos \phi}.\label{eq:dfdt_toy}
 \end{align}
 
-\subsection{Shifted Cassini States and Linear Stability
+\subsection{Modified Cassini States and Linear Stability
 Analysis}\label{ss:tidal_equils}
 
 If the alignment torque is weak ($\abs{g}t_{\rm al} \gg 1$), then the fixed
-points of Eqs.~(\ref{eq:dqdt_toy}--\ref{eq:dfdt_toy}) are just slightly shifted
-CSs. This shift can be calculated cleanly to leading order: all of the CS
-obliquities $\theta_{\rm cs}$ are unchanged while the azimuthal angle $\phi_{\rm
-cs}$ for each CS now satisfies
+points of Eqs.~(\ref{eq:dqdt_toy}--\ref{eq:dfdt_toy}) are slightly modified CSs.
+To leading order, all of the CS obliquities $\theta_{\rm cs}$ are unchanged
+while the azimuthal angle $\phi_{\rm cs}$ for each CS now satisfies
 \begin{equation}
     \sin \phi_{\rm cs} = \frac{\sin\theta_{\rm cs}}{\sin I \abs{g}t_{\rm al}}.
         \label{eq:mcs_shift}
 \end{equation}
-We can see that if $t_{\rm al} > t_{\rm al, c}$, where
+We can see that if $t_{\rm al}$ is longer than some critical alignment
+timescale $t_{\rm al, c}$, given by
 \begin{align}
-    t_{\rm al, c} &= \frac{1}{\abs{g}\sin I},\label{eq:mcs_shift_crit}
+    t_{\rm al, c} &\equiv \frac{1}{\abs{g}\sin I},\label{eq:mcs_shift_crit}
 \end{align}
 then Eq.~\eqref{eq:mcs_shift} will always have solutions for $\phi_{\rm cs}$,
-and the alignment torque never changes the number of fixed points of the system.
-If $t_{\rm al}$ is decreased below $t_{\rm al, c}$, CS2 and CS4 cease to be
-fixed points if $\eta \ll 1$ \citep[as first noted in][]{fabrycky_otides}, as
-$\theta_{\rm cs} \approx 90^\circ$ for these (see Fig.~\ref{fig:cs_locs}), while
-the other CSs have small $\sin \theta_{\rm cs}$ and are only slightly perturbed.
-Figure~\ref{fig:mcs} shows the obliquity and azimuthal angles for each of the
-CSs in the $\eta \ll 1$ case, where it can be seen that CS2 and CS4 collide and
-annihilate. The phase shift $\phi_{\rm cs}$ for CS2 and CS4 for $t_{\rm al} >
+and the alignment torque does not change the number of fixed points of the
+system. If $t_{\rm al}$ is decreased below $t_{\rm al, c}$, CS2 and CS4 cease to
+be fixed points when $\eta \ll 1$ \citep[as first noted in][]{fabrycky_otides},
+as $\theta_{\rm cs} \approx 90^\circ$ for these (see Fig.~\ref{fig:cs_locs}). On
+the other hand, the other CSs have small $\sin \theta_{\rm cs}$ and are only
+slightly perturbed. Figure~\ref{fig:mcs} shows the obliquity and azimuthal
+angles for each of the CSs in the $\eta \ll 1$ case obtained via numerical
+root finding of Eqs.~(\ref{eq:dqdt_toy}--\ref{eq:dfdt_toy}), where it can be
+seen that CS2 and CS4 collide and annihilate when $t_{\rm al}$ reaches $t_{\rm
+al, c}$. The phase shift $\phi_{\rm cs}$ for CS2 and CS4 for $t_{\rm al} >
 t_{\rm al, c}$ can be predicted to good accuracy using Eq.~\eqref{eq:mcs_shift}
 using $\theta_{\rm cs} \approx \pi/2 - \eta \cos (I) \approx 79^\circ$
 \citep{su2020} for both, shown as the dashed lines in the bottom panel of
@@ -284,7 +327,7 @@ unperturbed locations.
 \end{figure}
 
 We next seek to characterize the stability of small perturbations about each of
-the CSs in the presence of the weak tidal alignment torque. We can linearize
+the CSs in the presence of the weak alignment torque. We can linearize
 Eqs.~(\ref{eq:dqdt_toy}--\ref{eq:dfdt_toy}) about a shifted CS, yelding
 \begin{align}
     \rd{}{t}\begin{bmatrix}
@@ -318,24 +361,22 @@ When $t_{\rm al}$ is large, we can simplify Eq.~\eqref{eq:lambda_orig} to
 \end{equation}
 The stability depends only on the real part of $\lambda$ in
 Eq.~\eqref{eq:lambda_approx}. $\lambda_0^2$ is a generalization of Eq.~(A4)
-in, \citet{su2020} and generally has the same behavior: it is negative for CSs
+in Paper I and generally has the same behavior: it is negative for CSs
 1--3 and positive for CS4, as shown in Fig.~\ref{fig:lambda_full}. Thus, CS4 is
 always unstable, as there will always be at least one positive solution for
 $\lambda$, and the stability of CSs 1--3 are solely determined by the sign of
-$\cos \theta_{\rm cs}$. Evaluating at each of the CSs (see
-Fig.~\ref{fig:cs_locs}), we conclude that CS1 and CS2 are stable and attracting
-while CS3, stable in the absence of the torque, becomes unstable. These
-calculations justify results long used in CS literature
+$\cos \theta_{\rm cs}$. Using Fig.~\ref{fig:cs_locs}, we conclude that CS1 and
+CS2 are stable and attracting while trajectories near CS3 are driven away by the
+alignment torque. These calculations justify results long used in CS literature
 \citep[e.g.][]{ward1975tidal, fabrycky_otides}.
 \begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../initial/99_misc/2_lambdas_full.png}
     \caption{$\lambda_0^2$ (Eq.~\ref{eq:def_l0_sq}) as a function of $\eta$ for
-    the four CSs. The solid lines give $\lambda_0^2$ for the unperturbed
-    $\phi_{\rm cs}$, and the dashed lines give the values for $\phi_{\rm cs}$
-    shifted by $60^\circ$ ($\phi_{\rm cs} = 120^\circ$ for CS2 and $\phi_{\rm
-    cs} = 60^\circ$ for CSs 1, 3, and 4).
-    }\label{fig:lambda_full}
+    the four CSs, for three different values of the shift in $\phi_{\rm cs}$
+    (e.g.\ for $\Delta \phi_{\rm cs} = 60^\circ$, $\phi_{\rm cs} = 120^\circ$
+    for CS2 and $\phi_{\rm cs} = 60^\circ$ for CSs 1, 3, and 4). The values of
+    $\Delta \phi_{\rm cs}$ are labeled. }\label{fig:lambda_full}
 \end{figure}
 
 \subsection{Spin Obliquity Evolution Driven by Alignment
@@ -343,15 +384,18 @@ Torque}\label{ss:toy_outcomes}
 
 With the above results, we are equipped to ask questions about the dynamics of
 Eqs.~(\ref{eq:dqdt_toy}--\ref{eq:dfdt_toy}): what is the long term behavior for
-a general initial $\uv{s}$? If $\eta > \eta_{\rm c}$, then the only possible
+a general initial $\uv{s}$? If $\eta > \eta_{\rm c}$, then the only stable
 final spin state is CS2, and all initial conditions will evolve asympotically
 towards it. As such, we consider only $\eta < \eta_{\rm c}$, where an initial
-condition can asymptotically evolve towards either CS1 or CS2. We numerically
-integrate Eqs.~(\ref{eq:dqdt_toy}--\ref{eq:dfdt_toy}) for many random initial
-conditions uniformly distributed in $\p{\cos \theta, \phi}$ with $\abs{g}t_{\rm
-al}= 10^{-3}$ and record the nearest CS for each integration after $10t_{\rm al}$. In Fig.~\ref{fig:toy_phop}, we show the results of this procedure for $\eta
-= 0.2$, and $I = 20^\circ$. It is clear that initial conditions in zone I evolve
-into CS1, those in zone II evolve into CS2, while those in zone III have a
+condition can asymptotically evolve towards either CS1 or CS2. Additionally, we
+restrict our attention to the regime where the alignment torque is weak and CS2
+remains stable; specifically, we use $\abs{g}t_{\rm al}= 10^{3}$. We
+numerically integrate Eqs.~(\ref{eq:dqdt_toy}--\ref{eq:dfdt_toy}) for many
+random initial conditions uniformly distributed in $\p{\cos \theta, \phi}$ and
+record the nearest CS for each integration after $10t_{\rm al}$. In
+Fig.~\ref{fig:toy_phop}, we show the results of this procedure for $\eta = 0.2$,
+and $I = 20^\circ$. It is clear that initial conditions in zone I evolve into
+CS1, those in zone II evolve into CS2, while those in zone III have a
 probabilistic outcome. We aim to understand each of these in turn:
 \begin{figure}
     \centering
@@ -370,16 +414,15 @@ intuitively reasonable, as CS1 is stable.
 For initial conditions in zone II, our stability calculation in
 Section~\ref{ss:tidal_equils} shows that initial conditions sufficiently near CS2
 will converge to CS2. In fact, this result can be extended to all initial
-conditions inside the separatrix; see Appendix~\ref{app:cs_stab2}.
+conditions inside the separatrix, shown in Appendix~\ref{app:cs_stab2}.
 
 For initial conditions in zone III, since there are no stable CSs in zone III,
 the system must evolve through the separatrix to reach one of either CS1 or CS2.
 The outcome of the separatrix encounter is effectively probabilistic and
 determines the final CS\@. Intuitively, this can be understood as probabilistic
-resonance capture: since $\eta \ll \eta_{\rm c}$, $\alpha \gg -g$ (the
-spin-orbit precession rate, Eq.~\ref{eq:dsdt1}, and the orbit precession induced
-by the perturber, Eq.~\ref{eq:dldt1}, respectively), but $\alpha \cos \theta$
-can become commensurate with $-g$ if $\cos \theta \sim \eta$. This is achieved
+resonance capture, as first studied in the seminal work of \citet{henrard1982}:
+since $\eta \ll \eta_{\rm c}$, $\alpha \gg -g$, but $\alpha \cos \theta$ can
+become commensurate with $-g$ if $\cos \theta$ becomes small. This is achieved
 as $\theta$ evolves from an initially retrograde obliquity through $90^\circ$
 towards $0^\circ$ under the influence of the dissipative term in
 Eq.~\eqref{eq:dqdt_toy}.
@@ -389,32 +432,28 @@ While similar in behavior to previous studies of probabilistic resonance capture
 previous studies, the phase space structure itself evolves and causes systems to
 transition among phase space zones, while in the present scenario, a
 non-Hamiltonian, dissipative perturbation causes systems to transition among
-unchanging phase space zones.
+unchanging phase space zones. In the following section, we present a calculation
+to understand analytically the probability distribution of outcomes upon
+separatrix encounter in this new scenario.
 
 \subsubsection{Analytical Calculation of Resonance Capture Probability}
 
-The specific probabilities of the two outcomes upon separatrix encounter, a zone
-III-II or a zone III-I transition, can be calculated analytically.
+Before discussing quantitative calculations, we first present a graphical
+understanding of the separatrix encounter process.
 Figure~\ref{fig:toy_hop_manifolds} shows how the perturbative alignment torque
-generates probabilistic outcomes upon separatrix encounter. We present the
-interpretation of Figure~\ref{fig:toy_hop_manifolds} and the calculation of the
-resonance capture probability by first giving a qualitative description of the
-intuition behind the method, then presenting a calculation in good agreement with
-numerical results.
+generates the two outcomes upon separatrix encounter, a zone III-II or a zone
+III-I transition. The critical trajectories in Fig.~\ref{fig:toy_hop_manifolds}
+are calculated numerically by integrating a point infinitesimally close to CS4
+forward and backward in time. In the absence of the alignment torque, these
+trajectories would evolve along the separatrix, but in the presence of the
+alignment torque, they are perturbed slightly and cease to overlap. It can be
+seen in Fig.~\ref{fig:toy_hop_manifolds} that this splitting opens a path from
+zone III into both zones I and II\@.
 
-We first describe the origin of the boundaries between regions of phase space
-that shown in Fig.~\ref{fig:toy_hop_manifolds}. They are calculated numerically
-by integrating a point infinitesimally close to CS4 forward and backward in
-time. In the absence of the alignment torque, these trajectories would evolve
-along the separatrix, but in the presence of the alignment torque they are
-perturbed slightly and cease to overlap. It can be seen in
-Fig.~\ref{fig:toy_hop_manifolds} that this splitting opens a path from zone III
-into both zones I and II\@.
-
-To understand this process quantitatively, as well as associate probabilities to
-the two possible outcomes, it is important to be more quantitative. The correct
+To understand this process more concretely, as well as associate probabilities
+to the two possible outcomes, it is important to be quantitative. The correct
 approach is to consider the evolution of the value of the \emph{unperturbed}
-Hamiltonian (Eq.~\ref{eq:H}) as the spin evolves with the alignment torque. A
+Hamiltonian (Eq.~\ref{eq:H}) as the spin evolves due to the alignment torque. A
 point in zone III evolves such that $H$ is increasing until $H \approx H_{\rm
 sep}$ where $H_{\rm sep}$ is the value of $H$ along the separatrix, given by
 \begin{align}
@@ -425,8 +464,7 @@ sep}$ where $H_{\rm sep}$ is the value of $H$ along the separatrix, given by
 where $\theta_4$ and $\phi_4$ are the coordinates of CS4. As the system evolves
 closer to the separatrix, the change in $H$ over each circulation cycle can be
 approximated by $\Delta H_-$, the change in $H$ along $\mathcal{C}_-$ (see
-Fig.~\ref{fig:1contours}). In general, we can compute $\Delta H_{\pm}$ the
-change over both legs of the separatrix with
+Fig.~\ref{fig:1contours}). In general, we define the quantities $\Delta H_{\pm}$
 \begin{equation}
     \Delta H_{\pm} \equiv \oint\limits_{\mathcal{C}_{\pm}}
         \rd{H}{t}\;\mathrm{d}t.\label{eq:def_dHpm}
@@ -440,41 +478,55 @@ This can be simplified by using:
     \Delta H_{\pm} &= \mp\frac{1}{t_{\rm al}}
         \int\limits_0^{2\pi} \sin^2\theta\;\mathrm{d}\phi.
 \end{align}
-Thus, if we evaluate $H$ every time that a trajectory crosses $\phi = 0$, we see
-that it will initially be negative and increase for each circulation cycle until
-the system encounters the separatrix. At the beginning of the
-separatrix-crossing orbit, the initial value of $H$, denoted $H_{\rm i}$,
-satisfies $H_{\rm sep} - \Delta H_- \leq H_{\rm i} \leq H_{\rm sep}$: if it is
-less than the lower bound, it will not cross the separatrix on this orbit, and
-if it is greater than the upper bound then it is already inside the separatrix.
-The two endpoints of this range are denoted in Fig.~\ref{fig:6equils} by the
-black dot and cross at the left and right edges of the plot.
+In the first line, Hamilton's equations ensure that the non-tidal contributions
+to $\rdil{H}{t}$ vanish. Thus, if we evaluate $H$ every time that a trajectory
+originating in zone III crosses $\phi = 0$, we see that it will initially be $<
+H_{\rm sep}$ and increase for each circulation cycle until the system encounters
+the separatrix. At the beginning of the separatrix-crossing orbit, the initial
+value of $H$, denoted $H_{\rm i}$, must be greater than $H_{\rm sep} - \Delta H$
+to encounter the separatrix on the current orbit, and must be less than $H_{\rm
+sep}$, otherwise the trajectory will be in zone II already. We thus have
+\begin{equation}
+    H_{\rm i} \in \s{ H_{\rm sep} - \Delta H_-,  H_{\rm sep} }
+        \label{eq:Hi_range},
+\end{equation}
+The values of $\cos \theta$ corresponding to the lower and upper bounds on this
+range are shown as the black and red dots on the left of Fig.~\ref{fig:6equils}
+respectively.
 
 During the separatrix-crossing orbit, the trajectory first evolves
-approximately along $\mathcal{C}_-$ then along $\mathcal{C}_+$, after which two
-possible outcomes can occur:
+approximately along $\mathcal{C}_-$ and then along $\mathcal{C}_+$, after which
+the final value of $H$, denoted $H_{\rm f}$ is approximately equal to
+\begin{equation}
+    H_{\rm f} = H_{\rm i} + \Delta H_+ + \Delta H_-.
+\end{equation}
+There can then be two outcomes depending on the value of $H_{\rm f}$:
 \begin{itemize}
-    \item If the final value of $H$ at the end of this separatrix traversal,
-        denoted $H_{\rm f}$, satisfies $H_{\rm f} > H_{\rm sep}$, then the
-        trajectory enters the separatrix, following the red shaded region in
-        Fig.~\ref{fig:6equils}, and executes a zone III $\to$ II transition.
+    \item If $H_{\rm f} > H_{\rm sep}$, then the trajectory enters the
+        separatrix, following the red shaded region in Fig.~\ref{fig:6equils},
+        and executes a zone III $\to$ II transition.
 
     \item If $H_{\rm f} < H_{\rm sep}$, then the trajectory exits the separatrix
         above CS4, following the yellow shaded region in Fig.~\ref{fig:6equils}
         and executes a zone III $\to$ I transition.
 \end{itemize}
-Since $H_{\rm f} = H_{\rm i} + \Delta H_+ + \Delta H_-$, we find that if $H_{\rm
-i}$ is in the interval $\s{H_{\rm sep} - \Delta H_-, H_{\rm sep} - \Delta H_{-}
-- \Delta H_+}$, then the system executes a III $\to$ I transition, and if it
-is in the interval $\s{H_{\rm sep} - \Delta H_- - \Delta H_+, H_{\rm sep}}$,
-then the system executes a III $\to$ II transition. The values of $\cos
-\theta$ for which $H$ is equal to $H_{\rm sep} - \Delta H_-$, $H_{\rm sep} - \Delta
-H_- - \Delta H_+$, and $H_{\rm sep}$ (CS4) for $\phi = 0$ are shown in
-Fig.~\ref{fig:6equils} as the black cross, star, and dot at $\phi = 0$
-respectively. Finally, if the alignment torque is weak, then $\Delta H_- \sim
-\mathcal{O}\p{t_{\rm al}^{-1}}$ is small compared to the characteristic values of
-$H$, and $H_{\rm i}$ can be effectively considered as uniformly distributed over
-$\s{H_{\rm sep} - \Delta H_-, H_{\rm sep}}$. As such, we obtain that
+These two possibilites can be re-expressed in terms of $H_{\rm i}$: we find that
+if $H_{\rm i}$ is in the interval $\s{H_{\rm sep} - \Delta H_-, H_{\rm sep} -
+\Delta H_{-} - \Delta H_+}$, then the system executes a III $\to$ I transition,
+and if it is in the interval $\s{H_{\rm sep} - \Delta H_- - \Delta H_+, H_{\rm
+sep}}$, then the system executes a III $\to$ II transition. We see that there is
+a critical value of $H_{\rm i}$ in the interval given by
+Eq.~\eqref{eq:Hi_range}, where $H_{\rm i} = H_{\rm sep} - \Delta H_{-} - \Delta
+H_+$, that separates the two possible outcomes of the separatrix encounter
+within the interval given by Eq.~\eqref{eq:Hi_range}. The value of $\cos \theta$
+for which $H$ is equal to $H_{\rm sep} - \Delta H_{-} - \Delta H_+$ is shown as
+the blue dot on the left of Fig.~\ref{fig:6equils}. Finally, if the alignment
+torque is weak, then $\Delta H_- \sim \mathcal{O}\p{t_{\rm al}^{-1}}$ is small
+compared to any variation in the value of $H$ (e.g.\ when changing $\phi_0$ or
+$\theta_0$ by a small amount), and $H_{\rm i}$ can be effectively considered as
+randomly chosen from a uniform distribution over $\s{H_{\rm sep} - \Delta H_-,
+H_{\rm sep}}$. As a consequence we obtain the probability of a III $\to$ II
+transition:
 \begin{equation}
     P_{\rm III \to II} = \frac{\Delta H_- + \Delta H_+}{\Delta H_-}.
         \label{eq:def_P32_toy}
@@ -484,7 +536,7 @@ $\s{H_{\rm sep} - \Delta H_-, H_{\rm sep}}$. As such, we obtain that
     \centering
     \includegraphics[width=\columnwidth]{../initial/0_eta/6manifolds0_20.png}
     \caption{Plot illustrating the probabilistic origin of separatrix capture
-    for $\eta = 0.2$, $I = 20^\circ$, and $\abs{gt_{\rm al}} = 10^{-3}$. Orange
+    for $\eta = 0.2$, $I = 20^\circ$, and $\abs{gt_{\rm al}} = 10^{3}$. Orange
     regions converge to CS1, and green to CS2, while CS4 is labeled with the
     purple dots. The boundaries separating the CS1 and CS2-approaching regions
     consist of the critical trajectories (labeled in the legend) that, when
@@ -502,8 +554,8 @@ $\s{H_{\rm sep} - \Delta H_-, H_{\rm sep}}$. As such, we obtain that
     }\label{fig:toy_hop_manifolds}
 \end{figure}
 
-To actually evaluate Eq.~\eqref{eq:def_P32_toy}, we use the parameterization for
-the separatrix \citep{su2020} for $\eta \ll 1$:
+To actually evaluate Eq.~\eqref{eq:def_P32_toy}, we can use the parameterization
+for the separatrix given in Paper I for $\eta \ll 1$:
 \begin{equation}
     \p{\cos \theta}_{\mathcal{C}_{\pm}} \approx
         \eta \cos I \pm \sqrt{2\eta\sin I\p{1 - \cos \phi}}.
@@ -521,9 +573,9 @@ It can then be shown that
             \p{1  - 2\eta \sin I}}.\label{eq:P32_toy}
 \end{align}
 
-To directly compare Eq.~\eqref{eq:P32_toy} with numerical simulation, we
-perform integrations of Eqs.~(\ref{eq:dqdt_toy}--\ref{eq:dfdt_toy}) while
-restricting our attention to only outcomes of initial conditions in zone III\@.
+To directly compare Eq.~\eqref{eq:P32_toy} with numerical simulation, we perform
+numerical integrations of Eqs.~(\ref{eq:dqdt_toy}--\ref{eq:dfdt_toy}) while
+restricting our attention only initial conditions in zone III\@.
 In Fig.~\ref{fig:1hist_toy}, we display Eq.~\eqref{eq:P32_toy} alongside the
 computed $P_{\rm III \to II}$ using $1000$ initial conditions in zone III for
 each of $60$ values of $\eta$. Excellent agreement is observed.
@@ -537,21 +589,24 @@ each of $60$ values of $\eta$. Excellent agreement is observed.
     Shown in red is Eq.~\eqref{eq:P32_toy}.}\label{fig:1hist_toy}
 \end{figure}
 
-Finally, we remark that the calculation above is just a descriptive application
-of \emph{Melnikov's Method} \citep{g_and_h}. Melnikov's Method is a general
-calculation that gives the degree of splitting of a ``homoclinic orbit'' (here,
-the separatrix) induced by a small, possibly time-dependent, perturbation. The
-explicit connection between the evolution of the unperturbed Hamiltonian and
-distances between curves in phase space (as seen in Fig.~\ref{fig:6equils})
-is provided by Melnikov's Method.
+Finally, we remark that the calculation above is just an of \emph{Melnikov's
+Method} \citep{g_and_h}. Melnikov's Method is a general calculation that gives
+the degree of splitting of a ``homoclinic orbit'' (here, the separatrix) induced
+by a small, possibly time-dependent, perturbation. The explicit connection
+between the evolution of the unperturbed Hamiltonian and distances between
+curves in phase space (as seen in Fig.~\ref{fig:6equils}) is provided by
+Melnikov's Method.
 
 \section{Spin Evolution with Weak Tidal Friction}\label{s:full_tide_prob}
 
 \subsection{Tidal Model: Equilibrium Tides}\label{ss:weaktide}
 
-To model the dissipative effect of times, we use the weak friction theory of
-equilibrium tides \citep{lai2012}. In this model, tides cause both $\uv{s}$ and
-$\Omega_{\rm s}$ to evolve on the characteristic tidal timescale $t_{\rm s}$:
+Having understood the effect of introducing an additional dissipative torque to
+the Colombo's Top system, we now implement a realistic model of tidal
+dissipation. We use the weak friction theory of equilibrium tides
+\citep{lai2012}. In this model, tides cause both the spin orientation $\uv{s}$
+and frequency $\Omega_{\rm s}$ to evolve on the characteristic tidal timescale
+$t_{\rm s}$ following:
 \begin{align}
     \p{\rd{\uv{s}}{t}}_{\rm tide} &= \frac{1}{t_{\rm s}}
                 \s{\frac{2n}{\Omega_{\rm s}} - \p{\uv{s} \cdot \uv{l}}}
@@ -569,8 +624,9 @@ Here, $L = ma^2n$ and $S = kmR^2 \Omega_{\rm s}$ are the orbital and spin
 angular momenta of the inner planet, respectively. We neglect orbital evolution
 in this section since the time scale is longer than $t_{\rm s}$ by a factor of
 $\sim L / S \gg 1$, and so $t_{\rm s}$ is a constant. We will continue mostly
-consider the case where $\abs{gt_{\rm s}} \gg 1$. The full equations of motion
-including weak tidal friction are
+consider the case where tidal dissipation is slow, i.e.\ $\abs{g}t_{\rm s} \gg
+1$. The full equations of motion including weak tidal friction can be written in
+component form as
 \begin{align}
     \rd{\theta}{t} &= g\sin I \sin \phi -
         \frac{1}{t_{\rm s}}\sin \theta\p{\frac{2n}{\Omega_{\rm s}} - \cos \theta}
@@ -581,8 +637,7 @@ including weak tidal friction are
         &= \frac{1}{t_{\rm s}} \s{\frac{2n}{\Omega_{\rm s}} \cos \theta
             - \p{1 + \cos^2\theta}}\label{eq:ds_fulls}.
 \end{align}
-The conditions for which the two tidal terms vanish can be respectively
-expressed as:
+The conditions for which the two tidal terms vanish are given respectively by:
 \begin{align}
     \dot{\theta}_{\rm tide} = 0 &: \quad \frac{2n}{\Omega_{\rm s}} = \cos \theta,
         \label{eq:weaktide_dqzero}\\
@@ -590,12 +645,12 @@ expressed as:
         = \frac{1 + \cos^2\theta}{2\cos \theta}.\label{eq:weaktide_dWszero}
 \end{align}
 
-To understand the long-term behaviors of the system, we first consider its
+To understand the long-term behaviors of this system, we first consider its
 behavior near a CS\@. Specifically, we wish to understand whether initial
 conditions near a CS stay near the CS as the evolution of $\Omega_{\rm s}$
 causes the CSs to evolve. We first note that the evolution of
-$\Omega_{\rm s}$ does not drive spins towards or away from CSs: as long as it
-evolves sufficiently slowly \citep[adiabatically,][]{su2020}, conservation of
+$\Omega_{\rm s}$ does not drive spins towards or away from CSs: As long as it
+evolves sufficiently slowly (adiabatically, Paper I), conservation of
 phase space area ensures that trajectories will remain at a roughly fixed
 distance to stable equilibria of the system. Thus, Eq.~\eqref{eq:dsdt_tide}
 alone determines whether a point evolves towards or away from a nearby CS as
@@ -605,21 +660,24 @@ Eqs.~\ref{eq:dsdt_tide_toy} and~Eq.~\ref{eq:dsdt_tide}), we see that CS2 is
 still always stable, while CS1 is becomes unstable for $\Omega_{\rm s} > 2n$.
 
 Using this result, we can then identify the long-term equilibria of the system
-(i.e.\ when including the evolution of $\Omega_{\rm s}$), as the long-term
-equilibria of the system must both satisfy $\dot{\Omega}_{\rm s} = 0$ and be a
-stable CS\@. Figure~\ref{fig:6equils} describes
+when $\Omega_{\rm s}$ is also evolving: these equilibria of the system must both
+satisfy $\dot{\Omega}_{\rm s} = 0$ and be a CS that is stable in the presence of
+tidal dissipation (i.e.\ satisfying $\rdil{\uv{s}}{t} = 0$).
+The panels of Fig.~\ref{fig:6equils} describes the evolution of
 Eqs.~(\ref{eq:dsdt_tide}--\ref{eq:dWsdt_tide}) qualitatively in the coordinates
-$(\Omega_{\rm s}, \theta)$, along with the locations of CS1 and CS2. The two
-circled points in Fig.~\ref{fig:6equils} satisfy the criteria to be long-term
-equilibria, and we call them \emph{tidal Cassini Equilibria} (tCE). We number
-tCE1 and tCE2 the tCE that are in CSs 1 and 2 respectively. The obliquities of
-the tCE depend on the system architecture, which can be quantified using the
-parameter
+$(\Omega_{\rm s}, \theta)$, along with the locations of CS1 and CS2, for a few
+different system parameters. The circled points in the panels of
+Fig.~\ref{fig:6equils} satisfy the criteria to be long-term equilibria, and we
+call them \emph{tidal Cassini Equilibria} (tCE). We number tCE1 and tCE2 the tCE
+that are in CSs 1 and 2 respectively. The obliquities of the tCE depend on the
+system architecture, which can be quantified using the parameter
 \begin{align}
     \eta_{\rm sync} &\equiv \big(\eta\big)_{\Omega_{\rm s} = n}
         = \eta \frac{\Omega_{\rm s}}{n}\nonumber\\
-        &= \textcolor{red}{\frac{m_{\rm p}m}{2M_\star^2}\p{\frac{a}{a_{\rm
-            p}}}^3 \p{\frac{a}{R}}^3}. \label{eq:def_etasync}
+        &= \frac{1}{2}\frac{k}{k_{\rm q}}
+            \frac{m_{\rm p}m}{M_\star^2}
+            \p{\frac{a}{a_{\rm p}}}^3 \p{\frac{a}{R}}^3\cos(I).
+            \label{eq:def_etasync}
 \end{align}
 The tCE obliquity as a function of $\eta_{\rm sync}$ are shown for $I =
 20^\circ$ in the top panel of Fig.~\ref{fig:probs20} and for $I = 5^\circ$ in
@@ -634,30 +692,33 @@ Eqs.~(\ref{eq:weaktide_dWszero}--\ref{eq:def_etasync}) and that $\cos \theta_2
         \sqrt{2\cos I \eta_{\rm sync}}. \label{eq:def_tce2_approx}
 \end{align}
 This approximation for $\theta_{\rm tCE2}$ is shown as the black dashed line in
-the top panels of Fig.~\ref{fig:probs20} and~\ref{fig:probs5}.
+the top panels of Fig.~\ref{fig:probs20} and~\ref{fig:probs5}, where good
+agreement is observed.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/6equils0_20.png}
+    \includegraphics[width=\columnwidth]{../initial/1_weaktide/6equils.png}
     \caption{Schematic depiction of the effect of tidal friction on the planet's
-    spin for $I = 20^\circ$ and $\eta_{\rm sync} = 0.2$. The black and blue lines
-    denote where the tidal $\dot{\Omega}_{\rm s}$ and $\dot{\theta}$ change
-    signs (Eqs.~\ref{eq:weaktide_dqzero}--\ref{eq:weaktide_dWszero}). The orange
-    and green lines give the CS1 and CS2 obliquities respectively, which are the
-    two CSs that are stable under the effect of tidal dissipation. Note that
-    when $\dot{\theta}_{\rm tide} > 0$, CS1 becomes unstable, denoted by the
-    dashed orange line. The points that are both CSs and satisfy
-    $\dot{\Omega}_{\rm s} = 0$ are the tidal Cassini Equilibria (tCE), which are
-    circled and labeled. }\label{fig:6equils}
+    spin for $I = 20^\circ$ and three values of $\eta_{\rm sync}$ (labeled). The
+    black and blue lines denote where the tidal $\dot{\Omega}_{\rm s}$ and
+    $\dot{\theta}$ change signs
+    (Eqs.~\ref{eq:weaktide_dqzero}--\ref{eq:weaktide_dWszero}). The orange and
+    green lines give the CS1 and CS2 obliquities respectively, which are the two
+    CSs that are stable under the effect of tidal dissipation. Note that when
+    $\dot{\theta}_{\rm tide} > 0$, CS1 becomes unstable, denoted by the dashed
+    orange line. The points that are both CSs and satisfy $\dot{\Omega}_{\rm s}
+    = 0$ are the tidal Cassini Equilibria (tCE), which are circled and labeled.
+    }\label{fig:6equils}
 \end{figure}
 
-There are two important conditions that change the existence and stability of
-the tCE\@. First, if $\eta_{\rm sync} > \eta_{\rm c}$, then tCE1 will not
-exist\footnote{Strictly speaking, $\eta_{\rm sync}$ can be slightly smaller than
-$\eta_{\rm c}$, as the planet's spin is slightly subsynchronous at tCE1 when
-$\eta \approx \eta_{\rm c}$, see Fig.~\ref{fig:6equils}.}. Secondly, tCE2 may
-not be stable if the tidal phase shift is too large. Applying the results of
-Section~\ref{ss:tidal_equils}, we find that tCE2 is stable as long as $t_{\rm s}
-\geq t_{\rm s, c}$ where
+There are two important conditions that can change the existence and stability
+of the tCE\@. First, if $\eta_{\rm sync} > \eta_{\rm c}$, then tCE1 will not
+exist, as can be seen in the bottom panel of
+Fig.~\ref{fig:6equils}\footnote{Strictly speaking, $\eta_{\rm sync}$ can be
+slightly smaller than $\eta_{\rm c}$, as the planet's spin is slightly
+subsynchronous at tCE1 when $\eta \approx \eta_{\rm c}$, see the middle panel of
+Fig.~\ref{fig:6equils}.}. Secondly, tCE2 may not be stable if the tidal phase
+shift is too large. Applying the results of Section~\ref{ss:tidal_equils}, we
+find that tCE2 is stable as long as $t_{\rm s} \geq t_{\rm s, c}$ where
 \begin{equation}
     t_{\rm s, c} \equiv \frac{\sin \theta_{\rm tCE2}}{\abs{g} \sin
             I}\p{\frac{2n}{\Omega_{\rm s, tCE2}} - \cos \theta_{\rm tCE2}}.
@@ -666,7 +727,7 @@ The tCE2 subscripts denote evaluation at tCE2. When $\eta_{\rm sync} \ll
 \eta_{\rm c}$, we can use Eq.~\eqref{eq:def_tce2_approx} to further simplify:
 \begin{equation}
     t_{\rm s, c}\approx \frac{1}{\abs{g}\sin I}\sqrt{\frac{2}{\eta_{\rm sync}
-        \cos I}}. \label{eq:def_ta_crit}
+        \cos I}}. \label{eq:def_ts_crit}
 \end{equation}
 
 \subsection{Spin Obliquity Evolution as a Function of Initial Spin Orientation}
@@ -674,34 +735,37 @@ The tCE2 subscripts denote evaluation at tCE2. When $\eta_{\rm sync} \ll
 With this result, we can now consider the final fate of the inner planet's spin.
 We assume that the planet is initially rotating supersynchronously and adopt the
 fiducial initial spin frequency $\Omega_{\rm s, i} = 10n$. The final results are
-not sensitive on the specific initial spin as long as $\Omega_{\rm s, i} \gg n$.
-Then, for a given initial $\theta_0$ and $\phi_0$, the final outcome (either tCE1 and
-tCE2) of the system can be calculated by direct integration of
+not sensitive to the specific initial spin as long as $\Omega_{\rm s, i} \gg n$.
+Then, for a given initial $\theta_0$ and $\phi_0$, the final outcome (either
+tCE1 and tCE2) of the system can be calculated by direct integration of
 Eqs.~(\ref{eq:dsdt_rot},~\ref{eq:dsdt_tide}--\ref{eq:dWsdt_tide}). In
 Fig.~\ref{fig:Hhists_0_06}, we show the final outcome for many randomly chosen
 $\theta_0$ and $\phi_0$ for $\eta_{\rm sync} = 0.06$ and $I = 20^\circ$. We see
 that tCE1 is generally reached for spins initially in zone I, tCE2 is generally
 reached for spins initially in zone II, and a probabilistic outcome is observed
-for spins initially in zone III, very similar to the results found for the
-alignment torque in Section~\ref{s:toy_model}. Figures~\ref{fig:Hhists_0_20}
-and~\ref{fig:Hhists_0_70} show the same results but for $\eta_{\rm sync} = 0.2$
-and $\eta_{\rm sync} = 0.5$. As $\eta_{\rm sync}$ is increased, more initial
-conditions reach tCE2. This is both because there are more systems initially in
-zone II and because more systems initially in zone III execute a III $\to$ II
-transition upon separatrix encounter. Note also that in
-Fig.~\ref{fig:Hhists_0_70}, even initial conditions in zone I are able to reach
-tCE2; we comment on the origin of this behavior in the next section.
+for spins initially in zone III, similarly to Fig.~\ref{fig:toy_phop}.
+Figures~\ref{fig:Hhists_0_20} and~\ref{fig:Hhists_0_70} show the same results
+but for $\eta_{\rm sync} = 0.2$ and $\eta_{\rm sync} = 0.5$. As $\eta_{\rm
+sync}$ is increased, more initial conditions reach tCE2. This is both because
+there are more systems initially in zone II and because systems initially
+in zone III have a higher probability of executing a III $\to$ II transition
+upon separatrix encounter. Note also that in Fig.~\ref{fig:Hhists_0_70}, even
+initial conditions in zone I are able to reach tCE2; we comment on the origin of
+this behavior in the next section.
 \begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../initial/1_weaktide/5Hhists0_06_20.png}
     \caption{\emph{Left:} Each dot indicates which tCE a given initial condition
     $(\theta_{\rm i}, \phi_{\rm i})$ evolve towards (labeled in legend), for
-    $\eta_{\rm sync} = 0.06$ and $I = 20^\circ$. The
-    separatrix is shown as the black line. Note that points above the
-    separatrix evolve towards tCE1, points inside the separatrix evolve towards
-    tCE2, and points below the separatrix have a probabilistic outcome.
-    \emph{Right:} Histogram of which tCE a given initial obliquity $\theta_{\rm
-    i}$ evolves towards.}\label{fig:Hhists_0_06}
+    $\eta_{\rm sync} = 0.06$ and $I = 20^\circ$. The planet's initial spin is
+    chosen to be $\Omega_{\rm s, i} = 10n$, and the three zones of phase space
+    (see Fig.~\ref{fig:1contours}) for the initial conditions are labeled,
+    separated by the separatrix (black line). Note that initial conditions in
+    zone I evolve towards tCE1, initial conditions in zone II evolve towards
+    tCE2, and initial conditions in zone III have an effectively probabilistic
+    outcome. \emph{Right:} Histogram of which tCE a given initial obliquity
+    $\theta_{\rm i}$ evolves towards, averaged over $\phi_{\rm
+    i}$.}\label{fig:Hhists_0_06}
 \end{figure}
 \begin{figure}
     \centering
@@ -713,7 +777,7 @@ tCE2; we comment on the origin of this behavior in the next section.
     \centering
     \includegraphics[width=\columnwidth]{../initial/1_weaktide/5Hhists0_50_20.png}
     \caption{Same as Fig.~\ref{fig:Hhists_0_06} but for $\eta_{\rm sync} =
-    0.7$. Note that even points above the separatrix can evolve towards tCE2
+    0.5$. Note that even points above the separatrix can evolve towards tCE2
     here.}\label{fig:Hhists_0_70}
 \end{figure}
 
@@ -722,19 +786,16 @@ tCE2; we comment on the origin of this behavior in the next section.
 
 Even when including the evolution of $\Omega_{\rm s}$, and therefore the
 spin-orbit precession frequency $\alpha$, the probabilities of the III $\to$ I
-and III $\to$ II transitions upon separatrix encounter can be computed. The
-calculation is more involved than that presented in
-Section~\ref{ss:toy_outcomes}, and also incorporates the seminal resonance
-capture theory of \citet{henrard1982}. In this section, we give an
-overview of the approach.
+and III $\to$ II transitions upon separatrix encounter can still be computed.
+The calculation resembles that presented in Section~\ref{ss:toy_outcomes} but is
+more involved. We describe the calculation below.
 
-In Section~\ref{ss:toy_outcomes}, we found that keeping track of the value of
-$H$, the value of the
-unperturbed Hamiltonian, allowed us to calculate the probabilities of the
-various outcomes of separatrix encounter. Specifically, the outcome upon separatrix
-encounter is determined by the value of $H$ at the start of the
+In Section~\ref{ss:toy_outcomes}, we found that the evolution of $H$, the value
+of the unperturbed Hamiltonian, allowed us to calculate the probabilities of the
+various outcomes of separatrix encounter. Specifically, the outcome upon
+separatrix encounter is determined by the value of $H$ at the start of the
 separatrix-crossing orbit relative to $H_{\rm sep}$, the value of $H$ along the
-separatrix. When the spin is also evolving, $H_{\rm sep}$ is also
+separatrix. However, when the spin is also evolving, $H_{\rm sep}$ is also
 changing during the separatrix-crossing orbit, and the discussion in
 Section~\ref{ss:toy_outcomes} must be generalized to account for this. Instead
 of focusing on the evolution of $H$ along a trajectory, we instead follow the
@@ -751,44 +812,45 @@ Eq.~\eqref{eq:def_dHpm} in the natural way:
     \Delta K_{\pm} &= \oint_{\mathcal{C}_{\pm}} \rd{H}{t}
         - \rd{H_{\rm sep}}{t}\;\mathrm{d}t.\label{eq:def_dK_weaktide}
 \end{align}
-Here, however, note that $\mathcal{C}_{\pm}$ depends on the value of
-$\Omega_{\rm s}$ upon separatrix encounter. Since there is no closed form
+Here, however, note that the contours $\mathcal{C}_{\pm}$ depends on the value
+of $\Omega_{\rm s}$ at separatrix encounter. Since there is no closed form
 solution for $\Omega_{\rm s}(t)$, the probabilities of the various outcomes
 cannot be expressed as a simple function of the initial conditions.
 
-Then, if we call $K_i$ the value of $K$ at the start ($\phi = 0$) of the
-separatrix-crossing orbit, $K_i > -\Delta K_+ - \Delta K_-$ gives a III
-$\to$ II transition and eventual evolution towards tCE2 while $-\Delta K_- < K_i
-< -\Delta K_- - \Delta K_+$ gives a III $\to$ I transition and ultimate
-evolution towards tCE1. Thus, we find that the probability of a III $\to$ II
-transition is given by
+Continuing the argument presented in Section~\ref{ss:toy_outcomes}, we consider
+the outcome of the separatrix-crossing orbit as a function of $K_i$, the value
+of $K$ at the start ($\phi = 0$) of the separatrix-crossing orbit. We find that
+if $K_i > -\Delta K_+ - \Delta K_-$, then the system undergoes a III $\to$ II
+transition and eventual evolution towards tCE2; while if $-\Delta K_- < K_i <
+-\Delta K_- - \Delta K_+$, then the system undergoes a III $\to$ I transition
+and ultimate evolution towards tCE1. Thus, we find that the probability of a III
+$\to$ II transition is given by
 \begin{equation}
     P_{\rm III \to II} = \frac{\Delta K_+ + \Delta K_-}{\Delta
         K_-}.\label{eq:def_pc_weaktide}
 \end{equation}
-Since $\Delta K_{\pm}$ are evaluated at resonance encounter, and
+Again, since $\Delta K_{\pm}$ are evaluated at resonance encounter, and
 $\Omega_{\rm s}$ is evolving, there is no way to express $\Delta K_{\pm}$ as a
 closed form of initial conditions. In fact, since many resonance encounters
-occur when $\eta$ is substantial, even an approximate calculation using
-Eq.~\eqref{eq:sep_theta} is inaccurate, and we instead calculate $\Delta
-K_{\pm}$ along the two legs of the separatrix obtained numerically via a root
-finding algorithm. Note that
-Eqs.~(\ref{eq:def_dK_weaktide},~\ref{eq:def_pc_weaktide}) are equivalent to the
-separatrix capture result of \citet{henrard1982} when $\dot{\theta}_{\rm tide} =
-0$ \citep{henrard1987}. Here, we have argued that this classic calculation can
-be unified with the calculation given in Section~\ref{ss:toy_outcomes} to give
-an accurate prediction of separatrix encounter outcome probabilities in the
-presence of both a dissipative perturbation and a parametric variation of the
-Hamiltonian.
+occur when $\eta$ is substantial, even an approximate calculation of $\Delta
+K_{\pm}$ using Eq.~\eqref{eq:sep_theta} is inaccurate, and we instead calculate
+$\Delta K_{\pm}$ along the numerically-calculated $\Delta K_{\pm}$ for arbitrary
+$\eta$. Note that Eqs.~(\ref{eq:def_dK_weaktide},~\ref{eq:def_pc_weaktide}) are
+equivalent to the separatrix capture result of \citet{henrard1982} when
+$\dot{\theta}_{\rm tide} = 0$ \citep{henrard1987}. Here, we have argued that
+this classic calculation can be unified with the calculation given in
+Section~\ref{ss:toy_outcomes} to give an accurate prediction of separatrix
+encounter outcome probabilities in the presence of both a dissipative
+perturbation and a parametric evolution of the Hamiltonian.
 
 To validate the accuracy of Eq.~\eqref{eq:def_pc_weaktide}, we can compare with
-the numerical integration of
+direct numerical integration of
 Eqs.~(\ref{eq:dsdt_rot},~\ref{eq:dsdt_tide}--\ref{eq:dWsdt_tide}) for many
-initial conditions in zone III while evaluating $P_{\rm III \to II}$ (and thus
-also obtaining $P_{\rm III \to I} = 1 - P_{\rm III \to II}$) for each simulation
-at the moment it encounters the separatrix. If the theory is correct, the total
-numbers of systems converging to each of tCE1 and tCE2 should be equal to those
-predicted by the sums of the calculated probabilities. In
+initial conditions while evaluating $P_{\rm III \to II}$ (and thus also
+obtaining $P_{\rm III \to I} = 1 - P_{\rm III \to II}$) for each simulation at
+the moment it encounters the separatrix, if it does so. If the theory is
+correct, the total numbers of systems converging to each of tCE1 and tCE2 should
+be equal to those predicted by the sums of the calculated probabilities. In
 Fig.~\ref{fig:pc_fits_0_06}, we show the agreement of this semi-analytic
 procedure with the numerical results displayed earlier in the right panel of
 Fig.~\ref{fig:Hhists_0_06}. Good agreement is observed.
@@ -819,42 +881,45 @@ Eq.~\eqref{eq:def_pc_weaktide}.
 \end{figure}
 
 With the above calculation, we can understand why even initial conditions in
-zone I can converge to tCE2. As long as the inital spin is sufficiently large
+zone I can converge to tCE2. As long as the initial spin is sufficiently large
 ($\geq 2n$), Eq.~\eqref{eq:dsdt_tide} shows that sufficiently large initial
 obliquities are \emph{increased} by weak tidal friction (see the bottom right
 region of Fig.~\ref{fig:6equils}). This increase means that even initial
-conditions in zone I can sometimes be driven by weak tidal friction to
-experience separatrix encounter. When this is the case, it can be shown that
-both $\Delta K_+ > 0$ and $\Delta K_- > 0$. This implies that both III $\to$ II
-and I $\to$ II outcomes are guaranteed, and thus initial conditions in all three
-zones can evolve into tCE2.
+conditions in zone I can sometimes be driven by tidal dissipation into the
+separatrix. When this is the case, it can be shown that both $\Delta K_+ > 0$
+and $\Delta K_- > 0$. This implies that both III $\to$ II and I $\to$ II
+outcomes are guaranteed, and thus initial conditions in all three zones can
+evolve into tCE2.
 
-\subsection{Spin Obliquity Evolution as a Function of Precession Strength}
+\subsection{Spin Obliquity Evolution as a Function of Precession Strength
+}\label{ss:tce2_etasync}
 
 In the previous section, we considered the outcome as a function of the initial
 spin orientation, specified by $\theta_0$ and $\phi_0$. In this section, we
-consider the distribution of outcomes when averaging over a distribution of
-initial spin orientations. For simplicity, we just consider $\uv{s}$ being
-isotropically distributed. Figure~\ref{fig:probs20} shows this for $I
-= 20^\circ$ as a function of $\eta_{\rm sync}$. It can be seen that tCE2 is
-reached with substantial probability ($\sim 50^\circ$) while it is also at a
-substantial obliquity ($\sim 60^\circ$) for $\eta_{\rm sync} \approx 0.4$.
-Furthermore, the bottom panel illustrates that initial conditions other than
-those beginning in zone II generate a significant fraction of systems that
-converge to tCE2.
+consider the probability of evolution into tCE2 when averaging over a
+distribution of initial spin orientations. For simplicity, we just consider
+$\uv{s}$ to be isotropically distributed; we discuss the impact of more
+physically realistic distributions of $\uv{s}$ in Section~\ref{s:summary}. The
+bottom panel of Fig.~\ref{fig:probs20} shows the probability of evolution into
+tCE2 for $I = 20^\circ$ as a function of $\eta_{\rm sync}$. It can be seen that
+tCE2 is reached with substantial probability ($\sim 50\%$) while it is also
+at a substantial obliquity ($\sim 60^\circ$) for $\eta_{\rm sync} \approx 0.4$.
+Furthermore, we note that initial conditions other than those beginning in zone
+II are responsible for a significant fraction of systems that converge to tCE2.
 \begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../initial/1_weaktide/5probs_20.png}
     \caption{\emph{Top:} Obliquities of the two tCE where $I = 20^\circ$ for a
     range of $\eta_{\rm sync}$ (Eq.~\ref{eq:def_etasync}); the blue dashed line
-    denotes the analytical approximation Eq.~\eqref{eq:def_tce2_approx} valid
-    for $\eta_{\rm sync} \ll \eta_{\rm c}$ (vertical dashed line;
-    Eq.~\ref{eq:def_etac}). \emph{Bottom:} Total probability of ending up in
-    tCE2 (red dots), averaged over an isotropic initial spin orientation. The
-    red shaded region denotes the contribution of initial conditions in zone II
-    that converge to tCE2 directly, and the yellow shaded region denotes the
-    contribution of initial conditions in zone III that converge to tCE2 after a
-    separatrix encounter. }\label{fig:probs20}
+    denotes the analytical approximation Eq.~\eqref{eq:def_tce2_approx} and is
+    only displayed in its regime of validity, $\eta_{\rm sync} \ll \eta_{\rm c}$
+    (vertical dashed line; Eq.~\ref{eq:def_etac}). \emph{Bottom:} Total
+    probability of ending up in tCE2 (red dots), averaged over an isotropic
+    initial spin orientation. The three shaded regions denote the contribution
+    of initial conditions in zones I/II/III (labeled) to the total tCE2
+    probability in the isotropic average. For example, among systems that
+    converge to tCE2 for $\eta_{\rm sync} = 0.06$, more originate in zone III
+    than zone II, and none originate in zone I.}\label{fig:probs20}
 \end{figure}
 \begin{figure}
     \centering
@@ -863,133 +928,431 @@ converge to tCE2.
     5^\circ$.}\label{fig:probs5}
 \end{figure}
 
-\section{Applications}
+\section{Applications}\label{s:applications}
 
 \subsection{Application to Super Earth + Cold Jupiter Systems
 }\label{ss:disc_sehj}
 
 Consider a system consisting of an inner Super-Earth (SE) and an exterior cold
-Jupiter (CJ); such systems are expected to be abundant \citep{zhu2018super}. For
-this system, the relative tidal dissipation rate $\abs{gt_{\rm s}}^{-1}$ can be
-computed
+Jupiter (CJ); such systems are expected to be abundant \citep{zhu2018super}. A
+phase of giant impacts may occur in the formation of such SEs
+\citep{inamdar2015formation, izidoro2017breaking}, which can scramble the
+initial obliquity distribution into one resembling the isotropic distribution
+considered in Section~\ref{ss:tce2_etasync}. For this system, the spin of the
+planet approaches a tCE on the timescale
+% 1 / (1.5 * 1e-3 * (Msun / (4 Mearth)) * ((2 Rearth) / (0.4 AU))^3 * 2 * pi / (0.4)^(3/2))
+% = 3.34e7
 \begin{align}
-    \frac{1}{\abs{g} t_{\rm s}}
-        \approx{}& 0.003\frac{1}{\cos I}\p{\frac{2k_2/Q}{10^{-3}}}
-            \p{\frac{m_{\rm p}}{M_{\rm J}}}^{-1}
-            \p{\frac{a_{\rm p}}{5 \;\mathrm{AU}}}^{3}\nonumber\\
-        &\times \p{\frac{a}{0.4\;\mathrm{AU}}}^{-6}
-            \p{\frac{\rho}{3 \; \mathrm{g/cm}^3}}^{-1}
-            \p{\frac{M_\star}{M_{\odot}}}^{2}.
+    \frac{1}{t_{\rm s}} ={}& \frac{1}{3 \times 10^7\;\mathrm{yr}}
+            \p{\frac{1}{4k}}
+            \p{\frac{2k_2/Q}{10^{-3}}}
+            \p{\frac{M_\star}{M_{\odot}}}^{3/2}
+            \p{\frac{m}{4M_{\oplus}}}^{-1}\nonumber\\
+        &\times \p{\frac{R}{2R_{\oplus}}}^3
+            \p{\frac{a}{0.4\;\mathrm{AU}}}^{-9/2}.
 \end{align}
-In physical units, $t_{\rm s} \sim 2 \times 10^8\;\mathrm{yr}$ for the
-parameters adopted above, and $\dot{a} / a \sim 10^{14}\;\mathrm{yr}$, so the
-spin evolution of the inner planet occurs within the characteristic age of most
-planetary systems, while the orbital evolution of the inner planet can indeed by
-safely neglected. Thus, the approximations of slow tidal dissipation and
-constant $a$ used throughout Section~\ref{s:full_tide_prob} are valid.
-For the same fiducial parameters, Eq.~\eqref{eq:def_etasync} can be evaluated
+This occurs well within the age of most SE-CJ systems. On the other hand,
+the orbital evolution of the SE occurs on the timescale \citep{lai2012}
+% 1 / (1.5 * 1e-3 * (Msun / (4 Mearth)) * ((2 Rearth) / (0.4 AU))^5 * 2 * pi / (0.4)^(3/2))
+% = 7.36e14
 \begin{align}
-    \eta_{\rm sync} ={}& 0.33 \p{\frac{k}{k_{\rm q}}}
+    -\frac{\dot{a}}{a} ={}& \frac{3k_2}{Q}\frac{M_\star}{m}
+            \p{\frac{R}{a}}^5n \p{1 - \frac{\Omega_{\rm s}}{n}\cos \theta}\nonumber\\
+        ={}& \frac{1}{7 \times 10^{14}\;\mathrm{yr}}
+            \p{1 - \frac{\Omega_{\rm s}}{n}\cos \theta}
+            \p{\frac{2k_2/Q}{10^{-3}}}
+            \p{\frac{M_\star}{M_{\odot}}}^{3/2}\nonumber\\
+        &\times \p{\frac{m}{4M_{\oplus}}}^{-1}
+            \p{\frac{R}{2R_{\oplus}}}^5
+            \p{\frac{a}{0.4\;\mathrm{AU}}}^{-13/2}.
+\end{align}
+Thus, $a$ does not evolve within the age of the SE-CJ system, and the
+approximation where $a$ is held constant is valid. For the same fiducial
+parameters, Eq.~\eqref{eq:def_etasync} can be evaluated
+% 1/2 * Mjup * (4 * Mearth) / (Msun)^2 * ((0.4 AU) / (2 Rearth))^3 * (0.4 / 5)^3
+% = 0.303884
+\begin{align}
+    \eta_{\rm sync} ={}& 0.303 \cos I
+            \p{\frac{k}{k_{\rm q}}}
             \p{\frac{m_{\rm p}}{M_{\rm J}}}
-            \p{\frac{a_{\rm p}}{5 \;\mathrm{AU}}}^{-3}\nonumber\\
-        &\times \p{\frac{a}{0.4\;\mathrm{AU}}}^{6}
-            \p{\frac{\rho}{3 \; \mathrm{g/cm}^3}}
-            \p{\frac{M_\star}{M_{\odot}}}^{-2}.\label{eq:sehj_etasync}
+            \p{\frac{m}{4M_{\oplus}}}
+            \p{\frac{M_\star}{M_{\odot}}}^{-2}
+            \p{\frac{a}{0.4\;\mathrm{AU}}}^{6}\nonumber\\
+        &\times \p{\frac{a_{\rm p}}{5\;\mathrm{AU}}}^{-3}
+            \p{\frac{R}{2R_{\oplus}}}^{-3}.\label{eq:sehj_etasync}
 \end{align}
-Here, $\rho = m / \p{4\pi R^3/3}$ is the average density of the inner planet,
-and $M_{\rm J}$ is the mass of Jupiter. Evaluating Eq.~\eqref{eq:def_ta_crit},
-we find that $\abs{g}t_{\rm s, c} \approx 2 / \sin I$, which shows that tidal
-friction is many orders of magnitude too weak to destroy tCE2. Additionally,
-we see from Figs.~\ref{fig:probs20} and~\ref{fig:probs5} that this value of
-$\eta_{\rm sync}$ gives a high-obliquity tCE2 with significant probability.
-Thus, we predict that a sizable fraction of SEs with exterior CJ companions can
-have significant obliquities ($\sim \gtrsim 60^\circ$).
+Here, $M_{\rm J}$ is the mass of Jupiter. We see from Figs.~\ref{fig:probs20}
+and~\ref{fig:probs5} that this value of $\eta_{\rm sync}$ gives a high-obliquity
+tCE2 with significant probability. Eq.~\eqref{eq:def_ts_crit} shows that tCE2 is
+only unstable if $t_{\rm s} \lesssim t_{\rm s, c}$ where
+% 1 / (3/8 * ((Mjup^3 * 4 * Mearth) / Msun^4 * (0.4 AU)^12 / ((5 AU)^9 * (2 Rearth)^3))^(1/2) * 2 * pi / (0.4)^(3/2))
+% = 2.8189e5
+\begin{align}
+    \frac{1}{t_{\rm s, c}} ={}& \frac{\sin I \cos^2 I}{3 \times
+        10^5\;\mathrm{yr}}
+            \frac{k}{k_{\rm q}}
+            \p{\frac{m_{\rm p}}{M_{\rm J}}}^{3/2}
+            \p{\frac{m}{4 M_{\oplus}}}^{1/2}\nonumber\\
+        &\times \p{\frac{m_\star}{M_{\odot}}}^{-3/2}
+            \p{\frac{a}{0.4\;\mathrm{AU}}}^6
+            \p{\frac{a_{\rm p}}{5\;\mathrm{AU}}}^{-9/2}
+            \p{\frac{R}{2 R_{\oplus}}}^{-3/2}.
+\end{align}
+Since $t_{\rm s} \gg t_{\rm s, c}$, we see that tCE2 is stable. Thus, we predict
+that a significant fraction of SEs with exterior CJ companions can have
+long-lived, significant obliquities ($\gtrsim 60^\circ$) due to being trapped in
+tCE2.
+
+% \textcolor{red}{Just a brief investigation:} Finally, we briefly consider the
+% possibility of tidal heating. Coarsely, we have that
+% \begin{align}
+%     \frac{\dot{a}}{a} &\sim -\frac{1}{10^{14}\;\mathrm{yr}}\p{1 -
+%         \frac{\Omega_{\rm s}}{n}\cos \theta},\\
+%     \dot{E}_{\rm orb} = \frac{GM_{\star}m}{2a}\frac{\dot{a}}{a}
+%         &\approx 10^{20}\;\mathrm{erg/s}\p{1 -
+%         \frac{\Omega_{\rm s}}{n}\cos \theta}.
+% \end{align}
+% The black body luminosity of the planet is expected to be $4 \times
+% 10^{25}\;\mathrm{erg/s}$ for the fiducial parameters, and so can probably be
+% ignored.
 
 \subsection{Application to Ultra-short-period Planet Formation
 }\label{ss:disc_usp}
 
 In \citet{millholland2020formation}, the authors consider capture into the CS2
-resonance as part of a mechanism to induce ultra-short period planet (USP)
-formation. They envision a process consisting of three stages: (i) capture into
-CS2, (ii) simultaneous inward tidal migration and increase of the obliquity of
-CS2, and (iii) destruction of CS2 due to strong tidal dissipation and stalling
-of inward migration. They consider an inner proto-USP with two external
-perturbing planets. In this section, we apply our results above to a system
-architecture containing just a single planet, for simplicity.
+resonance as part of a mechanism to form ultra-short period planets (USPs). They
+envision a process consisting of three stages:
+\begin{itemize}
+    \item Rapid initial guaranteed capture into CS2.
 
-First, we verify agreement of our criterion for breaking of CS2 with theirs.
-Evaluating Eq.~\eqref{eq:def_ta_crit}, we find that tCE2 breaks when the
-semi-major axis is smaller than $a_{\rm break}$ where:
+    \item Runaway inward tidal migration due to the simultaneous increase of the
+        CS2 obliquity during migration.
+
+    \item Stalling of inward migration when tidal dissipation becomes
+        sufficiently strong to destroy CS2.
+\end{itemize}
+They consider an inner proto-USP with two external perturbing planets, and
+imagine that the spin of the planet quickly evolves to its equilibrium value,
+i.e.\ satisfying Eq.~\eqref{eq:weaktide_dWszero}. In our language, this
+corresponds to immediate evolution into tCE2. In this section, we revisit this
+mechanism with the results presented earlier in this paper.
+
+First, a proto-USP evolves from its initial condition into one of the tCE on the
+timescale
+% 1 / (1.5 * 1e-3 * (Msun / (8 Mearth)) * ((2 Rearth) / (0.035 AU))^3 * 2 * pi / (0.035)^(3/2))
+% = 1157
 \begin{align}
-    a_{\rm break} \approx{}& 0.038 \;\mathrm{AU}
-        \p{\frac{Q'}{10^{3}}}^{-1/9}
+    \frac{1}{t_{\rm s}} ={}& \frac{1}{1200\;\mathrm{yr}}
+            \p{\frac{1}{4k}}
+            \p{\frac{2k_2/Q}{10^{-3}}}
+            \p{\frac{M_\star}{M_{\odot}}}^{3/2}
+            \p{\frac{m}{8 M_{\oplus}}}^{-1}\nonumber\\
+        &\times \p{\frac{R}{2R_{\oplus}}}^3
+            \p{\frac{a}{0.035\;\mathrm{AU}}}^{-9/2}.
+\end{align}
+This is much shorter than the age of the system, and so the proto-USP can be
+treated as starting in one of the tCE\@.
+
+Next, we investigate the outcome of the initial, rapid spin evolution. First,
+due to the small semi-major axis ratio, we must generalize Eq.~\eqref{eq:wlp}
+\citep{lai_2017}:
+\begin{equation}
+    \omega_{\rm lp} = \frac{3m_{\rm p}}{4M_{\star}}
+        \alpha^3 n f(\alpha),
+        \label{eq:def_g_usp}
+\end{equation}
+where $\alpha = a / a_{\rm p}$ and \citep{murray1999solar}
+\begin{equation}
+    f(\alpha) \equiv \frac{b_{\rm 3/2}^{(1)}(\alpha)}{3\alpha}
+        \approx 1 + \frac{15}{8}\alpha^2 + \frac{175}{64}\alpha^4 + \dots,
+\end{equation}
+where $b_{\rm 3/2}^{(1)}$ is a Laplace coefficient. With this modification,
+$\eta_{\rm sync}$ (Eq.~\ref{eq:def_etasync}) can be computed:
+% (1 + 15/8 * (1.3)^(-4/3) + 175/64 * 1.3^(-8/3)) * 0.012
+\begin{align}
+    \eta_{\rm sync} ={}& 0.027 \cos I
+            \p{\frac{k}{k_{\rm q}}}
+            \p{\frac{m m_{\rm p}}{\p{8 M_{\oplus}}^2}}
+            \p{\frac{M_\star}{M_{\odot}}}^{-2}
+            \p{\frac{a}{0.035 \;\mathrm{AU}}}^{3}\nonumber\\
+        &\times \p{\frac{\alpha^3 f(\alpha)}{0.016}}
+            \p{\frac{R}{2R_{\oplus}}}^{-3}.
+            \label{eq:etasync_usp}
+\end{align}
+We have evaluated using an $\alpha$ corresponding to a period ratio $P_{\rm p} /
+P = 1.5$. For $I = 5^\circ$, roughly consistent with typical proto-USP systems
+\citep{dai2018larger}, Eq.~\eqref{eq:def_etac} shows that $\eta_{\rm sync} \ll
+\eta_{\rm c}$, and thus there are four CSs at spin-orbit synchronization. If,
+following \citet{millholland2020formation}, we take the initial planetary
+obliquity to be zero, the planet is guaranteed to evolve into tCE1, and not tCE2
+(see Fig.~\ref{fig:Hhists_0_06}). If we assume instead a randomly oriented
+initial planetary spin, perhaps again due to early giant impacts,
+Fig.~\ref{fig:probs5} suggests that the probability of capture into tCE2 is
+still only modest ($\lesssim 10\%$). A more sophisticated calculation including
+the effect of a third planet does not greatly modify these results. Note that
+this calculation is in tension with Fig.~4 of \citet{millholland2020formation},
+where they find that $\eta \sim 1$ for the same physical parameters when
+$\Omega_{\rm s}$ is at its equilibrium value (i.e.\ satisfying
+Eq.~\ref{eq:weaktide_dWszero}, or $\Omega_{\rm s} \approx n$ when the obliquity
+is small).
+
+The second stage of the proposed mechanism, runaway inward migration after
+attaining tCE2, requires that the initial orbital decay time scale be
+sufficiently fast. We find that:
+% 1 / (1.5 * 1e-3 * (Msun / (8 Mearth)) * ((2 Rearth) / (0.035 AU))^5 * 2 * pi / (0.035)^(3/2))
+% = 1.955e8
+\begin{align}
+    -\frac{\dot{a}}{a} ={}& \frac{1}{2 \times 10^8\;\mathrm{yr}}
+            \p{1 - \frac{\Omega_{\rm s}}{n}\cos \theta}
+            \p{\frac{2k_2/Q}{10^{-3}}}
+            \p{\frac{M_\star}{M_{\odot}}}^{3/2}\nonumber\\
+        &\times \p{\frac{m}{8M_{\oplus}}}^{-1}
+            \p{\frac{R}{2R_{\oplus}}}^5
+            \p{\frac{a}{0.035\;\mathrm{AU}}}^{-13/2}.
+            \label{eq:adot_usp}
+\end{align}
+For $\eta_{\rm sync} \ll \eta_{\rm c}$, we can show that $\p{1 - \Omega_{\rm
+s}\cos \theta / n} \approx 1$ in tCE2 by using Eqs.~\eqref{eq:def_tce2_approx},
+so indeed the orbit of the proto-USP is able to decay within the lifetime of the
+system. On the other hand, in tCE1, $\omega_{\rm s} \approx n$ and $\cos \theta
+\approx 1 - \eta_{\rm sync}^2 \sin^2 I / 2$, so $\dot{a} / a$ is suppressed by a
+factor of $\sim \eta_{\rm sync}^2 \sin^2 I$. This shows that a proto-USP in tCE1
+is unable to initiate runaway orbital decay within the age of the system.
+Note that this constraint also implies $\eta_{\rm sync}$
+(Eq.~\ref{eq:etasync_usp}) cannot be increased by considering proto-USPs with
+larger values of $a$, as the initial orbital decay will become too slow.
+
+Finally, we compute the orbital separation at which tCE2 becomes unstable due to
+sufficiently strong tidal dissipation. Evaluating Eq.~\eqref{eq:def_ts_crit}, we
+find that tCE2 breaks ($t_{\rm s} \lesssim t_{\rm s, c}$) when the semi-major
+axis is smaller than $a_{\rm break}$, where
+% (1e-3 * (Msun / (8 Mearth))^3 * ((2 Rearth) * (0.05 AU))^(9/2))^(1/9) / (1 AU)
+% = 0.033198
+\begin{align}
+    a_{\rm break} \approx{}& 0.033 \;\mathrm{AU}
+        \p{\frac{2k_2/Q}{10^{3}}}^{-1/9}
         \p{\frac{M_\star}{M_{\odot}}}^{1/3}
-        \p{\frac{m}{8M_{\oplus}}}^{-1/3}\nonumber\\
+        \p{\frac{mm_{\rm p}}{\p{8M_{\oplus}}^2}}^{-1/6}\nonumber\\
         &\times \p{\frac{R}{2R_{\oplus}}}^{1/2}
         \p{\frac{a_{\rm p}}{0.05\;\mathrm{AU}}}^{1/2}
-        \p{\frac{1}{\sin I \sqrt{\cos I}}}^{1/9}.
+        \p{\frac{1}{\sin I \cos^2 I}}^{1/9}.
 \end{align}
-Here, we have assumed the planets are the same mass ($m_{\rm p} = m$) and have
-used the reduced tidal parameter $Q' = 3Q / 2k_2$. This corresponds to a 2.7-day
-orbit and does \emph{not} qualify to be a USP\@.
+This corresponds to a 2.7-day orbit. Once the system exits tCE2, it rapidly
+evolves to tCE1, which suppresses its orbital decay (Eq.~\ref{eq:adot_usp}).
+This final orbital separation does not qualify as a USP ($P \lesssim
+\mathrm{day}$).
 
-Second, we note that \citet{millholland2020formation} focus on system
-architectures for which $\eta_{\rm sync} \gtrsim \eta_{\rm c}$ (where CS1 does
-not exist at spin-orbit synchronization; see Eqs.~\ref{eq:def_etac}
-and~\ref{eq:def_etasync}), finding that architectures for which $\eta_{\rm sync}
-\lesssim \eta_{\rm c}$ always generate evolution towards CS1. However, they
-assumed an initial obliquity $\theta_{0} = 0^\circ$, while broader distributions
-of initial planet obliquities will give some probability of evolution towards
-CS2 and tCE2 (see Figs.~\ref{fig:Hhists_0_06}--\ref{fig:Hhists_0_70}). To
-understand qualitatively the likelihood of this happening, we calculate the
-parameter
-\begin{align}
-    \eta_{\rm sync} ={}& 0.012 \p{\frac{k}{k_{\rm q}}}
-            \p{\frac{m}{8 M_{\oplus}}}^2
-            \p{\frac{M_\star}{M_{\odot}}}^{-2}\nonumber\\
-        &\times \p{\frac{a}{0.035 \;\mathrm{AU}}}^{3}
-            \p{\frac{P_{j + 1} / P_j}{1.5}}^{-2}
-            \p{\frac{R}{2R_{\oplus}}}^{-3}.
-\end{align}
-Thus, we see that capture into CS2 is not only not guaranteed but has quite low
-probability (see Figs.~\ref{fig:probs20}--\ref{fig:probs5}). Thus, we conclude
-that the presence of the third planet in their scenario significantly improves
-the formation rate of USPs, likely by significantly enhancing the precession
-rate $g$ compared to the two-planet case.
-
-At a more qualitative level, our result shows that it is not necessary to
-restrict formation of USPs via tidal runaway to system architectures for which
-$\eta_{\rm sync} \gtrsim \eta_{\rm c}$. In particular, architectures with larger
-period ratios $P_{j + 1} / P_j$ can still have substantial probability of
-generating an inner planet occupying tCE2 even if $\eta_{\rm sync} < \eta_{\rm
-c}$. Such architectures can be advantageous for USP formation as more of their
-total angular momentum budget is in the outer planet's orbit, allowing for more
-migration \citep{fabrycky_otides, millholland2020formation}.
+In summary, our results for the formation of USPs via runaway tidal migration
+are in tension with those of \citet{millholland2020formation}. In particular, we
+find that only proto-USPs with a large primordial obliquity have a probability
+of evolving into tCE2 initially. Furthermore, proto-USPs that successfully
+initiate runaway tidal migration after reaching tCE2 will cease their inward
+migration before becoming a USP\@.
 
 \subsection{Application to WASP-12b}\label{ss:disc_wasp12b}
 
-Applying our calculation for $a_{\rm break}$, we can calculate the required
-perturber properties if tCE2 is not to be destroyed by tides. This requires
+In \citet{millholland2019obliquity}, the authors consider the possibility that
+the measured orbital decay of the HJ WASP-12b \citep[$P / \dot{P} = -3.2
+\;\mathrm{Myr}$; ][]{maciejewski2016departure, patra2017apparently} is caused by
+tidal dissipation in the HJ enhanced by being trapped in a high-obliquity CS due
+to an undetected exterior planet. In order for this scenario to be achieved,
+many conditions are necessary:
+\begin{itemize}
+    \item The HJ must have had a sufficiently small initial semimajor axis such
+        that its orbital decay timescale is less than the age of the system.
+
+    \item The exterior planet must be sufficiently massive to keep the HJ in a
+        high-obliquity tCE today.
+
+    \item The RV signal of the exterior planet must be smaller than the
+        residuals of the published RVs, $\sim 16\;\mathrm{m/s}$
+        \citep{hebb2009wasp, husnoo2011orbital, knutson2014friends,
+        bonomo2017gaps}.
+
+    \item The initial configuration of the HJ and exterior planet must be
+        dynamically stable.
+\end{itemize}
+Finally, if all four of these conditions are satisfied, the $\eta_{\rm sync}$ of
+the initial configuration can be used to estimate the likelihood of the spin of
+the HJ initally evolving into tCE2. We use the following current-day system
+parameters \citet{hebb2009wasp, maciejewski2013multi, millholland_wasp12b}:
+$R_\star = 1.63R_{\odot}$, $M_\star = 1.36M_{\odot}$, $R = 1.89R_{\rm J}$,
+$M_{\rm p} = 1.41M_{\rm J}$, and $a = 0.023 \;\mathrm{AU}$.
+
+First, we require that the initial HJ semimajor axis, denoted $a_{\rm i}$, is
+sufficiently small that decay occurs within the age of the system. The semimajor
+axis decay rate can be expressed as
+% 1 / (1.5 * 1e-7 * (1.36 Msun) / (1.41 Mjup) * ((1.89 Rjup) / (0.038 AU))^5 * (G * (1.36 Msun) / (0.038 AU)^3)^(1/2) * (1 yr))
+% = 9.82e8
 \begin{align}
-    \p{\frac{m_{\rm p}}{50 M_{\oplus}}}^{5/3}\p{\frac{a_{\rm
-        p}}{0.05\;\mathrm{AU}}}^{-8/3} \gtrsim {}&
-            \p{\frac{2k_2/Q}{10^{-7}}}^{2/3}
-            \p{\frac{M_\star}{1.36 M_{\odot}}}^{2}\nonumber\\
-        &\times \p{\frac{m}{1.41 M_{\rm J}}}^{-1}
-            \p{\frac{R}{1.89R_{\rm J}}}^{3}\nonumber\\
-        &\times \p{\frac{a}{0.023\;\mathrm{AU}}}^{-6}
-            \p{\frac{1}{\sin I_{\rm tot}}}^{2/3}.
+    \frac{\dot{a}}{a_{\rm i}}
+        =& -\frac{1}{\mathrm{Gyr}}
+            \p{\frac{2k_2/Q}{10^{-6}}}
+            \p{\frac{M_\star}{1.36 M_{\odot}}}^{3/2}
+            \p{\frac{m}{1.41M_J}}^{-1}\nonumber\\
+        &\times \p{\frac{R}{1.89R_j}}^5
+            \p{\frac{a_{\rm i}}{0.038\;\mathrm{AU}}}^{-13/2}
+            \p{1 - \frac{\Omega_{\rm s}}{n}\cos \theta}.
+            \label{eq:hj_adot}
 \end{align}
-The residuals of the published RVs (\textcolor{red}{TODO grab citations from
-Millholland, any updates?}) are $\sim 16\;\mathrm{m/s}$. Using a line-of-sight
-angle of $45^\circ$, we find that a planet with $m_{\rm p} = 50M_{\oplus}$ and
-$a_{\rm p} = 0.05\;\mathrm{AU}$ has an RV semi-amplitude of $12\;\mathrm{m/s}$,
-which cannot be ruled out. Thus, we reproduce the result of
-\citet{millholland_wasp12b}, that tCE2 remains stable under the dissipative
-tidal torque, and obliquity tides cannot be ruled out as a mechanism for
-WASP-12b's rapid orbital decay.
+Again, $t_{\rm s} \ll a_{\rm i} / \dot{a}$, so we can treat the HJ as
+immediately evolving into a tCE\@. Thus, we see that the initial semimajor axis
+for the HJ cannot exceed $0.038\;\mathrm{AU}$ even when $\p{1 - \Omega_{\rm
+s}\cos \theta/n} \approx 1$, as is the case for rapid evolution into tCE2 while
+$\eta_{\rm sync} \ll 1$.
+
+Next, we address the constraint that tCE2 is stable under the influence of the
+exterior planet. Due to the fact that the angular momentum of the HJ greatly
+exceeds that of the exterior planet ($L \gg L_{\rm p}$; we will verify this
+retroactively), Eq.~\eqref{eq:dldt1} needs to be modified. The precession of
+$\uv{l}$ about $\bm{J} = J\uv{j} \equiv \bm{L} + \bm{L}_{\rm p}$, the total
+angular momentum axis, can be written as
+\begin{equation}
+    \rd{\uv{l}}{t} = \omega_{\rm lp}\cos I \frac{J}{L_{\rm p}}
+        \p{\uv{l} \times \uv{j}},
+\end{equation}
+where $\omega_{\rm lp}$ is still given by Eq.~\eqref{eq:wlp}. Thus, we see that
+the precession frequency $\abs{g}$ is enhanced by a factor of $J / L_{\rm p}
+\approx L / L_{\rm p}$. With this modification, the stability of tCE2 requires
+\begin{equation}
+    \frac{1}{t_{\rm s}} \lesssim \omega_{\rm lp}\cos I \frac{L}{L_{\rm p}}
+        \sin I \sqrt{\frac{\eta_{\rm sync}\cos I}{2}}.
+\end{equation}
+This then yields that
+\begin{align}
+    \frac{a_{\rm p}}{a}
+        \lesssim{}& 3.3 \p{\sin I \cos^2 I}^{4/21}
+            \p{\frac{m}{1.41 M_J}}^{12/21}
+            \p{\frac{M_\star}{1.36 M_{\odot}}}^{-12/21}\nonumber\\
+        &\times \p{\frac{2k_2/Q}{10^{-6}}}^{-4/21}
+            \p{\frac{a}{0.023\;\mathrm{AU}}}^{6/7}
+            \p{\frac{R}{1.89 R_J}}^{-6/7}.\label{eq:hj_tce2_stab}
+\end{align}
+Notably, this expression does not depend on the perturber mass but only on
+$a_{\rm p}$.
+
+Next, we address the constraint that the RV signal of the exterior planet be
+smaller than $16\;\mathrm{m/s}$, which requires
+% (G * (1.36 Msun) / (0.125 AU))^(1/2) * (105 Mearth) / (1.36 Msun) / 2^(1/2)
+% 16.106 m/s
+\begin{equation}
+    \p{\frac{a_{\rm p}}{0.125\;\mathrm{AU}}}^{-1/2}
+    \p{\frac{m_{\rm p}}{105M_{\oplus}}}
+    \p{\frac{M_\star}{1.36M_{\odot}}}^{-1/2}
+    \p{\frac{\sin i}{1 / \sqrt{2}}} \lesssim 1,
+    \label{eq:hj_rv}
+\end{equation}
+where $i$ is the line-of-sight inclination angle. Here, we have taken $a_{\rm
+p}$ to be the maximum value permitted by the combination of
+Eqs.~(\ref{eq:hj_adot},~\ref{eq:hj_tce2_stab}). For these values of $a_{\rm p}$
+and $m_{\rm p}$, we still have $L / L_{\rm p} \sim 0.4$, and so $L \gg L_{\rm
+p}$ is be well satisfied for the permitted parameter space.
+
+Finally, we require that the initial orbital configuration be dynamically
+stable. We use the Hill stability criterion \citep[e.g.][]{petit2020path}:
+\begin{equation}
+    \frac{a_{\rm p} - a_{\rm i}}{a_{\rm i}} > 2\sqrt{3}\frac{a_{\rm p} + a_{\rm
+        i}}{2a_{\rm i}} \p{\frac{m + m_{\rm p}}{3M_{\star}}}^{1/3}.
+\end{equation}
+Assuming $m_{\rm p} \ll m$, this yields:
+\begin{equation}
+    \frac{a_{\rm p}}{a_{\rm i}} > 1.29.\label{eq:hj_orbstab}
+\end{equation}
+
+By using the constraints given by Eqs.~(\ref{eq:hj_adot},~\ref{eq:hj_orbstab}),
+the initial $\eta_{\rm sync, i}$ can be constrained:
+\begin{align}
+    \eta_{\rm sync, i} <{}& 0.016 \cos I\p{\frac{m}{1.41M_J}}^2
+            \p{\frac{M_\star}{1.36M_{\odot}}}^{-2}
+            \p{\frac{a_{\rm i}}{0.038\;\mathrm{AU}}}^{3}\nonumber\\
+        &\times \p{\frac{a_{\rm p} / a_{\rm i}}{1.29}}^{-7/2}
+            \p{\frac{R}{1.89R_{\rm J}}}^{-3}.\label{eq:hj_etasync}
+\end{align}
+It is possible that $R$ is larger today than its primordial value due to
+inflation induced by increased stellar irradiation. However, if a smaller value
+of $R$ is used in Eq.~\eqref{eq:hj_etasync}, the value of $a_{\rm i}$ must also
+be decreased such that $R^5 / a_{\rm i}^{13/2}$ is constant
+(Eq.~\ref{eq:hj_adot}), which further decreases $\eta_{\rm sync, i}$.
+
+For $\eta_{\rm sync} = 0.016$, we find that there are four CSs unless $I$ is
+extremely small. From Fig.~\ref{fig:Hhists_0_06}, we can infer that prograde
+primordial obliquities will evolve towards tCE1 in the regime where $\eta_{\rm
+sync} \ll \eta_{\rm c}$. On the other hand, if the primordial obliquity of the
+HJ is assumed to be isotropically distributed, then Fig.~\ref{fig:probs20}
+suggests that the probability of entry into tCE2 is still $\lesssim 2\%$ even if
+the perturbing planet is misaligned by $I = 20^\circ$.
+
+In summary, the joint constraints we have placed on the WASP-12b \& perturber
+system imply that the initial $\eta_{\rm sync, i}$ is unlikely to have been
+large. This suggests that early capture into tCE2 is unlikely from either an
+isotropic or prograde-favoring initial obliquity distribution. However, it is
+possible that additional mechanisms can generate a favorable initial obliquity
+distribution, such as the presence of a dissipating protoplanetary disk in the
+early lifetime of the system quickly driving the obliquity of WASP-12b to $\sim
+90^\circ$ \citep{millholland_disk, su2020}.
 
 \section{Summary and Discussion}\label{s:summary}
+
+In this work, we have studied the evolution of an interior planet's spin due to
+the joint effect of tidal dissipation and gravitational interactions with an
+exterior perturber. Our results extend our study of Colombo's Top in a previous
+paper \citep{su2020} to include a dissipative torque, for which we have adopted
+the weak friction theory of the equilibrium tide \citep{lai2012}. Our primary
+esults are as follows:
+\begin{itemize}
+    \item We calculate the modification of the equilibria of Colombo's Top
+        (Cassini States; CSs) due to tidal dissipation and evaluate the
+        stability of the CSs in the presence of the tidal dissipation.
+
+    \item We show that, for a given orbital architecture, the spin of the inner
+        planet has at most two spin configurations (spin frequency and
+        orientation) that are stable under the effect of tidal dissipation. We
+        call these equilibria \emph{tidal Cassini Equilibria} (tCE\@; see
+        Fig.~\ref{fig:6equils}). The locations of these equilibria are
+        determined by the system architecture and are parameterized by
+        $\eta_{\rm sync}$ (Eq.~\ref{eq:def_etasync}).
+
+    \item We show that which tCE a given initial planetary spin configuration
+        reaches can be probabilistic for certain initial conditions. For these
+        initial conditions, the probabilities of approaching either tCE can be
+        determined by careful study of the dynamics upon separatrix encounter
+        (Sections~\ref{ss:toy_outcomes} and~\ref{ss:phop_weaktide}). As an
+        example, if the initial spin orientation is assumed to be isotropically
+        distributed, the probabilities of entering tCE1 and tCE2 are given in
+        Figs.~\ref{fig:probs20} and~\ref{fig:probs5} as a function of $\eta_{\rm
+        sync}$ for two different mutual inclinations $I$.
+
+    \item In three exoplanetary scenarios of interest, application of our
+        results yields the following conclusions: (i) a super-Earth with an
+        exterior cold Jupiter has substantial probability of being trapped in a
+        high-obliquity tCE\@; (ii) formation of ultra-short-period planets via
+        tidal runaway is unlikely due to low probability of capture into a
+        high-obliquity tCE\@; and (iii) WASP-12b is unlikely to be undergoing
+        enhanced orbital decay due to obliquity tides, as the probability of
+        entry into tCE2 is also low.
+\end{itemize}
+
+Above, we have studied tidal dissipation in the planet via the weak friction
+theory of the equilibrium tide \citep{lai2012}. However, other mechanisms of
+tidal dissipation may be dominant, depending on the system parameters
+\citep[e.g.][]{papaloizou_ivanov_inertial, teyssandier2019formation}. While the
+detailed outcomes may change, a different tidal mechanism is amenable to the
+same analysis presented in this paper: The tCE can still be found by an analysis
+mirroring that shown in Fig.~\ref{fig:6equils}, and the probabilistic outcome of
+a separatrix encounter can still be solved using the techniques of
+Sections~\ref{ss:toy_outcomes} and~\ref{ss:phop_weaktide}.
+
+Additionally, we have primarily focused on an isotropic distribution of initial
+spin orientation, assuming that giant impacts will effectively randomize a
+planet's spin. More physically accurate distributions can be used in the case of
+planetary mergers \citep{li2020planetary} or many smaller impacts
+\citep{dones1993does}. Figures~\ref{fig:probs20}--\ref{fig:probs5} can be
+updated accordingly by convolving the distributions in the right panels of
+Figs.~\ref{fig:Hhists_0_06}--\ref{fig:Hhists_0_70} with any initial obliquity
+distribution. The qualitative results are unlikely to change, while the detailed
+probabilities for tCE2 capture can increase [decrease] if the initial obliquity
+distribution favors [disfavors] $\theta_{\rm i} \approx 90^\circ$ compared to
+the isotropic distribution.
 
 \section{Acknowledgements}
 

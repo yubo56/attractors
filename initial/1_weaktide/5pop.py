@@ -214,8 +214,8 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     plot scatter + theta-binned hist
     '''
     # set up axes
-    left, width = 0.2, 0.55
-    bottom, height = 0.1, 0.88
+    left, width = 0.22, 0.53
+    bottom, height = 0.12, 0.76
     spacing = 0.05
     rect_scatter = [left, bottom, width, height]
     rect_histy = [left + width + spacing, bottom,
@@ -236,13 +236,18 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     phi2 = [ic[1] for ic in IC_eq2]
     ax_scatter.scatter(phi1, mu1, c='darkorange', s=ms)
     ax_scatter.scatter(phi2, mu2, c='tab:green', s=ms)
-    ax_scatter.set_xlabel(r'$\phi_{\rm i}$ (deg)', fontsize=16)
-    ax_scatter.set_ylabel(r'$\cos \theta_{\rm i}$', fontsize=16)
+    ax_scatter.set_xlabel(r'$\phi_{\rm i}$ (deg)')
+    ax_scatter.set_ylabel(r'$\cos \theta_{\rm i}$')
+    ax_scatter.set_ylim(-1, 1)
+    ax_scatter.set_xlim(0, 2 * np.pi)
     ylim = ax_scatter.get_ylim()
-    ax_scatter.scatter(3, -10, c='gold',
+    ax_scatter.scatter(3, -10, c='darkorange',
                        label='tCE1', s=20)
     ax_scatter.scatter(3, -10, c='tab:green', label='tCE2', s=20)
-    ax_scatter.legend(loc='lower left', fontsize=14)
+    ax_scatter.legend(loc='lower center', fontsize=14,
+                      bbox_to_anchor=(left + (width + spacing) / 2,
+                                      1),
+                      ncol=2)
     ax_scatter.set_ylim(ylim)
     # ax_scatter.set_title(r'$s_c = %.2f, I = %d^\circ$' % (s_c, np.degrees(I)))
     # overplot separatrix
@@ -324,7 +329,7 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     s_c_dense = np.linspace(min(s_c_vals), max(s_c_vals), 200)
     A2s = np.array([get_areas_ward(I, s_c, s0)[1] for s_c in s_c_dense])
     A3s = np.array([get_areas_ward(I, s_c, s0)[2] for s_c in s_c_dense])
-    ax1.fill_between(s_c_dense, A2s / (4 * np.pi), facecolor='tab:blue', alpha=0.2)
+    ax1.fill_between(s_c_dense, A2s / (4 * np.pi), facecolor='tab:green', alpha=0.2)
     A2_interp = interp1d(s_c_dense, A2s / (4 * np.pi))
     A3_interp = interp1d(s_c_dense, A3s / (4 * np.pi))
     idxs = np.argsort(s_c_vals)
@@ -333,7 +338,7 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     ax1.fill_between(np.array(s_c_vals)[idxs],
                      A2frac[idxs],
                      np.minimum(probs_dat, A2frac + A3frac)[idxs],
-                     facecolor='tab:green',
+                     facecolor='tab:blue',
                      alpha=0.2)
     ax1.fill_between(np.array(s_c_vals)[idxs],
                      np.minimum(probs_dat, A2frac + A3frac)[idxs],
@@ -379,7 +384,8 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     tce2_anal = np.degrees(np.arccos(
         np.sqrt(s_c_cont * np.cos(I) / 2)
         ))
-    ax2.plot(s_c_cont, tce2_anal, 'b--', lw=1.5)
+    idxs = np.where(s_c_cont < s_c_crit)[0]
+    ax2.plot(s_c_cont[idxs], tce2_anal[idxs], 'b--', lw=1.5)
     ax2.set_ylim(0, 90)
     ax2.set_yticks([0, 45, 90])
     ax2.set_yticklabels(['0', '45', '90'])

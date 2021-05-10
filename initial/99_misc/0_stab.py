@@ -185,7 +185,7 @@ def plot_cs_pts():
     # ax1.plot(eps_vals[idxs], mu2_th, 'r:')
     # ax1.plot(eps_vals[idxs], mu4_th, 'b:')
     ax2.plot(eps_vals_norm[idxs], np.degrees(phi2_th), 'g--')
-    ax2.plot(eps_vals_norm[idxs], np.degrees(phi4_th), 'r--')
+    ax2.plot(eps_vals_norm[idxs], np.degrees(phi4_th), c='tab:purple', ls='--')
 
     # ax1.set_title(r'$\eta = %.1f$' % eta)
     plt.tight_layout()
