@@ -402,20 +402,23 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
 def run():
     s_c_vals_20 = [
         # 0.7,
-        0.2,
-        0.06,
+        # 0.2,
+        # 0.06,
         # 2.0,
         # 1.2,
         # 1.0,
         # 0.65,
         # 0.6,
         # 0.55,
-        0.5,
+        # 0.5,
         # 0.45,
         # 0.4,
         # 0.35,
         # 0.3,
         # 0.25,
+        0.1,
+        0.03,
+        0.01,
     ]
     s_c_vals_5 = [
         # 0.7,
@@ -436,6 +439,9 @@ def run():
         # 0.35,
         # 0.3,
         # 0.25,
+        0.1,
+        0.03,
+        0.01,
     ]
     eps = 1e-3
     s0 = 10
@@ -582,7 +588,7 @@ def plot_anal_cs_equils(I=np.radians(20), s_c=0.2):
 
 if __name__ == '__main__':
     run()
-    plot_all_cumprobs()
+    # plot_all_cumprobs()
     # plot_anal_cs_equils()
 
     # bunch of debugging cases...
