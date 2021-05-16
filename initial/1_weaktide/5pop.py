@@ -291,26 +291,51 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     # try to overplot the semi-analytical simulations I ran
     pkl_fn = '6pc_dist%s.pkl' % s_c_str(s_c)
     if os.path.exists(pkl_fn):
-        fig = plt.figure(figsize=(6, 4))
         n_mu = 501
         n_phi = 50
         mu_vals =  np.linspace(-0.99, 0.99, n_mu)
         with open(pkl_fn, 'rb') as f:
             cross_dat = pickle.load(f)
-        # p_caps = get_anal_caps(I, s_c, cross_dat, mu_vals)
         p_caps = get_num_caps(I, s_c, cross_dat, mu_vals)
         tot_probs = np.sum(p_caps / n_phi, axis=1)
-        plt.plot(mu_vals, tot_probs, 'b', alpha=0.8, lw=3.5)
+        if s_c < 0.1:
+            fig, (ax1, ax2) = plt.subplots(
+                2, 1,
+                figsize=(6, 6),
+                gridspec_kw={'height_ratios': [2, 1]},
+                sharex=True)
+        else:
+            fig = plt.figure(figsize=(6, 4))
+            ax1 = plt.gca()
+        ax1.plot(mu_vals, tot_probs, 'b', alpha=0.8, lw=3.5)
+
+        # try anal prob
+        p_caps_al = get_anal_caps(I, s_c, cross_dat, mu_vals)
+        s_crosses = np.max(cross_dat[:, :, 0], axis=1)
+        tot_probs_al = np.sum(p_caps_al / n_phi, axis=1)
 
         bin_cents = (bins[ :-1] + bins[1: ]) / 2
         bin_probs = np.array(n[0]) / np.array(n[1])
-        plt.plot(bin_cents, bin_probs, 'ro', ms=3)
-        plt.xlabel(r'$\cos \theta_{\rm i}$')
-        plt.ylabel(r'tCE2 Probability')
-        plt.tight_layout()
+        ax1.plot(bin_cents, bin_probs, 'ro', ms=3)
+        ax1.set_ylabel(r'tCE2 Probability')
         s_c_text = '%.1f' % s_c if s_c > 0.1 else '%.2f' % s_c
-        plt.text(1, 1, r'$\eta_{\rm sync} = %s$' % s_c_text,
+        ax1.text(1, 1, r'$\eta_{\rm sync} = %s$' % s_c_text,
                  ha='right', va='top', fontsize=16)
+
+        if s_c < 0.1:
+            ax1.plot(mu_vals, tot_probs_al, 'g--', alpha=0.8, lw=1.0)
+            cross_idx = np.where(s_crosses > 0)[0]
+            ax2.plot(mu_vals[cross_idx], s_c / s_crosses[cross_idx],
+                     'b', alpha=0.8, lw=2.5)
+
+            ax2.set_ylabel(r'$\eta_{\rm cross}$')
+            ax2.set_xlabel(r'$\cos \theta_{\rm i}$')
+            ax2.axhline(s_c, c='k', ls='--', lw=1.5)
+            plt.tight_layout()
+            fig.subplots_adjust(hspace=0.03)
+        else:
+            ax1.set_xlabel(r'$\cos \theta_{\rm i}$')
+            plt.tight_layout()
         plt.savefig('5pc_fits%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
         plt.close()
 
@@ -402,28 +427,28 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
 def run():
     s_c_vals_20 = [
         # 0.7,
-        # 0.2,
-        # 0.06,
+        0.2,
+        0.06,
         # 2.0,
         # 1.2,
         # 1.0,
         # 0.65,
         # 0.6,
         # 0.55,
-        # 0.5,
+        0.5,
         # 0.45,
         # 0.4,
         # 0.35,
         # 0.3,
         # 0.25,
-        0.1,
-        0.03,
-        0.01,
+        # 0.1,
+        # 0.03,
+        # 0.01,
     ]
     s_c_vals_5 = [
         # 0.7,
-        # 0.2,
-        # 0.06,
+        0.2,
+        0.06,
         # 2.0,
         # 1.2,
         # 1.0,
@@ -433,15 +458,15 @@ def run():
         # 0.65,
         # 0.6,
         # 0.55,
-        # 0.5,
+        0.5,
         # 0.45,
         # 0.4,
         # 0.35,
         # 0.3,
         # 0.25,
-        0.1,
-        0.03,
-        0.01,
+        # 0.1,
+        # 0.03,
+        # 0.01,
     ]
     eps = 1e-3
     s0 = 10

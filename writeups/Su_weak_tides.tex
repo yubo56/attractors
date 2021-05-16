@@ -1417,74 +1417,140 @@ trajectory librates over $\phi \in \s{\phi_{\min}, \phi_{\max}}$. Thus, $H$ is
 strictly increasing for all initial conditions inside the separatrix, and they
 all converge to CS2.
 
-% \section{Separatrix Crossing Probability with Weak Tidal Friction
-% }\label{app:sep_crossing_dynamics}
+\section{Approximate TCE2 Probability for Small $\eta_{\rm sync}$
+}\label{app:sep_crossing_dynamics}
 
-% In this appendix, we analytically calculate $\Delta K_{\pm}$ for use in
-% Eq.~\eqref{eq:def_pc_weaktide} to calculate the probabilities of the two
-% possible transitions upon separatrix encounter. We first rewrite the full
-% equations of motion for the planet's spin including weak tidal friction in
-% component form:
-% \begin{align}
-%     \rd{\theta}{t} &= g\sin I \sin \phi -
-%         \frac{1}{t_{\rm a}} \sin \theta,\label{eq:ds_fullq}\\
-%     \rd{\phi}{t} &= -\alpha\cos\theta
-%         - g\p{\cos I + \sin I \cot \theta \cos \phi}\label{eq:ds_fullphi},\\
-%     \rd{\Omega_{\rm s}}{t}
-%         &= \frac{1}{t_{\rm a}} \s{2n \cos \theta
-%             - g\Omega_{\rm s}\p{1 + \cos^2\theta}}\label{eq:ds_fulls}.
-% \end{align}
+In this appendix, we seek a tentative analytic understanding for the
+probability of convergence to tCE2 when $\eta_{\rm sync}$ is small, i.e.\ the
+left extremes of Figs.~\ref{fig:probs20} and~\ref{fig:probs5}. In this regime,
+following the discussions in Sections~\ref{ss:toy_outcomes}
+and~\ref{ss:phop_weaktide}, we understand that initial conditions in zone I
+always converge to tCE1, initial conditions in zone II always converge to tCE2,
+and initial conditions in zone III experience separatrix encounter and
+probabilistically converge to either one of the tCE\@. To further proceed, we
+will assume an isotropic distribution of initial spin orientations; different
+distributions again will only change the quantitative but not qualitative
+character of the discussion.
 
-% Note that Eq.~\eqref{eq:def_dK_weaktide} can be rewritten
-% \begin{align}
-%     \Delta K_{\pm} &= \oint_{\mathcal{C}_{\pm}} \rd{H}{t}
-%         - \rd{H_{\rm sep}}{t}\;\mathrm{d}t
-%         \nonumber\\
-%         &= \oint_{\mathcal{C}_{\pm}}
-%            \p{\rd{(\cos\theta)}{t}}_{\rm tide}
-%             + \frac{\dot{\Omega}_{\rm s}}{\dot{\phi}}
-%             \p{\pd{H}{s} - \pd{H_{\rm sep}}{s}}\;\mathrm{d}\phi
-%                 \label{eq:app_dhpm}.
-% \end{align}
+To express the contribution of initial conditions in zone II to the total tCE2
+probability (green shaded region in Figs.~\ref{fig:probs20}
+and~\ref{fig:probs5}), we need only to know the probability an arbitrary
+initial condition is in zone II\@, which can be obtained by the phase space
+area of zone II\@. An exact analytic form for this area is known
+(\citealp{ward2004I}, Paper I), but an accurate approximation can be obtained
+using Eq.~\eqref{eq:sep_theta} since $\eta_{\rm i} \ll 1$:
+\begin{align}
+    \frac{A_{\rm II}}{4\pi} = \frac{4}{\pi}\sqrt{\eta_{\rm i} \sin I}.
+\end{align}
+where $A_{\rm II}$ is the phase space area (in $\cos \theta$ and $\phi$
+coordinates) of zone II\@.
 
-% We then evaluate $\Delta K_{\pm}$ by integrating along the two legs of the
-% separatrix $\mathcal{C}_{\pm}$ (see Fig.~\ref{fig:1contours}). Note that we must
-% use the value of $\eta$ at the moment of separatrix encounter, as the evolution
-% of $\Omega_{\rm s}$ changes the spin-orbit precession frequency $\alpha$
-% \begin{align}
-%     \Delta K_{\pm} ={}& \oint_{\mathcal{C}_{\pm}}
-%         \frac{1}{t_{\rm s}}\sin^2\theta
-%             \p{\frac{2n}{\Omega_{\rm s}} - \cos\theta}
-%          +
-%             \s{\frac{\alpha}{\Omega_{\rm s}}
-%                 \frac{\cos^2\theta}{2} + g\frac{\Omega_{\rm
-%             c}}{2\Omega_{\rm s}^2}\cos^2 I}\rd{\Omega_{\rm
-%             s}}{t}\rd{t}{\phi}\;\mathrm{d}\phi\\
-%      \approx{}& \oint_{\mathcal{C}_{\pm}}
-%         \frac{1}{t_{\rm s}}\sin^2\theta
-%             \p{\frac{2n}{\Omega_{\rm s}} - \cos\theta}
-%         + \frac{1}{t_{\rm s}}\frac{n}{\Omega_{\rm s}\eta}
-%             \s{\p{\cos \theta}_{\mathcal{C}_{\pm}} - \frac{\Omega_{\rm s}}{2n}}
-%             \s{2 \cos I \pm \sqrt{2 \sin I\p{1 - \cos \phi} / \eta}}
-%             \;\mathrm{d}\phi.\label{eq:app_deltaK}
-%     t_{\rm s} \Delta K_{\pm} \approx{}&
-%         -2\cos I\p{\pm 2\pi \eta \cos I + 8\sqrt{\eta \sin I}}
-%         \pm 2\pi \frac{\Omega_{\rm s}}{n}\cos I
-%         - 8\eta \cos I \sqrt{\sin I / \eta}
-%             + \frac{4\Omega_{\rm s}}{n}\sqrt{\sin I/\eta}\nonumber\\
-%         &+ \frac{2n}{\Omega_{\rm s}}\p{\mp 2\pi\p{1 - 2\eta \sin I}
-%             + 16\cos I \eta^{3/2}\sqrt{\sin I}}
-%             + 8\sqrt{\eta \sin I}
-%             \pm 2 \pi \eta \cos I
-%             - \frac{64}{3} \p{\eta \sin I}^{3/2}.\label{eq:app_deltaK}
-% \end{align}
-% At this point, since $\eta$ often is not small, it is necessary to integrate
-% along the numerically computed $\mathcal{C}_{\pm}$ (instead of the approximate
-% solution given by Eq.~\ref{eq:sep_theta}) to obtain sufficiently accurate values
-% for $\Delta K_{\pm}$. These numerically integrated values are used in
-% Eq.~\eqref{eq:def_pc_weaktide} to semi-analytically compute the tCE2
-% probabilities (blue curves) in
-% Figs.~\ref{fig:pc_fits_0_06}--\ref{fig:pc_fits_0_20}.
+To express the contribution of initial conditions in zone III to the totac tCE2
+probability (blue shaded region in Figs.~\ref{fig:probs20}
+and~\ref{fig:probs5}), we need both the area of zone III and the distribution of
+outcomes upon separatrix encounter. The area of zone III can again be estimated
+quite simply using Eq.~\eqref{eq:sep_theta}, and we obtain
+\begin{align}
+    \frac{A_{\rm III}}{4\pi}
+        = \frac{1 + \eta_{\rm i} \cos I}{2} -
+            \frac{2}{\pi}\sqrt{\eta_{\rm i} \sin I}.
+\end{align}
+where $A_{\rm III}$ is the phase space area of zone III\@. Next, we need to
+understand the outcomes of the separatrix encounters that initial conditions in
+zone III experience.. We analytically calculate $\Delta K_{\pm}$
+(Eq.~\ref{eq:def_dK_weaktide}) for use in Eq.~\eqref{eq:def_pc_weaktide} to
+obtain the probabilities of the outcomes of separatrix encounter. We first
+rewrite Eq.~\eqref{eq:def_dK_weaktide} as:
+\begin{align}
+    \Delta K_{\pm} &= \oint_{\mathcal{C}_{\pm}} \rd{H}{t}
+        - \rd{H_{\rm sep}}{t}\;\mathrm{d}t
+        \nonumber\\
+        &= \oint_{\mathcal{C}_{\pm}}
+           \p{\rd{(\cos\theta)}{t}}_{\rm tide}
+            + \frac{\dot{\Omega}_{\rm s}}{\dot{\phi}}
+            \p{\pd{H}{s} - \pd{H_{\rm sep}}{s}}\;\mathrm{d}\phi
+                \label{eq:app_dhpm}.
+\end{align}
+Then, using the full equations of motion for the planet's spin including weak
+tidal friction in component form, given by
+Eqs.~(\ref{eq:ds_fullq}--\ref{eq:ds_fulls}), we can evaluate $\Delta K_{\pm}$ by
+integrating along the two legs of the separatrix $\mathcal{C}_{\pm}$ (see
+Fig.~\ref{fig:1contours}). Note that we must use the value of $\eta$ at the
+moment of separatrix encounter, which we denote $\eta_{\rm cross}$, as the
+evolution of $\Omega_{\rm s}$ changes the spin-orbit precession frequency
+$\alpha$ and thus $\eta$ itself:
+\begin{align}
+    % \Delta K_{\pm} ={}& \oint_{\mathcal{C}_{\pm}}
+    %     \frac{1}{t_{\rm s}}\sin^2\theta
+    %         \p{\frac{2n}{\Omega_{\rm s}} - \cos\theta}
+    %      +
+    %         \s{\frac{\alpha}{\Omega_{\rm s}}
+    %             \frac{\cos^2\theta}{2} + g\frac{\Omega_{\rm
+    %         c}}{2\Omega_{\rm s}^2}\cos^2 I}\rd{\Omega_{\rm
+    %         s}}{t}\rd{t}{\phi}\;\mathrm{d}\phi\nonumber\\
+    %  \approx{}& \oint_{\mathcal{C}_{\pm}}
+    %     \frac{1}{t_{\rm s}}\sin^2\theta
+    %         \p{\frac{2n}{\Omega_{\rm s}} - \cos\theta}
+    %     + \frac{1}{t_{\rm s}}\frac{n}{\Omega_{\rm s}\eta_{\rm cross}}
+    %         \s{\p{\cos \theta}_{\mathcal{C}_{\pm}} - \frac{\Omega_{\rm s}}{2n}}
+    %         \s{2 \cos I \pm \sqrt{2 \sin I\p{1 - \cos \phi} / \eta_{\rm cross}}}
+    %         \;\mathrm{d}\phi,\\
+    t_{\rm s} \Delta K_{\pm} \approx{}&
+        \frac{\eta_{\rm cross}^2}{\eta_{\rm sync}}\s{
+            -2\cos I\p{\pm 2\pi \eta_{\rm cross} \cos I
+                + 8\sqrt{\eta_{\rm cross} \sin I}}
+            \mp 4\pi \sin I
+            - 8 \cos I \sqrt{\eta_{\rm cross}\sin I}
+                + \frac{4\eta_{\rm sync}}{\eta_{\rm cross}}
+                    \sqrt{\sin I/\eta_{\rm cross}}}\nonumber\\
+        &+ \frac{2\eta_{\rm cross}}{\eta_{\rm sync}}
+            \p{\mp 2\pi\p{1 - 2\eta_{\rm cross} \sin I}
+            + 16\cos I \eta_{\rm cross}^{3/2}\sqrt{\sin I}}
+            + 8\sqrt{\eta_{\rm cross} \sin I}
+            \pm 2 \pi \eta_{\rm cross} \cos I
+            - \frac{64}{3} \p{\eta_{\rm cross} \sin I}^{3/2}.
+                \label{eq:app_deltaK}
+\end{align}
+The resulting $P_{\rm III \to II}$ obtained using this analytic $\Delta K_{\pm}$
+in Eq.~\eqref{eq:def_pc_weaktide} is shown as the green dashed line in the top
+panel of Fig.~\ref{fig:pc_fits_0_06}, where it can be seen that agreement is
+reasonable for $\eta_{\rm cross} \lesssim 0.05$. For the purposes of this
+section, we drop all but the leading order terms in both the numerator and
+denominator of Eq.~\eqref{eq:def_pc_weaktide} and obtain:
+% proof:
+% from utils import *; I = np.radians(20); s_c = 0.01; s = np.linspace(1, 10, 100); top, bottom = get_ps_anal(I, s_c, s); plt.plot(s_c/s, (bottom + top) / bottom, 'k'); plt.plot(s_c/s, 6 * s_c / np.pi * np.sqrt(np.sin(I) / (s_c / s)), 'g')
+\begin{equation}
+    P_{\rm III \to II} \approx
+        \frac{6\eta_{\rm sync}}{\pi} \sqrt{\frac{\sin I}{\eta_{\rm cross}}}.
+\end{equation}
+Finally, based on the bottom panel of Fig.~\ref{fig:pc_fits_0_06}, we make the
+approximation that $\eta_{\rm cross}$ is uniformly distributed between
+$\eta_{\rm i}$ and $\eta_{\rm sync}$. This approximation is mildly justifiable
+as $\eta_{\rm cross}$ favors smaller values in the interval $\s{\eta_{\rm i},
+\eta_{\rm sync}}$, but also extends beyond $\eta_{\rm sync}$ for $\cos
+\theta_{\rm i}$ close to $-1$, so we hope these two effects cancel out to some
+extent. Thus,
+\begin{align}
+    \ev{P_{\rm III \to II}}
+        &\sim \frac{1}{\eta_{\rm sync} - \eta_{\rm i}}
+            \int\limits_{\eta_{\rm i}}^{\eta_{\rm sync}}
+            P_{\rm III \to II}\;\mathrm{d}\eta_{\rm cross}\nonumber\\
+        &= \frac{12 \sqrt{\eta_{\rm sync}\sin I}}{\pi
+            \p{1 + \sqrt{n / \Omega_{\rm s, i}}}}.
+\end{align}
+
+Finally, returning to the aggregate tCE2 probability, we can evaluate it as:
+\begin{align}
+    \text{tCE2 Probability}
+        &= \frac{A_{\rm II}}{4\pi}
+            + \frac{A_{\rm III}}{4\pi}\ev{P_{\rm III \to II}}\nonumber\\
+        &\simeq
+            \frac{4\sqrt{\eta _{\rm sync} \sin I}}{\pi}\p{
+                \sqrt{n / \Omega_{\rm s, i}}
+                + \frac{3}{2\p{1
+                + \sqrt{n / \Omega_{\rm s, i}}}}}
+            + \mathcal{O}\p{\eta_{\rm sync}}.\label{eq:app_tce2_p_tot}
+\end{align}
 
 \label{lastpage} % chktex 24
 \end{document}

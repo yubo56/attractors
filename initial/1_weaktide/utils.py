@@ -345,7 +345,7 @@ def get_ps_anal(I, s_c, s, *args):
             + (s / 2) * (8 * np.sqrt(np.sin(I) / eta))
 
             + 4 * np.pi * np.sin(I)
-        ) + 2 / s * ( # second term
+        ) + 0 / s * ( # second term
             +2 * np.pi * (1 - 2 * eta * np.sin(I))
                 - (16 * np.cos(I) * eta) * np.sqrt(eta * np.sin(I))
         ) + (
