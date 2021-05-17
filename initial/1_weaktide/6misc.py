@@ -53,14 +53,56 @@ def equils_plot(I, s_c, eps, mu0, phi0, s0, tf, fn_str, idx):
 
     (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events,\
         s, ret_solveivp, shat_f = solve_ret
+    fig, _axs = plt.subplots(
+        3, 2,
+        figsize=(8, 10))
+    axs = _axs.flat
     svec = ret_solveivp.y[0:3, :]
     t = ret_solveivp.t
     q, phi = to_ang(*svec)
-    plt.plot(s, np.degrees(q), alpha=0.5, c='g', lw=0.5)
+    axs[0].plot(s, np.degrees(q), alpha=0.5, c='g', lw=0.5)
     last_idx = np.where(t > 0.98 * tf)[0]
-    plt.plot(s[last_idx], np.degrees(q)[last_idx], 'ko', markersize=2.0)
-    plt.xlim(0, 2.5)
-    plt.ylim(0, 180)
+    axs[0].plot(s[last_idx], np.degrees(q)[last_idx], 'ko', markersize=2.0)
+    axs[0].set_xlim(0, 2.5)
+    axs[0].set_ylim(0, 180)
+    axs[0].set_xlabel(r'$\Omega_{\rm s}$')
+    axs[0].set_ylabel(r'$\theta$ (deg)')
+
+    times = [100, 300, 600, 1000, 4600]
+    time_idxs = [np.where(t > _t)[0][0] for _t in times]
+    for time, t_idx, ax in zip(times, time_idxs, axs[1: ]):
+        axs[0].axvline(s[t_idx], c='k', lw=0.7, ls='--')
+        # should span 2 events total
+        if time > np.max(t_events):
+            # happens if convergence to tCE2 and libration width is smaller than
+            # CS2 offset (i.e. doesn't cross phi = pi any more)
+            tmin = time - 100
+            tmax = time + 100
+        else:
+            tmin = t_events[np.where(t_events < time)[0][-1]]
+            tmax = t_events[np.where(t_events > time)[0][1]]
+        plt_t = np.where(np.logical_and(
+            t > tmin,
+            t < tmax))[0]
+        mu_plt = np.cos(q)[plt_t]
+        ax.plot(phi[plt_t], mu_plt, 'ro', ms=1.0)
+        ax.set_xticks([0, np.pi, 2 * np.pi])
+        ax.set_xticklabels([r'$0$', r'$180$', r'$360$'])
+        ax.set_ylabel(r'$\cos \theta$')
+        ax.set_xlabel(r'$\phi$')
+
+        # overplot separatrix
+        N = 100
+        phi_grid, mu_grid = np.meshgrid(np.linspace(0, 2 * np.pi, N),
+                                        np.linspace(-1, 1, N))
+        H4 = get_H4(I, s_c, s[t_idx])
+        H_grid = H(I, s_c, s[t_idx], mu_grid, phi_grid)
+        ax.contour(phi_grid, mu_grid, H_grid, levels=[H4], colors='k')
+        if np.min(mu_plt) < -0.9:
+            ax.set_ylim(bottom=-1.1)
+        if np.max(mu_plt) > 0.9:
+            ax.set_ylim(top=1.1)
+    plt.tight_layout()
     plt.savefig(fn, dpi=300)
     plt.close()
 
@@ -80,7 +122,8 @@ def plot_equils(I, s_cs, fn_str='6equils', tf=5000):
         s_gt = np.linspace(1, 3, 200) # other interesting part of the interval
         s_tot = np.concatenate((s_lt, s_gt))
 
-        for idx, c in enumerate(['salmon', 'indigo', 'hotpink', 'chocolate']):
+        for idx, c in enumerate(['salmon', 'indigo', 'hotpink', 'teal',
+                                 'chocolate', 'aqua']):
             pkl_fn = '%s_sims/%s_%d.pkl' % (fn_str, s_c_str(s_c), idx)
             with lzma.open(pkl_fn, 'rb') as f:
                 solve_ret = pickle.load(f)
@@ -120,20 +163,20 @@ def plot_equils(I, s_cs, fn_str='6equils', tf=5000):
 
         # label text along boundaries
         if s_c < 0.4:
-            ax.text(0.85, 45, r'$\dot{\Omega}_{\rm s} < 0$', c='k', fontsize=14,
-                     rotation=-63)
-            ax.text(0.6, 40, r'$\dot{\Omega}_{\rm s} > 0$', c='k', fontsize=14,
-                     rotation=-63)
+            ax.text(0.75, 50, r'$\dot{\Omega}_{\rm s} < 0$', c='k', fontsize=14,
+                     rotation=-53)
+            ax.text(0.6, 38, r'$\dot{\Omega}_{\rm s} > 0$', c='k', fontsize=14,
+                     rotation=-53)
         else:
-            ax.text(0, 66, r'$\dot{\Omega}_{\rm s} < 0$', c='k', fontsize=14,
-                     rotation=-40)
+            ax.text(0, 63, r'$\dot{\Omega}_{\rm s} < 0$', c='k', fontsize=14,
+                     rotation=-30)
             ax.text(0.1, 81, r'$\dot{\Omega}_{\rm s} > 0$', c='k', fontsize=14,
-                     rotation=-40)
+                     rotation=-30)
 
-        ax.text(2.45, 43, r'$\dot{\theta}_{\rm tide} < 0$', c='b', fontsize=14,
-                 rotation=30)
-        ax.text(2.55, 29, r'$\dot{\theta}_{\rm tide} > 0$', c='b', fontsize=14,
-                 rotation=30)
+        ax.text(2.45, 40, r'$\dot{\theta}_{\rm tide} < 0$', c='b', fontsize=14,
+                 rotation=25)
+        ax.text(2.55, 26, r'$\dot{\theta}_{\rm tide} > 0$', c='b', fontsize=14,
+                 rotation=25)
 
         ax.plot(tce2_s, dS_interp(tce2_s), mec='tab:green', mfc='none', marker='o',
                  ms=15, mew=3)
@@ -264,6 +307,12 @@ if __name__ == '__main__':
     # equils_plot(I, 0.06, eps, -0.5, 5, 2.5, 5000, '6equils', 3)
     # equils_plot(I, 0.5, eps, -0.5, 5, 2.5, 5000, '6equils', 3)
     # equils_plot(I, 0.7, eps, -0.5, 5, 2.5, 5000, '6equils', 3)
+    # equils_plot(I, 0.06, eps, 0.8, 0, 0.1, 5000, '6equils', 4)
+    # equils_plot(I, 0.5, eps, 0.8, 0, 0.1, 5000, '6equils', 4)
+    # equils_plot(I, 0.7, eps, 0.8, 0, 0.1, 5000, '6equils', 4)
+    # equils_plot(I, 0.06, eps, -0.2, 0, 0.1, 5000, '6equils', 5)
+    # equils_plot(I, 0.5, eps, -0.2, 0, 0.1, 5000, '6equils', 5)
+    # equils_plot(I, 0.7, eps, -0.2, 0, 0.1, 5000, '6equils', 5)
     plot_equils(I, [0.06, 0.5, 0.7], tf=5000)
 
     # plot_phop(I, 0.2)

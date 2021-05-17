@@ -331,7 +331,7 @@ the CSs in the presence of the weak alignment torque. We can linearize
 Eqs.~(\ref{eq:dqdt_toy}--\ref{eq:dfdt_toy}) about a shifted CS, yelding
 \begin{align}
     \rd{}{t}\begin{bmatrix}
-        \theta\\ \phi
+        \Delta \theta\\ \Delta \phi
     \end{bmatrix} &= \begin{bmatrix}
         -\frac{\cos \theta}{t_{\rm al}} &
         -g\sin I \cos \phi \\
@@ -707,6 +707,9 @@ agreement is observed.
     $\dot{\theta}_{\rm tide} > 0$, CS1 becomes unstable, denoted by the dashed
     orange line. The points that are both CSs and satisfy $\dot{\Omega}_{\rm s}
     = 0$ are the tidal Cassini Equilibria (tCE), which are circled and labeled.
+    \textcolor{red}{The various colored lines indicate sample evolutionary
+    trajectories that are started at the same $\theta$ and $\Omega_{\rm s}$
+    across all three panels, with different outcomes upon separatrix encounter.}
     }\label{fig:6equils}
 \end{figure}
 
@@ -729,6 +732,10 @@ The tCE2 subscripts denote evaluation at tCE2. When $\eta_{\rm sync} \ll
     t_{\rm s, c}\approx \frac{1}{\abs{g}\sin I}\sqrt{\frac{2}{\eta_{\rm sync}
         \cos I}}. \label{eq:def_ts_crit}
 \end{equation}
+\textcolor{red}{Note that this result differs in form from that given in
+\citet{fabrycky_otides}. Our formulation is more appropriate and transparent
+when the orbital precession of the inner planet is dominated by the outer planet
+rather than the star.}
 
 \subsection{Spin Obliquity Evolution as a Function of Initial Spin Orientation}
 
@@ -870,7 +877,12 @@ Eq.~\eqref{eq:def_pc_weaktide}.
     of initial conditions uniform in $\cos \theta_{\rm i}$ and $\phi_{\rm i}$
     until the system reaches the separatrix, then calculating the probability of
     reaching tCE2 for each integration using
-    Eq.~\eqref{eq:def_pc_weaktide}.}\label{fig:pc_fits_0_06}
+    Eq.~\eqref{eq:def_pc_weaktide}.
+    \textcolor{red}{The green dashed line in the top panel shows the result of
+    using the analytical expression (Eq.~\ref{eq:app_deltaK}) for $\Delta
+    K_{\pm}$, and the bottom panel shows the distribution of values of
+    $\eta_{\rm cross}$, the value of $\eta$ when a trajectory starting at
+    $\theta_{\rm i}$ encounters the separatrix. }}\label{fig:pc_fits_0_06}
 \end{figure}
 \begin{figure}
     \centering

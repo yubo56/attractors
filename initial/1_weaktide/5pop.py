@@ -311,7 +311,7 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
 
         # try anal prob
         p_caps_al = get_anal_caps(I, s_c, cross_dat, mu_vals)
-        s_crosses = np.max(cross_dat[:, :, 0], axis=1)
+        s_crosses = cross_dat[:, :, 0]
         tot_probs_al = np.sum(p_caps_al / n_phi, axis=1)
 
         bin_cents = (bins[ :-1] + bins[1: ]) / 2
@@ -324,9 +324,12 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
 
         if s_c < 0.1:
             ax1.plot(mu_vals, tot_probs_al, 'g--', alpha=0.8, lw=1.0)
-            cross_idx = np.where(s_crosses > 0)[0]
-            ax2.plot(mu_vals[cross_idx], s_c / s_crosses[cross_idx],
-                     'b', alpha=0.8, lw=2.5)
+            for mu, crosses in zip(mu_vals, s_crosses):
+                cross_idx = np.where(crosses > 0)[0]
+                all_crosses = crosses[cross_idx]
+                ax2.plot(np.full_like(crosses[cross_idx], mu),
+                         s_c / all_crosses,
+                         'bo', alpha=0.8, markersize=0.8)
 
             ax2.set_ylabel(r'$\eta_{\rm cross}$')
             ax2.set_xlabel(r'$\cos \theta_{\rm i}$')
@@ -437,7 +440,7 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
 def run():
     s_c_vals_20 = [
         # 0.7,
-        0.2,
+        # 0.2,
         0.06,
         # 2.0,
         # 1.2,
@@ -445,7 +448,7 @@ def run():
         # 0.65,
         # 0.6,
         # 0.55,
-        0.5,
+        # 0.5,
         # 0.45,
         # 0.4,
         # 0.35,
@@ -457,8 +460,8 @@ def run():
     ]
     s_c_vals_5 = [
         # 0.7,
-        0.2,
-        0.06,
+        # 0.2,
+        # 0.06,
         # 2.0,
         # 1.2,
         # 1.0,
@@ -468,7 +471,7 @@ def run():
         # 0.65,
         # 0.6,
         # 0.55,
-        0.5,
+        # 0.5,
         # 0.45,
         # 0.4,
         # 0.35,
@@ -628,8 +631,8 @@ def plot_anal_cs_equils(I=np.radians(20), s_c=0.2):
     plt.close()
 
 if __name__ == '__main__':
-    # run()
-    plot_all_cumprobs()
+    run()
+    # plot_all_cumprobs()
     # plot_anal_cs_equils()
 
     # bunch of debugging cases...
