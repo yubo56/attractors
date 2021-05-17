@@ -3,8 +3,7 @@ misc little plots
 '''
 import numpy as np
 from multiprocessing import Pool
-import os
-import pickle
+import os, pickle, lzma
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -16,7 +15,8 @@ from scipy.interpolate import interp1d
 POOL_SIZE = 50
 
 from utils import roots, s_c_str, get_mu_equil, solve_ic, to_cart, to_ang,\
-    get_H4, H, get_mu4, get_ps_anal, get_anal_caps, get_num_caps, get_etac
+    get_H4, H, get_mu4, get_ps_anal, get_anal_caps, get_num_caps, get_etac,\
+    solve_with_events
 
 def get_cs_val(I, s_c, s):
     '''
@@ -34,7 +34,37 @@ def get_cs_val(I, s_c, s):
             cs2_qs[idx] = cs_qs[0]
     return cs1_qs, cs2_qs
 
-def plot_equils(I, s_cs, fn_str='6equils'):
+def equils_plot(I, s_c, eps, mu0, phi0, s0, tf, fn_str, idx):
+    plotdir = '%s_sims' % fn_str
+    if not os.path.exists(plotdir):
+        os.mkdir(plotdir)
+    fn = '%s/%s_%d' % (plotdir, s_c_str(s_c), idx)
+    pkl_fn = fn + '.pkl'
+
+    if not os.path.exists(pkl_fn):
+        print('Running %s' % pkl_fn)
+        solve_ret = solve_with_events(I, s_c, eps, mu0, phi0, s0, tf)
+        with lzma.open(pkl_fn, 'wb') as f:
+            pickle.dump(solve_ret, f)
+    else:
+        with lzma.open(pkl_fn, 'rb') as f:
+            print('Loading %s' % pkl_fn)
+            solve_ret = pickle.load(f)
+
+    (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events,\
+        s, ret_solveivp, shat_f = solve_ret
+    svec = ret_solveivp.y[0:3, :]
+    t = ret_solveivp.t
+    q, phi = to_ang(*svec)
+    plt.plot(s, np.degrees(q), alpha=0.5, c='g', lw=0.5)
+    last_idx = np.where(t > 0.98 * tf)[0]
+    plt.plot(s[last_idx], np.degrees(q)[last_idx], 'ko', markersize=2.0)
+    plt.xlim(0, 2.5)
+    plt.ylim(0, 180)
+    plt.savefig(fn, dpi=300)
+    plt.close()
+
+def plot_equils(I, s_cs, fn_str='6equils', tf=5000):
     ''' plot in (s, mu) space showing how the tCS arise '''
 
     s_dq = np.linspace(2, 3, 200)
@@ -50,12 +80,23 @@ def plot_equils(I, s_cs, fn_str='6equils'):
         s_gt = np.linspace(1, 3, 200) # other interesting part of the interval
         s_tot = np.concatenate((s_lt, s_gt))
 
+        for idx, c in enumerate(['salmon', 'indigo', 'hotpink', 'chocolate']):
+            pkl_fn = '%s_sims/%s_%d.pkl' % (fn_str, s_c_str(s_c), idx)
+            with lzma.open(pkl_fn, 'rb') as f:
+                solve_ret = pickle.load(f)
+            (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events,\
+                s, ret_solveivp, shat_f = solve_ret
+            svec = ret_solveivp.y[0:3, :]
+            t = ret_solveivp.t
+            q, phi = to_ang(*svec)
+            ax.plot(s, np.degrees(q), alpha=0.4, c=c, lw=0.5)
+
         cs1_qs, cs2_qs = get_cs_val(I, s_c, s_tot)
         cs1_exist_idx = np.where(cs1_qs > -1)[0]
         mu_equil_lt = [np.degrees(np.arccos(get_mu_equil(s))) for s in s_lt]
 
         ax.set_ylabel(r'$\theta$ (deg)')
-        ax.set_ylim([0, 120])
+        ax.set_ylim([0, 150])
 
         dS_interp = interp1d(s_lt, mu_equil_lt)
         CS2_interp = interp1d(s_tot, np.degrees(cs2_qs))
@@ -98,7 +139,7 @@ def plot_equils(I, s_cs, fn_str='6equils'):
                  ms=15, mew=3)
         ax.text(tce2_s, dS_interp(tce2_s) + 10, 'tCE2', c='tab:green', va='bottom',
                  ha='center')
-        ax.text(np.max(s_dq), 115, r'$\eta_{\rm sync} = %.2f$' % s_c,
+        ax.text(np.max(s_dq), 145, r'$\eta_{\rm sync} = %.2f$' % s_c,
                 va='top', ha='right')
 
         etac = get_etac(I)
@@ -211,7 +252,20 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
 if __name__ == '__main__':
     eps = 1e-3
     I = np.radians(20)
-    plot_equils(I, [0.06, 0.5, 0.7])
+    # equils_plot(I, 0.06, eps, 0.985, 0, 2.5, 5000, '6equils', 0)
+    # equils_plot(I, 0.5, eps, 0.985, 0, 2.5, 5000, '6equils', 0)
+    # equils_plot(I, 0.7, eps, 0.985, 0, 2.5, 5000, '6equils', 0)
+    # equils_plot(I, 0.06, eps, 0.05, np.pi, 2.5, 5000, '6equils', 1)
+    # equils_plot(I, 0.5, eps, 0.05, np.pi, 2.5, 5000, '6equils', 1)
+    # equils_plot(I, 0.7, eps, 0.05, np.pi, 2.5, 5000, '6equils', 1)
+    # equils_plot(I, 0.06, eps, -0.5, 0, 2.5, 5000, '6equils', 2)
+    # equils_plot(I, 0.5, eps, -0.5, 0, 2.5, 5000, '6equils', 2)
+    # equils_plot(I, 0.7, eps, -0.5, 0, 2.5, 5000, '6equils', 2)
+    # equils_plot(I, 0.06, eps, -0.5, 5, 2.5, 5000, '6equils', 3)
+    # equils_plot(I, 0.5, eps, -0.5, 5, 2.5, 5000, '6equils', 3)
+    # equils_plot(I, 0.7, eps, -0.5, 5, 2.5, 5000, '6equils', 3)
+    plot_equils(I, [0.06, 0.5, 0.7], tf=5000)
+
     # plot_phop(I, 0.2)
     # plot_equil_dist_anal(I, 0.06, 10, eps)
     # plot_equil_dist_anal(I, 0.2, 10, eps)

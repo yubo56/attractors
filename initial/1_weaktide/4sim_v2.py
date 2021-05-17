@@ -18,7 +18,7 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
-    stringify, H, roots, get_H4, s_c_str
+    stringify, H, roots, get_H4, s_c_str, solve_with_events
 PLOT_DIR = '4plots'
 PKL_FILE = '4dat%s.pkl'
 N_PTS = 100
@@ -41,29 +41,6 @@ def label_outcome_helper(t_cross, H_f, I, s_c, s0):
             return 3
         else:
             return 2
-
-def solve_with_events(I, s_c, eps, mu0, phi0, s0, tf):
-    '''
-    solves IVP then returns (mu, s, t) at phi=0, pi + others
-    '''
-    init_xy = np.sqrt(1 - mu0**2)
-    init = [-init_xy * np.cos(phi0), -init_xy * np.sin(phi0), mu0, s0]
-
-    event = lambda t, y: y[1]
-    t, svec, s, ret = solve_ic(I, s_c, eps, init, tf,
-                               events=[event], dense_output=True)
-    q, phi = to_ang(*svec)
-
-    [t_events] = ret.t_events
-    x_events, _, mu_events, s_events = ret.sol(t_events)
-    # phi = 0 means x < 0
-    idxs_0 = np.where(x_events < 0)
-    idxs_pi = np.where(x_events > 0)
-    mu_0, s_0, t_0 = mu_events[idxs_0], s_events[idxs_0], t_events[idxs_0]
-    mu_pi, s_pi, t_pi = mu_events[idxs_pi], s_events[idxs_pi], t_events[idxs_pi]
-
-    shat_f = np.sqrt(np.sum(ret.y[ :3, -1]**2))
-    return (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events, s, ret, shat_f
 
 def get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi):
     '''

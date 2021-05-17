@@ -343,6 +343,7 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     '''
     plot probabilities of ending up in tCS2 and the obliquities of the two
     '''
+    s_c_crit = get_etac(I) # etac = s_c_crit / (s = 1)
     fig, (ax2, ax1) = plt.subplots(
         2, 1, figsize=(7, 6),
         gridspec_kw={'height_ratios': [2, 3]},
@@ -351,15 +352,22 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     probs_dat = np.array(counts) / (N_THREADS * N_PTS)
     ax1.set_ylim([0, 1])
     ax1.set_ylabel('tCE2 Probability')
-    s_c_dense = np.linspace(min(s_c_vals), max(s_c_vals), 200)
-    A2s = np.array([get_areas_ward(I, s_c, s0)[1] for s_c in s_c_dense])
-    A3s = np.array([get_areas_ward(I, s_c, s0)[2] for s_c in s_c_dense])
-    ax1.fill_between(s_c_dense, A2s / (4 * np.pi), facecolor='tab:green', alpha=0.2)
-    A2_interp = interp1d(s_c_dense, A2s / (4 * np.pi))
-    A3_interp = interp1d(s_c_dense, A3s / (4 * np.pi))
+    s_c_cont = np.concatenate((
+        np.linspace(min(s_c_vals) / 10, s_c_crit * 0.8, 30),
+        np.linspace(s_c_crit * 0.8, s_c_crit * 0.99, 30),
+        np.linspace(s_c_crit * 1.01, max(s_c_vals), 30)
+    ))
+    A2s = np.array([get_areas_ward(I, s_c, s0)[1] for s_c in s_c_cont])
+    A3s = np.array([get_areas_ward(I, s_c, s0)[2] for s_c in s_c_cont])
+    A2_interp = interp1d(s_c_cont, A2s / (4 * np.pi))
+    A3_interp = interp1d(s_c_cont, A3s / (4 * np.pi))
     idxs = np.argsort(s_c_vals)
     A2frac = A2_interp(np.array(s_c_vals))
     A3frac = A3_interp(np.array(s_c_vals))
+    ax1.fill_between(np.array(s_c_vals)[idxs],
+                     A2frac[idxs],
+                     facecolor='tab:green',
+                     alpha=0.2)
     ax1.fill_between(np.array(s_c_vals)[idxs],
                      A2frac[idxs],
                      np.minimum(probs_dat, A2frac + A3frac)[idxs],
@@ -375,14 +383,8 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     ax1.text(2.0, 0.9, 'Initially zone I', fontsize=14, ha='right')
 
     # calculate locations of equilibria in ~continuous way
-    s_c_crit = get_etac(I) # etac = s_c_crit / (s = 1)
     ax1.axvline(s_c_crit, c='k', lw=1.0, ls='--')
     ax2.axvline(s_c_crit, c='k', lw=1.0, ls='--')
-    s_c_cont = np.concatenate((
-        np.linspace(min(s_c_vals) / 10, s_c_crit * 0.8, 30),
-        np.linspace(s_c_crit * 0.8, s_c_crit * 0.99, 30),
-        np.linspace(s_c_crit * 1.01, max(s_c_vals), 30)
-    ))
     cs1_equil_mu = -np.ones_like(s_c_cont) # -1 = does not exist
     cs2_equil_mu = np.zeros_like(s_c_cont)
     for idx, s_c in enumerate(s_c_cont):
@@ -415,6 +417,14 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     ax2.set_yticks([0, 45, 90])
     ax2.set_yticklabels(['0', '45', '90'])
     ax1.set_xlim(left=-0.1)
+
+    idx = np.where(s_c_cont < 0.4)[0]
+    # (1/10)^(1/2) + 3 / (2 * (1 + (1/10)^(1/2)))
+    # 1.4558
+    ax1.plot(s_c_cont[idx],
+             4 * 1.46 / np.pi * np.sqrt(s_c_cont * np.sin(I))[idx],
+             'r--',
+             lw=1.5)
 
     ax1.set_xlabel(r'$\eta_{\rm sync}$')
     ax1.scatter(s_c_vals, probs_dat, c='tab:red')
@@ -520,6 +530,9 @@ def plot_all_cumprobs():
         0.35,
         0.3,
         0.25,
+        0.1,
+        0.03,
+        # 0.01,
     ]
     s_c_vals_5 = [
         0.7,
@@ -540,6 +553,9 @@ def plot_all_cumprobs():
         0.35,
         0.3,
         0.25,
+        0.1,
+        0.03,
+        0.01,
     ]
     eps = 1e-3
     s0 = 10
@@ -612,8 +628,8 @@ def plot_anal_cs_equils(I=np.radians(20), s_c=0.2):
     plt.close()
 
 if __name__ == '__main__':
-    run()
-    # plot_all_cumprobs()
+    # run()
+    plot_all_cumprobs()
     # plot_anal_cs_equils()
 
     # bunch of debugging cases...

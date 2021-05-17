@@ -281,7 +281,7 @@ def get_crit_mus(I, s_c):
         mu_cs = np.cos(roots(I, s_c, s))
         mu_equil = get_mu_equil(s)
         return mu_cs[0] - mu_equil
-    cs2_equil_mu = get_mu_equil(opt.bisect(dmu_cs2_equil, 0.1, 1))
+    cs2_equil_mu = get_mu_equil(opt.bisect(dmu_cs2_equil, 0.02, 1))
     # if CS1 just before disappearing is below mu_equil, we won't have an
     # intersection
     s_etac = s_c / (0.9999 * s_c_crit)
@@ -468,3 +468,26 @@ def get_areas_ward(I, s_c, s):
     A1 = 2 * np.pi * (1 - z0) - A2 / 2
     A3 = 2 * np.pi * (1 + z0) - A2 / 2
     return A1, A2, A3
+
+def solve_with_events(I, s_c, eps, mu0, phi0, s0, tf):
+    '''
+    solves IVP then returns (mu, s, t) at phi=0, pi + others
+    '''
+    init_xy = np.sqrt(1 - mu0**2)
+    init = [-init_xy * np.cos(phi0), -init_xy * np.sin(phi0), mu0, s0]
+
+    event = lambda t, y: y[1]
+    t, svec, s, ret = solve_ic(I, s_c, eps, init, tf,
+                               events=[event], dense_output=True)
+    q, phi = to_ang(*svec)
+
+    [t_events] = ret.t_events
+    x_events, _, mu_events, s_events = ret.sol(t_events)
+    # phi = 0 means x < 0
+    idxs_0 = np.where(x_events < 0)
+    idxs_pi = np.where(x_events > 0)
+    mu_0, s_0, t_0 = mu_events[idxs_0], s_events[idxs_0], t_events[idxs_0]
+    mu_pi, s_pi, t_pi = mu_events[idxs_pi], s_events[idxs_pi], t_events[idxs_pi]
+
+    shat_f = np.sqrt(np.sum(ret.y[ :3, -1]**2))
+    return (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events, s, ret, shat_f
