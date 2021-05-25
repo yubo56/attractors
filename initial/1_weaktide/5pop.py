@@ -18,38 +18,13 @@ plt.rc('ytick', direction='in', left=True, right=True)
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
     stringify, H, roots, get_H4, s_c_str, get_mu_equil, get_anal_caps,\
-    get_num_caps, get_crit_mus, get_areas_ward
+    get_num_caps, get_crit_mus, get_areas_ward, solve_with_events5, TIMES, TF
 PKL_FILE = '5dat%s_%d.pkl'
+# PKL_FILE = '5dat_hightol%s_%d.pkl'
 # N_PTS = 1 # TEST
 N_PTS_TOTAL = 20000
-N_THREADS = 50
+N_THREADS = 64
 N_PTS = N_PTS_TOTAL // N_THREADS
-TF = 8000
-TIMES = np.exp(np.linspace(0, np.log(TF), 100))
-
-def solve_with_events(I, s_c, eps, mu0, phi0, s0):
-    '''
-    solves IVP then returns (mu, s, t) at phi=0, pi + others
-    '''
-    init = [*to_cart(np.arccos(mu0), phi0), s0]
-    event = lambda t, y: y[1]
-    t, _, _, ret = solve_ic(I, s_c, eps, init, TF,
-                            rtol=1e-4,
-                            events=[event], dense_output=True)
-    sol_times = ret.sol(TIMES)
-    q, phi = to_ang(*sol_times[0:3])
-    s = sol_times[3]
-
-    [t_events] = ret.t_events
-    x_events, _, mu_events, s_events = ret.sol(t_events)
-    # phi = 0 means x < 0
-    idxs_0 = np.where(x_events < 0)
-    idxs_pi = np.where(x_events > 0)
-    mu_0, s_0, t_0 = mu_events[idxs_0], s_events[idxs_0], t_events[idxs_0]
-    mu_pi, s_pi, t_pi = mu_events[idxs_pi], s_events[idxs_pi], t_events[idxs_pi]
-
-    shat_f = np.sqrt(np.sum(ret.y[ :3, -1]**2))
-    return (mu_0, s_0, t_0, mu_pi, s_pi, t_pi), np.cos(q), phi, s
 
 def get_sep_hop(t_0, s_0, mu_0, t_pi, s_pi, mu_pi):
     '''
@@ -94,7 +69,8 @@ def _run_sim_thread(I, eps, s_c, s0, num_threads, thread_idx):
         '''
         print('(%d-%d/%d) Starting for %.2f, %.3f, %.3f' %
               (thread_idx, idx, N_PTS, s_c, mu0, phi0))
-        args, mu, phi, s = solve_with_events(I, s_c, eps, mu0, phi0, s0)
+        args, mu, phi, s, _ = solve_with_events5(I, s_c, eps, mu0, phi0, s0, TF,
+                                                 rtol=1e-9)
 
         t_cross, _ = get_sep_hop(*args)
         H_f = H(I, s_c, s[-1], mu[-1], phi[-1])
@@ -512,8 +488,7 @@ def run():
                         IC_eq2.append((mu0, phi0))
                     else:
                         print('Unable to classify (s_f, mu_f):', s[-1], mu_f)
-            counts.append(len(IC_eq2))
-            # plot_final_dists(I, s_c, s0, trajs)
+            plot_final_dists(I, s_c, s0, trajs)
             plot_eq_dists(I, s_c, s0, np.array(IC_eq1), np.array(IC_eq2))
 
 def plot_all_cumprobs():
@@ -637,12 +612,12 @@ if __name__ == '__main__':
 
     # bunch of debugging cases...
     # seems to be the "top edge too close to 1 case", cannot integrate well
-    # I = np.radians(5)
-    # s_c = 0.7
+    # I = np.radians(20)
+    # s_c = 0.01
     # eps = 1e-3
-    # mu0 = -0.896953070778169
-    # phi0 = 2.155276797870799
+    # mu0 = -0.96
+    # phi0 = 2.56
     # s0 = 10
-    # args, mu, phi, s = solve_with_events(I, s_c, eps, mu0, phi0, s0)
+    # args, mu, phi, s, _ = solve_with_events5(I, s_c, eps, mu0, phi0, s0, TF)
     # t_cross, _ = get_sep_hop(*args)
     # print(mu[-1])

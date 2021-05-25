@@ -18,7 +18,7 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
 
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
-    stringify, H, roots, get_H4, s_c_str, solve_with_events
+    stringify, H, roots, get_H4, s_c_str, solve_with_events4
 PLOT_DIR = '4plots'
 PKL_FILE = '4dat%s.pkl'
 N_PTS = 100
@@ -92,7 +92,7 @@ def plot_traj(I, eps, s_c, mu0, phi0, s0, tf=2500, plotdir=PLOT_DIR):
 
     # get top/bottom mus
     (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events,\
-        s, ret, shat_f = solve_with_events(I, s_c, eps, mu0, phi0, s0, tf)
+        s, ret, shat_f = solve_with_events4(I, s_c, eps, mu0, phi0, s0, tf)
 
     ax.scatter(s_0, mu_0, c='r', s=2**2, label=r'$\mu(\phi = 0)$')
     scat = ax.scatter(s_pi, mu_pi, c=t_pi, s=2**2, label=r'$\mu(\phi = \pi)$')
@@ -239,7 +239,7 @@ def _run_sim_thread(I, eps, s_c, s0, tf, num_threads, thread_idx):
         returns 0-3 describing early stage outcome
         '''
         (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), _,\
-            _, ret, shat_f = solve_with_events(I, s_c, eps, mu0, phi0, s0, tf)
+            _, ret, shat_f = solve_with_events4(I, s_c, eps, mu0, phi0, s0, tf)
         print('(%d) Finished for %.2f, %.3f, %.3f. shat norm = %.5f' %
               (thread_idx, s_c, mu0, phi0, shat_f))
 

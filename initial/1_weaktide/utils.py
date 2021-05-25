@@ -345,7 +345,7 @@ def get_ps_anal(I, s_c, s, *args):
             + (s / 2) * (8 * np.sqrt(np.sin(I) / eta))
 
             + 4 * np.pi * np.sin(I)
-        ) + 0 / s * ( # second term
+        ) + 2 / s * ( # second term
             +2 * np.pi * (1 - 2 * eta * np.sin(I))
                 - (16 * np.cos(I) * eta) * np.sqrt(eta * np.sin(I))
         ) + (
@@ -491,3 +491,30 @@ def solve_with_events(I, s_c, eps, mu0, phi0, s0, tf):
 
     shat_f = np.sqrt(np.sum(ret.y[ :3, -1]**2))
     return (mu_0, s_0, t_0), (mu_pi, s_pi, t_pi), t_events, s, ret, shat_f
+
+TF = 8000
+TIMES = np.exp(np.linspace(0, np.log(TF), 100))
+def solve_with_events5(I, s_c, eps, mu0, phi0, s0, tf=TF, rtol=1e-4):
+    '''
+    solves IVP then returns (mu, s, t) at phi=0, pi + others
+    '''
+    print(I, s_c, eps, mu0, phi0, s0, tf, rtol)
+    init = [*to_cart(np.arccos(mu0), phi0), s0]
+    event = lambda t, y: y[1]
+    t, _, _, ret = solve_ic(I, s_c, eps, init, tf,
+                            rtol=rtol,
+                            events=[event], dense_output=True)
+    sol_times = ret.sol(TIMES)
+    q, phi = to_ang(*sol_times[0:3])
+    s = sol_times[3]
+
+    [t_events] = ret.t_events
+    x_events, _, mu_events, s_events = ret.sol(t_events)
+    # phi = 0 means x < 0
+    idxs_0 = np.where(x_events < 0)
+    idxs_pi = np.where(x_events > 0)
+    mu_0, s_0, t_0 = mu_events[idxs_0], s_events[idxs_0], t_events[idxs_0]
+    mu_pi, s_pi, t_pi = mu_events[idxs_pi], s_events[idxs_pi], t_events[idxs_pi]
+
+    shat_f = np.sqrt(np.sum(ret.y[ :3, -1]**2))
+    return (mu_0, s_0, t_0, mu_pi, s_pi, t_pi), np.cos(q), phi, s, ret
