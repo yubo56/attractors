@@ -18,7 +18,7 @@ plt.rc('ytick', direction='in', left=True, right=True)
 
 POOL_SIZE = 50
 TRAJ_COLORS = ['darkorchid', 'red', 'fuchsia',
-               'deepskyblue', 'blue', 'teal', 'k']
+               'deepskyblue', 'blue', 'teal', 'k', 'k']
 
 from utils import roots, s_c_str, get_mu_equil, solve_ic, to_cart, to_ang,\
     get_H4, H, get_mu4, get_ps_anal, get_anal_caps, get_num_caps, get_etac,\
@@ -457,27 +457,28 @@ if __name__ == '__main__':
     eps_equils = 1e-2
     equils_tf = 500
     # to display
-    # equils_plot(I, 0.06, eps_equils, -0.5, 0, 2.5, equils_tf, '6equils', 2)
-    # equils_plot(I, 0.06, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
-    # equils_plot(I, 0.7, eps_equils, 0.985, 0, 2.5, equils_tf, '6equils', 0,
-    #             time_idxbase=[100, 800, 1200, 4600])
-    # equils_plot(I, 0.06, eps_equils, -0.4, 0, 0.1, equils_tf, '6equils', 6)
+    equils_plot(I, 0.06, eps_equils, -0.5, 0, 2.5, equils_tf, '6equils', 2)
+    equils_plot(I, 0.06, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
+    equils_plot(I, 0.7, eps_equils, 0.985, 0, 2.5, equils_tf, '6equils', 0,
+                time_idxbase=[100, 800, 1200, 4600])
+    equils_plot(I, 0.06, eps_equils, -0.4, 0, 0.1, equils_tf, '6equils', 6)
+    equils_plot(I, 0.06, eps_equils / 10, -0.4, 0, 0.1, equils_tf * 10, '6equils', 7)
     # not to display
-    # equils_plot(I, 0.06, eps_equils, 0.985, 0, 2.5, equils_tf, '6equils', 0)
-    # equils_plot(I, 0.06, eps_equils, -0.05, np.pi, 2.5, equils_tf, '6equils', 1)
-    # equils_plot(I, 0.06, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
-    # equils_plot(I, 0.06, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
-    # equils_plot(I, 0.5, eps_equils, 0.985, 0, 2.5, equils_tf, '6equils', 0)
-    # equils_plot(I, 0.5, eps_equils, -0.05, np.pi, 2.5, equils_tf, '6equils', 1)
-    # equils_plot(I, 0.5, eps_equils, -0.5, 0, 2.5, equils_tf, '6equils', 2)
-    # equils_plot(I, 0.5, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
-    # equils_plot(I, 0.5, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
-    # equils_plot(I, 0.5, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
-    # equils_plot(I, 0.7, eps_equils, -0.05, np.pi, 2.5, equils_tf, '6equils', 1)
-    # equils_plot(I, 0.7, eps_equils, -0.5, 0, 2.5, equils_tf, '6equils', 2)
-    # equils_plot(I, 0.7, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
-    # equils_plot(I, 0.7, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
-    # equils_plot(I, 0.7, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
+    equils_plot(I, 0.06, eps_equils, 0.985, 0, 2.5, equils_tf, '6equils', 0)
+    equils_plot(I, 0.06, eps_equils, -0.05, np.pi, 2.5, equils_tf, '6equils', 1)
+    equils_plot(I, 0.06, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
+    equils_plot(I, 0.06, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
+    equils_plot(I, 0.5, eps_equils, 0.985, 0, 2.5, equils_tf, '6equils', 0)
+    equils_plot(I, 0.5, eps_equils, -0.05, np.pi, 2.5, equils_tf, '6equils', 1)
+    equils_plot(I, 0.5, eps_equils, -0.5, 0, 2.5, equils_tf, '6equils', 2)
+    equils_plot(I, 0.5, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
+    equils_plot(I, 0.5, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
+    equils_plot(I, 0.5, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
+    equils_plot(I, 0.7, eps_equils, -0.05, np.pi, 2.5, equils_tf, '6equils', 1)
+    equils_plot(I, 0.7, eps_equils, -0.5, 0, 2.5, equils_tf, '6equils', 2)
+    equils_plot(I, 0.7, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
+    equils_plot(I, 0.7, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
+    equils_plot(I, 0.7, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
     plot_equils(I, [0.06, 0.5, 0.7], tf=equils_tf)
 
     # equils_plot(I, 0.01, eps, -0.96, 2.56, 10, 8000, '6equils', 20, rtol=1e-4)
