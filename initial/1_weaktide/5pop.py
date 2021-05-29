@@ -330,7 +330,7 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
     # fig.subplots_adjust(hspace=0)
     probs_dat = np.array(counts) / (N_THREADS * N_PTS)
     ax1.set_ylim([0, 1])
-    ax1.set_ylabel('tCE2 Probability')
+    ax1.set_ylabel(r'$P_{\rm tCE2}$')
     s_c_cont = np.concatenate((
         np.linspace(min(s_c_vals) / 10, s_c_crit * 0.8, 30),
         np.linspace(s_c_crit * 0.8, s_c_crit * 0.99, 30),
@@ -416,7 +416,7 @@ def plot_cum_probs(I, s_c_vals, s0, counts):
 def run():
     s_c_vals_20 = [
         # 0.7,
-        # 0.2,
+        0.2,
         0.06,
         # 2.0,
         # 1.2,
@@ -424,7 +424,7 @@ def run():
         # 0.65,
         # 0.6,
         # 0.55,
-        # 0.5,
+        0.5,
         # 0.45,
         # 0.4,
         # 0.35,
@@ -607,7 +607,7 @@ def plot_anal_cs_equils(I=np.radians(20), s_c=0.2):
 
 if __name__ == '__main__':
     run()
-    # plot_all_cumprobs()
+    plot_all_cumprobs()
     # plot_anal_cs_equils()
 
     # bunch of debugging cases...

@@ -171,15 +171,15 @@ In Eq.~\eqref{eq:wsl}, $\Omega_{\rm s}$ is the spin frequency of the inner
 planet, $\mathcal{I} = k mR^2$ (with $k$ a constant) is its moment of inertia
 and $J_2 = k_{\rm q}\Omega_{\rm s}^2 (R^3/Gm)$ (with $k_{q}$ a constant) is its
 rotation-induced (dimensionless) quadrupole moment [for a body with uniform
-density, $k=0.4, k_{\rm q}=0.5$; for rocky planets, $k\simeq 0.2$ and $k_{\rm
-q}\simeq 0.17$ \citep[e.g.][]{lainey2016quantification}]. In other studies,
-$3k_{\rm q} / 2 k$ is often notated as $k_2 / 2C$
-\citep[e.g.][]{millholland_disk}. In Eq.~\eqref{eq:wlp}, $n \equiv
-\sqrt{GM_\star/a^3}$ is the inner planet's orbital mean motion,  and we have
-assumed $a_{\rm p}\gg a$ and included only the leading-order (quadrupole)
-interaction between the inner planet and perturber. Following standard notation,
-we define $\alpha = \omega_{\rm sl}$ and $g \equiv -\omega_{\rm 1p} \cos I$
-\citep[e.g.][]{colombo1966}.
+density, $k=0.4, k_{\rm q}=0.5$; for the Earth, $k \simeq 0.331$ and $k_{\rm q}
+\equiv k_2 / 3 \simeq 0.1$ \citep[e.g.][]{groten2004fundamental,
+lainey2016quantification}]. In other studies, $3k_{\rm q} / 2 k$ is often
+notated as $k_2 / 2C$ \citep[e.g.][]{millholland_disk}. In Eq.~\eqref{eq:wlp},
+$n \equiv \sqrt{GM_\star/a^3}$ is the inner planet's orbital mean motion,  and
+we have assumed $a_{\rm p}\gg a$ and included only the leading-order
+(quadrupole) interaction between the inner planet and perturber. Following
+standard notation, we define $\alpha = \omega_{\rm sl}$ and $g \equiv
+-\omega_{\rm 1p} \cos I$ \citep[e.g.][]{colombo1966}.
 
 As in Paper I, we combine Eqs.~(\ref{eq:dsdt1}--\ref{eq:dldt1}) into a
 single equation by transforming into a frame rotating about $\uv{l}_{\rm p}$
@@ -663,14 +663,14 @@ Using this result, we can then identify the long-term equilibria of the system
 when $\Omega_{\rm s}$ is also evolving: these equilibria of the system must both
 satisfy $\dot{\Omega}_{\rm s} = 0$ and be a CS that is stable in the presence of
 tidal dissipation (i.e.\ satisfying $\rdil{\uv{s}}{t} = 0$).
-Figure~\ref{fig:6equilssingle} describes the evolution of
+Figure~\ref{fig:6equils006} describes the evolution of
 Eqs.~(\ref{eq:dsdt_tide}--\ref{eq:dWsdt_tide}) qualitatively in the coordinates
 $(\Omega_{\rm s}, \theta)$, along with the locations of CS1 and CS2. The circled
-points in the panels of Fig.~\ref{fig:6equils} satisfy the criteria to be
-long-term equilibria, and we call them \emph{tidal Cassini Equilibria} (tCE). We
-number tCE1 and tCE2 the tCE that are in CSs 1 and 2 respectively. The
-obliquities of the tCE depend on the system architecture, which can be
-quantified using the parameter
+points in Fig.~\ref{fig:6equils006} satisfy the criteria to be long-term
+equilibria, and we call them \emph{tidal Cassini Equilibria} (tCE). We number
+tCE1 and tCE2 the tCE that are in CSs 1 and 2 respectively. The obliquities of
+the tCE depend on the system architecture, which can be quantified using the
+parameter
 \begin{align}
     \eta_{\rm sync} &\equiv \big(\eta\big)_{\Omega_{\rm s} = n}
         = \eta \frac{\Omega_{\rm s}}{n}\nonumber\\
@@ -679,9 +679,9 @@ quantified using the parameter
             \p{\frac{a}{a_{\rm p}}}^3 \p{\frac{a}{R}}^3\cos(I).
             \label{eq:def_etasync}
 \end{align}
-In Fig.~\ref{fig:6equilssingle}, $\eta_{\rm sync} = 0.06$; the two panels of
-Fig.~\ref{fig:6equils} illustrate the change to the tCE when $\eta_{\rm sync} =
-0.5$ and $0.7$ respectively.
+In Fig.~\ref{fig:6equils006}, $\eta_{\rm sync} = 0.06$;
+Figs.~\ref{fig:6equils050}--\ref{fig:6equils070} illustrate the change to the
+tCE when $\eta_{\rm sync} = 0.5$ and $0.7$ respectively.
 
 The tCE obliquity as a function of $\eta_{\rm sync}$ are shown for $I =
 20^\circ$ in the top panel of Fig.~\ref{fig:probs20} and for $I = 5^\circ$ in
@@ -700,7 +700,7 @@ the top panels of Fig.~\ref{fig:probs20} and~\ref{fig:probs5}, where good
 agreement is observed.
 \begin{figure*}
     \centering
-    \includegraphics[width=\textwidth]{../initial/1_weaktide/6equilssingle.png}
+    \includegraphics[width=\textwidth]{../initial/1_weaktide/6equils0_06.png}
     \caption{Schematic depiction of the effect of tidal friction on the planet's
     spin for $I = 20^\circ$, corresponding to $\eta_{\rm c} \approx 0.574$
     (Eq.~\ref{eq:def_etac}), and $\eta_{\rm sync} = 0.06$. The black and blue
@@ -714,72 +714,82 @@ agreement is observed.
     circled and labeled. The various colored crosses and their associated
     colored lines represent a few characteristic examples of the evolution of
     Colombo's Top under weak tidal friction (for illustrative purposes, we have
-    used $\abs{g}t_{\rm s} = 10^2$). The phase space evolution of the two
-    thicker evolutionary trajectories (cyan and pink; those beginning at
-    $\theta_{\rm i} = 120^\circ$) are shown in
+    used $\abs{g}t_{\rm s} = 10^2$ and evolved each example for $5t_{\rm s}$).
+    The phase space evolution of the two thicker evolutionary trajectories (cyan
+    and pink; those beginning at $\theta_{\rm i} = 120^\circ$) are shown in
     Figs.~\ref{fig:trajs1}--\ref{fig:trajs2}.
-    }\label{fig:6equilssingle}
+    }\label{fig:6equils006}
 \end{figure*}
-\begin{figure}
+\begin{figure*}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/6equils.png}
-    \caption{Same as Fig.~\ref{fig:6equilssingle} but for $\eta_{\rm sync} =
-    0.5$ and $\eta_{\rm sync} = 0.7$ in the two panels (labeled). Note in the
-    bottom panel that $\eta_{\rm sync} = 0.7 > \eta_{\rm c}$ and tCE1 does not
-    exist. In both panels, the light-colored crosses and lines correspond to
-    evolutionary trajectories using the same initial conditions as those shown
-    in Fig.~\ref{fig:6equilssingle}. The phase space evolution of the thick
-    purple trajectory in the bottom panel (starting at $\theta_{\rm i} \approx
-    10^\circ$) is shown in Fig.~\ref{fig:trajs3}. }\label{fig:6equils}
-\end{figure}
+    \includegraphics[width=\textwidth]{../initial/1_weaktide/6equils0_50.png}
+    \caption{Same as Fig.~\ref{fig:6equils006} but for $\eta_{\rm sync} = 0.5$.
+    The light-colored crosses and lines correspond to evolutionary trajectories
+    using the same initial conditions as those shown in
+    Fig.~\ref{fig:6equils006}.}\label{fig:6equils050}
+\end{figure*}
+\begin{figure*}
+    \centering
+    \includegraphics[width=\textwidth]{../initial/1_weaktide/6equils0_70.png}
+    \caption{Same as Figs.~\ref{fig:6equils006} and~\ref{fig:6equils050} but for
+    $\eta_{\rm sync} = 0.7$. Note that $\eta_{\rm sync} = 0.7 > \eta_{\rm c}
+    \approx 0.574$ and tCE1 does not exist. The phase space evolution of the
+    thick purple trajectory in the bottom panel (starting at $\theta_{\rm i}
+    = 10^\circ$) is shown in Fig.~\ref{fig:trajs3}. }\label{fig:6equils070}
+\end{figure*}
 \begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../initial/1_weaktide/6equils_sims/0_06_2.png}
     \caption{Phase space evolution of the trajectory in
-    Fig.~\ref{fig:6equilssingle} colored in pink, for which $\eta_{\rm sync} =
-    0.06$ and $I = 20^\circ$. In the
-    left-most panel, the trajectory's evolution in $\p{\Omega_{\rm s}, \theta}$
-    coordinates along with the curves indicating CS1, 2, and $\dot{\Omega}_{\rm
-    s} = 0$ are re-displayed from Fig.~\ref{fig:6equilssingle}. The vertical
-    dashed lines denote the values of $\Omega_{\rm s}$ for which the phase space
-    evolution of the system is displayed in the right four panels. In each of
-    these right four panels, the trajectory's evolution for a single
-    circulation/libration cycle is displayed in $\p{\cos \theta, \phi}$ phase
-    space for the labeled value of $\Omega_{\rm s}$. The system encounters the
-    separatrix, undergoes a III $\to$ I transition, and converges to tCE1.
+    Fig.~\ref{fig:6equils006} colored in pink, for which $\eta_{\rm sync} =
+    0.06$ and $I = 20^\circ$ (for which $\eta_{\rm c} = 0.574$). The initial
+    conditions are $\Omega_{\rm s, i} = 2.5n$, $\theta_{\rm i} = 120^\circ$, and
+    $\phi_{\rm i} = 0^\circ$, and we have used $\abs{g}t_{\rm s} = 10^2$ and
+    have evolved the system for $5t_{\rm s}$. In the left-most panel, the
+    trajectory's evolution in $\p{\Omega_{\rm s}, \theta}$ coordinates along
+    with the curves indicating CS1, 2, and $\dot{\Omega}_{\rm s} = 0$ are
+    re-displayed from Fig.~\ref{fig:6equils006}. The vertical dashed lines
+    denote the values of $\Omega_{\rm s}$ for which the phase space evolution of
+    the system is displayed in the right four panels. In each of these right
+    four panels, the trajectory's evolution for a single circulation/libration
+    cycle is displayed in $\p{\cos \theta, \phi}$ phase space for the labeled
+    value of $\Omega_{\rm s}$. The system encounters the separatrix, undergoes a
+    III $\to$ I transition, and converges to tCE1.
     }\label{fig:trajs1}
 \end{figure}
 \begin{figure}
     \includegraphics[width=\columnwidth]{../initial/1_weaktide/6equils_sims/0_06_3.png}
-    \caption{Same as Fig.~\ref{fig:trajs1} but for the trajectory in
-    Fig.~\ref{fig:6equilssingle} colored in cyan, for which $\eta_{\rm sync} =
-    0.06$ and $I = 20^\circ$. The system encounters the
-    separatrix, undergoes a III $\to$ II transition, and converges to tCE2. Note
-    that the initial condition of this system and that displayed in
-    Fig.~\ref{fig:trajs1} have the same initial $\theta_{\rm i}$ and
-    $\Omega_{\rm s, i}$ and only different precessional phases $\phi_{\rm i}$.
+    \caption{Same as Fig.~\ref{fig:trajs1} but for $\phi_{\rm i} = 286^\circ$,
+    corresponding to the trajectory in Fig.~\ref{fig:6equils006} colored in
+    cyan. The system encounters the separatrix, undergoes a III $\to$ II
+    transition, and converges to tCE2. The small $\phi$ offset of tCE2 is
+    visible (see Fig.~\ref{fig:mcs}). Note that the initial condition of this
+    system and that displayed in Fig.~\ref{fig:trajs1} have the same initial
+    $\theta_{\rm i}$ and $\Omega_{\rm s, i}$ and only different precessional
+    phases $\phi_{\rm i}$.
     }\label{fig:trajs2}
 \end{figure}
 \begin{figure}
     \includegraphics[width=\columnwidth]{../initial/1_weaktide/6equils_sims/0_70_0.png}
-    \caption{Same as Fig.~\ref{fig:trajs1} but for the purple trajectory
-    shown in the bottom panel of Fig.~\ref{fig:6equils}, for which $\eta_{\rm
-    sync} = 0.7$ and $I = 20^\circ$. Here, the system
-    evolves along CS1 until the separatrix disappears, upon which it experiences
-    large obliquity variations that damp due to tidal dissipation. The system
-    finally converges to tCE2, the only tCE that exists for this value of
-    $\eta_{\rm sync}$ (see bottom panel of Fig.~\ref{fig:6equils}).}\label{fig:trajs3}
+    \caption{Same as Fig.~\ref{fig:trajs1} but for $\eta_{\rm sync} = 0.7$ and
+    $\theta_{\rm i} = 10^\circ$, corresponding to the purple trajectory shown in
+    the bottom panel of Fig.~\ref{fig:6equils070}. Here, the system evolves
+    along CS1 until the separatrix disappears, upon which it experiences large
+    obliquity variations that damp due to tidal dissipation. The highly
+    asymmetric shape in the third panel arises due to the strong tidal
+    dissipation used in this simulation. The system finally converges to tCE2,
+    the only tCE that exists for this value of $\eta_{\rm sync}$ (see bottom
+    panel of Fig.~\ref{fig:6equils070}).}\label{fig:trajs3}
 \end{figure}
 
 There are two important conditions that can change the existence and stability
 of the tCE\@. First, if $\eta_{\rm sync} > \eta_{\rm c}$, then tCE1 will not
-exist, as can be seen in the bottom panel of
-Fig.~\ref{fig:6equils}\footnote{Strictly speaking, $\eta_{\rm sync}$ can be
-slightly smaller than $\eta_{\rm c}$, as the planet's spin is slightly
-subsynchronous at tCE1 when $\eta \approx \eta_{\rm c}$, see the top panel of
-Fig.~\ref{fig:6equils}.}. Secondly, tCE2 may not be stable if the tidal phase
-shift is too large. Applying the results of Section~\ref{ss:tidal_equils}, we
-find that tCE2 is stable as long as $t_{\rm s} \geq t_{\rm s, c}$ where
+exist, as can be seen in Fig.~\ref{fig:6equils070}\footnote{Strictly speaking,
+$\eta_{\rm sync}$ can be slightly smaller than $\eta_{\rm c}$, as the planet's
+spin is slightly subsynchronous at tCE1 when $\eta \approx \eta_{\rm c}$, e.g.\
+see Fig.~\ref{fig:6equils050}.}. Secondly, tCE2 may not be stable if the tidal
+phase shift is too large. Applying the results of Section~\ref{ss:tidal_equils},
+we find that tCE2 is stable as long as $t_{\rm s} \geq t_{\rm s, c}$ where
 \begin{equation}
     t_{\rm s, c} \equiv \frac{\sin \theta_{\rm tCE2}}{\abs{g} \sin
             I}\p{\frac{2n}{\Omega_{\rm s, tCE2}} - \cos \theta_{\rm tCE2}}.
@@ -800,13 +810,13 @@ exterior planet.
 
 With this result, we can now consider the final fate of the inner planet's spin.
 We begin by qualitatively examining the example trajectories shown in
-Figs.~\ref{fig:6equilssingle}, for which we have integrated
-Eqs.~(\ref{eq:dsdt_rot},~\ref{eq:dsdt_tide}--\ref{eq:dWsdt_tide}). We discuss
-each of the six trajectories in turn:
+Figs.~\ref{fig:6equils006}, for which we have integrated
+Eqs.~(\ref{eq:dsdt_rot},~\ref{eq:dsdt_tide}--\ref{eq:dWsdt_tide}) and set $I =
+20^\circ$. We discuss each of the six trajectories in turn:
 \begin{itemize}
     \item The trajectory with initial conditions $\Omega_{\rm s, i} = 2.5n$ and
         $\theta_{\rm i} = 10^\circ$ (purple) has an initially prograde spin
-        (i.e.\ in zone I, see FIg.~\ref{fig:1contours}) and directly evolves to
+        (i.e.\ in zone I, see Fig.~\ref{fig:1contours}) and directly evolves to
         tCE1 as the obliquity damps to zero.
 
     \item The trajectory with initial conditions $\Omega_{\rm s, i} = 2.5n$ and
@@ -818,21 +828,25 @@ each of the six trajectories in turn:
     \item We have chosen two trajectories, both with initial conditions
         $\Omega_{\rm s, i} = 2.5n$ and $\theta_{\rm i} = 120^\circ$ but with
         different initial precessional phases $\phi_{\rm i}$; we first discuss
-        the pink trajectory. This trajectory originates in zone III, evolves
-        towards the separatrix as tidal friction damps the obliquity, and
-        crosses the resonance without being captured, upon which the obliquity
-        continues to damp until the system converges to tCE1. The detailed phase
-        space evolution of this trajectory is shown in Fig.~\ref{fig:trajs1},
-        where the outcome of the separatrix encounter is very visible.
+        the pink trajectory, for which $\phi_{\rm i} = 0^\circ$. This trajectory
+        originates in zone III, evolves towards the separatrix as tidal friction
+        damps the obliquity, and crosses the resonance without being captured,
+        upon which the obliquity continues to damp until the system converges to
+        tCE1. The detailed phase space evolution of this trajectory is shown in
+        Fig.~\ref{fig:trajs1}, where the outcome of the separatrix encounter is
+        very visible.
 
     \item The other trajectory with initial conditions $\Omega_{\rm s, i} = 2.5n$
         and $\theta_{\rm i} = 120^\circ$ (light blue) only differs from the pink
-        trajectory in its value of $\phi_{\rm i}$. Nevertheless, this trajectory
-        originates in zone III, encounters the separatrix and is captured into
-        the resonance (zone II), upon which tidal friction drives the system
-        towards tCE2. The detailed phase space evolution of this trajectory is
-        shown in Fig.~\ref{fig:trajs2}, where the resonance capture is
-        displayed.
+        trajectory as its initial precessional phase is $\phi_{\rm i} \approx
+        286^\circ$. Nevertheless, this trajectory originates in zone III,
+        encounters the separatrix and is captured into the resonance (zone II),
+        upon which tidal friction drives the system towards tCE2. The detailed
+        phase space evolution of this trajectory is shown in
+        Fig.~\ref{fig:trajs2}, where the resonance capture is displayed. Also
+        visible in the final panel of Fig.~\ref{fig:trajs2} is the slight phase
+        offset of CS2, i.e.\ $\phi_{\rm cs} < 180^\circ$, in agreement with the
+        discussion in Section~\ref{ss:tidal_equils} (see Fig.~\ref{fig:mcs}).
 
     \item For completeness, we also examine some trajectories for initially
         subsynchronous spin rates. The trajectory with initial conditions
@@ -840,36 +854,73 @@ each of the six trajectories in turn:
         obliquity rapidly damped to zero by tidal friction as it spins up to
         spin-orbit synchronization, eventually converging to tCE1.
 
+        A subtlety of initially subsynchronous spins can be seen here: note that
+        the initial $\eta_{\rm i} = 0.6$ here, so the separatrix and CS1 do not
+        exist initially ($\eta_{\rm c} = 0.574$). As such, naively, one expects
+        initial convergence to CS2 and subsequent obliquity along with CS2 as
+        the spin increases. However, due to the strong tidal dissipation and the
+        proximity of $\eta_{\rm i}$ to $\eta_{\rm c}$, CS1 appears within a
+        single circulation cycle, and the obliquity quickly damps to, and
+        continues to evolve along, CS1.
+
     \item The trajectory with initial conditions $\Omega_{\rm s, i} = 0.1n$ and
         $\theta_{\rm i} = 100^\circ$ (teal) also has its obliquity rapidly
-        damped to zero as it approaches spin-orbit synchronization and tCE1.
-        However, we remark that this initial condition converges to tCE2 when a
-        tidal dissipation rate of $\abs{g}t_{\rm s} = 10^3$ is used.
+        damped to zero as it approaches spin-orbit synchronization and tCE1. For
+        these initial conditions, we remark that this initial condition
+        converges to tCE2 when a tidal dissipation rate of $\abs{g}t_{\rm s} =
+        10^3$ is used, satisfying the intuitive analysis given in the previous
+        paragraph.
 \end{itemize}
 For each of these six initial conditions, we also display their evolutionary
-trajectories for $\eta_{\rm sync} = 0.5$ and $\eta_{\rm sync} = 0.7$ in the two
-panels of Fig.~\ref{fig:6equils}. Of particular interest is the purple initial
-condition ($\Omega_{\rm s, i} = 2.5n$ and $\theta_{\rm i} = 10^\circ$) when
-$\eta_{\rm sync} = 0.7$. Figure~\ref{fig:trajs3} shows the detailed phase space
-evolution of this system, where it can be seen that the system initially evolves
-along the stable CS1, but is ejected when $\Omega_{\rm s}$ is sufficiently small
-that CS1 ceases to exist, upon which large obliquity variations eventually lead
-to convergence to tCE2, the only tCE that exists.
+trajectories for $\eta_{\rm sync} = 0.5$ and $\eta_{\rm sync} = 0.7$ in
+Figs.~\ref{fig:6equils050}--\ref{fig:6equils070}. The qualitative evolution of
+these six examples only changes in a few important ways, so we will discuss just
+a few points of interest:
+\begin{itemize}
+    \item For both $\eta_{\rm sync} = 0.5$ and $\eta_{\rm sync} = 0.7$, we see
+        that both initial conditions with $\theta_{\rm i} = 120^\circ$ converge
+        to tCE2. In fact, for these values of $\eta_{\rm sync}$, all initial
+        conditions with $\theta_{\rm i} = 120^\circ$ will converge to tCE2
+        regardless of $\phi_{\rm i}$.
 
+    \item The two subsynchronous initial conditions both evolve to tCE2 for both
+        $\eta_{\rm sync} = 0.5$ and $\eta_{\rm sync} = 0.7$, as in both cases
+        $\eta_{\rm i} \gg \eta_{\rm c}$ and CS2 is the only low-obliquity spin
+        equilibrium. The system then continues to evolve along CS2 until
+        reaching a state satisfying $\dot{\Omega}_{\rm s} = 0$ as well.
+
+    \item Of particular interest is the evolution starting from the initial
+        conditions $\Omega_{\rm s, i} = 2.5n$ and $\theta_{\rm i} = 10^\circ$
+        (purple) when $\eta_{\rm sync} = 0.7$. Figure~\ref{fig:trajs3} shows the
+        detailed phase space evolution of this system, where it can be seen that
+        the system initially evolves along the stable CS1, but is ejected when
+        $\Omega_{\rm s}$ is sufficiently small that CS1 ceases to exist, upon
+        which large obliquity variations eventually lead to convergence to tCE2,
+        the only tCE that exists.
+\end{itemize}
 It can be seen that the dynamics are complex and can vary greatly depending on
-the parameters used. For tractability, we restrict our attention to initial
-conditions satisfying $\Omega_{\rm s, i} \gg n$, and we adopt the fiducial value
-$\Omega_{\rm s, i} = 10n$. Then, for many initial $\theta_0$ and $\phi_0$, we
-can perform the same integration as above and verify which tCE a given initial
-condition evolves into. In Fig.~\ref{fig:Hhists_0_06}, we show the final outcome
-for many randomly chosen $\theta_0$ and $\phi_0$ for $\eta_{\rm sync} = 0.06$
-and $I = 20^\circ$. We see that the behavior seen in the example trajectories in
-Fig.~\ref{fig:6equilssingle} are general: tCE1 is generally reached for spins
-initially in zone I (like the purple trajectory in
-Fig.~\ref{fig:6equilssingle}), tCE2 is generally reached for spins initially in
-zone II (like the red trajectory in Fig.~\ref{fig:6equilssingle}), and a
+the parameters used. In the case where the initial spin is subsynchronous, the
+detailed outcome depends sensitively on $\eta_{\rm i}$ and the tidal dissipation
+rate. For tractability, we restrict our subsequent discussion to the more
+astrophysically common regime $\Omega_{\rm s, i} \gg n$, and we adopt the
+fiducial value $\Omega_{\rm s, i} = 10n$.
+
+Having developed an intuition for a few different possible evolutionary
+histories, we can next attempt to draw general conclusions about the final fate
+of the inner planet's spin as a function as a function of its initial
+conditions. We do this by again integrating
+Eqs.~(\ref{eq:dsdt_rot},~\ref{eq:dsdt_tide}--\ref{eq:dWsdt_tide}) for many
+initial $\theta_0$ and $\phi_0$ and examining which tCE a given initial
+condition evolves into. For this study, we use a more gradual tidal dissipation
+rate of $\abs{gt_{\rm s}} = 10^3$. In Fig.~\ref{fig:Hhists_0_06}, we show the
+final outcome for many randomly chosen $\theta_0$ and $\phi_0$ for $\eta_{\rm
+sync} = 0.06$ and $I = 20^\circ$. We see that the behavior seen in the example
+trajectories in Fig.~\ref{fig:6equils006} are general: tCE1 is generally reached
+for spins initially in zone I (like the purple trajectory in
+Fig.~\ref{fig:6equils006}), tCE2 is generally reached for spins initially in
+zone II (like the red trajectory in Fig.~\ref{fig:6equils006}), and a
 probabilistic outcome is observed for spins initially in zone III (like the
-light blue and pink trajectories in Fig.~\ref{fig:6equilssingle}).
+light blue and pink trajectories in Fig.~\ref{fig:6equils006}).
 Figures~\ref{fig:Hhists_0_20} and~\ref{fig:Hhists_0_50} show the same results
 but for $\eta_{\rm sync} = 0.2$ and $\eta_{\rm sync} = 0.5$. As $\eta_{\rm
 sync}$ is increased, more initial conditions reach tCE2. This is both because
@@ -1027,7 +1078,7 @@ With the above calculation, we can understand why even initial conditions in
 zone I can converge to tCE2. As long as the initial spin is sufficiently large
 ($\geq 2n$), Eq.~\eqref{eq:dsdt_tide} shows that sufficiently large initial
 obliquities are \emph{increased} by weak tidal friction (the bottom right
-region of panels of Fig.~\ref{fig:6equilssingle}). This increase means that even
+region of panels of Fig.~\ref{fig:6equils006}). This increase means that even
 initial conditions in zone I can sometimes be driven by tidal dissipation into
 the separatrix. When this is the case, it can be shown that both $\Delta K_+ >
 0$ and $\Delta K_- > 0$. This implies that both III $\to$ II and I $\to$ II
@@ -1040,15 +1091,14 @@ evolve into tCE2.
 In the previous section, we considered the outcome as a function of the initial
 spin orientation, specified by $\theta_0$ and $\phi_0$. In this section, we
 consider the probability of evolution into tCE2 when averaging over a
-distribution of initial spin orientations. For simplicity, we just consider
-$\uv{s}$ to be isotropically distributed; we discuss the impact of more
-physically realistic distributions of $\uv{s}$ in Section~\ref{s:summary}. The
-bottom panel of Fig.~\ref{fig:probs20} shows the probability of evolution into
-tCE2 for $I = 20^\circ$ as a function of $\eta_{\rm sync}$. It can be seen that
-tCE2 is reached with substantial probability ($\sim 50\%$) while it is also
-at a substantial obliquity ($\sim 60^\circ$) for $\eta_{\rm sync} \approx 0.4$.
-Furthermore, we note that initial conditions other than those beginning in zone
-II are responsible for a significant fraction of systems that converge to tCE2.
+distribution of initial spin orientations, which we denote $P_{\rm tCE2}$. For
+simplicity, we just consider $\uv{s}$ to be isotropically distributed; we
+discuss the impact of more physically realistic distributions of $\uv{s}$ in
+Section~\ref{s:summary}. The bottom panel of Fig.~\ref{fig:probs20} shows
+$P_{\rm tCE2}$ for $I = 20^\circ$ as a function of $\eta_{\rm sync}$. It can be
+seen that tCE2 is reached with substantial probability ($\sim 50\%$) while it is
+also at a substantial obliquity ($\sim 60^\circ$) for $\eta_{\rm sync} \approx
+0.4$.
 \begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../initial/1_weaktide/5probs_20.png}
@@ -1057,19 +1107,51 @@ II are responsible for a significant fraction of systems that converge to tCE2.
     denotes the analytical approximation Eq.~\eqref{eq:def_tce2_approx} and is
     only displayed in its regime of validity, $\eta_{\rm sync} \ll \eta_{\rm c}$
     (vertical dashed line; Eq.~\ref{eq:def_etac}). \emph{Bottom:} Total
-    probability of ending up in tCE2 (red dots), averaged over an isotropic
-    initial spin orientation and taking $\Omega_{\rm s, i} = 10n$. The three
-    shaded regions denote the contribution of initial conditions in zones
-    I/II/III (labeled) to the total tCE2 probability in the isotropic average.
-    For example, among systems that converge to tCE2 for $\eta_{\rm sync} =
-    0.06$, more originate in zone III than zone II, and none originate in zone
-    I.}\label{fig:probs20}
+    probability of ending up in tCE2 ($P_{\rm tCE2}$; red dots), averaged over
+    an isotropic initial spin orientation and taking $\Omega_{\rm s, i} = 10n$.
+    The three shaded regions denote the contribution of initial conditions in
+    zones I/II/III (labeled) to the total tCE2 probability in the isotropic
+    average. For example, among systems that converge to tCE2 for $\eta_{\rm
+    sync} = 0.06$, more originate in zone III than zone II, and none originate
+    in zone I.}\label{fig:probs20}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../initial/1_weaktide/5probs_5.png}
     \caption{Same as Fig.~\ref{fig:probs20} but for $I =
     5^\circ$.}\label{fig:probs5}
+\end{figure}
+
+When $\eta_{\rm sync} \ll 1$ and $\Omega_{\rm s} \gtrsim n$, an approximate
+analytical formula for $P_{\rm tCE2}$ can be obtained (see
+Appendix~\ref{app:ptce2}):
+\begin{align}
+    P_{\rm tCE2} &\simeq
+            \frac{4\sqrt{\eta _{\rm sync} \sin I}}{\pi}\s{
+                \sqrt{n / \Omega_{\rm s, i}}
+                + \frac{3}{2\p{1
+                + \sqrt{n / \Omega_{\rm s, i}}}}}.\label{eq:app_tce2_p_tot}
+\end{align}
+Eq.~\eqref{eq:app_tce2_p_tot} is shown in
+Figs.~\ref{fig:probs20}--\ref{fig:probs5} as the red dashed lines, where it
+agrees well with the numerical results (red dots) for $\eta_{\rm sync} \lesssim
+0.4$. To illustrate the predicted values of $P_{\rm tCE2}$ for small $\eta_{\rm
+sync}$, we display $P_{\rm tCE2}$ for $\eta_{\rm sync} \in \s{10^{-4}, 0.4}$ for
+both $I = 20^\circ$ and $I = 5^\circ$ in Fig.~\ref{fig:anal_ptce}. Note that no
+numerical results are presented for $\eta_{\rm sync} \leq 10^{-2}$, as the
+spin-orbit coupling becomes very strong and the integration slows dramatically
+due to the rapid precession of $\uv{s}$ about $\uv{l}$.
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/1_weaktide/7anal_ptce.png}
+    \caption{Plot of $P_{\rm tCE2}$ for $I = 5^\circ$ and $I = 20^\circ$
+    (legend) shown on a log-log plot, to emphasize the scaling at small
+    $\eta_{\rm sync}$. The crosses are the results of numerical simulations as
+    shown in Figs.~\ref{fig:probs20}--\ref{fig:probs5}, the solid lines are
+    Eq.~\eqref{eq:app_tce2_p_tot} for $\Omega_{\rm s, i} = 10n$ and the dashed
+    lines are for $\Omega_{\rm s, i} = 3n$. \textcolor{red}{Note: The agreement
+    with the data are will change slightly once the numerical
+    precision issue is resolved.}}\label{fig:anal_ptce}
 \end{figure}
 
 \section{Applications}\label{s:applications}
@@ -1094,6 +1176,7 @@ planet approaches a tCE on the timescale
             \p{\frac{m}{4M_{\oplus}}}^{-1}\nonumber\\
         &\times \p{\frac{R}{2R_{\oplus}}}^3
             \p{\frac{a}{0.4\;\mathrm{AU}}}^{-9/2}.
+            \label{eq:sehj_ts}
 \end{align}
 This occurs well within the age of most SE-CJ systems. On the other hand,
 the orbital evolution of the SE occurs on the timescale \citep{lai2012}
@@ -1137,35 +1220,39 @@ only unstable if $t_{\rm s} \lesssim t_{\rm s, c}$ where
             \frac{k}{k_{\rm q}}
             \p{\frac{m_{\rm p}}{M_{\rm J}}}^{3/2}
             \p{\frac{m}{4 M_{\oplus}}}^{1/2}\nonumber\\
-        &\times \p{\frac{m_\star}{M_{\odot}}}^{-3/2}
+        &\times \p{\frac{M_\star}{M_{\odot}}}^{-3/2}
             \p{\frac{a}{0.4\;\mathrm{AU}}}^6
             \p{\frac{a_{\rm p}}{5\;\mathrm{AU}}}^{-9/2}
             \p{\frac{R}{2 R_{\oplus}}}^{-3/2}.
+            \label{eq:sehj_tsc}
 \end{align}
-Since $t_{\rm s} \gg t_{\rm s, c}$, we see that tCE2 is stable. Thus, we predict
-that a significant fraction of SEs with exterior CJ companions can have
-long-lived, significant obliquities ($\gtrsim 60^\circ$) due to being trapped in
-tCE2.
-
-% \textcolor{red}{Just a brief investigation:} Finally, we briefly consider the
-% possibility of tidal heating. Coarsely, we have that
-% \begin{align}
-%     \frac{\dot{a}}{a} &\sim -\frac{1}{10^{14}\;\mathrm{yr}}\p{1 -
-%         \frac{\Omega_{\rm s}}{n}\cos \theta},\\
-%     \dot{E}_{\rm orb} = \frac{GM_{\star}m}{2a}\frac{\dot{a}}{a}
-%         &\approx 10^{20}\;\mathrm{erg/s}\p{1 -
-%         \frac{\Omega_{\rm s}}{n}\cos \theta}.
-% \end{align}
-% The black body luminosity of the planet is expected to be $4 \times
-% 10^{25}\;\mathrm{erg/s}$ for the fiducial parameters, and so can probably be
-% ignored.
+Since $t_{\rm s} \gg t_{\rm s, c}$, we see that tCE2 is stable. In
+Fig.~\ref{fig:sehj_region}, we show the value of $\eta_{\rm sync}$ in the
+regions of $\p{a, a_{\rm p}}$ parameter space that satisfy the stability
+condition for tCE2. It can be seen that a generous portion of parameter space is
+able to generate and sustain inclined SEs. In summary, we predict that a
+significant fraction of SEs with exterior CJ companions can have long-lived,
+significant obliquities ($\gtrsim 60^\circ$) due to being trapped in tCE2.
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{../initial/99_misc/5sehj_region.png}
+    \caption{Depiction of the values of $\eta_{\rm sync}$ for the Super Earth +
+    Cold Jupiter systems as a function of $a$ and $a_{\rm p}$ for $I = 20^\circ$
+    (top) and $I = 5^\circ$ (bottom). The SE is taken to have
+    $m = 4M_{\oplus}$ and $R = 2R_{\oplus}$ while the HJ is taken to have
+    $m_{\rm p} = M_{\rm J}$, and we have taken $k \approx k_{\rm q}$. We only
+    show the regions satisfying $t_{\rm s} \geq t_{\rm s, c}$ (the stability
+    condition for tCE2; Eqs.~\ref{eq:sehj_ts}--\ref{eq:sehj_tsc}). The line
+    satisfying $\eta_{\rm sync} = \eta_{\rm c}$ (Eq.~\ref{eq:def_etac}) is shown
+    as the black dashed line.}\label{fig:sehj_region}
+\end{figure}
 
 \subsection{Application to Ultra-short-period Planet Formation
 }\label{ss:disc_usp}
 
 In \citet{millholland2020formation}, the authors consider capture into the CS2
-resonance as part of a mechanism to form ultra-short period planets (USPs). They
-envision a process consisting of three stages:
+resonance as part of a mechanism to form ultra-short period planets (USPs).
+Their proposed mechanism consists of three stages:
 \begin{itemize}
     \item Rapid initial guaranteed capture into CS2.
 
@@ -1196,9 +1283,10 @@ timescale
 This is much shorter than the age of the system, and so the proto-USP can be
 treated as starting in one of the tCE\@.
 
-Next, we investigate the outcome of the initial, rapid spin evolution. First,
-due to the small semi-major axis ratio, we must generalize Eq.~\eqref{eq:wlp}
-\citep[see e.g.][]{lai_2017}:
+Next, we investigate the outcome of the initial, rapid spin evolution. For
+simplicity, we will first consider the case with a single external perturber.
+First, since the considered systems are very compact, we must generalize
+Eq.~\eqref{eq:wlp} to small semi-major axis ratios \citep[see e.g.][]{lai_2017}:
 \begin{equation}
     \omega_{\rm lp} = \frac{3m_{\rm p}}{4M_{\star}}
         \p{\frac{a}{a_{\rm p}}}^3 n f(\alpha),
@@ -1225,21 +1313,23 @@ $\eta_{\rm sync}$ (Eq.~\ref{eq:def_etasync}) can be computed:
             .\label{eq:etasync_usp}
 \end{align}
 We have evaluated using $a / a_{\rm p}$ corresponding to a period ratio $P_{\rm
-p} / P = 1.5$, for which $f(\alpha) \approx 5.5$. For $I = 5^\circ$, roughly
+p} / P = 1.5$, for which $f(\alpha) \approx 5.5$. Note furthermore that $k /
+k_{\rm q} \approx 3$ for Earth-like planets \citep{groten2004fundamental,
+lainey2016quantification}. For $I = 5^\circ$, roughly
 consistent with typical proto-USP systems \citep{dai2018larger},
 Eq.~\eqref{eq:def_etac} shows that $\eta_{\rm sync} \ll \eta_{\rm c}$, and thus
-there are four CSs at spin-orbit synchronization. If, following
-\citet{millholland2020formation}, we take the initial planetary obliquity to be
-zero, the planet is guaranteed to evolve into tCE1, and not tCE2 (see
-Fig.~\ref{fig:Hhists_0_06}). If we assume instead a randomly oriented initial
-planetary spin, perhaps again due to early giant impacts, Fig.~\ref{fig:probs5}
-suggests that the probability of capture into tCE2 is still only modest
-($\lesssim 10\%$). A more sophisticated calculation including the effect of a
-third planet does not greatly modify these results. Note that this calculation
-is in tension with Fig.~4 of \citet{millholland2020formation}, where they find
-that $\eta \sim 1$ for the same physical parameters when $\Omega_{\rm s}$ is at
-its equilibrium value (i.e.\ satisfying Eq.~\ref{eq:weaktide_dWszero}, or
-$\Omega_{\rm s} \approx n$ when the obliquity is small).
+there are four CSs at spin-orbit synchronization. As such, if we take the
+initial planetary obliquity to be zero, the planet is guaranteed to evolve into
+tCE1, and not tCE2 (see Fig.~\ref{fig:Hhists_0_06}). If we assume instead a
+randomly oriented initial planetary spin, Fig.~\ref{fig:anal_ptce} suggests that
+the probability of capture into tCE2 is still only modest ($\lesssim 20\%$). A
+more sophisticated calculation including the effect of a third planet does not
+greatly modify these results.
+% Note that this calculation is in tension with
+% Fig.~4 of \citet{millholland2020formation}, where they find that $\eta \sim 1$
+% for the same physical parameters when $\Omega_{\rm s}$ is at its equilibrium
+% value (i.e.\ satisfying Eq.~\ref{eq:weaktide_dWszero}, or $\Omega_{\rm s}
+% \approx n$ when the obliquity is small).
 
 The second stage of the proposed mechanism, runaway inward migration after
 attaining tCE2, requires that the initial orbital decay time scale be
@@ -1257,16 +1347,16 @@ parameters, we find that:
             \p{\frac{a}{0.035\;\mathrm{AU}}}^{-13/2}.
             \label{eq:adot_usp}
 \end{align}
-For $\eta_{\rm sync} \ll \eta_{\rm c}$, we can show that $\p{1 - \Omega_{\rm
-s}\cos \theta / n} \approx 1$ in tCE2 by using Eqs.~\eqref{eq:def_tce2_approx},
-so indeed the orbit of the proto-USP is able to decay within the lifetime of the
-system. On the other hand, in tCE1, $\omega_{\rm s} \approx n$ and $\cos \theta
-\approx 1 - \eta_{\rm sync}^2 \sin^2 I / 2$, so $\dot{a} / a$ is suppressed by a
-factor of $\sim \eta_{\rm sync}^2 \sin^2 I$. This shows that a proto-USP in tCE1
-is unable to initiate runaway orbital decay within the age of the system.
-Note that this constraint also implies $\eta_{\rm sync}$
-(Eq.~\ref{eq:etasync_usp}) cannot be increased by considering proto-USPs with
-larger values of $a$, as the initial orbital decay will become too slow.
+For $\eta_{\rm sync} \ll \eta_{\rm c}$, Eqs.~\eqref{eq:def_tce2_approx} imply
+that $\Omega_{\rm s}\cos \theta / n \ll 1$ in tCE2, so indeed the orbit of the
+proto-USP is able to decay within the lifetime of the system. On the other hand,
+in tCE1, $\omega_{\rm s} \approx n$ and $\cos \theta \approx 1 - \eta_{\rm
+sync}^2 \sin^2 I / 2$, so $\dot{a} / a$ is suppressed by a factor of $\sim
+\eta_{\rm sync}^2 \sin^2 I$. This shows that a proto-USP in tCE1 is unable to
+initiate runaway orbital decay within the age of the system. Note that this
+constraint also implies $\eta_{\rm sync}$ (Eq.~\ref{eq:etasync_usp}) cannot be
+increased by considering proto-USPs with larger values of $a$, as the initial
+orbital decay will become too slow.
 
 Finally, we compute the orbital separation at which tCE2 becomes unstable due to
 sufficiently strong tidal dissipation. Evaluating Eq.~\eqref{eq:def_ts_crit}, we
@@ -1288,12 +1378,10 @@ evolves to tCE1, which suppresses its orbital decay (Eq.~\ref{eq:adot_usp}).
 This final orbital separation does not qualify as a USP ($P \lesssim
 \mathrm{day}$).
 
-In summary, our results for the formation of USPs via runaway tidal migration
-are in tension with those of \citet{millholland2020formation}. In particular, we
-find that only proto-USPs with a large primordial obliquity have a probability
-of evolving into tCE2 initially. Furthermore, proto-USPs that successfully
-initiate runaway tidal migration after reaching tCE2 will cease their inward
-migration before becoming a USP\@.
+In summary, our results suggest that only proto-USPs with a large primordial
+obliquity have a probability of evolving into tCE2 initially. Furthermore,
+proto-USPs that successfully initiate runaway tidal migration after reaching
+tCE2 will cease their inward migration before becoming a USP\@.
 
 \subsection{Application to WASP-12b}\label{ss:disc_wasp12b}
 
@@ -1301,8 +1389,59 @@ In \citet{millholland2019obliquity}, the authors consider the possibility that
 the measured orbital decay of the HJ WASP-12b \citep[$P / \dot{P} = -3.2
 \;\mathrm{Myr}$; ][]{maciejewski2016departure, patra2017apparently} is caused by
 tidal dissipation in the HJ enhanced by being trapped in a high-obliquity CS due
-to an undetected exterior planet. In order for this scenario to be achieved,
-many conditions are necessary:
+to an undetected exterior planet. We validate the plausibility of this scenario
+by the relevant physical parameters as was done in the previous sections using
+the following current-day system parameters \citet{hebb2009wasp,
+maciejewski2013multi, millholland_wasp12b}: $R_\star = 1.63R_{\odot}$, $M_\star
+= 1.36M_{\odot}$, $R = 1.89R_{\rm J}$, $m = 1.41M_{\rm J}$, and $a = 0.023
+\;\mathrm{AU}$. We begin with the spin evolution timescale, which is given by:
+% 1 / (1.5 * 1e-6 * ((1.36 Msun) / (1.41 Mjup)) * ((1.89 Rjup) / (0.023 AU))^3 * 2 * pi / (0.023)^(3/2))
+% 6466.022710
+\begin{align}
+    \frac{1}{t_{\rm s}} ={}& \frac{1}{6000\;\mathrm{yr}}
+            \p{\frac{1}{4k}}
+            \p{\frac{2k_2/Q}{10^{-6}}}
+            \p{\frac{M_\star}{1.36 M_{\odot}}}^{3/2}\nonumber\\
+        &\times \p{\frac{m}{1.41 M_{\rm J}}}^{-1}
+            \p{\frac{R}{1.89 R_{\rm J}}}^{3}
+            \p{\frac{a}{0.023\;\mathrm{AU}}}^{-9/2}.
+\end{align}
+Thus, the spin of WASP-12b has plenty of time to find a tCE\@. We also wish to
+calculate $\eta_{\rm sync}$, but there are three complications: (i) the system
+likely instead has angular momentum hierarchy $L \gg L_{\rm p}$ (to be verified
+after the fact), opposite to that considered in the paper thus far; (ii) the
+properties of the hypothetical perturber are unknown; and (iii) we should
+evaluate $\eta_{\rm sync}$ using the value of $a$ for WASP-12b at the start of
+its orbital migration, not its present day value. Towards resolving complication
+(i), we express the precession of $\uv{l}$ about $\bm{J} = J\uv{\jmath} \equiv
+\bm{L} + \bm{L}_{\rm p}$, the total angular momentum axis, as
+\begin{equation}
+    \rd{\uv{l}}{t} = \omega_{\rm lp}\cos I \frac{J}{L_{\rm p}}
+        \p{\uv{l} \times \uv{\jmath}},
+        \label{eq:wasp12b_g}
+\end{equation}
+where $\omega_{\rm lp}$ is still given by Eq.~\eqref{eq:wlp}. Thus, we see that
+the precession frequency $\abs{g}$ is enhanced by a factor of $J / L_{\rm p}
+\approx L / L_{\rm p}$. Towards addressing complications (ii--iii),% chktex 8
+we use the fiducial values for the initial semi-major axis $a_{\rm i} =
+0.038\;\mathrm{AU}$ and initial semi-major axis ratio $a_{\rm p} / a_{\rm i} =
+1.29$, to be justified after the fact. We obtain:
+% 1/2 * (1.41 Mjup)^2 / (1.36 Msun)^2 * ((0.038 AU) / (1.89 Rjup))^3 * (0.038 / 0.05)^(3.5)
+% 0.014916
+\begin{align}
+    \eta_{\rm sync, i} ={}& 0.015 \cos I f(\alpha)
+            \p{\frac{m}{1.41M_J}}^2
+            \p{\frac{M_\star}{1.36M_{\odot}}}^{-2}
+            \nonumber\\
+        &\times
+            \p{\frac{a_{\rm i}}{0.038\;\mathrm{AU}}}^{3}
+            \p{\frac{a_{\rm p} / a_{\rm i}}{1.29}}^{-7/2}
+            \p{\frac{R}{1.89R_{\rm J}}}^{-3}.\label{eq:hj_etasync}
+\end{align}
+For these values of $a_{\rm i}$ and $a_{\rm p}$, $f(\alpha) \approx 5$.
+
+We next work towards justifying these choices of fiducial parameters. There are
+four physical and observational constraints on the WASP-12b + perturber system:
 \begin{itemize}
     \item The HJ must have had a sufficiently small initial semimajor axis such
         that its orbital decay timescale is less than the age of the system.
@@ -1318,12 +1457,6 @@ many conditions are necessary:
     \item The initial configuration of the HJ and exterior planet must be
         dynamically stable.
 \end{itemize}
-Finally, if all four of these conditions are satisfied, the $\eta_{\rm sync}$ of
-the initial configuration can be used to estimate the likelihood of the spin of
-the HJ initally evolving into tCE2. We use the following current-day system
-parameters \citet{hebb2009wasp, maciejewski2013multi, millholland_wasp12b}:
-$R_\star = 1.63R_{\odot}$, $M_\star = 1.36M_{\odot}$, $R = 1.89R_{\rm J}$,
-$M_{\rm p} = 1.41M_{\rm J}$, and $a = 0.023 \;\mathrm{AU}$.
 
 First, we require that the initial HJ semimajor axis, denoted $a_{\rm i}$, is
 sufficiently small that decay occurs within the age of the system. The semimajor
@@ -1347,22 +1480,12 @@ for the HJ cannot exceed $0.038\;\mathrm{AU}$ even when $\p{1 - \Omega_{\rm
 s}\cos \theta/n} \approx 1$, as is the case for rapid evolution into tCE2 while
 $\eta_{\rm sync} \ll 1$.
 
-Next, we address the constraint that tCE2 is stable under the influence of the
-exterior planet. Due to the fact that the angular momentum of the HJ greatly
-exceeds that of the exterior planet ($L \gg L_{\rm p}$; we will verify this
-retroactively), Eq.~\eqref{eq:dldt1} needs to be modified. The precession of
-$\uv{l}$ about $\bm{J} = J\uv{\jmath} \equiv \bm{L} + \bm{L}_{\rm p}$, the total
-angular momentum axis, can be written as
+Second, we address the constraint that tCE2 is stable under the influence of the
+exterior planet. Using the amended precession frequency $\abs{g}$ given by
+Eq.~\eqref{eq:wasp12b_g}, we compute that the stability of tCE2 requires
 \begin{equation}
-    \rd{\uv{l}}{t} = \omega_{\rm lp}\cos I \frac{J}{L_{\rm p}}
-        \p{\uv{l} \times \uv{\jmath}},
-\end{equation}
-where $\omega_{\rm lp}$ is still given by Eq.~\eqref{eq:wlp}. Thus, we see that
-the precession frequency $\abs{g}$ is enhanced by a factor of $J / L_{\rm p}
-\approx L / L_{\rm p}$. With this modification, the stability of tCE2 requires
-\begin{equation}
-    \frac{1}{t_{\rm s}} \lesssim \omega_{\rm lp}\cos i \frac{L}{L_{\rm p}}
-        \sin I \sqrt{\frac{\eta_{\rm sync}\cos i}{2}}.
+    \frac{1}{t_{\rm s}} \lesssim \omega_{\rm lp}\cos I \frac{L}{L_{\rm p}}
+        \sin i \sqrt{\frac{\eta_{\rm sync}\cos i}{2}}.
 \end{equation}
 Here, $\cos i \equiv \uv{l} \cdot \uv{\jmath}$. This then yields that
 \begin{align}
@@ -1377,22 +1500,22 @@ Here, $\cos i \equiv \uv{l} \cdot \uv{\jmath}$. This then yields that
 Notably, this expression does not depend on the perturber mass but only on
 $a_{\rm p}$.
 
-Next, we address the constraint that the RV signal of the exterior planet be
+Third, we address the constraint that the RV signal of the exterior planet be
 smaller than $16\;\mathrm{m/s}$, which requires
-% (G * (1.36 Msun) / (0.125 AU))^(1/2) * (105 Mearth) / (1.36 Msun) / 2^(1/2)
-% 16.106 m/s
+% (G * (1.36 Msun) / (0.076 AU))^(1/2) * (80 Mearth) / (1.36 Msun) / 2^(1/2)
+% 15.737236 m\s
 \begin{equation}
-    \p{\frac{a_{\rm p}}{0.125\;\mathrm{AU}}}^{-1/2}
-    \p{\frac{m_{\rm p}}{105M_{\oplus}}}
+    \p{\frac{a_{\rm p}}{0.076\;\mathrm{AU}}}^{-1/2}
+    \p{\frac{m_{\rm p}}{80M_{\oplus}}}
     \p{\frac{M_\star}{1.36M_{\odot}}}^{-1/2}
     \p{\frac{\sin i}{1 / \sqrt{2}}} \lesssim 1,
     \label{eq:hj_rv}
 \end{equation}
 where $i$ is the line-of-sight inclination angle. Here, we have taken $a_{\rm
-p}$ to be the maximum value permitted by the combination of
-Eqs.~(\ref{eq:hj_adot},~\ref{eq:hj_tce2_stab}). For these values of $a_{\rm p}$
-and $m_{\rm p}$, we still have $L / L_{\rm p} \sim 0.4$, and so $L \gg L_{\rm
-p}$ is well satisfied for the permitted parameter space.
+p}$ to be the maximum value permitted by Eq.~\eqref{eq:hj_tce2_stab}. For these
+values of $a_{\rm p}$ and $m_{\rm p}$, we still have $L / L_{\rm p} \sim 0.4$,
+and so $L \gg L_{\rm p}$ is well satisfied for the permitted parameter space as
+claimed.
 
 Finally, we require that the initial orbital configuration be dynamically
 stable. We use the Hill stability criterion \citep[e.g.][]{petit2020path}:
@@ -1404,27 +1527,17 @@ Assuming $m_{\rm p} \ll m$, this yields:
 \begin{equation}
     \frac{a_{\rm p}}{a_{\rm i}} > 1.29.\label{eq:hj_orbstab}
 \end{equation}
+The combination of the two constraints in
+Eqs.~(\ref{eq:hj_adot},~\ref{eq:hj_orbstab}) justify the fiducial parameters
+used in Eq.~\eqref{eq:hj_tce2_stab}.
 
-By using the constraints given by Eqs.~(\ref{eq:hj_adot},~\ref{eq:hj_orbstab}),
-the initial $\eta_{\rm sync, i}$ can be constrained:
-% 1/2 * (1.41 Mjup)^2 / (1.36 Msun)^2 * ((0.038 AU) / (1.89 Rjup))^3 * (0.038 / 0.05)^(3.5)
-% 0.014916
-\begin{align}
-    \eta_{\rm sync, i} <{}& 0.015 \cos I f(\alpha)
-            \p{\frac{m}{1.41M_J}}^2
-            \p{\frac{M_\star}{1.36M_{\odot}}}^{-2}
-            \nonumber\\
-        &\times
-            \p{\frac{a_{\rm i}}{0.038\;\mathrm{AU}}}^{3}
-            \p{\frac{a_{\rm p} / a_{\rm i}}{1.29}}^{-7/2}
-            \p{\frac{R}{1.89R_{\rm J}}}^{-3}.\label{eq:hj_etasync}
-\end{align}
-For these values of $a_{\rm i}$ and $a_{\rm p}$, $f(\alpha) \approx 5$. It is
-possible that $R$ is larger today than its primordial value due to inflation
-induced by increased stellar irradiation. However, if a smaller value of $R$ is
-used in Eq.~\eqref{eq:hj_etasync}, the value of $a_{\rm i}$ must also be
-decreased such that $R^5 / a_{\rm i}^{13/2}$ is constant (Eq.~\ref{eq:hj_adot}),
-which further decreases $\eta_{\rm sync, i}$.
+We next address the implications of the $\eta_{\rm sync}$ value found. When
+evaulating $\eta_{\rm sync}$ in Eq.~\eqref{eq:hj_tce2_stab}, it is possible
+that $R$ is larger today than its primordial value due to inflation induced by
+increased stellar irradiation. However, if a smaller value of $R$ is used in
+Eq.~\eqref{eq:hj_etasync}, the value of $a_{\rm i}$ must also be decreased such
+that $R^5 / a_{\rm i}^{13/2}$ is constant (Eq.~\ref{eq:hj_adot}), which further
+decreases $\eta_{\rm sync, i}$.
 
 For $\eta_{\rm sync} = 0.075$, we find that there are four CSs unless $i$ is
 extremely small. From Fig.~\ref{fig:Hhists_0_06}, we can infer that prograde
@@ -1460,17 +1573,27 @@ esults are as follows:
         planet has at most two spin configurations (spin frequency and
         orientation) that are stable under the effect of tidal dissipation. We
         call these equilibria \emph{tidal Cassini Equilibria} (tCE\@; see
-        Fig.~\ref{fig:6equilssingle}). The locations of these equilibria are
+        Fig.~\ref{fig:6equils006}). The locations of these equilibria are
         determined by the system architecture and are parameterized by
         $\eta_{\rm sync}$ (Eq.~\ref{eq:def_etasync}).
 
-    \item We show that which tCE a given initial planetary spin configuration
-        reaches can be probabilistic for certain initial conditions. For these
-        initial conditions, the probabilities of approaching either tCE can be
-        determined by careful study of the dynamics upon separatrix encounter
-        (Sections~\ref{ss:toy_outcomes} and~\ref{ss:phop_weaktide}). As an
-        example, if the initial spin orientation is assumed to be isotropically
-        distributed, the probabilities of entering tCE1 and tCE2 are given in
+    \item We show that if tCE1 exists ($\eta_{\rm sync} < \eta_{\rm c}$,
+        Eqs.~\ref{eq:def_etasync} and~\ref{eq:def_etac}; see discussion in
+        Section~\ref{ss:weaktide}), which tCE a given initial planetary spin
+        configuration asymptotically evolves towards depends on which of the
+        phase space zones (see Fig.~\ref{fig:1contours}) the initial spin
+        orientation belongs to: (i) If the spin originates in zone I, then it
+        generally evolves towards tCE1 (unless $\eta_{\rm sync}$ very near
+        $\eta_{\rm c}$, e.g.\ see Fig.~\ref{fig:Hhists_0_50}); (ii) if the spin
+        originates in zone II, then it evolves towards tCE2; and (iii) if the
+        spin originates in zone III, the outcome is generally probabilistic.
+
+    \item For initial conditions in zone III, the probabilities of approaching
+        either tCE can be determined by careful study of the dynamics upon
+        separatrix encounter (Sections~\ref{ss:toy_outcomes}
+        and~\ref{ss:phop_weaktide}). As an example, if the initial spin
+        orientation is assumed to be isotropically distributed, the
+        probabilities of entering tCE1 and tCE2 are given in
         Figs.~\ref{fig:probs20} and~\ref{fig:probs5} as a function of $\eta_{\rm
         sync}$ for two different mutual inclinations $I$.
 
@@ -1490,7 +1613,7 @@ tidal dissipation may be dominant, depending on the system parameters
 \citep[e.g.][]{papaloizou_ivanov_inertial, teyssandier2019formation}. While the
 detailed outcomes may change, a different tidal mechanism is amenable to the
 same analysis presented in this paper: The tCE can still be found by an analysis
-similar to that shown in Fig.~\ref{fig:6equilssingle}, and the probabilistic
+similar to that shown in Fig.~\ref{fig:6equils006}, and the probabilistic
 outcome of a separatrix encounter can still be solved using the techniques of
 Sections~\ref{ss:toy_outcomes} and~\ref{ss:phop_weaktide}.
 
@@ -1570,7 +1693,7 @@ strictly increasing for all initial conditions inside the separatrix, and they
 all converge to CS2.
 
 \section{Approximate TCE2 Probability for Small $\eta_{\rm sync}$
-}\label{app:sep_crossing_dynamics}
+}\label{app:ptce2}
 
 In this appendix, we seek a tentative analytic understanding for the
 probability of convergence to tCE2 when $\eta_{\rm sync}$ is small, i.e.\ the
@@ -1680,7 +1803,11 @@ denominator of Eq.~\eqref{eq:def_pc_weaktide} and obtain:
 However, $\eta_{\rm cross}$ cannot be expressed in closed form as a function of
 the ICs. Based on the bottom panel of Fig.~\ref{fig:pc_fits_0_06}, we make the
 crude approximation that $\eta_{\rm cross}$ is uniformly distributed between
-$\eta_{\rm i}$ and $\eta_{\rm sync}$. We thus obtain:
+$\eta_{\rm i}$ and $\eta_{\rm sync}$. Note that if $\Omega_{\rm s} \simeq n$,
+then this approximation is invalid: since nearly antialigned spins ($\theta_{\rm
+i} \approx 180^\circ$) will undergo significant spin-down before tidal friction
+can realign the spin orientation, $\Omega_{\rm s, i}$ being too close to $n$
+results in $\eta_{\rm cross} \ll \eta_{\rm sync}$. We thus obtain:
 \begin{align}
     \ev{P_{\rm III \to II}}
         &\sim \frac{1}{\eta_{\rm sync} - \eta_{\rm i}}
@@ -1693,12 +1820,15 @@ $\eta_{\rm i}$ and $\eta_{\rm sync}$. We thus obtain:
 With this result, we can finally express Eq.~\eqref{eq:app_ptce2_schematic} as:
 \begin{align}
     P_{\rm tCE2} &\simeq
-            \frac{4\sqrt{\eta _{\rm sync} \sin I}}{\pi}\p{
+            \frac{4\sqrt{\eta _{\rm sync} \sin I}}{\pi}\s{
                 \sqrt{n / \Omega_{\rm s, i}}
                 + \frac{3}{2\p{1
                 + \sqrt{n / \Omega_{\rm s, i}}}}}
-            + \mathcal{O}\p{\eta_{\rm sync}}.\label{eq:app_tce2_p_tot}
+            + \mathcal{O}\p{\eta_{\rm sync}}.
 \end{align}
+This is exactly Eq.~\eqref{eq:app_tce2_p_tot}. We remark again that this is
+valid in the regime where $\eta_{\rm sync} \ll 1$ and $\Omega_{\rm s} \gtrsim
+n$.
 
 \label{lastpage} % chktex 24
 \end{document}

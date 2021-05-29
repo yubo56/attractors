@@ -16,7 +16,7 @@ from scipy.interpolate import interp1d
 plt.rc('xtick', direction='in', top=True, bottom=True)
 plt.rc('ytick', direction='in', left=True, right=True)
 
-POOL_SIZE = 50
+POOL_SIZE = 4
 TRAJ_COLORS = ['darkorchid', 'red', 'fuchsia',
                'deepskyblue', 'blue', 'teal', 'k', 'k']
 
@@ -76,7 +76,7 @@ def equils_plot(I, s_c, eps, mu0, phi0, s0, tf, fn_str, idx, rtol=1e-9,
     # axs[0].plot(s[last_idx], np.degrees(q)[last_idx], 'ko', markersize=2.0)
     axs[0].set_xlim(0, 3)
     axs[0].set_ylim(0, 135)
-    axs[0].set_xlabel(r'$\Omega_{\rm s}$')
+    axs[0].set_xlabel(r'$\Omega_{\rm s} / n$')
     axs[0].set_ylabel(r'$\theta$ (deg)')
     if s_c < 0.1:
         axs[0].set_title(r'$\eta_{\rm sync} = %.2f$' % s_c)
@@ -140,8 +140,9 @@ def equils_plot(I, s_c, eps, mu0, phi0, s0, tf, fn_str, idx, rtol=1e-9,
             H_grid = H(I, s_c, s[t_idx], mu_grid, phi_grid)
             ax.contour(phi_grid, mu_grid, H_grid, levels=[H4], colors='k')
 
-        ax.text(0.1, -1 + 0.03, r'$\Omega_{\rm s} = %.1f$' % s[t_idx],
-                ha='left', va='bottom', color='k', fontsize=14)
+        ax.text(0.1, -1 + 0.05, r'$\Omega_{\rm s} = %.1f n$, $\eta = %.2f$'
+                % (s[t_idx], s_c / s[t_idx]),
+                ha='left', va='bottom', color='k', fontsize=11)
 
         if np.min(mu_plt) < -0.9:
             ylim_bot =-1.1
@@ -172,124 +173,46 @@ def plot_equils(I, s_cs, fn_str='6equils', tf=5000):
 
     s_dq = np.linspace(2, 3, 200)
 
-    fig = plt.figure(figsize=(8, 6))
-    ax = plt.gca()
+    for s_c in s_cs:
+        fig = plt.figure(figsize=(8, 6))
+        ax = plt.gca()
 
-    # plot the first one separately
-    s_c = s_cs[0]
-    s_lt = np.linspace(s_c / 10, 1, 200) # max eta = 10
-    s_gt = np.linspace(1, 3, 200) # other interesting part of the interval
-    s_tot = np.concatenate((s_lt, s_gt))
-
-    for idx, c in enumerate(TRAJ_COLORS[ :6]):
-        pkl_fn = '%s_sims/%s_%d.pkl' % (fn_str, s_c_str(s_c), idx)
-        with lzma.open(pkl_fn, 'rb') as f:
-            solve_ret = pickle.load(f)
-        (mu_0, s_0, t_0, mu_pi, s_pi, t_pi), mu, phi, _s, ret_solveivp = solve_ret
-        svec = ret_solveivp.y[0:3, :]
-        s = ret_solveivp.y[3, :]
-        t = ret_solveivp.t
-        q, phi = to_ang(*svec)
-        _lw = 1.5 if (idx == 2 or idx == 3) else 0.8
-        _al = 0.8 if (idx == 2 or idx == 3) else 0.4
-        ax.plot(s, np.degrees(q), alpha=_al, c=c, lw=_lw)
-        offset = 0.5 if idx == 3 else (-0.5 if idx == 2 else 0)
-        ax.plot(s[0], np.degrees(q)[0] + offset, ms=10,
-                c=c, marker='x')
-
-    cs1_qs, cs2_qs = get_cs_val(I, s_c, s_tot)
-    cs1_exist_idx = np.where(cs1_qs > -1)[0]
-    mu_equil_lt = [np.degrees(np.arccos(get_mu_equil(s))) for s in s_lt]
-
-    ax.set_ylabel(r'$\theta$ (deg)')
-    ax.set_ylim([0, 130])
-
-    dS_interp = interp1d(s_lt, mu_equil_lt)
-    CS2_interp = interp1d(s_tot, np.degrees(cs2_qs))
-    tce2_s = brenth(lambda s: dS_interp(s) - CS2_interp(s), np.min(s_tot), 1)
-
-    ax.plot(s_tot, np.degrees(cs2_qs), 'tab:green', label='CS2', lw=2.5)
-    dash_idx = np.where(s_tot[cs1_exist_idx] > 2)[0]
-    solid_idx = np.where(s_tot[cs1_exist_idx] < 2)[0]
-    ax.plot(s_tot[cs1_exist_idx][dash_idx],
-             np.degrees(-cs1_qs[cs1_exist_idx][dash_idx]), 'darkorange',
-             label='CS1', lw=2.5, ls='--')
-    ax.plot(s_tot[cs1_exist_idx][solid_idx],
-             np.degrees(-cs1_qs[cs1_exist_idx][solid_idx]), 'darkorange',
-             label='CS1', lw=2.5)
-    ax.text(s_tot[-1], np.degrees(cs2_qs)[-1], 'CS2', c='tab:green',
-             fontsize=14, va='bottom', ha='right')
-    ax.text(s_tot[-1], -np.degrees(cs1_qs)[-1], 'CS1', c='darkorange',
-             fontsize=14, va='bottom', ha='right')
-    ax.plot(s_lt, mu_equil_lt, 'k', lw=4)
-    ax.plot(s_dq, np.degrees(np.arccos(2 / s_dq)), 'b', lw=4)
-
-    # label text along boundaries
-    ax.text(0.75, 55, r'$\dot{\Omega}_{\rm s} < 0$', c='k', fontsize=14,
-             rotation=-53)
-    ax.text(0.6, 48, r'$\dot{\Omega}_{\rm s} > 0$', c='k', fontsize=14,
-             rotation=-53)
-
-    ax.text(2.45, 40, r'$\dot{\theta}_{\rm tide} < 0$', c='b', fontsize=14,
-             rotation=25)
-    ax.text(2.55, 30, r'$\dot{\theta}_{\rm tide} > 0$', c='b', fontsize=14,
-             rotation=25)
-
-    ax.plot(tce2_s, dS_interp(tce2_s), mec='tab:green', mfc='none', marker='o',
-             ms=15, mew=3)
-    ax.text(tce2_s, dS_interp(tce2_s) + 10, 'tCE2', c='tab:green', va='bottom',
-             ha='center')
-    # ax.text(np.max(s_dq), 110, r'$\eta_{\rm sync} = %.2f$' % s_c,
-    #         va='top', ha='right')
-    ax.set_title(r'$\eta_{\rm sync} = %.2f$' % s_c)
-
-    s1_search_min = np.min(s_tot[cs1_exist_idx])
-    s1_search_max = min(np.max(s_tot[cs1_exist_idx]), 1)
-    CS1_interp = interp1d(s_tot[cs1_exist_idx],
-                          np.degrees(-cs1_qs[cs1_exist_idx]))
-    tce1_s = brenth(lambda s: dS_interp(s) - CS1_interp(s), s1_search_min,
-                    s1_search_max)
-    ax.plot(tce1_s, dS_interp(tce1_s), mec='darkorange', mfc='none',
-             marker='o', ms=15, mew=3)
-    ax.text(tce1_s * 0.97, dS_interp(tce1_s) + 5, 'tCE1', c='darkorange',
-             va='bottom', ha='right')
-    ax.set_xlabel(r'$\Omega_{\rm s} / n$')
-
-    plt.tight_layout()
-    plt.savefig(fn_str + 'single', dpi=400)
-    plt.clf()
-
-    s_cs = s_cs[1: ]
-
-    fig, axs = plt.subplots(
-        len(s_cs), 1,
-        figsize=(6, 2 + 3 * len(s_cs)),
-        sharex=True)
-    axs[-1].set_xlabel(r'$\Omega_{\rm s} / n$')
-
-    for ax, s_c, in zip(axs, s_cs):
+        # plot the first one separately
         s_lt = np.linspace(s_c / 10, 1, 200) # max eta = 10
         s_gt = np.linspace(1, 3, 200) # other interesting part of the interval
         s_tot = np.concatenate((s_lt, s_gt))
+
+        if s_c == 0.06:
+            ax.text(2.55, 123, '(Fig.~11)',
+                    c=TRAJ_COLORS[2], fontsize=12, ha='left')
+            ax.text(2.55, 117, '(Fig.~12)',
+                    c=TRAJ_COLORS[3], fontsize=12, ha='left')
+        if s_c == 0.7:
+            ax.text(2.5, 13, '(Fig.~13)', c=TRAJ_COLORS[0], fontsize=12)
 
         for idx, c in enumerate(TRAJ_COLORS[ :6]):
             pkl_fn = '%s_sims/%s_%d.pkl' % (fn_str, s_c_str(s_c), idx)
             with lzma.open(pkl_fn, 'rb') as f:
                 solve_ret = pickle.load(f)
-            (mu_0, s_0, t_0, mu_pi, s_pi, t_pi), mu, phi, \
-                _s, ret_solveivp = solve_ret
+            (mu_0, s_0, t_0, mu_pi, s_pi, t_pi), mu, phi, _s, ret_solveivp = solve_ret
             svec = ret_solveivp.y[0:3, :]
             s = ret_solveivp.y[3, :]
             t = ret_solveivp.t
             q, phi = to_ang(*svec)
-            _al = 0.4 if (idx != 0 or s_c != 0.7) else 0.8
-            _lw = 0.8 if (idx != 0 or s_c != 0.7) else 1.5
+            if (
+                    (idx == 2 and s_c == 0.06) or
+                    (idx == 3 and s_c == 0.06) or
+                    (idx == 0 and s_c == 0.7)
+            ):
+                _lw = 1.5
+                _al = 0.8
+            else:
+                _lw = 0.8
+                _al = 0.4
             ax.plot(s, np.degrees(q), alpha=_al, c=c, lw=_lw)
-            offset = 0.5 if (idx == 3 or idx == 5) else\
-                (-0.5 if (idx == 2 or idx == 6) else 0)
+            offset = 0.5 if idx == 3 else (-0.5 if idx == 2 else 0)
             ax.plot(s[0], np.degrees(q)[0] + offset, ms=10,
-                    c=c, marker='x',
-                    )
+                    c=c, marker='x')
 
         cs1_qs, cs2_qs = get_cs_val(I, s_c, s_tot)
         cs1_exist_idx = np.where(cs1_qs > -1)[0]
@@ -320,25 +243,29 @@ def plot_equils(I, s_cs, fn_str='6equils', tf=5000):
 
         # label text along boundaries
         if s_c < 0.4:
-            ax.text(0.75, 50, r'$\dot{\Omega}_{\rm s} < 0$', c='k', fontsize=14,
+            ax.text(0.75, 55, r'$\dot{\Omega}_{\rm s} < 0$', c='k', fontsize=14,
                      rotation=-53)
-            ax.text(0.6, 38, r'$\dot{\Omega}_{\rm s} > 0$', c='k', fontsize=14,
+            ax.text(0.6, 48, r'$\dot{\Omega}_{\rm s} > 0$', c='k', fontsize=14,
                      rotation=-53)
         else:
-            ax.text(0.1, 63, r'$\dot{\Omega}_{\rm s} < 0$', c='k', fontsize=14,
+            ax.text(0.1, 72, r'$\dot{\Omega}_{\rm s} < 0$', c='k', fontsize=14,
                      rotation=-30)
-            ax.text(0.2, 77, r'$\dot{\Omega}_{\rm s} > 0$', c='k', fontsize=14,
+            ax.text(0.2, 79, r'$\dot{\Omega}_{\rm s} > 0$', c='k', fontsize=14,
                      rotation=-30)
 
         ax.text(2.45, 40, r'$\dot{\theta}_{\rm tide} < 0$', c='b', fontsize=14,
                  rotation=25)
-        ax.text(2.55, 26, r'$\dot{\theta}_{\rm tide} > 0$', c='b', fontsize=14,
+        ax.text(2.55, 30, r'$\dot{\theta}_{\rm tide} > 0$', c='b', fontsize=14,
                  rotation=25)
 
         ax.plot(tce2_s, dS_interp(tce2_s), mec='tab:green', mfc='none', marker='o',
                  ms=15, mew=3)
-        ax.text(tce2_s, dS_interp(tce2_s) - 23, 'tCE2', c='tab:green',
-                va='top', ha='right')
+        if s_c < 0.4:
+            ax.text(tce2_s, dS_interp(tce2_s) + 10, 'tCE2', c='tab:green',
+                    va='bottom', ha='center')
+        else:
+            ax.text(tce2_s, dS_interp(tce2_s) - 14, 'tCE2', c='tab:green',
+                    va='top', ha='right')
         # ax.text(np.max(s_dq), 110, r'$\eta_{\rm sync} = %.2f$' % s_c,
         #         va='top', ha='right')
         ax.set_title(r'$\eta_{\rm sync} = %.2f$' % s_c)
@@ -353,13 +280,17 @@ def plot_equils(I, s_cs, fn_str='6equils', tf=5000):
                             s1_search_max)
             ax.plot(tce1_s, dS_interp(tce1_s), mec='darkorange', mfc='none',
                      marker='o', ms=15, mew=3)
-            ax.text(tce1_s * 1.1, dS_interp(tce1_s) + 3, 'tCE1', c='darkorange',
-                     va='bottom', ha='left')
+            if dS_interp(tce1_s) < 10:
+                ax.text(tce1_s * 0.97, dS_interp(tce1_s) + 5, 'tCE1',
+                        c='darkorange', va='bottom', ha='right')
+            else:
+                ax.text(tce1_s * 0.95, dS_interp(tce1_s) - 7, 'tCE1',
+                        c='darkorange', va='bottom', ha='right')
+        ax.set_xlabel(r'$\Omega_{\rm s} / n$')
 
-    plt.tight_layout()
-    # fig.subplots_adjust(hspace=0.06)
-    plt.savefig(fn_str, dpi=300)
-    plt.clf()
+        plt.tight_layout()
+        plt.savefig(fn_str + ('%.2f' % s_c).replace('.', '_'), dpi=400)
+        plt.clf()
 
 def plot_phop(I, s_c):
     s = np.linspace(2 * s_c, 10, 100)
@@ -376,7 +307,7 @@ def plot_phop(I, s_c):
     plt.legend()
     plt.savefig('6pc%s' % s_c_str(s_c), dpi=400)
 
-def get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0):
+def get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0, rtol=1e-4):
     [mu4] = get_mu4(I, s_c, np.array([s0]))
 
     H4_0 = get_H4(I, s_c, s0)
@@ -397,7 +328,7 @@ def get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0):
         return dH
     event.terminal = True
     _, _, s, ret = solve_ic(I, s_c, eps, init, tf,
-                               rtol=1e-4,
+                               rtol=rtol,
                                dense_output=True,
                                events=[event])
     if ret.t_events[0].size > 0:
@@ -405,9 +336,10 @@ def get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0):
     else:
         return [-s[-1], 0]
 
-def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
-    pkl_fn = '6pc_dist%s.pkl' % s_c_str(s_c)
-    n_mu = 501
+def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000, n_mu=501,
+                         pkl_fn_template='6pc_dist%s.pkl',
+                         rtol=1e-4):
+    pkl_fn = pkl_fn_template % s_c_str(s_c)
     n_phi = 50
     mu_vals =  np.linspace(-0.99, 0.99, n_mu)
     phi_vals = np.linspace(0, 2 * np.pi, n_phi, endpoint=False)
@@ -422,7 +354,7 @@ def plot_equil_dist_anal(I, s_c, s0, eps, tf=8000):
         args = []
         for idx, mu0 in enumerate(mu_vals):
             for idx2, phi0 in enumerate(phi_vals):
-                args.append((I, s_c, s0, eps, tf, mu0, phi0))
+                args.append((I, s_c, s0, eps, tf, mu0, phi0, rtol))
                 # cross_dat[idx, idx2] = get_cross_dat(I, s_c, s0, eps, tf, mu0, phi0)
         p = Pool(POOL_SIZE)
         res = p.starmap(get_cross_dat, args)
@@ -457,29 +389,29 @@ if __name__ == '__main__':
     eps_equils = 1e-2
     equils_tf = 500
     # to display
-    equils_plot(I, 0.06, eps_equils, -0.5, 0, 2.5, equils_tf, '6equils', 2)
-    equils_plot(I, 0.06, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
-    equils_plot(I, 0.7, eps_equils, 0.985, 0, 2.5, equils_tf, '6equils', 0,
-                time_idxbase=[100, 800, 1200, 4600])
-    equils_plot(I, 0.06, eps_equils, -0.4, 0, 0.1, equils_tf, '6equils', 6)
-    equils_plot(I, 0.06, eps_equils / 10, -0.4, 0, 0.1, equils_tf * 10, '6equils', 7)
+    # equils_plot(I, 0.06, eps_equils, -0.5, 0, 2.5, equils_tf, '6equils', 2)
+    # equils_plot(I, 0.06, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
+    # equils_plot(I, 0.7, eps_equils, 0.985, 0, 2.5, equils_tf, '6equils', 0,
+    #             time_idxbase=[100, 800, 1200, 4600])
+    # equils_plot(I, 0.06, eps_equils, -0.4, 0, 0.1, equils_tf, '6equils', 6)
+    # equils_plot(I, 0.06, eps_equils / 10, -0.4, 0, 0.1, equils_tf * 10, '6equils', 7)
     # not to display
-    equils_plot(I, 0.06, eps_equils, 0.985, 0, 2.5, equils_tf, '6equils', 0)
-    equils_plot(I, 0.06, eps_equils, -0.05, np.pi, 2.5, equils_tf, '6equils', 1)
-    equils_plot(I, 0.06, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
-    equils_plot(I, 0.06, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
-    equils_plot(I, 0.5, eps_equils, 0.985, 0, 2.5, equils_tf, '6equils', 0)
-    equils_plot(I, 0.5, eps_equils, -0.05, np.pi, 2.5, equils_tf, '6equils', 1)
-    equils_plot(I, 0.5, eps_equils, -0.5, 0, 2.5, equils_tf, '6equils', 2)
-    equils_plot(I, 0.5, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
-    equils_plot(I, 0.5, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
-    equils_plot(I, 0.5, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
-    equils_plot(I, 0.7, eps_equils, -0.05, np.pi, 2.5, equils_tf, '6equils', 1)
-    equils_plot(I, 0.7, eps_equils, -0.5, 0, 2.5, equils_tf, '6equils', 2)
-    equils_plot(I, 0.7, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
-    equils_plot(I, 0.7, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
-    equils_plot(I, 0.7, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
-    plot_equils(I, [0.06, 0.5, 0.7], tf=equils_tf)
+    # equils_plot(I, 0.06, eps_equils, 0.985, 0, 2.5, equils_tf, '6equils', 0)
+    # equils_plot(I, 0.06, eps_equils, -0.05, np.pi, 2.5, equils_tf, '6equils', 1)
+    # equils_plot(I, 0.06, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
+    # equils_plot(I, 0.06, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
+    # equils_plot(I, 0.5, eps_equils, 0.985, 0, 2.5, equils_tf, '6equils', 0)
+    # equils_plot(I, 0.5, eps_equils, -0.05, np.pi, 2.5, equils_tf, '6equils', 1)
+    # equils_plot(I, 0.5, eps_equils, -0.5, 0, 2.5, equils_tf, '6equils', 2)
+    # equils_plot(I, 0.5, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
+    # equils_plot(I, 0.5, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
+    # equils_plot(I, 0.5, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
+    # equils_plot(I, 0.7, eps_equils, -0.05, np.pi, 2.5, equils_tf, '6equils', 1)
+    # equils_plot(I, 0.7, eps_equils, -0.5, 0, 2.5, equils_tf, '6equils', 2)
+    # equils_plot(I, 0.7, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
+    # equils_plot(I, 0.7, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
+    # equils_plot(I, 0.7, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
+    # plot_equils(I, [0.06, 0.5, 0.7], tf=equils_tf)
 
     # equils_plot(I, 0.01, eps, -0.96, 2.56, 10, 8000, '6equils', 20, rtol=1e-4)
     # equils_plot(I, 0.01, eps, -0.96, 2.56, 10, 8000, '6equils', 21, rtol=1e-9)
@@ -490,6 +422,12 @@ if __name__ == '__main__':
     # plot_equil_dist_anal(I, 0.06, 10, eps)
     # plot_equil_dist_anal(I, 0.2, 10, eps)
     # plot_equil_dist_anal(I, 0.7, 10, eps)
+    plot_equil_dist_anal(I, 0.06, 10, eps,
+                         pkl_fn_template='6pc_disthtol%s.pkl',
+                         rtol=1e-9, n_mu=201)
+    plot_equil_dist_anal(I, 0.2, 10, eps,
+                         pkl_fn_template='6pc_disthtol%s.pkl',
+                         rtol=1e-9, n_mu=201)
 
     # test cases
     # print(get_cross_dat(I, 0.7, 10, 1e-3, 8000, 0.9, np.pi)) # no cross
