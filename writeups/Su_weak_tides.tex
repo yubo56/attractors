@@ -3,7 +3,7 @@
     \documentclass[
         fleqn,
         usenatbib,
-        % referee,
+        referee,
     ]{mnras}
     \usepackage{
         amsmath,
@@ -36,6 +36,9 @@
     \newcommand*{\md}[0]{\mathrm{d}}
     \DeclareMathOperator*{\med}{med}
     \DeclareMathOperator*{\erf}{erf}
+
+    \newlength{\colummwidth}
+    \setlength{\colummwidth}{246.0pt} % columnwidth for reprint
 
 \title[Weak Tides and Cassini States]{Dynamics of Colombo's Top: Tidal
 Dissipation and Resonance Capture}
@@ -216,7 +219,7 @@ function of $\eta$. CS1 and CS4 do not exist when $\eta > \eta_{\rm c}$, where
 \end{equation}
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/99_misc/2_cs_locs_phi.png}
+    \includegraphics[width=\colummwidth]{../initial/99_misc/2_cs_locs_phi.png}
     \caption{Cassini State obliquities $\theta$ as a function of $\eta \equiv
     -g/\alpha$ (Eq.~\ref{eq:def_eta}) for $I = 20^\circ$. The vertical dashed
     line denotes $\eta_{\rm c}$, where the number of Cassini States changes from
@@ -247,7 +250,7 @@ between zones I and II, and $\mathcal{C}_-$, the boundary between zones II and
 III\@.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/0_eta/1contours20.png}
+    \includegraphics[width=\colummwidth]{../initial/0_eta/1contours20.png}
     \caption{Level curves of the Cassini State Hamiltonian (Eq.~\ref{eq:H}) for
     $I = 20^\circ$, for which $\eta_{\rm c} \approx 0.57$
     (Eq.~\ref{eq:def_etac}). For $\eta < \eta_{\rm c}$, there are four Cassini
@@ -314,7 +317,7 @@ where $t_{\rm al} \gg t_{\rm al, c}$ and the CSs only differ slightly from their
 unperturbed locations.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/99_misc/0_stab.png}
+    \includegraphics[width=\colummwidth]{../initial/99_misc/0_stab.png}
     \caption{Modified CS obliquities (top) and azimuthal angles (bottom) for $I
     = 20^\circ$ and $\eta = 0.2$, where the CS1 and CS3 obliquities have been
     offset (labeled in top legend) to improve clarity of the plot. In both
@@ -371,7 +374,7 @@ alignment torque. These calculations justify results long used in CS literature
 \citep[e.g.][]{ward1975tidal, fabrycky_otides}.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/99_misc/2_lambdas_full.png}
+    \includegraphics[width=\colummwidth]{../initial/99_misc/2_lambdas_full.png}
     \caption{$\lambda_0^2$ (Eq.~\ref{eq:def_l0_sq}) as a function of $\eta$ for
     the four CSs, for three different values of the shift in $\phi_{\rm cs}$
     (e.g.\ for $\Delta \phi_{\rm cs} = 60^\circ$, $\phi_{\rm cs} = 120^\circ$
@@ -399,7 +402,7 @@ CS1, those in zone II evolve into CS2, while those in zone III have a
 probabilistic outcome. We aim to understand each of these in turn:
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/0_eta/3stats3_5_0_2.png}
+    \includegraphics[width=\colummwidth]{../initial/0_eta/3stats3_5_0_2.png}
     \caption{Plot illustrating the asymptotic behavior of initial conditions for
     $\eta = 0.2$ and $I = 20^\circ$. Each dot represents an initial spin
     orientation, and the coloring of the dot indicates which Cassini State
@@ -536,7 +539,7 @@ $\to$ II transition:
 
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/0_eta/6manifolds0_20.png}
+    \includegraphics[width=\colummwidth]{../initial/0_eta/6manifolds0_20.png}
     \caption{Plot illustrating the probabilistic origin of separatrix capture
     for $\eta = 0.2$, $I = 20^\circ$, and $\abs{gt_{\rm al}} = 10^{3}$. Orange
     regions converge to CS1, and green to CS2, while CS4 is labeled with the
@@ -583,7 +586,7 @@ computed $P_{\rm III \to II}$ using $1000$ initial conditions in zone III for
 each of $60$ values of $\eta$. Excellent agreement is observed.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/3_toy3/1hist_toy.png}
+    \includegraphics[width=\colummwidth]{../initial/3_toy3/1hist_toy.png}
     \caption{Plot of $P_{\rm III \to II}$ as a function of $\eta$ for the
     constant alignment torque model considered in Section~\ref{s:toy_model}. For
     each $\eta$, $1000$ initial $\theta_0$ in zone III are evolved until just
@@ -739,7 +742,7 @@ agreement is observed.
 \end{figure*}
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/6equils_sims/0_06_2.png}
+    \includegraphics[width=\colummwidth]{../initial/1_weaktide/6equils_sims/0_06_2.png}
     \caption{Phase space evolution of the trajectory in
     Fig.~\ref{fig:6equils006} colored in pink, for which $\eta_{\rm sync} =
     0.06$ and $I = 20^\circ$ (for which $\eta_{\rm c} = 0.574$). The initial
@@ -758,7 +761,7 @@ agreement is observed.
     }\label{fig:trajs1}
 \end{figure}
 \begin{figure}
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/6equils_sims/0_06_3.png}
+    \includegraphics[width=\colummwidth]{../initial/1_weaktide/6equils_sims/0_06_3.png}
     \caption{Same as Fig.~\ref{fig:trajs1} but for $\phi_{\rm i} = 286^\circ$,
     corresponding to the trajectory in Fig.~\ref{fig:6equils006} colored in
     cyan. The system encounters the separatrix, undergoes a III $\to$ II
@@ -770,7 +773,7 @@ agreement is observed.
     }\label{fig:trajs2}
 \end{figure}
 \begin{figure}
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/6equils_sims/0_70_0.png}
+    \includegraphics[width=\colummwidth]{../initial/1_weaktide/6equils_sims/0_70_0.png}
     \caption{Same as Fig.~\ref{fig:trajs1} but for $\eta_{\rm sync} = 0.7$ and
     $\theta_{\rm i} = 10^\circ$, corresponding to the purple trajectory shown in
     the bottom panel of Fig.~\ref{fig:6equils070}. Here, the system evolves
@@ -931,7 +934,7 @@ conditions in zone I are able to reach tCE2; we comment on the origin of this
 behavior in the next section.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/5Hhists0_06_20.png}
+    \includegraphics[width=\colummwidth]{../initial/1_weaktide/5Hhists0_06_20.png}
     \caption{\emph{Left:} Each dot indicates which tCE a given initial condition
     $(\theta_{\rm i}, \phi_{\rm i})$ evolve towards (labeled in legend), for
     $\eta_{\rm sync} = 0.06$ and $I = 20^\circ$. The planet's initial spin is
@@ -950,7 +953,7 @@ behavior in the next section.
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/5Hhists0_20_20.png}
+    \includegraphics[width=\colummwidth]{../initial/1_weaktide/5Hhists0_20_20.png}
     \caption{Same as Fig.~\ref{fig:Hhists_0_06} but for $\eta_{\rm sync} =
     0.2$.
     \textcolor{red}{NB\@: the excess of tCE2 initial conditions at $\cos
@@ -960,7 +963,7 @@ behavior in the next section.
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/5Hhists0_50_20.png}
+    \includegraphics[width=\colummwidth]{../initial/1_weaktide/5Hhists0_50_20.png}
     \caption{Same as Fig.~\ref{fig:Hhists_0_06} but for $\eta_{\rm sync} =
     0.5$. Note that even points above the separatrix can evolve towards tCE2
     here.}\label{fig:Hhists_0_50}
@@ -1045,7 +1048,7 @@ of separatrix encounter are accurately predicted by
 Eq.~\eqref{eq:def_pc_weaktide}.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/5pc_fits0_06_20.png}
+    \includegraphics[width=\colummwidth]{../initial/1_weaktide/5pc_fits0_06_20.png}
     \caption{Comparison of the fraction of systems converging to tCE2 obtained
     via numerical simulation (red dots) and obtained via a semi-analytic
     calculation (blue line) for $\eta_{\rm sync} = 0.06$, $I = 20^\circ$, and
@@ -1068,7 +1071,7 @@ Eq.~\eqref{eq:def_pc_weaktide}.
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/5pc_fits0_20_20.png}
+    \includegraphics[width=\colummwidth]{../initial/1_weaktide/5pc_fits0_20_20.png}
     \caption{Same as Fig.~\ref{fig:pc_fits_0_06} but for $\eta_{\rm sync} =
     0.2$, corresponding to the right panel of
     Fig.~\ref{fig:Hhists_0_20}.}\label{fig:pc_fits_0_20}
@@ -1101,7 +1104,7 @@ also at a substantial obliquity ($\sim 60^\circ$) for $\eta_{\rm sync} \approx
 0.4$.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/5probs_20.png}
+    \includegraphics[width=\colummwidth]{../initial/1_weaktide/5probs_20.png}
     \caption{\emph{Top:} Obliquities of the two tCE where $I = 20^\circ$ for a
     range of $\eta_{\rm sync}$ (Eq.~\ref{eq:def_etasync}); the blue dashed line
     denotes the analytical approximation Eq.~\eqref{eq:def_tce2_approx} and is
@@ -1117,7 +1120,7 @@ also at a substantial obliquity ($\sim 60^\circ$) for $\eta_{\rm sync} \approx
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/5probs_5.png}
+    \includegraphics[width=\colummwidth]{../initial/1_weaktide/5probs_5.png}
     \caption{Same as Fig.~\ref{fig:probs20} but for $I =
     5^\circ$.}\label{fig:probs5}
 \end{figure}
@@ -1143,7 +1146,7 @@ spin-orbit coupling becomes very strong and the integration slows dramatically
 due to the rapid precession of $\uv{s}$ about $\uv{l}$.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/1_weaktide/7anal_ptce.png}
+    \includegraphics[width=\colummwidth]{../initial/1_weaktide/7anal_ptce.png}
     \caption{Plot of $P_{\rm tCE2}$ for $I = 5^\circ$ and $I = 20^\circ$
     (legend) shown on a log-log plot, to emphasize the scaling at small
     $\eta_{\rm sync}$. The crosses are the results of numerical simulations as
@@ -1235,7 +1238,7 @@ significant fraction of SEs with exterior CJ companions can have long-lived,
 significant obliquities ($\gtrsim 60^\circ$) due to being trapped in tCE2.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{../initial/99_misc/5sehj_region.png}
+    \includegraphics[width=\colummwidth]{../initial/99_misc/5sehj_region.png}
     \caption{Depiction of the values of $\eta_{\rm sync}$ for the Super Earth +
     Cold Jupiter systems as a function of $a$ and $a_{\rm p}$ for $I = 20^\circ$
     (top) and $I = 5^\circ$ (bottom). The SE is taken to have
