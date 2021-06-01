@@ -8,6 +8,7 @@ plt.rc('font', family='serif', size=20)
 plt.rc('lines', lw=2.5)
 plt.rc('xtick', direction='in', top=True, bottom=True)
 plt.rc('ytick', direction='in', left=True, right=True)
+from utils import *
 
 s_c_vals = {
     20: [
@@ -51,7 +52,7 @@ s_c_vals = {
         0.25,
         0.1,
         0.03,
-        # 0.01,
+        0.01,
     ]
 }
 
@@ -86,5 +87,29 @@ def plot_anal():
     plt.savefig('7anal_ptce', dpi=300)
     plt.close()
 
+def pcaps_compare():
+    '''
+    plot P_{III --> II} as a function of eta for analytic / semi-analytic
+    expressions
+
+    NB: Pcap never increases again for sufficiently large eta, has to do with
+    asymmetry of contour probably
+    '''
+    s_c = 0.06
+    I = np.radians(10)
+    s = np.linspace(0.3, 10, 100)
+    eta=s_c/s
+    top, bot = get_ps_anal(I, s_c, s)
+    plt.plot(s_c/s, (top + bot) / bot, 'k', label='An')
+    top, bot = get_ps_numinterp(I, s_c, s)
+    plt.plot(s_c/s, (top(s) + bot(s)) / bot(s), 'r', label='SA')
+    plt.ylim(bottom=0)
+    plt.xlabel(r'$\eta_{\rm cross}$')
+    plt.ylabel(r'$P_{\rm III \to II}$')
+    plt.tight_layout()
+    plt.savefig('7pcaps_compare', dpi=100)
+    plt.close()
+
 if __name__ == '__main__':
-    plot_anal()
+    # plot_anal()
+    pcaps_compare()

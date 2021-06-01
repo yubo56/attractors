@@ -533,13 +533,13 @@ def plot_all_cumprobs():
         0.25,
         0.1,
         0.03,
-        # 0.01,
+        0.01,
     ]
     eps = 1e-3
     s0 = 10
 
     for Id, s_c_vals in [
-            [5, s_c_vals_5],
+            # [5, s_c_vals_5],
             [20, s_c_vals_20],
     ]:
         I = np.radians(Id)

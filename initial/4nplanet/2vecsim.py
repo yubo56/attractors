@@ -12,6 +12,7 @@ plt.rc('xtick', direction='in', top=True, bottom=True)
 plt.rc('ytick', direction='in', left=True, right=True)
 
 from scipy.integrate import solve_ivp
+from utils import *
 
 k = 39.4751488
 MEARTH = 3e-6
@@ -19,65 +20,6 @@ REARTH = 4.7e-5
 # length = AU
 # unit of time = 499s * 6.32e4 = 1yr
 # unit of mass = solar mass, solve for M using N1 + distance in correct units
-
-def roots(I, eta):
-    ''' returns theta roots from EOM '''
-    eta_c = get_etac(I)
-
-    # function to minimize and derivatives
-    f = lambda q: -eta * np.sin(q - I) + np.sin(q) * np.cos(q)
-    fp = lambda q: -eta * np.cos(q - I) + np.cos(2 * q)
-
-    if eta < eta_c:
-        roots = []
-        inits = [0, np.pi / 2, -np.pi, -np.pi / 2]
-        for qi in inits:
-            roots.append(opt.newton(f, qi, fprime=fp))
-        return np.array(roots)
-    elif eta > 5: # buggy case, vanishing gradient?
-        return np.array([I, np.pi - I])
-    else:
-        roots = []
-        inits = [np.pi / 2 - I, -np.pi + I]
-        for qi in inits:
-            roots.append(opt.newton(f, qi, fprime=fp))
-        return np.array(roots)
-
-def get_etac(I):
-    return (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
-
-def reg(z):
-    return np.minimum(np.maximum(z, -1), 1)
-
-def ts_dot(x, y):
-    ''' dot product of two time series (is there a better way?) '''
-    z = np.zeros(np.shape(x)[1])
-    for x1, y1 in zip(x, y):
-        z += x1 * y1
-    return reg(z)
-
-def ts_dot_hat(x, yhat):
-    ''' dot product of time series w/ const vec '''
-    z = np.zeros(np.shape(x)[1])
-    for idx, x1 in enumerate(x):
-        z += x1 * yhat[idx]
-    return reg(z)
-
-def ts_cross(x, y):
-    return np.array([
-        x[1] * y[2] - x[2] * y[1],
-        -x[0] * y[2] + x[2] * y[0],
-        x[0] * y[1] - x[1] * y[0],
-    ])
-
-def get_laplace(a, j=1):
-    '''
-    b_{3/2}^1(a) / 3 * a, determined numerically
-    '''
-    psi = np.linspace(0, 2 * np.pi, 10000)
-    integrand = np.cos(j * psi) / (
-        1 - 2 * a * np.cos(psi) + a**2)**(3/2)
-    return np.mean(integrand) * 2 / (3 * a)
 
 def get_y0(Id_lst, Wd_lst, qd_lst, fd_lst, Ws_ns):
     '''
@@ -272,7 +214,7 @@ def get_CS_angles(s_vecs, l_vecs, a_lst, m_lst):
             l_vec_now = l_vec[:, t_idx]
             xvec = jhat - np.dot(jhat, l_vec_now) * l_vec_now
             xhat = xvec / np.sqrt(np.sum(xvec**2))
-            yhat = np.cross(jhat, xhat)
+            yhat = np.cross(l_vec_now, xhat)
             phi = np.arctan2(
                 np.dot(s_vec_now, xhat),
                 np.dot(s_vec_now, yhat))
@@ -309,7 +251,7 @@ def test_2p_cassini_state():
     ax2.set_ylabel(r'$\phi$')
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.02)
-    plt.savefig('2_2p_lib', dpi=200)
+    plt.savefig('2sim/2_2p_lib', dpi=200)
     plt.close()
 
     y0 = get_y0([1, 5], [0, 0], [30, 0], [0, 0], [1, 1])
@@ -335,7 +277,7 @@ def test_2p_cassini_state():
     ax2.set_ylabel(r'$\phi$')
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.02)
-    plt.savefig('2_2p_circ', dpi=200)
+    plt.savefig('2sim/2_2p_circ', dpi=200)
     plt.close()
 
 def test_3p_cs_mode1():
@@ -352,7 +294,7 @@ def test_3p_cs_mode1():
             [1, 0, 0], # Rpl
             0] # dWs_n/dt
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_3p_mode1.pkl'
+    pkl_fn = '2sim/2_3p_mode1.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -391,7 +333,7 @@ def test_3p_cs_mode1():
     ax3.set_ylabel(r'$\phi - g_it$')
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.02)
-    plt.savefig('2_3p_mode1', dpi=200)
+    plt.savefig('2sim/2_3p_mode1', dpi=200)
     plt.close()
 
 def test_3p_cs_mode1_2():
@@ -408,7 +350,7 @@ def test_3p_cs_mode1_2():
             [1, 0, 0], # Rpl
             0] # dWs_n/dt
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_3p_mode1_2.pkl'
+    pkl_fn = '2sim/2_3p_mode1_2.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -447,7 +389,7 @@ def test_3p_cs_mode1_2():
     ax3.set_ylabel(r'$\phi - g_it$')
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.02)
-    plt.savefig('2_3p_mode1_2', dpi=200)
+    plt.savefig('2sim/2_3p_mode1_2', dpi=200)
     plt.close()
 
 def test_3p_cs_mode2():
@@ -464,7 +406,7 @@ def test_3p_cs_mode2():
             [1/3, 0, 0], # Rpl
             0] # dWs_n/dt
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_3p_mode2.pkl'
+    pkl_fn = '2sim/2_3p_mode2.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -503,7 +445,7 @@ def test_3p_cs_mode2():
     ax3.set_ylabel(r'$\phi - g_it$')
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.02)
-    plt.savefig('2_3p_mode2', dpi=200)
+    plt.savefig('2sim/2_3p_mode2', dpi=200)
     plt.close()
 
 def test_3p_cs_mode3():
@@ -520,7 +462,7 @@ def test_3p_cs_mode3():
             [1/3, 0, 0], # Rpl
             0] # dWs_n/dt
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_3p_mode3.pkl'
+    pkl_fn = '2sim/2_3p_mode3.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -559,7 +501,7 @@ def test_3p_cs_mode3():
     ax3.set_ylabel(r'$\phi - g_it$')
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.02)
-    plt.savefig('2_3p_mode3', dpi=200)
+    plt.savefig('2sim/2_3p_mode3', dpi=200)
     plt.close()
 
 def example_plotter(args, fn, ret):
@@ -641,7 +583,7 @@ def dynamical_example1():
             -1e-3, # dWs_n/dt
             0] # tide
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_dynamical1.pkl'
+    pkl_fn = '2sim/2_dynamical1.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -654,7 +596,7 @@ def dynamical_example1():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_dynamical1', ret)
+    example_plotter(args, '2sim/2_dynamical1', ret)
 
 def dynamical_example1_2():
     '''
@@ -671,7 +613,7 @@ def dynamical_example1_2():
             -3e-3, # dWs_n/dt
             0] # tide
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_dynamical1_2.pkl'
+    pkl_fn = '2sim/2_dynamical1_2.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -684,7 +626,7 @@ def dynamical_example1_2():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_dynamical1_2', ret)
+    example_plotter(args, '2sim/2_dynamical1_2', ret)
 
 def dynamical_example2():
     '''
@@ -701,7 +643,7 @@ def dynamical_example2():
             -1e-3, # dWs_n/dt
             0] # tide
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_dynamical2.pkl'
+    pkl_fn = '2sim/2_dynamical2.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -714,7 +656,7 @@ def dynamical_example2():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_dynamical2', ret)
+    example_plotter(args, '2sim/2_dynamical2', ret)
 
 def dynamical_example3():
     '''
@@ -731,7 +673,7 @@ def dynamical_example3():
             -1e-3, # dWs_n/dt
             0] # tide
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_dynamical3.pkl'
+    pkl_fn = '2sim/2_dynamical3.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -744,7 +686,7 @@ def dynamical_example3():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_dynamical3', ret)
+    example_plotter(args, '2sim/2_dynamical3', ret)
 
 def spinup_example3():
     '''
@@ -761,7 +703,7 @@ def spinup_example3():
             1e-3, # dWs_n/dt
             0] # tide
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_spinup3.pkl'
+    pkl_fn = '2sim/2_spinup3.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -774,7 +716,7 @@ def spinup_example3():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_spinup3', ret)
+    example_plotter(args, '2sim/2_spinup3', ret)
 
 def spinup_example4():
     '''
@@ -791,7 +733,7 @@ def spinup_example4():
             1e-3, # dWs_n/dt
             0] # tide
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_spinup4.pkl'
+    pkl_fn = '2sim/2_spinup4.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -804,7 +746,7 @@ def spinup_example4():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_spinup4', ret)
+    example_plotter(args, '2sim/2_spinup4', ret)
 
 def dissipative_2p_cs_test():
     '''
@@ -835,7 +777,7 @@ def dissipative_2p_cs_test():
     ax2.set_ylabel(r'$\phi$')
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.02)
-    plt.savefig('2_2p_lib_tide', dpi=200)
+    plt.savefig('2sim/2_2p_lib_tide', dpi=200)
     plt.close()
 
     y0 = get_y0([1, 5], [0, 0], [30, 0], [0, 0], [1, 1])
@@ -861,7 +803,7 @@ def dissipative_2p_cs_test():
     ax2.set_ylabel(r'$\phi$')
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.02)
-    plt.savefig('2_2p_circ_tide', dpi=200)
+    plt.savefig('2sim/2_2p_circ_tide', dpi=200)
     plt.close()
 
 def dissipative_mode1():
@@ -878,7 +820,7 @@ def dissipative_mode1():
             0, # dWs_n/dt
             1e-3] # tidal term
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_dissipative1.pkl'
+    pkl_fn = '2sim/2_dissipative1.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -891,7 +833,7 @@ def dissipative_mode1():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_dissipative1', ret)
+    example_plotter(args, '2sim/2_dissipative1', ret)
 
 def dissipative_mode1_2():
     '''
@@ -907,7 +849,7 @@ def dissipative_mode1_2():
             0, # dWs_n/dt
             1e-3] # tidal term
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_dissipative1_2.pkl'
+    pkl_fn = '2sim/2_dissipative1_2.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -920,7 +862,7 @@ def dissipative_mode1_2():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_dissipative1_2', ret)
+    example_plotter(args, '2sim/2_dissipative1_2', ret)
 
 def dissipative_mode1_22():
     '''
@@ -936,7 +878,7 @@ def dissipative_mode1_22():
             0, # dWs_n/dt
             1e-3] # tidal term
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_dissipative1_22.pkl'
+    pkl_fn = '2sim/2_dissipative1_22.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -949,7 +891,7 @@ def dissipative_mode1_22():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_dissipative1_22', ret)
+    example_plotter(args, '2sim/2_dissipative1_22', ret)
 
 def dissipative_mode1_23():
     '''
@@ -965,7 +907,7 @@ def dissipative_mode1_23():
             0, # dWs_n/dt
             1e-3] # tidal term
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_dissipative1_23.pkl'
+    pkl_fn = '2sim/2_dissipative1_23.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -978,7 +920,7 @@ def dissipative_mode1_23():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_dissipative1_23', ret)
+    example_plotter(args, '2sim/2_dissipative1_23', ret)
 
 def spinup_disp_example3():
     '''
@@ -995,7 +937,7 @@ def spinup_disp_example3():
             1e-3,
             1e-3] # dWs_n/dt
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_spinupdisp3.pkl'
+    pkl_fn = '2sim/2_spinupdisp3.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -1008,7 +950,7 @@ def spinup_disp_example3():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_spinupdisp3', ret)
+    example_plotter(args, '2sim/2_spinupdisp3', ret)
 
 def spinup_disp_example4():
     '''
@@ -1025,7 +967,7 @@ def spinup_disp_example4():
             1e-3,
             1e-3] # dWs_n/dt
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_spinupdisp4.pkl'
+    pkl_fn = '2sim/2_spinupdisp4.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -1038,7 +980,7 @@ def spinup_disp_example4():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_spinupdisp4', ret)
+    example_plotter(args, '2sim/2_spinupdisp4', ret)
 
 def dynamicaltide_example1():
     '''
@@ -1056,7 +998,7 @@ def dynamicaltide_example1():
             -1e-3, # dWs_n/dt
             1e-3] # tide
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_dynamicaltide1.pkl'
+    pkl_fn = '2sim/2_dynamicaltide1.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -1069,7 +1011,7 @@ def dynamicaltide_example1():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_dynamicaltide1', ret)
+    example_plotter(args, '2sim/2_dynamicaltide1', ret)
 
 def dynamicaltide_example1_2():
     '''
@@ -1086,7 +1028,7 @@ def dynamicaltide_example1_2():
             -3e-3, # dWs_n/dt
             1e-3] # tide
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_dynamicaltide1_2.pkl'
+    pkl_fn = '2sim/2_dynamicaltide1_2.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -1099,7 +1041,7 @@ def dynamicaltide_example1_2():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_dynamicaltide1_2', ret)
+    example_plotter(args, '2sim/2_dynamicaltide1_2', ret)
 
 def dynamicaltide_example2():
     '''
@@ -1116,7 +1058,7 @@ def dynamicaltide_example2():
             -1e-3, # dWs_n/dt
             1e-3] # tide
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_dynamicaltide2.pkl'
+    pkl_fn = '2sim/2_dynamicaltide2.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -1129,7 +1071,7 @@ def dynamicaltide_example2():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_dynamicaltide2', ret)
+    example_plotter(args, '2sim/2_dynamicaltide2', ret)
 
 def dynamicaltide_example3():
     '''
@@ -1146,7 +1088,7 @@ def dynamicaltide_example3():
             -1e-3, # dWs_n/dt
             1e-3] # tide
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_dynamicaltide3.pkl'
+    pkl_fn = '2sim/2_dynamicaltide3.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -1159,7 +1101,7 @@ def dynamicaltide_example3():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_dynamicaltide3', ret)
+    example_plotter(args, '2sim/2_dynamicaltide3', ret)
 
 def no_spinup_example3():
     '''
@@ -1176,7 +1118,7 @@ def no_spinup_example3():
             0, # dWs_n/dt
             0] # tide
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_no_spinup3.pkl'
+    pkl_fn = '2sim/2_no_spinup3.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -1189,7 +1131,7 @@ def no_spinup_example3():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_no_spinup3', ret)
+    example_plotter(args, '2sim/2_no_spinup3', ret)
 
 def no_spinup_example4():
     '''
@@ -1206,7 +1148,7 @@ def no_spinup_example4():
             0, # dWs_n/dt
             0] # tide
     eigs, _ = get_eigs(y0, args)
-    pkl_fn = '2_no_spinup4.pkl'
+    pkl_fn = '2sim/2_no_spinup4.pkl'
     if not os.path.exists(pkl_fn):
         print('Running %s' % pkl_fn)
         start = time.time()
@@ -1219,7 +1161,7 @@ def no_spinup_example4():
         with lzma.open(pkl_fn, 'rb') as f:
             print('Loading %s' % pkl_fn)
             ret = pickle.load(f)
-    example_plotter(args, '2_no_spinup4', ret)
+    example_plotter(args, '2sim/2_no_spinup4', ret)
 
 if __name__ == '__main__':
     # test_dydt_jupsat()
