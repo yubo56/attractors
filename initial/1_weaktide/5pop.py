@@ -19,8 +19,8 @@ plt.rc('ytick', direction='in', left=True, right=True)
 from utils import solve_ic, to_ang, to_cart, get_etac, get_mu4, get_mu2,\
     stringify, H, roots, get_H4, s_c_str, get_mu_equil, get_anal_caps,\
     get_num_caps, get_crit_mus, get_areas_ward, solve_with_events5, TIMES, TF
-PKL_FILE = '5dat%s_%d.pkl'
-# PKL_FILE = '5dat_hightol%s_%d.pkl'
+# PKL_FILE = '5dat%s_%d.pkl'
+PKL_FILE = '5dat_hightol%s_%d.pkl'
 # N_PTS = 1 # TEST
 N_PTS_TOTAL = 20000
 N_THREADS = 64
@@ -265,13 +265,13 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     plt.close()
 
     # try to overplot the semi-analytical simulations I ran
-    pkl_fn = '6pc_dist%s.pkl' % s_c_str(s_c)
-    if os.path.exists(pkl_fn):
-        n_mu = 501
+    pkl_fn = '6pc_disthtol%s.pkl' % s_c_str(s_c)
+    if np.degrees(I) == 20 and os.path.exists(pkl_fn):
         n_phi = 50
-        mu_vals =  np.linspace(-0.99, 0.99, n_mu)
         with open(pkl_fn, 'rb') as f:
             cross_dat = pickle.load(f)
+        n_mu = len(cross_dat)
+        mu_vals =  np.linspace(-0.99, 0.99, n_mu)
         p_caps = get_num_caps(I, s_c, cross_dat, mu_vals)
         tot_probs = np.sum(p_caps / n_phi, axis=1)
         if s_c < 0.1:
@@ -533,7 +533,7 @@ def plot_all_cumprobs():
         0.25,
         0.1,
         0.03,
-        0.01,
+        # 0.01,
     ]
     eps = 1e-3
     s0 = 10
@@ -606,7 +606,7 @@ def plot_anal_cs_equils(I=np.radians(20), s_c=0.2):
     plt.close()
 
 if __name__ == '__main__':
-    run()
+    # run()
     plot_all_cumprobs()
     # plot_anal_cs_equils()
 
