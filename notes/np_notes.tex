@@ -91,38 +91,174 @@
 
 \tableofcontents
 
-\section{05/25/21}
+\section{06/02/21---Simple Parameterized Model}
 
-TODO Fill in the calculation of the inclination.
+\subsection{Orbital Dynamics}
 
-We start with the solution for the inner orbit's inclination
-\begin{equation}
-    \mathcal{I}(t) = Ae^{ig_It} + Be^{ig_{II} t},
-\end{equation}
-where $A$ and $B$ are generally complex ($A$ can be chosen to be real by
-choosing the initial phase). If we seek a CS with the frequency $g_I$, then we
-can go to the corotating frame, in which case
-\begin{equation}
-    \mathcal{I}_{\rm rot}(t) = I_0 + Be^{i\p{g_{II} - g_I}t}.
-\end{equation}
-With appropriate choice of initial time/phase, $B$ can be chosen to be real as
-well. Define $g' = g_{II} - g_I$. Intuitively, there are four cases near CS2:
+We consider the 3-planet case with an inner test mass, as Dong did, for
+simplicity. This is not quantitatively exact but gives us an intuitive
+parameterization (to leading order) of realistic dynamics.
+
+Consider the mutual precession of an inner test particle and two outer planets.
+Define the complex inclination $\mathcal{I}_j = I_j\exp\p{i\Omega_j}$, then
+these evolve following
+\begin{align}
+    \rd{}{t}\begin{bmatrix}
+        \mathcal{I}_1\\
+        \mathcal{I}_2\\
+        \mathcal{I}_3
+    \end{bmatrix} &=
+        \begin{bmatrix}
+            -\omega_{21} - \omega_{31} & \omega_{21} & \omega_{31}\\
+            0 & -\omega_{32} & \omega_{32}\\
+            0 & \omega_{23} & -\omega_{23}
+        \end{bmatrix}
+    \begin{bmatrix}
+        \mathcal{I}_1\\
+        \mathcal{I}_2\\
+        \mathcal{I}_3
+    \end{bmatrix},\label{eq:06/02/21.LL_matrix}\\
+    \omega_{kj}
+        &= -\frac{3 m_>}{4 M_\star}\p{\frac{a_>}{a_<}}^3 n_<
+            f\p{\frac{a_<}{a_>}}
+            \times \min\p{\frac{L_k}{L_j}, 1},\\
+    f\p{\alpha} &= \frac{b_{3/2}^{(1)}}{3\alpha}\nonumber\\
+        &= \frac{1}{3\alpha}
+            \frac{1}{\pi}\int\limits_0^{2\pi}
+                \frac{\cos \p{t}}{
+                \p{\alpha^2 + 1 - 2\alpha \cos t}^{3/2}}\;\mathrm{d}t\nonumber\\
+        &\approx 1 + \frac{15}{8}\alpha^2 + \mathcal{O}\p{\alpha^4}.
+\end{align}
+Note that this $\min$ term means e.g.\ that $\omega_{23} =
+\omega_{32}\frac{L_2}{L_3}$.
+
+We seek the eigenmodes of Eq.~\eqref{eq:06/02/21.LL_matrix}. It is expected that
+there will only be two: a third is if $\mathcal{I}_i = 0$, i.e.\ if everything
+is aligned with the total angular momentum. Otherwise:
 \begin{itemize}
-    \item If $I_0 > B$ and $g' \gg \omega_{\rm lib}$, we should see small
-        oscillations about CS2 (as $\uv{l}_{\rm p}$ effectively is
-        ``vibrating''), which average out.
+    \item The first obvious, non-trivial eigenmode is $\mathcal{I}_2 =
+        \mathcal{I}_3 = 0$, then $\mathcal{I}_1$ executes free precession with
+        the precession frequency $g_1 \equiv -\omega_{21} - \omega_{31}$.
 
-    \item If $I_0 > B$ and $g' \ll \omega_{\rm lib}$, then adiabatic resonance
-        advection means that the trajectory should encircle CS2 with constant
-        phase space area as CS2 moves around slightly.
-
-    \item If $I_0 < B$ and $g' \gg \omega_{\rm lib}$, note that $\uv{l}_{\rm p}$
-        is \emph{circulating}; probably precesses about average.
-
-    \item If $I_0 < B$ and $g' \ll \omega_{\rm lib}$, then there should be no
-        resonance, as CS2 itself is circulating; there is no librating resonant
-        angle.
+    \item We expect the second eigenmode to describe precession of
+        $\mathcal{I}_2$ and $\mathcal{I}_3$ about their total angular momentum
+        axis. Upon inspection, we find that the second eigenvector must indeed
+        satisfy:
+        \begin{equation}
+            \mathcal{I}_2 = -\frac{L_3}{L_2}\mathcal{I}_3.
+        \end{equation}
+        The eigenvalue can also be directly read off in this case to be
+        $\omega_{32}\p{-1 - L_2/L_3} \approx -\omega_{32}(J / L_3) \equiv g_2$,
+        where $J \approx L_2 + L_3$. Then, we can find that the corresponding
+        component of $\mathcal{I}_1$ must satisfy
+        \begin{align}
+            g_1\mathcal{I}_1
+                + \omega_{21}\mathcal{I}_2 + \omega_{31}\mathcal{I}_3
+                &= g_2\mathcal{I}_1,\\
+            \p{g_2 - g_1}\mathcal{I}_1 &=
+                \p{\omega_{21}\frac{L_3}{J}
+                    + \omega_{31}\frac{L_2}{J}}\mathcal{I}_{23},\\
+            \mathcal{I}_1 &= \frac{\p{\omega_{21}L_3
+                    + \omega_{31}L_2} / J}{g_2 - g_1}\mathcal{I}_{23}.
+        \end{align}
 \end{itemize}
+Here, $\mathcal{I}_{23} = \mathcal{I}_3 - \mathcal{I}_2$ and corresponds to the
+complexified mutual inclination. Thus, the general solution to
+$\mathcal{I}_1(t)$ is given by:
+\begin{equation}
+    \mathcal{I}_1(t) = i_1e^{ig_1t} + i_{\rm 1f}e^{i(g_2t + \phi_0)},
+\end{equation}
+where $i_1$, $i_{\rm 1f}$, and $\phi_0$ are real. Then, of course, we can
+construct the vector solution to $\uv{l}_1$ via:
+\begin{align}
+    \uv{l}_1 &= \Re \mathcal{I}_1\uv{x}
+            + \Im \mathcal{I}_1 \uv{y}
+            + \sqrt{1 - \abs{\mathcal{I}_1}^2}
+            \uv{z},\label{eq:06/02/21.l1param}\\
+        &= \begin{bmatrix}
+            i_1 \cos (g_1t) + i_{\rm 1f} \cos\p{g_2 t + \phi_0}\\
+            i_1 \sin (g_1t) + i_{\rm 1f} \sin\p{g_2 t + \phi_0}\\
+            \cos\abs{\mathcal{I}_1}.\nonumber
+        \end{bmatrix}
+\end{align}
+Note that $i_{\rm 1f}$ is effectively set by the initial $\mathcal{I}_{23}$
+(overlap with the eigenvector), and $i_{1}$ is set by whatever remaining IC is
+not described by the forced component.
+
+\subsection{Spin Dynamics}
+
+We now have the parameterized form for $\uv{l}_1$ following
+Eq.~\eqref{eq:06/02/21.l1param} and the solution for $\mathcal{I}_1$, and the
+spin evolves following
+\begin{equation}
+    \rd{\uv{s}}{t} = \alpha\p{\uv{s} \cdot \uv{l}_1}\p{\uv{s} \times \uv{l}_1}.
+\end{equation}
+
+\subsubsection{Numerical Approach}
+
+We seek to understand the stability of CS2 in the regime $\alpha \gg g_1, g_2$.
+WLOG, we choose to perturb about the initial condition where $\uv{s}$ points
+exactly along CS2, and $i_{\rm 1f} = 0$ (as is in the case of aligned outer
+planets; note that if the inner planet is not a perfect test mass, aligned outer
+planets does not completely suppress this mode). There are then three
+perturbations we can make:
+\begin{itemize}
+    \item We can increase $i_{\rm 1f}$; the two relevant regimes are expected to
+        be where $i_{\rm 1f} \ll i_1$ and $i_{\rm 1f} \gg i_1$.
+
+    \item We can change $g_2$; the two relevant regimes are expected to be where
+        $g_2 \gg g_1$ and $g_2 \ll g_1$, with possible resonance when they are
+        close (since $i_{\rm 1f}$ is prescribed explicitly and held constant, we
+        can imagine that the mutual inclination is decreased in proportion to
+        $g_{2} - g_1$ such that $i_{\rm 1f}$ is constant).
+
+    \item We can perturb the initial system about the initial CS2; we do this by
+        adding an angle offset $\Delta \theta_{\rm i}$ to the IC, so that there
+        is a nonzero initial libration amplitude.
+\end{itemize}
+
+\subsubsection{Analytical Approach}
+
+It seems like we are seeing some resonances when $g_2 / g_1$ hits half-integer
+multiples. For convenience, we go to the co-rotating frame with $g_1$ where we
+then have
+\begin{equation}
+    \p{\rd{\uv{s}}{t}}_{\rm rot, 1}
+        = \alpha\p{\uv{s} \cdot \uv{l}_1}\p{\uv{s} \times \uv{l}_1}
+            + g_1\p{\uv{s} \cdot \uv{J}}.
+\end{equation}
+Here, now, the mode frequencies are $g_1 \Rightarrow 0$ and $g_2 \Rightarrow g_2
+- g_1$. Decompose then $\uv{l}$ (we drop the subscript) into a mean and fluctuating
+piece $\bar{\bm{l}}$ and $\bm{l}'$ (where the former is still a vector of unit
+length), then:
+\begin{equation}
+    \p{\rd{\uv{s}}{t}}_{\rm rot, 1}
+        = \alpha\p{\uv{s} \cdot \bar{\bm{l}}}\p{\uv{s} \times \bar{\bm{l}}}
+            + g_1\p{\uv{s} \cdot \uv{J}}
+            + \alpha\s{
+                \p{\uv{s} \cdot \bar{\bm{l}}}
+                \p{\uv{s} \times \bm{l}'} +
+                \p{\uv{s} \cdot \bm{l}'}
+                \p{\uv{s} \times \bar{\bm{l}}}
+            }.
+\end{equation}
+This is already looking painful. Let's write down the Hamiltonian to have a
+faster path to EOM in coordinates:
+\begin{align}
+    H_{\rm rot, 1} ={}& -\frac{\alpha}{2}\p{\uv{s} \cdot \uv{l}}^2
+            - g\p{\uv{s} \cdot \uv{J}},\\
+        ={}& -\frac{\alpha}{2}\p{\uv{s} \cdot \bar{\bm{l}}}^2
+            - \alpha\p{\uv{s} \cdot \bar{\bm{l}}}
+                \p{\uv{s} \cdot \bm{l}'}
+            - g\p{\uv{s} \cdot \uv{J}},\\
+        \approx{}& -\frac{\alpha}{2}\cos^2\theta
+            - g\p{\cos \theta \cos I - \sin I \sin \theta \cos \phi}\nonumber\\
+        & - \alpha \cos \theta\p{
+            \cos \theta \cos i_{\rm 1f}
+            - \sin i_{\rm 1f} \sin \theta \cos \p{\phi - \phi_0 - \p{g_2 -
+            g_1}t}}.
+\end{align}
+Is this right, or is $i_{\rm 1f}$ also changing?
 
 \end{document}
 

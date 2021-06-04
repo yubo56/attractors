@@ -182,38 +182,6 @@ def plot_equils(I, s_cs, fn_str='6equils', tf=5000):
         s_gt = np.linspace(1, 3, 200) # other interesting part of the interval
         s_tot = np.concatenate((s_lt, s_gt))
 
-        if s_c == 0.06:
-            ax.text(2.55, 123, '(Fig.~11)',
-                    c=TRAJ_COLORS[2], fontsize=12, ha='left')
-            ax.text(2.55, 117, '(Fig.~12)',
-                    c=TRAJ_COLORS[3], fontsize=12, ha='left')
-        if s_c == 0.7:
-            ax.text(2.5, 13, '(Fig.~13)', c=TRAJ_COLORS[0], fontsize=12)
-
-        for idx, c in enumerate(TRAJ_COLORS[ :6]):
-            pkl_fn = '%s_sims/%s_%d.pkl' % (fn_str, s_c_str(s_c), idx)
-            with lzma.open(pkl_fn, 'rb') as f:
-                solve_ret = pickle.load(f)
-            (mu_0, s_0, t_0, mu_pi, s_pi, t_pi), mu, phi, _s, ret_solveivp = solve_ret
-            svec = ret_solveivp.y[0:3, :]
-            s = ret_solveivp.y[3, :]
-            t = ret_solveivp.t
-            q, phi = to_ang(*svec)
-            if (
-                    (idx == 2 and s_c == 0.06) or
-                    (idx == 3 and s_c == 0.06) or
-                    (idx == 0 and s_c == 0.7)
-            ):
-                _lw = 1.5
-                _al = 0.8
-            else:
-                _lw = 0.8
-                _al = 0.4
-            ax.plot(s, np.degrees(q), alpha=_al, c=c, lw=_lw)
-            offset = 0.5 if idx == 3 else (-0.5 if idx == 2 else 0)
-            ax.plot(s[0], np.degrees(q)[0] + offset, ms=10,
-                    c=c, marker='x')
-
         cs1_qs, cs2_qs = get_cs_val(I, s_c, s_tot)
         cs1_exist_idx = np.where(cs1_qs > -1)[0]
         mu_equil_lt = [np.degrees(np.arccos(get_mu_equil(s))) for s in s_lt]
@@ -289,6 +257,39 @@ def plot_equils(I, s_cs, fn_str='6equils', tf=5000):
         ax.set_xlabel(r'$\Omega_{\rm s} / n$')
 
         plt.tight_layout()
+        plt.savefig(fn_str + ('%.2f' % s_c).replace('.', '_') + '_notraj', dpi=400)
+
+        for idx, c in enumerate(TRAJ_COLORS[ :6]):
+            pkl_fn = '%s_sims/%s_%d.pkl' % (fn_str, s_c_str(s_c), idx)
+            with lzma.open(pkl_fn, 'rb') as f:
+                solve_ret = pickle.load(f)
+            (mu_0, s_0, t_0, mu_pi, s_pi, t_pi), mu, phi, _s, ret_solveivp = solve_ret
+            svec = ret_solveivp.y[0:3, :]
+            s = ret_solveivp.y[3, :]
+            t = ret_solveivp.t
+            q, phi = to_ang(*svec)
+            if (
+                    (idx == 2 and s_c == 0.06) or
+                    (idx == 3 and s_c == 0.06) or
+                    (idx == 0 and s_c == 0.7)
+            ):
+                _lw = 1.5
+                _al = 0.8
+            else:
+                _lw = 0.8
+                _al = 0.4
+            ax.plot(s, np.degrees(q), alpha=_al, c=c, lw=_lw)
+            offset = 0.5 if idx == 3 else (-0.5 if idx == 2 else 0)
+            ax.plot(s[0], np.degrees(q)[0] + offset, ms=10,
+                    c=c, marker='x')
+
+        if s_c == 0.06:
+            ax.text(2.55, 123, '(Fig.~11)',
+                    c=TRAJ_COLORS[2], fontsize=12, ha='left')
+            ax.text(2.55, 117, '(Fig.~12)',
+                    c=TRAJ_COLORS[3], fontsize=12, ha='left')
+        if s_c == 0.7:
+            ax.text(2.5, 13, '(Fig.~13)', c=TRAJ_COLORS[0], fontsize=12)
         plt.savefig(fn_str + ('%.2f' % s_c).replace('.', '_'), dpi=400)
         plt.clf()
 
@@ -411,7 +412,7 @@ if __name__ == '__main__':
     # equils_plot(I, 0.7, eps_equils, -0.5, 5, 2.5, equils_tf, '6equils', 3)
     # equils_plot(I, 0.7, eps_equils, 0.8, 0, 0.1, equils_tf, '6equils', 4)
     # equils_plot(I, 0.7, eps_equils, -0.2, 0, 0.1, equils_tf, '6equils', 5)
-    # plot_equils(I, [0.06, 0.5, 0.7], tf=equils_tf)
+    plot_equils(I, [0.06, 0.5, 0.7], tf=equils_tf)
 
     # equils_plot(I, 0.01, eps, -0.96, 2.56, 10, 8000, '6equils', 20, rtol=1e-4)
     # equils_plot(I, 0.01, eps, -0.96, 2.56, 10, 8000, '6equils', 21, rtol=1e-9)
@@ -422,12 +423,12 @@ if __name__ == '__main__':
     # plot_equil_dist_anal(I, 0.06, 10, eps)
     # plot_equil_dist_anal(I, 0.2, 10, eps)
     # plot_equil_dist_anal(I, 0.7, 10, eps)
-    plot_equil_dist_anal(I, 0.06, 10, eps,
-                         pkl_fn_template='6pc_disthtol%s.pkl',
-                         rtol=1e-9, n_mu=201)
-    plot_equil_dist_anal(I, 0.2, 10, eps,
-                         pkl_fn_template='6pc_disthtol%s.pkl',
-                         rtol=1e-9, n_mu=201)
+    # plot_equil_dist_anal(I, 0.06, 10, eps,
+    #                      pkl_fn_template='6pc_disthtol%s.pkl',
+    #                      rtol=1e-9, n_mu=201)
+    # plot_equil_dist_anal(I, 0.2, 10, eps,
+    #                      pkl_fn_template='6pc_disthtol%s.pkl',
+    #                      rtol=1e-9, n_mu=201)
 
     # test cases
     # print(get_cross_dat(I, 0.7, 10, 1e-3, 8000, 0.9, np.pi)) # no cross
