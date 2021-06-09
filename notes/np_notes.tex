@@ -219,9 +219,8 @@ perturbations we can make:
 
 \subsubsection{Analytical Approach}
 
-It seems like we are seeing some resonances when $g_2 / g_1$ hits half-integer
-multiples. For convenience, we go to the co-rotating frame with $g_1$ where we
-then have
+It seems like we might be seeing some resonance type behaviors. For convenience,
+we go to the co-rotating frame with $g_1$ where we then have
 \begin{equation}
     \p{\rd{\uv{s}}{t}}_{\rm rot, 1}
         = \alpha\p{\uv{s} \cdot \uv{l}_1}\p{\uv{s} \times \uv{l}_1}
@@ -259,6 +258,88 @@ faster path to EOM in coordinates:
             g_1}t}}.
 \end{align}
 Is this right, or is $i_{\rm 1f}$ also changing?
+
+\section{06/09/21}
+
+\subsection{Analytical Time-Dependent Hamiltonian Perturbation Theory Setup
+(Abandoned)}
+
+We came up with at least a possible way to do this perturbatively, though it
+might not be useful, since we haven't included the effect of tidal dissipation
+yet. I'm going to just mostly copy this from my weekly update, since I don't
+want to retype the scratch work. We analyze Dong's equations, where:
+\begin{align}
+    \rd{\uv{s}}{t} &= \alpha\p{\uv{s} \cdot \uv{l}_1}\p{\uv{s} \times
+        \uv{l}_1},\\
+    \uv{l}_1 &= \Re \mathcal{I}_1\uv{x}
+            + \Im \mathcal{I}_1 \uv{y}
+            + \sqrt{1 - \abs{\mathcal{I}_1}^2}
+            \uv{z},\label{eq:06/02/21.l1param}\\
+        &= \begin{bmatrix}
+            i_1 \cos (g_1t) + i_{\rm 1f} \cos\p{g_2 t + \phi_0}\\
+            i_1 \sin (g_1t) + i_{\rm 1f} \sin\p{g_2 t + \phi_0}\\
+            \cos\abs{\mathcal{I}_1}
+        \end{bmatrix}.
+\end{align}
+I've taken $\phi_0 = 0$ for simplicity. We take $\alpha / g_1 = 10$
+consistently. We permit $i_{\rm 1f}$ and $g_{1,2}$ to vary independently for
+now, even though $i_{\rm 1f} \propto \p{g_2 - g_1}^{-1}$.
+
+Consider the Hamiltonian
+\begin{equation}
+    H = - \frac{\alpha}{2}\p{\uv{s} \cdot \uv{l}}^2.
+\end{equation}
+Decompose $\uv{l} = \bar{\bm{l}} + \bm{l}'$ where:
+\begin{align}
+    \bar{\bm{l}} &= \begin{bmatrix}
+        i_1 \cos (g_1t)
+        i_1 \sin (g_1t)
+        \cos i_1
+    \end{bmatrix},\\
+    \bm{l}' &\equiv \uv{l} - \bar{\bm{l}},\\
+        &\approx \begin{bmatrix}
+        i_{\rm 1f} \cos\p{g_2 t + \phi_0}\\
+        i_{\rm 1f} \sin\p{g_2 t + \phi_0}\\
+        -\frac{i_{\rm 1f}i_1}{\cos^2 i_1} \cos\p{g_2t + \phi_0}
+    \end{bmatrix}.
+\end{align}
+Note that $l'_z \approx 0$.
+
+We next go to the corotating frame with $g_1$ about $\uv{\jmath}$, so that
+\begin{align}
+    H_{\rm rot} &= - \frac{\alpha}{2}\p{\uv{s} \cdot \uv{l}}^2
+        - g\p{\uv{s} \cdot \uv{\jmath}},\\
+        &\equiv H_0 + H_1,\\
+    H_0 &\equiv - \frac{\alpha}{2}\p{\uv{s} \cdot \bar{\bm{l}}}^2
+        - g\p{\uv{s} \cdot \uv{\jmath}},\\
+    H_1 &\approx -\alpha\p{\uv{s} \cdot \bar{\bm{l}}}
+        \p{\uv{s} \cdot \bm{l}'} + \mathcal{O}\p{(l')^2}.
+\end{align}
+In the corotating frame, we find that
+\begin{equation}
+    \p{\bm{l}'}_{\rm rot} \approx \begin{bmatrix}
+        i_{\rm 1f} \cos\p{(g_2 - g_1) t + \phi_0}\\
+        i_{\rm 1f} \sin\p{(g_2 - g_1) t + \phi_0}\\
+        0
+    \end{bmatrix}.
+\end{equation}
+Thus, in the corotating frame, when $g_2 = g_1$, CS2 is simply \emph{shifted},
+since $\bm{l}'_{\rm rot}$ is fixed in space. This isn't entirely realistic, as
+$i_{\rm 1f} \propto \p{g_2 - g_1}^{-1}$, but also gives us a chance at using
+time-dependent perturbation theory.
+
+\textbf{NB:} Per Dong's recommendation, I'm going to mostly stay away from this,
+as the dynamics are already reasonably well understood in the absence of tidal
+dissipation due to resonance overlap. I suspect that there might be some other
+interesting behavior, like chaotic behavior near the separatrix due to another
+Melnikov's Method calculation, but it's a little bit difficult to justify doing
+too much work on this when there's a lot of canonical work on the subject
+already.
+
+I do have a concern about resonance overlap: the resonances are only formally
+defined in their respective corotating frames (i.e.\ they don't share resonance
+angles $\phi_i = \phi_{\rm inertial} + g_it$), so I'm not exactly sure the
+picture of ``don't know which resonance a point belongs to'' is entirely valid.
 
 \end{document}
 

@@ -5,22 +5,26 @@ full n-body type simulations.
 for simplicity, we simulate in the inertial frame initially, though perhaps the
 corotating frame would be easier to think about eventually
 '''
+from scipy.interpolate import interp1d
 from multiprocessing import Pool
 import os, pickle, lzma
 import numpy as np
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-plt.rc('text', usetex=True)
-plt.rc('font', family='serif', size=20)
-plt.rc('lines', lw=1.5)
-plt.rc('xtick', direction='in', top=True, bottom=True)
-plt.rc('ytick', direction='in', left=True, right=True)
+try:
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    plt.rc('text', usetex=True)
+    plt.rc('font', family='serif', size=20)
+    plt.rc('lines', lw=1.5)
+    plt.rc('xtick', direction='in', top=True, bottom=True)
+    plt.rc('ytick', direction='in', left=True, right=True)
+except ModuleNotFoundError:
+    pass
 from scipy.integrate import solve_ivp
 
 from utils import *
 
-def dydt_inertial(t, y, I1, I2, g2, phi=0, eps_alpha=0):
+def dydt_inertial(t, y, I1, I2, g2, phi=0, eps_alpha=0, eps_tide=0):
     '''
     y = [*svec, alpha]
 
@@ -32,8 +36,11 @@ def dydt_inertial(t, y, I1, I2, g2, phi=0, eps_alpha=0):
     ly = np.sin(I1) * np.sin(-t) + np.sin(I2) * np.sin(-g2 * t + phi)
     lz = np.sqrt(1 - lx**2 - ly**2)
     lvec = [lx, ly, lz]
+    so_precession = alpha * np.dot(svec, lvec) * np.cross(svec, lvec)
+
+    tide_disp = eps_tide * (np.cross(svec, np.cross(lvec, svec)))
     return np.concatenate((
-        alpha * np.dot(svec, lvec) * np.cross(svec, lvec),
+        so_precession + tide_disp,
         [eps_alpha * alpha]
     ))
 
@@ -98,14 +105,15 @@ def run_example_on_cs(I2=0, g2=0):
     plt.savefig('/tmp/foo', dpi=200)
     plt.close()
 
-def scan_runner(alpha0=10, I1=np.radians(10), I2=0, g2=0, phi_args=0, dq=0):
+def scan_runner(alpha0=10, I1=np.radians(10), I2=0, g2=0, phi_args=0, dq=0,
+                return_ret=False, tf=100):
     eta = 1 / alpha0
     q_cs2 = roots(I1, eta)[1]
-    svec = [-np.sin(q_cs2 + dq - I1),
-            0,
+    svec = [-np.sin(q_cs2 + dq - I1) * np.cos(phi_args),
+            -np.sin(q_cs2 + dq - I1) * np.sin(phi_args),
             np.cos(q_cs2  + dq- I1)]
     args = [I1, I2, g2, phi_args]
-    ret = solve_ivp(dydt_inertial, (0, 100), [*svec, alpha0], args=args,
+    ret = solve_ivp(dydt_inertial, (0, tf), [*svec, alpha0], args=args,
                     method='DOP853', atol=1e-9, rtol=1e-9)
     lx = (
         np.sin(I1) * np.cos(-ret.t)
@@ -116,13 +124,15 @@ def scan_runner(alpha0=10, I1=np.radians(10), I2=0, g2=0, phi_args=0, dq=0):
     lz = np.sqrt(1 - lx**2 - ly**2)
     lvec = np.array([lx, ly, lz])
     obliquities, phirot_arr = get_CS_angles(ret.y[ :3], lvec)
+    if return_ret:
+        return obliquities, phirot_arr, ret
     return obliquities, phirot_arr
 
 def scan_runner_dphi(*args):
     _, phirot_arr = scan_runner(*args)
     return phirot_arr.max() - phirot_arr.min()
 
-def scan_dq(g2s, fns, I2s):
+def scan_dq(g2s, fns, I2s, suffix='', fs=10, **kwargs):
     '''
     scan over distance to CS2
     '''
@@ -156,12 +166,12 @@ def scan_dq(g2s, fns, I2s):
     plt.ylim(bottom=1)
     plt.axvline(-np.degrees(sepwidth), c='k')
     plt.axvline(np.degrees(sepwidth), c='k')
-    plt.legend(loc='lower right', fontsize=10)
+    plt.legend(loc='lower right', fontsize=fs, **kwargs)
     plt.axhline(360, c='k', ls='--')
     plt.xlabel(r'$\theta_{\rm i} - \theta_{\rm CS2}$')
     plt.ylabel(r'$\phi_{\max} - \phi_{\min}$')
     plt.tight_layout()
-    plt.savefig('3paramsim/scan_dq', dpi=300)
+    plt.savefig('3paramsim/scan_dq' + suffix, dpi=300)
     plt.close()
 
 def scan_frequency(dqs, fns, I2s):
@@ -243,37 +253,399 @@ def scan_I2(dqs, fns, g2s):
     plt.savefig('3paramsim/scan_I2', dpi=300)
     plt.close()
 
-if __name__ == '__main__':
+def plot_phase(g2=3, fn='3paramsim/phase_portrait3', I2=np.radians(1), nq=48,
+               stride=5):
+    '''
+    scan over distance to CS2
+    '''
+    alpha0 = 10
+    eta = 1 / alpha0
+    I1 = np.radians(10)
+    sepwidth = np.sqrt(2 * eta * np.sin(I1))
+    dqs = np.linspace(0, 1.7 * sepwidth, nq)
+    pkl_fn = fn + '.pkl'
+    if not os.path.exists(pkl_fn):
+        print('Running %s' % pkl_fn)
+        dphis = []
+        pool_args = [
+            (alpha0, I1, I2, g2, 0, dq)
+            for dq in dqs
+        ]
+        with Pool(8) as p:
+            trajs = p.starmap(scan_runner, pool_args)
+        with lzma.open(pkl_fn, 'wb') as f:
+            pickle.dump(trajs, f)
+    else:
+        with lzma.open(pkl_fn, 'rb') as f:
+            print('Loading %s' % pkl_fn)
+            trajs = pickle.load(f)
+    plt_trajs = trajs[::stride]
+    print(dqs[::stride])
+    colors = np.linspace(0.2, 0.9, len(plt_trajs))
+    for c, (obliquities, phis) in zip(colors, plt_trajs):
+        plt.plot(phis % 360, np.cos(np.radians(obliquities)),
+                 c=(c, 1 - c, 0.5),
+                 marker='o', ms=1.0, ls='')
+        print(np.cos(np.radians(obliquities))[0])
+        plt.plot(phis[0] % 360, np.cos(np.radians(obliquities))[0],
+                 mfc=(c, 1 - c, 0.5),
+                 mec='k',
+                 marker='o', ms=3.0, ls='')
+    q_cs2 = roots(I1, eta)[1]
+    plt.plot(180, np.cos(q_cs2), 'rx', ms=5)
+    plt.xlabel(r'$\phi_{\rm rot}$')
+    plt.ylabel(r'$\cos \theta$')
+    plt.tight_layout()
+    plt.savefig(fn, dpi=300)
+    plt.close()
+
+def get_lib_frequency(alpha0=10, I1=np.radians(10), phi_args=0,
+                      dq=0, tf=20, I2=0, g2=0):
+    '''
+    returns [0, circ_period] if circulating, else [1, libperiod] if lib
+
+    NB: is in the absence of perturbation
+    '''
+    _, phirot, ret = scan_runner(alpha0=alpha0, I1=I1, phi_args=phi_args, dq=dq,
+                                 return_ret=True, tf=tf, I2=I2, g2=g2)
+    if phirot.max() > phirot[0] + 360:
+        # circulating right
+        all_last_lt = np.where(phirot < phirot[0] + 360)[0]
+        # find last idx that is contiguous (some complicated evolutions if I2,
+        # g2 \neq 0
+        last_lt = np.where(all_last_lt == np.arange(len(all_last_lt)))[0][-1]
+        # do a small interp
+        t_prev = ret.t[last_lt]
+        t_next = ret.t[last_lt + 1]
+        phi_prev = phirot[last_lt]
+        phi_next = phirot[last_lt + 1]
+        t_cross = (phirot[0] + 360 - phi_prev) / (phi_next + 360 - phi_prev) * (
+            t_next - t_prev) + t_prev
+        ret = 0, t_cross, phirot
+    elif phirot.min() < phirot[0] - 360:
+        # circulating left
+        all_last_lt = np.where(phirot > phirot[0] - 360)[0]
+        last_lt = np.where(all_last_lt == np.arange(len(all_last_lt)))[0][-1]
+        t_prev = ret.t[last_lt]
+        t_next = ret.t[last_lt + 1]
+        phi_prev = phirot[last_lt]
+        phi_next = phirot[last_lt + 1]
+        t_cross = (phirot[0] - 360 - phi_prev) / (phi_next - 360 - phi_prev) * (
+            t_next - t_prev) + t_prev
+        ret = 0, t_cross, phirot
+    elif phirot[1] > phirot[0]:
+        # librating cw
+        cross_idx = np.where(np.logical_and(
+            phirot[ :-1] < phirot[0],
+            phirot[1: ] > phirot[0]
+        ))[0][0]
+        t_prev = ret.t[cross_idx]
+        t_next = ret.t[cross_idx + 1]
+        phi_prev = phirot[cross_idx]
+        phi_next = phirot[cross_idx + 1]
+        t_cross = (phirot[0] - phi_prev) / (phi_next - phi_prev) * (
+            t_next - t_prev) + t_prev
+        ret = 1, t_cross, phirot
+    else:
+        # librating ccw
+        cross_idx = np.where(np.logical_and(
+            phirot[ :-1] > phirot[0],
+            phirot[1: ] < phirot[0]
+        ))[0][0]
+        t_prev = ret.t[cross_idx]
+        t_next = ret.t[cross_idx + 1]
+        phi_prev = phirot[cross_idx]
+        phi_next = phirot[cross_idx + 1]
+        t_cross = (phirot[0] - phi_prev) / (phi_next - phi_prev) * (
+            t_next - t_prev) + t_prev
+        ret = 1, t_cross, phirot
+    return ret
+
+def get_lyapunov(alpha0=10, I1=np.radians(10), I2=np.radians(1), phi_args=0,
+                 dq=0, tf=20, g2=1.25):
+    _, phirot1, ret1 = scan_runner(alpha0=alpha0, I1=I1, phi_args=phi_args, dq=dq,
+                            return_ret=True, tf=tf, I2=I2, g2=g2)
+    _, phirot2, ret2 = scan_runner(alpha0=alpha0, I1=I1, phi_args=phi_args + 1e-5,
+                             dq=dq, return_ret=True, tf=tf, I2=I2, g2=g2)
+    def get_interp_vec(rett, rety, tnew):
+        ynew = np.zeros((3, len(tnew)))
+        for i in range(3):
+            ynew[i] = interp1d(rett, rety[i])(tnew)
+        return ynew
+    tnew = np.linspace(0, tf, 10 * max(len(ret1.t), len(ret2.t)))
+    yinterp1 = get_interp_vec(ret1.t, ret1.y, tnew)
+    yinterp2 = get_interp_vec(ret2.t, ret2.y, tnew)
+    ydiff_mag = np.sqrt(np.sum((yinterp2 - yinterp1)**2, axis=0))
+    return tnew, ydiff_mag
+    # print(phirot1.max() - phirot1.min(), phirot2.max() - phirot2.min(), ydiff_mag[0])
+    # plt.semilogy(tnew, ydiff_mag)
+    # plt.savefig('/tmp/foo')
+    # plt.close()
+
+def plot_resonances(fn='3paramsim/resonances', g2=2, phi_args=0):
+    dqs = np.linspace(-20, 20, 201)
+    pkl_fn = fn + '.pkl'
+    if not os.path.exists(pkl_fn):
+        print('Running %s' % pkl_fn)
+        dq_plots = [[], []]
+        periods = [[], []]
+        periods_r = [[], []]
+        ydiffmaxes = [[], []]
+        alpha0 = 10
+        tf = 30
+        args1 = [
+            (alpha0, np.radians(10), phi_args, np.radians(dq), tf, 0, 0)
+            for dq in dqs
+        ]
+        args1_realg2 = [
+            (alpha0, np.radians(10), phi_args, np.radians(dq), tf, np.radians(1), g2)
+            for dq in dqs
+        ]
+        args2 = [
+            (10, np.radians(10), np.radians(1), 0, np.radians(dq), 100, g2)
+            for dq in dqs
+        ]
+        with Pool(8) as p:
+            rets1 = p.starmap(get_lib_frequency, args1)
+            rets1_real = p.starmap(get_lib_frequency, args1_realg2)
+            rets2 = p.starmap(get_lyapunov, args2)
+        for dq, ret, ret1real, ret2 in zip(dqs, rets1, rets1_real, rets2):
+            cycle_type, cycle_period, phirot = ret
+            _, cycle_periodr, phirotr = ret1real
+
+            periods[cycle_type].append(cycle_period)
+            periods_r[cycle_type].append(cycle_periodr)
+            dq_plots[cycle_type].append(dq)
+
+            tnew, ydiff_mag = ret2
+            ydiffmaxes[cycle_type].append(np.max(ydiff_mag))
+        with lzma.open(pkl_fn, 'wb') as f:
+            pickle.dump((dq_plots, periods, periods_r, ydiffmaxes), f)
+    else:
+        with lzma.open(pkl_fn, 'rb') as f:
+            print('Loading %s' % pkl_fn)
+            dq_plots, periods, periods_r, ydiffmaxes = pickle.load(f)
+    # fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(7, 11), sharex=True)
+    fig, (ax1, ax3) = plt.subplots(2, 1, figsize=(7, 11), sharex=True)
+    for i, (c, lbl) in enumerate(zip(['b', 'g'], ['Circ', 'Lib'])):
+        ax1.plot(dq_plots[i], periods[i], '%so' % c, ms=2, label=lbl)
+        # ax2.plot(dq_plots[i], periods_r[i], '%so' % c, ms=2)
+        ax3.semilogy(dq_plots[i], ydiffmaxes[i], '%so' % c, ms=2)
+    ax1.legend(fontsize=16)
+    ax1.axhline(2 * np.pi / (g2 - 1), c='k')
+    ax3.set_xlabel(r'$\Delta \theta$ (deg)')
+    ax1.set_ylabel(r'$P_{\rm lib, 0}$')
+    # ax2.set_ylabel(r'$P_{\rm lib}$')
+    ax3.set_ylabel(r'Max $\Delta \hat{\mathbf{s}}$')
+    ax1.set_title(r'$g_2 / g_1 = %.1f$' % g2)
+    plt.tight_layout()
+    fig.subplots_adjust(hspace=0.02)
+    plt.savefig(fn, dpi=300)
+    plt.close()
+
+def nondisp_explore():
     os.makedirs('3paramsim', exist_ok=True)
     # run_example_on_cs(I2=np.radians(1), g2=0.1)
     # run_example_on_cs(I2=np.radians(1), g2=10)
-    scan_dq(
-        [0, 0.1, 1, 3, 10],
-        [
-            '3paramsim/3scan_none',
-            '3paramsim/3scan_slow',
-            '3paramsim/3scan_res',
-            '3paramsim/3scan_semi',
-            '3paramsim/3scan_fast',
-        ],
-        [0, *([np.radians(3)] * 4)])
-    scan_frequency(
-        np.radians([0, 2, 6, 9]),
-        [
-            '3paramsim/3freq0',
-            '3paramsim/3freq2',
-            '3paramsim/3freq6',
-            '3paramsim/3freq9',
-        ],
-        [np.radians(1)] * 4)
-    scan_I2(
-        np.radians([2, 2, 2, 2, 2, 2]),
-        [
-            '3paramsim/3I22',
-            '3paramsim/3I20',
-            '3paramsim/3I21',
-            '3paramsim/3I25',
-            '3paramsim/3I23',
-            '3paramsim/3I24',
-        ],
-        [1, 1.5, 2, 2.5, 3, 3.5])
+    # scan_dq(
+    #     [0, 0.1, 1, 3, 10],
+    #     [
+    #         '3paramsim/3scan_none',
+    #         '3paramsim/3scan_slow',
+    #         '3paramsim/3scan_res2',
+    #         '3paramsim/3scan_semi',
+    #         '3paramsim/3scan_fast',
+    #     ],
+    #     [0, *([np.radians(3)] * 4)])
+    # scan_dq(
+    #     [1.3, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.2],
+    #     [
+    #         '3paramsim/3scan_res0',
+    #         '3paramsim/3scan_res1',
+    #         '3paramsim/3scan_res2',
+    #         '3paramsim/3scan_res3',
+    #         '3paramsim/3scan_res4',
+    #         '3paramsim/3scan_res5',
+    #         '3paramsim/3scan_res6',
+    #         '3paramsim/3scan_res7',
+    #     ],
+    #     [np.radians(3)] * 8,
+    #     suffix='_res',
+    #     fs=8,
+    #     ncol=2)
+    # scan_frequency(
+    #     np.radians([0, 2, 6, 9]),
+    #     [
+    #         '3paramsim/3freq0',
+    #         '3paramsim/3freq2',
+    #         '3paramsim/3freq6',
+    #         '3paramsim/3freq9',
+    #     ],
+    #     [np.radians(1)] * 4)
+    # scan_I2(
+    #     np.radians([2, 2, 2, 2, 2, 2]),
+    #     [
+    #         '3paramsim/3I22',
+    #         '3paramsim/3I20',
+    #         '3paramsim/3I21',
+    #         '3paramsim/3I25',
+    #         '3paramsim/3I23',
+    #         '3paramsim/3I24',
+    #     ],
+    #     [1, 1.5, 2, 2.5, 3, 3.5])
+
+    # plot_phase(g2=3, fn='3paramsim/phase_portrait3', I2=np.radians(1), nq=48)
+    # plot_phase(g2=1, fn='3paramsim/phase_portrait1', I2=np.radians(1), nq=48)
+    # plot_phase(g2=0.1, fn='3paramsim/phase_portrait01', I2=np.radians(1), nq=48)
+    # plot_phase(g2=2, fn='3paramsim/phase_portrait2', I2=np.radians(1), nq=48)
+    # plot_phase(g2=10, fn='3paramsim/phase_portrait10', I2=np.radians(1), nq=48)
+    # plot_phase(g2=0, fn='3paramsim/phase_portrait0', I2=np.radians(0), nq=48)
+
+    # plot_resonances(fn='3paramsim/resonances13', g2=1.3)
+    # plot_resonances(fn='3paramsim/resonances15', g2=1.5)
+    # plot_resonances()
+    # plot_resonances(fn='3paramsim/resonances3', g2=3)
+    pass
+
+TIDE_FLDR = '3paramtide/'
+def disp_run_ex(I2=0, g2=0, fn='/tmp/foo', dq=0.05, tf=300, eps_tide=5e-2,
+                plot=False, q0=None, phi0=np.pi):
+    '''
+    run an example of dissipation
+    '''
+    alpha0 = 10
+    eta = 1 / alpha0
+    I1 = np.radians(10)
+    eps_alpha = 0
+    phi_args = 0
+    q_cs2 = roots(I1, eta)[1]
+    if q0 is None:
+        q0 = q_cs2 + dq
+    svec = [np.sin(q0 - I1) * np.cos(phi0),
+            np.sin(q0 - I1) * np.sin(phi0),
+            np.cos(q0 - I1)]
+    args = [I1, I2, g2, phi_args, eps_alpha, eps_tide]
+    pkl_fn = fn + '.pkl'
+    if not os.path.exists(pkl_fn):
+        print('Running %s' % pkl_fn)
+        ret = solve_ivp(dydt_inertial, (0, tf), [*svec, alpha0], args=args,
+                        method='DOP853', atol=1e-9, rtol=1e-9)
+        with lzma.open(pkl_fn, 'wb') as f:
+            pickle.dump((ret), f)
+    else:
+        with lzma.open(pkl_fn, 'rb') as f:
+            print('Loading %s' % pkl_fn)
+            ret = pickle.load(f)
+    lx = np.sin(I1) * np.cos(-ret.t) + np.sin(I2) * np.cos(-g2 * ret.t + phi_args)
+    ly = np.sin(I1) * np.sin(-ret.t) + np.sin(I2) * np.sin(-g2 * ret.t + phi_args)
+    lz = np.sqrt(1 - lx**2 - ly**2)
+    lvec = np.array([lx, ly, lz])
+    obliquities, phirot_arr = get_CS_angles(ret.y[ :3], lvec)
+    if not plot:
+        return obliquities, phirot_arr, ret
+    # phi = np.degrees(np.unwrap(np.arctan2(ret.y[1], ret.y[0])))
+    # fig, (ax1, ax2) = plt.subplots(
+    #     2, 1,
+    #     figsize=(8, 8),
+    #     sharex=True)
+    # ax1.plot(ret.t, obliquities)
+    # ax2.plot(ret.t, phirot_arr)
+    # ax2.set_xlabel(r'$g_1t$')
+    # ax1.set_ylabel(r'$\theta$')
+    # ax2.set_ylabel(r'$\phi_{\rm rot}$')
+    plt.plot(phirot_arr % 360, np.cos(np.radians(obliquities)), 'ko')
+    plt.tight_layout()
+    plt.savefig(fn, dpi=200)
+    plt.close()
+
+def outcome_runner(I2, g2, q0, phi0, tf, eps_tide):
+    '''
+    run an individual example from (q0, phi0) and return the final obliquity
+
+    NB: phi0=pi = CS2, per usual convention
+    '''
+    alpha0 = 10
+    eta = 1 / alpha0
+    I1 = np.radians(10)
+    phi_args = 0
+    eps_alpha = 0
+    svec = [np.sin(q0 - I1) * np.cos(phi0),
+            np.sin(q0 - I1) * np.sin(phi0),
+            np.cos(q0 - I1)]
+    args = [I1, I2, g2, phi_args, eps_alpha, eps_tide]
+    ret = solve_ivp(dydt_inertial, (0, tf), [*svec, alpha0], args=args,
+                    method='DOP853', atol=1e-9, rtol=1e-9)
+
+    lx = np.sin(I1) * np.cos(-ret.t) + np.sin(I2) * np.cos(-g2 * ret.t + phi_args)
+    ly = np.sin(I1) * np.sin(-ret.t) + np.sin(I2) * np.sin(-g2 * ret.t + phi_args)
+    lz = np.sqrt(1 - lx**2 - ly**2)
+    lvec = np.array([lx, ly, lz])
+    return get_CS_angles(ret.y[ :3], lvec)
+
+def plot_outcomes(I2=0, g2=0, tf=1000, eps_tide=1e-2,
+                  fn='{}outcomes0'.format(TIDE_FLDR),
+                  num_pts=1000):
+    q_vals = np.random.uniform(-0.95, 0.95, num_pts)
+    phi_vals = np.random.uniform(0, 2 * np.pi, num_pts)
+    args = [
+        (I2, g2, q0, phi0, tf, eps_tide)
+        for q0, phi0 in zip(q_vals, phi_vals)
+    ]
+    pkl_fn2 = fn + '_short.pkl'
+    if not os.path.exists(pkl_fn2):
+        print('Running %s' % pkl_fn2)
+        pkl_fn = fn + '.pkl'
+        if not os.path.exists(pkl_fn):
+            print('Running %s' % pkl_fn)
+            with Pool(32) as p:
+                rets = p.starmap(outcome_runner, args)
+            with lzma.open(pkl_fn, 'wb') as f:
+                pickle.dump((rets, q_vals, phi_vals), f)
+        else:
+            with lzma.open(pkl_fn, 'rb') as f:
+                print('Loading %s' % pkl_fn)
+                rets, q_vals, phi_vals = pickle.load(f)
+        q_fs = [obliquities[-1] for obliquities, _ in rets]
+        q_is = [obliquities[0] for obliquities, _ in rets]
+        phi_is = [phis[0] for _, phis in rets]
+        with lzma.open(pkl_fn2, 'wb') as f:
+            pickle.dump((q_fs, q_is, phi_is, q_vals, phi_vals), f)
+    else:
+        with lzma.open(pkl_fn2, 'rb') as f:
+            print('Loading %s' % pkl_fn2)
+            q_fs, q_is, phi_is, q_vals, phi_vals = pickle.load(f)
+    return
+    plt.scatter(phi_is, np.cos(np.radians(q_is)), c=q_fs)
+    plt.colorbar()
+    plt.savefig(fn, dpi=300)
+    plt.close()
+
+if __name__ == '__main__':
+    os.makedirs(TIDE_FLDR, exist_ok=True)
+    # disp_run_ex(I2=np.radians(1), g2=2, tf=1000,
+    #             fn='%sdisp_1' % TIDE_FLDR, dq=0, plot=True)
+    # disp_run_ex(I2=np.radians(1), g2=2, tf=1000, eps_tide=0,
+    #             fn='%sdisp_1_notide' % TIDE_FLDR, dq=0, plot=True)
+    # disp_run_ex(I2=np.radians(2), g2=2, tf=1000, fn='%sdisp_2' % TIDE_FLDR,
+    #             dq=np.radians(2), plot=True)
+    # disp_run_ex(I2=np.radians(2), g2=2, tf=1000, eps_tide=0,
+    #             fn='%sdisp_2_notide' % TIDE_FLDR, dq=np.radians(2), plot=True)
+    # disp_run_ex(I2=np.radians(0), g2=0, tf=1000, eps_tide=1e-2,
+    #             fn='%sdisp_zero' % TIDE_FLDR, dq=0, plot=True,
+    #             q0=np.pi / 2 + np.radians(15), phi0 = 2 * np.pi - 1)
+    # disp_run_ex(I2=np.radians(0), g2=0, tf=5000, eps_tide=2e-3,
+    #             fn='%sdisp_zero_long' % TIDE_FLDR, dq=0, plot=True,
+    #             q0=np.pi / 2 + np.radians(15), phi0 = 2 * np.pi - 1)
+
+    plot_outcomes(I2=np.radians(0), g2=00, tf=5000, eps_tide=2e-3,
+                  fn='{}outcomes00'.format(TIDE_FLDR))
+    plot_outcomes(I2=np.radians(1), g2=0.1, tf=5000, eps_tide=2e-3,
+                  fn='{}outcomes01'.format(TIDE_FLDR))
+    plot_outcomes(I2=np.radians(1), g2=1.5, tf=5000, eps_tide=2e-3,
+                  fn='{}outcomes15'.format(TIDE_FLDR))
+    plot_outcomes(I2=np.radians(1), g2=2.0, tf=5000, eps_tide=2e-3,
+                  fn='{}outcomes20'.format(TIDE_FLDR))
+    plot_outcomes(I2=np.radians(1), g2=2.5, tf=5000, eps_tide=2e-3,
+                  fn='{}outcomes25'.format(TIDE_FLDR))
+    plot_outcomes(I2=np.radians(1), g2=10, tf=5000, eps_tide=2e-3,
+                  fn='{}outcomes10'.format(TIDE_FLDR))
