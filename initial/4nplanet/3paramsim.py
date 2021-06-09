@@ -509,19 +509,20 @@ def nondisp_explore():
 
 TIDE_FLDR = '3paramtide/'
 def disp_run_ex(I2=0, g2=0, fn='/tmp/foo', dq=0.05, tf=300, eps_tide=5e-2,
-                plot=False):
+                plot=False, q0=None, phi0=np.pi):
     '''
     run an example of dissipation
     '''
     alpha0 = 10
     eta = 1 / alpha0
     I1 = np.radians(10)
-    phi_args = 0
     eps_alpha = 0
+    phi_args = 0
     q_cs2 = roots(I1, eta)[1]
-    q0 = q_cs2 + dq
-    svec = [-np.sin(q0 - I1),
-            0,
+    if q0 is None:
+        q0 = q_cs2 + dq
+    svec = [np.sin(q0 - I1) * np.cos(phi0),
+            np.sin(q0 - I1) * np.sin(phi0),
             np.cos(q0 - I1)]
     args = [I1, I2, g2, phi_args, eps_alpha, eps_tide]
     pkl_fn = fn + '.pkl'
@@ -543,15 +544,16 @@ def disp_run_ex(I2=0, g2=0, fn='/tmp/foo', dq=0.05, tf=300, eps_tide=5e-2,
     if not plot:
         return obliquities, phirot_arr, ret
     # phi = np.degrees(np.unwrap(np.arctan2(ret.y[1], ret.y[0])))
-    fig, (ax1, ax2) = plt.subplots(
-        2, 1,
-        figsize=(8, 8),
-        sharex=True)
-    ax1.plot(ret.t, obliquities)
-    ax2.plot(ret.t, phirot_arr)
-    ax2.set_xlabel(r'$g_1t$')
-    ax1.set_ylabel(r'$\theta$')
-    ax2.set_ylabel(r'$\phi_{\rm rot}$')
+    # fig, (ax1, ax2) = plt.subplots(
+    #     2, 1,
+    #     figsize=(8, 8),
+    #     sharex=True)
+    # ax1.plot(ret.t, obliquities)
+    # ax2.plot(ret.t, phirot_arr)
+    # ax2.set_xlabel(r'$g_1t$')
+    # ax1.set_ylabel(r'$\theta$')
+    # ax2.set_ylabel(r'$\phi_{\rm rot}$')
+    plt.plot(phirot_arr % 360, np.cos(np.radians(obliquities)), 'ko')
     plt.tight_layout()
     plt.savefig(fn, dpi=200)
     plt.close()
@@ -581,32 +583,41 @@ def outcome_runner(I2, g2, q0, phi0, tf, eps_tide):
     return get_CS_angles(ret.y[ :3], lvec)
 
 def plot_outcomes(I2=0, g2=0, tf=1000, eps_tide=1e-2,
-                  fn='{}outcomes0'.format(TIDE_FLDR)):
-    q_vals = np.arccos(np.linspace(-0.95, 0.95, 50))
-    phi_vals = np.linspace(0, 2 * np.pi, 30, endpoint=False)
+                  fn='{}outcomes0'.format(TIDE_FLDR),
+                  num_pts=1000):
+    q_vals = np.random.uniform(-0.95, 0.95, num_pts)
+    phi_vals = np.random.uniform(0, 2 * np.pi, num_pts)
     args = [
         (I2, g2, q0, phi0, tf, eps_tide)
-        for q0 in q_vals
-        for phi0 in phi_vals
+        for q0, phi0 in zip(q_vals, phi_vals)
     ]
-    pkl_fn = fn + '.pkl'
-    if not os.path.exists(pkl_fn):
-        print('Running %s' % pkl_fn)
-        with Pool(30) as p:
-            rets = p.starmap(outcome_runner, args)
-        with lzma.open(pkl_fn, 'wb') as f:
-            pickle.dump((rets), f)
+    pkl_fn2 = fn + '_short.pkl'
+    if not os.path.exists(pkl_fn2):
+        print('Running %s' % pkl_fn2)
+        pkl_fn = fn + '.pkl'
+        if not os.path.exists(pkl_fn):
+            print('Running %s' % pkl_fn)
+            with Pool(32) as p:
+                rets = p.starmap(outcome_runner, args)
+            with lzma.open(pkl_fn, 'wb') as f:
+                pickle.dump((rets, q_vals, phi_vals), f)
+        else:
+            with lzma.open(pkl_fn, 'rb') as f:
+                print('Loading %s' % pkl_fn)
+                rets, q_vals, phi_vals = pickle.load(f)
+        q_fs = [obliquities[-1] for obliquities, _ in rets]
+        q_is = [obliquities[0] for obliquities, _ in rets]
+        phi_is = [phis[0] for _, phis in rets]
+        with lzma.open(pkl_fn2, 'wb') as f:
+            pickle.dump((q_fs, q_is, phi_is, q_vals, phi_vals), f)
     else:
-        with lzma.open(pkl_fn, 'rb') as f:
-            print('Loading %s' % pkl_fn)
-            rets = pickle.load(f)
-    final_obliquities = [obliquities[-1] for obliquities, _ in rets]
-    qs = [a[2] for a in args]
-    phis = [a[3] for a in args]
+        with lzma.open(pkl_fn2, 'rb') as f:
+            print('Loading %s' % pkl_fn2)
+            q_fs, q_is, phi_is, q_vals, phi_vals = pickle.load(f)
     return
-    plt.scatter(phis, np.cos(qs), c=final_obliquities)
+    plt.scatter(phi_is, np.cos(np.radians(q_is)), c=q_fs)
     plt.colorbar()
-    plt.savefig('/tmp/foo')
+    plt.savefig(fn, dpi=300)
     plt.close()
 
 if __name__ == '__main__':
@@ -619,15 +630,22 @@ if __name__ == '__main__':
     #             dq=np.radians(2), plot=True)
     # disp_run_ex(I2=np.radians(2), g2=2, tf=1000, eps_tide=0,
     #             fn='%sdisp_2_notide' % TIDE_FLDR, dq=np.radians(2), plot=True)
+    # disp_run_ex(I2=np.radians(0), g2=0, tf=1000, eps_tide=1e-2,
+    #             fn='%sdisp_zero' % TIDE_FLDR, dq=0, plot=True,
+    #             q0=np.pi / 2 + np.radians(15), phi0 = 2 * np.pi - 1)
+    # disp_run_ex(I2=np.radians(0), g2=0, tf=5000, eps_tide=2e-3,
+    #             fn='%sdisp_zero_long' % TIDE_FLDR, dq=0, plot=True,
+    #             q0=np.pi / 2 + np.radians(15), phi0 = 2 * np.pi - 1)
 
-    plot_outcomes()
-    plot_outcomes(I2=np.radians(1), g2=0.1, tf=1000, eps_tide=1e-2,
+    plot_outcomes(I2=np.radians(0), g2=00, tf=5000, eps_tide=2e-3,
+                  fn='{}outcomes00'.format(TIDE_FLDR))
+    plot_outcomes(I2=np.radians(1), g2=0.1, tf=5000, eps_tide=2e-3,
                   fn='{}outcomes01'.format(TIDE_FLDR))
-    plot_outcomes(I2=np.radians(1), g2=1.5, tf=1000, eps_tide=1e-2,
+    plot_outcomes(I2=np.radians(1), g2=1.5, tf=5000, eps_tide=2e-3,
                   fn='{}outcomes15'.format(TIDE_FLDR))
-    plot_outcomes(I2=np.radians(1), g2=2.0, tf=1000, eps_tide=1e-2,
+    plot_outcomes(I2=np.radians(1), g2=2.0, tf=5000, eps_tide=2e-3,
                   fn='{}outcomes20'.format(TIDE_FLDR))
-    plot_outcomes(I2=np.radians(1), g2=2.5, tf=1000, eps_tide=1e-2,
+    plot_outcomes(I2=np.radians(1), g2=2.5, tf=5000, eps_tide=2e-3,
                   fn='{}outcomes25'.format(TIDE_FLDR))
-    plot_outcomes(I2=np.radians(1), g2=10, tf=1000, eps_tide=1e-2,
+    plot_outcomes(I2=np.radians(1), g2=10, tf=5000, eps_tide=2e-3,
                   fn='{}outcomes10'.format(TIDE_FLDR))
