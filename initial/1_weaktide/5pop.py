@@ -432,7 +432,7 @@ def run():
         # 0.25,
         # 0.1,
         # 0.03,
-        # 0.01,
+        0.01,
     ]
     s_c_vals_5 = [
         # 0.7,
@@ -455,7 +455,7 @@ def run():
         # 0.25,
         # 0.1,
         # 0.03,
-        # 0.01,
+        0.01,
     ]
     eps = 1e-3
     s0 = 10
@@ -510,7 +510,7 @@ def plot_all_cumprobs():
         0.25,
         0.1,
         0.03,
-        # 0.01,
+        0.01,
     ]
     s_c_vals_5 = [
         0.7,
@@ -539,7 +539,7 @@ def plot_all_cumprobs():
     s0 = 10
 
     for Id, s_c_vals in [
-            # [5, s_c_vals_5],
+            [5, s_c_vals_5],
             [20, s_c_vals_20],
     ]:
         I = np.radians(Id)
@@ -606,9 +606,9 @@ def plot_anal_cs_equils(I=np.radians(20), s_c=0.2):
     plt.close()
 
 if __name__ == '__main__':
-    # run()
+    run()
     plot_all_cumprobs()
-    # plot_anal_cs_equils()
+    plot_anal_cs_equils()
 
     # bunch of debugging cases...
     # seems to be the "top edge too close to 1 case", cannot integrate well
