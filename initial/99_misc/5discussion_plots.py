@@ -111,7 +111,61 @@ def plot_sehj_region():
     plt.savefig('5sehj_region', dpi=300)
     plt.close()
 
+def plot_wasp12b_region():
+    fig = plt.figure(figsize=(8, 6))
+    smas = np.linspace(max(0.023, 1.29 * 0.038) * 0.9,
+                       min(3.3 * 0.023, 0.076) * 1.1,
+                       100)
+    max_masses = 80 * np.sqrt(smas / 0.076)
+    smamesh, massmesh = np.meshgrid(
+        np.linspace(1.29 * 0.038, 3.3 * 0.023),
+        np.linspace(0, max_masses.max())
+    )
+    plt.contourf(smamesh, massmesh,
+                 0.015 * (smamesh / (1.29 * 0.038))**(-7/2),
+                 levels=5)
+    cb = plt.colorbar()
+    mass_min = max_masses.min()
+    plt.axvline(3.3 * 0.023, c='k', ls='--')
+    plt.plot(smas, max_masses, 'r')
+    plt.axvline(1.29 * 0.038, c='k', ls='--')
+    plt.xlabel(r'$a_{\rm p}$ (AU)')
+    plt.ylabel(r'$m_{\rm p}$ ($M_{\oplus}$)')
+
+    smas2 = np.linspace(1.29 * 0.038,
+                        3.3 * 0.023,
+                        100)
+    max_masses2 = 80 * np.sqrt(smas2 / 0.076)
+    ylim = plt.ylim()
+    xlim = plt.xlim()
+    plt.fill_between(smas2,
+                     max_masses2,
+                     np.full_like(max_masses2, ylim[-1]),
+                     color='w')
+    plt.fill_betweenx([0, max_masses.max()],
+                      xlim[0],
+                      1.29 * 0.038,
+                      color='w')
+    plt.fill_betweenx([0, max_masses.max()],
+                      3.3 * 0.023,
+                      xlim[1],
+                      color='w')
+    plt.xlim(xlim)
+    plt.text(1.29 * 0.038 - 0.001, 5, r'$a_{\rm p} > 1.29 a_{\rm i}$',
+             rotation=90, ha='right', va='bottom')
+    plt.text(3.3 * 0.023 + 0.001, 5, r'$a_{\rm p} < 3.3 a$',
+             rotation=90, ha='left', va='bottom')
+    plt.text(0.055, 68, 'RV $<$ 16 m/s', rotation=17, va='bottom',
+             color='r')
+    cb.ax.set_ylabel(r'$\eta_{\rm sync, i}$')
+
+    plt.ylim(bottom=0, top=ylim[1])
+    plt.tight_layout()
+    plt.savefig('5wasp12b_region', dpi=300)
+    plt.close()
+
 if __name__ == '__main__':
     # plot_eigens()
 
-    plot_sehj_region()
+    # plot_sehj_region()
+    plot_wasp12b_region()

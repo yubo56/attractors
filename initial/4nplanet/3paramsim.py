@@ -5,10 +5,12 @@ full n-body type simulations.
 for simplicity, we simulate in the inertial frame initially, though perhaps the
 corotating frame would be easier to think about eventually
 '''
+from collections import defaultdict
 from scipy.interpolate import interp1d
 from multiprocessing import Pool
 import os, pickle, lzma
 import numpy as np
+# plt = None
 try:
     import matplotlib
     matplotlib.use('Agg')
@@ -510,7 +512,8 @@ def nondisp_explore():
 TIDE_FLDR = '3paramtide/'
 def disp_run_ex(I2=0, g2=0, fn='/tmp/foo', dq=0.05, tf=300, eps_tide=5e-2,
                 plot=False, q0=None, phi0=np.pi, rot_mult=0,
-                alpha0=10):
+                alpha0=10, plot_mode2cs2=False, plot_mode1cs2=False,
+                plot_mixed=False):
     '''
     run an example of dissipation
     '''
@@ -544,27 +547,50 @@ def disp_run_ex(I2=0, g2=0, fn='/tmp/foo', dq=0.05, tf=300, eps_tide=5e-2,
     if not plot:
         return obliquities, phirot_arr, ret
 
-    # phirot_arr += np.degrees(ret.t)
-    # resonant case??
     phirot_arr += np.degrees(rot_mult * ret.t)
-    fig, (ax1, ax2) = plt.subplots(
-        2, 1,
+    fig, (ax0, ax1, ax2) = plt.subplots(
+        3, 1,
         figsize=(8, 8),
         sharex=True)
+    ax0.plot(ret.t, np.degrees(np.arccos(lz)))
     ax1.plot(ret.t, obliquities)
     ax2.plot(ret.t, phirot_arr)
+    ax0.set_ylabel(r'$I$ (deg)')
+    ax1.set_ylabel(r'$\theta_{\rm sl}$ (deg)')
+    ax2.set_ylabel(r'$\phi_{\rm sl} + %.1fg_1t$ (deg)' % rot_mult)
     ax2.set_xlabel(r'$g_1t$')
-    ax1.set_ylabel(r'$\theta$')
-    ax2.set_ylabel(r'$\phi_{\rm rot}$')
+
+    if plot_mode2cs2:
+        eta = g2 / alpha0
+        q_cs2 = find_cs(np.radians(1), eta, +np.pi / 2)
+        ax1.axhline(np.degrees(np.arccos(q_cs2)), c='k', ls='-.', lw=2)
+    if plot_mode1cs2:
+        eta = 1 / alpha0
+        q_cs2 = roots(I1, eta)[1]
+        ax1.axhline(np.degrees(q_cs2), c='k', ls='-.', lw=2)
+    if plot_mixed:
+        mu_res = (1 + g2) / (2 * alpha0)
+        ax1.axhline(np.degrees(np.arccos(mu_res)), c='k', ls='-.', lw=2)
+        amp = np.sin(np.arccos(mu_res)) * np.degrees(I2) * 2
+        ax1.axhline(np.degrees(np.arccos(mu_res)) + amp, c='r', ls='-.', lw=2)
+
     # plt.scatter(phirot_arr % 360, np.cos(np.radians(obliquities)),
     #             c=ret.t)
     # plt.colorbar()
-
     plt.tight_layout()
     plt.savefig(fn, dpi=200)
+
+    ax2.set_xlim(left=ret.t[-1] - 10, right=ret.t[-1])
+    leftidx = np.where(ret.t > ret.t[-1] - 10)[0][0]
+    minylim = phirot_arr[leftidx:-1].min()
+    maxylim = phirot_arr[leftidx:-1].max()
+    dy = maxylim - minylim
+    ax2.set_ylim(minylim - 0.1 * dy, maxylim + 0.1 * dy)
+    plt.tight_layout()
+    plt.savefig(fn + 'zoom', dpi=200)
     plt.close()
 
-def outcome_runner(I2, g2, q0, phi0, tf, eps_tide):
+def outcome_runner_full(I2, g2, q0, phi0, tf, eps_tide):
     '''
     run an individual example from (q0, phi0) and return the final obliquity
 
@@ -575,9 +601,9 @@ def outcome_runner(I2, g2, q0, phi0, tf, eps_tide):
     I1 = np.radians(10)
     phi_args = 0
     eps_alpha = 0
-    svec = [np.sin(q0 - I1) * np.cos(phi0),
-            np.sin(q0 - I1) * np.sin(phi0),
-            np.cos(q0 - I1)]
+    svec = [np.sin(q0) * np.cos(phi0),
+            np.sin(q0) * np.sin(phi0),
+            np.cos(q0)]
     args = [I1, I2, g2, phi_args, eps_alpha, eps_tide]
     ret = solve_ivp(dydt_inertial, (0, tf), [*svec, alpha0], args=args,
                     method='DOP853', atol=1e-9, rtol=1e-9)
@@ -588,6 +614,20 @@ def outcome_runner(I2, g2, q0, phi0, tf, eps_tide):
     lvec = np.array([lx, ly, lz])
     return get_CS_angles(ret.y[ :3], lvec)
 
+def outcome_runner(*args):
+    '''
+    run an individual example from (q0, phi0) and return the final obliquity
+
+    NB: phi0=pi = CS2, per usual convention
+    '''
+    obliquities, phirot_arr = outcome_runner_full(*args)
+    return obliquities[-1], obliquities[0], phirot_arr[0]
+
+def find_cs(I, eta, q0):
+    f = lambda q: -eta * np.sin(q - I) + np.sin(q) * np.cos(q)
+    fp = lambda q: -eta * np.cos(q - I) + np.cos(2 * q)
+    return np.cos(opt.newton(f, q0, fprime=fp))
+
 def plot_sep(I, eta, N=100, c='k'):
     # eta = g
     eta_c = (np.sin(I)**(2/3) + np.cos(I)**(2/3))**(-3/2)
@@ -595,19 +635,15 @@ def plot_sep(I, eta, N=100, c='k'):
         return -0.5 * mu**2 + eta * (
             mu * np.cos(I) -
             np.sqrt(1 - mu**2) * np.sin(I) * np.cos(phi))
-    def find_cs(q0):
-        f = lambda q: -eta * np.sin(q - I) + np.sin(q) * np.cos(q)
-        fp = lambda q: -eta * np.cos(q - I) + np.cos(2 * q)
-        return np.cos(opt.newton(f, q0, fprime=fp))
-    mu_2 = find_cs(+np.pi/2)
+    mu_2 = find_cs(I, eta, +np.pi/2)
     if I == 0:
         return None, mu_2
     plt.plot(180, mu_2, '%so' % c, ms=6, ls='')
     if eta > eta_c:
         return None, mu_2
 
-    mu_1 = find_cs(0)
-    mu_4 = find_cs(-np.pi/2)
+    mu_1 = find_cs(I, eta, 0)
+    mu_4 = find_cs(I, eta, -np.pi/2)
     H4 = H(mu_4, 0)
     phi_grid, mu_grid = np.meshgrid(np.linspace(0, 360, N),
                                     np.linspace(-1, 1, N))
@@ -618,7 +654,7 @@ def plot_sep(I, eta, N=100, c='k'):
 
 def plot_outcomes(I2=0, g2=0, tf=1000, eps_tide=1e-2,
                   fn='{}outcomes0'.format(TIDE_FLDR),
-                  num_pts=5000):
+                  num_pts=5000, to_plot=True):
     q_vals = np.arccos(np.random.uniform(-1, 1, num_pts))
     phi_vals = np.random.uniform(0, 2 * np.pi, num_pts)
     args = [
@@ -626,31 +662,30 @@ def plot_outcomes(I2=0, g2=0, tf=1000, eps_tide=1e-2,
         for q0, phi0 in zip(q_vals, phi_vals)
     ]
     pkl_fn2 = fn + '_short.pkl'
-    # if True:
     if not os.path.exists(pkl_fn2):
         print('Running %s' % pkl_fn2)
-        pkl_fn = fn + '.pkl'
-        if not os.path.exists(pkl_fn):
-            print('Running %s' % pkl_fn)
-            with Pool(64) as p:
-                rets = p.starmap(outcome_runner, args)
-            with lzma.open(pkl_fn, 'wb') as f:
-                pickle.dump((rets, q_vals, phi_vals), f)
-        else:
-            with lzma.open(pkl_fn, 'rb') as f:
-                print('Loading %s' % pkl_fn)
-                rets, q_vals, phi_vals = pickle.load(f)
+        # pkl_fn = fn + '.pkl'
+        # if not os.path.exists(pkl_fn):
+        #     print('Running %s' % pkl_fn)
+        #     with Pool(64) as p:
+        #         rets = p.starmap(outcome_runner_full, args)
+        #     with lzma.open(pkl_fn, 'wb') as f:
+        #         pickle.dump((rets, q_vals, phi_vals), f)
+        # else:
+        #     with lzma.open(pkl_fn, 'rb') as f:
+        #         print('Loading %s' % pkl_fn)
+        #         rets, q_vals, phi_vals = pickle.load(f)
 
-        q_fs = [obliquities[-1] for obliquities, _ in rets]
-        q_is = [obliquities[0] for obliquities, _ in rets]
-        phi_is = [phis[0] for _, phis in rets]
+        with Pool(64) as p:
+            rets = p.starmap(outcome_runner, args)
+        q_fs, q_is, phi_is = np.array(rets).T
         with lzma.open(pkl_fn2, 'wb') as f:
             pickle.dump((q_fs, q_is, phi_is, q_vals, phi_vals), f)
     else:
         with lzma.open(pkl_fn2, 'rb') as f:
             print('Loading %s' % pkl_fn2)
             q_fs, q_is, phi_is, q_vals, phi_vals = pickle.load(f)
-    if plt is not None:
+    if plt is not None and to_plot:
         plt.scatter(phi_is, np.cos(np.radians(q_is)), c=q_fs, s=2)
         c = plt.colorbar()
         ticks = c.get_ticks()
@@ -662,8 +697,8 @@ def plot_outcomes(I2=0, g2=0, tf=1000, eps_tide=1e-2,
 
         mu1_1, mu2_1 = plot_sep(np.radians(10), 0.1)
         mu1_2, mu2_2 = plot_sep(I2, g2 / 10, c='b')
-        plt.xlabel(r'$\phi_{\rm i}$')
-        plt.ylabel(r'$\theta_{\rm i}$')
+        plt.xlabel(r'$\phi_{\rm sl, i}$')
+        plt.ylabel(r'$\cos \theta_{\rm sl, i}$')
         plt.tight_layout()
         plt.savefig(fn, dpi=300)
         plt.close()
@@ -676,13 +711,132 @@ def plot_outcomes(I2=0, g2=0, tf=1000, eps_tide=1e-2,
         if mu1_2 is not None:
             plt.axvline(np.degrees(np.arccos(mu1_2)), c='b', ls='-.')
         plt.xlim(0, 90)
-        plt.xlabel(r'$\theta_{\rm f}$')
+        plt.xlabel(r'$\theta_{\rm sl, f}$')
+        plt.axvline(np.degrees(np.arccos((g2 + 1) / (20))), c='r', ls='--')
+        plt.axvline(np.degrees(np.arccos((g2 + 1) / (20))) + 2 * np.degrees(I2),
+                    c='r', ls=':')
+        plt.axvline(np.degrees(np.arccos((g2 + 1) / (20))) - 2 * np.degrees(I2),
+                    c='r', ls=':')
+
+        # plt.hist(np.cos(np.radians(q_fs)), bins=np.linspace(0, 1, 101))
+        # plt.axvline(mu2_1, c='k', ls='--')
+        # plt.axvline(mu2_2, c='b', ls='--')
+        # if mu1_1 is not None:
+        #     plt.axvline(mu1_1, c='k', ls='-.')
+        # if mu1_2 is not None:
+        #     plt.axvline(mu1_2, c='b', ls='-.')
+        # plt.axvline((g2 + 1) / (20), c='r', ls='--')
+        # plt.xlim(0, 1)
+        # plt.xlabel(r'$\cos \theta_{\rm sl, f}$')
+
         plt.tight_layout()
         plt.savefig(fn + '_hist', dpi=300)
         plt.close()
+    return phi_is, q_is, q_fs
+
+def plot_cum(plot_ind=True):
+    kw_params = [
+        dict(I2=np.radians(0), g2=00, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes00'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(1), g2=0.1, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes01'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(1), g2=1.5, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes15'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(1), g2=2.0, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes20'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(1), g2=2.5, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes25'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(1), g2=3.0, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes30'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(1), g2=3.5, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes35'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(1), g2=10, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes010'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(2), g2=10, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes2_010'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(1), g2=15, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes015'.format(TIDE_FLDR), num_pts=3000),
+
+        dict(I2=np.radians(3), g2=0.1, tf=5000, eps_tide=2e-3,
+             fn='{}3outcomes01'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(3), g2=1.5, tf=5000, eps_tide=2e-3,
+             fn='{}3outcomes15'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(3), g2=2.0, tf=5000, eps_tide=2e-3,
+             fn='{}3outcomes20'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(3), g2=2.5, tf=5000, eps_tide=2e-3,
+             fn='{}3outcomes25'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(3), g2=3.0, tf=5000, eps_tide=2e-3,
+             fn='{}3outcomes30'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(3), g2=3.5, tf=5000, eps_tide=2e-3,
+             fn='{}3outcomes35'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(3), g2=10, tf=5000, eps_tide=2e-3,
+             fn='{}3outcomes010'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(3), g2=15, tf=5000, eps_tide=2e-3,
+             fn='{}3outcomes015'.format(TIDE_FLDR), num_pts=3000),
+    ]
+    fig, axs = plt.subplots(
+        2, 1,
+        figsize=(8, 8),
+        sharex=True)
+    ax1, ax2 = axs
+    dat_by_I = defaultdict(list)
+    for kwargs in kw_params:
+        phi_is, q_is, q_fs = plot_outcomes(**kwargs, to_plot=plot_ind)
+        I2 = kwargs.get('I2')
+        g2 = kwargs.get('g2')
+
+        eta1 = 0.1
+        eta2 = g2 / 10
+
+        q1_2 = np.degrees(np.arccos(find_cs(np.radians(10), eta1, +np.pi/2)))
+        q1_1 = np.degrees(np.arccos(find_cs(np.radians(10), eta1, 0)))
+        q2_2 = np.degrees(np.arccos(find_cs(I2, eta2, +np.pi / 2)))
+        mixed_mode = np.degrees(np.arccos((g2 + 1) / 20))
+
+        cs1_2_idx = np.where(np.abs(q_fs - q1_2) < 12)[0]
+        cs1_1_idx = np.where(np.abs(q_fs - q1_1) < 6)[0]
+        cs2_2_idx = np.where(np.abs(q_fs - q2_2) < 12)[0]
+        mixed_idx = np.where(np.abs(q_fs - mixed_mode) < 10)[0]
+        if eta2 < 0.7:
+            assert(len(np.intersect1d(cs1_2_idx, cs1_1_idx)) == 0)
+            dat_by_I[I2].append(
+                (eta2, len(cs1_2_idx), len(cs1_1_idx), 0, 0))
+        else:
+            assert(len(np.intersect1d(cs1_2_idx, cs2_2_idx)) == 0)
+            assert(len(np.intersect1d(mixed_idx, cs2_2_idx)) == 0)
+            assert(len(np.intersect1d(mixed_idx, cs1_2_idx)) == 0)
+            dat_by_I[I2].append(
+                (eta2, len(cs1_2_idx), 0, len(cs2_2_idx), len(mixed_idx)))
+    for ax, I_val in zip(axs, [np.radians(1), np.radians(3)]):
+        dat = np.array(dat_by_I[I_val]).T
+        eta2s = dat[0]
+        ax.set_ylim(0, 1)
+        for d, c, label in zip(
+            dat[1:5],
+            ['k', 'tab:blue', 'tab:orange', 'tab:green'],
+            ['M1-CS2', 'M1-CS1', 'M2-CS2', 'Mixed'],
+        ):
+            ax.plot(eta2s, d / len(q_fs), marker='o', linestyle='',
+                    label=label, alpha=0.5, c=c, ms=5)
+        ax.plot(eta2s, 1 - np.sum(dat[1:5, :], axis=0) / len(q_fs), marker='o',
+                linestyle='', label='Other', alpha=0.5, c='tab:red', ms=5)
+
+        xlim = ax.get_xlim()
+        ylim = ax.get_ylim()
+        ax.text(xlim[-1] * 0.95, ylim[-1] * 0.95,
+                r'$I_2 = %d^\circ$' % np.degrees(I_val),
+                ha='right', va='top')
+        ax.legend(ncol=2, fontsize=14, loc='center left')
+    ax1.set_ylabel(r'Prob')
+    ax2.set_ylabel(r'Prob')
+    ax2.set_xlabel(r'$\eta_2$')
+    plt.tight_layout()
+    plt.savefig('3outcomes', dpi=300)
+    plt.close()
+
 
 def mm_phase_portrait(I2=np.radians(1), g2=10, fn='/tmp/foo', dq=0.05, tf=60,
-                      alpha0=10):
+                      alpha0=10, eps_tide=0, plot_mult=0):
     '''
     mixed mode phase portrait, determined numerically
     '''
@@ -703,7 +857,7 @@ def mm_phase_portrait(I2=np.radians(1), g2=10, fn='/tmp/foo', dq=0.05, tf=60,
                 svec = [np.sin(q0 - I1) * np.cos(phi0),
                         np.sin(q0 - I1) * np.sin(phi0),
                         np.cos(q0 - I1)]
-                args = [I1, I2, g2, phi_args, eps_alpha, 0]
+                args = [I1, I2, g2, phi_args, eps_alpha, eps_tide]
                 ret = solve_ivp(dydt_inertial, (0, tf), [*svec, alpha0], args=args,
                                 method='DOP853', atol=1e-9, rtol=1e-9)
                 rets_curr.append(ret)
@@ -719,25 +873,94 @@ def mm_phase_portrait(I2=np.radians(1), g2=10, fn='/tmp/foo', dq=0.05, tf=60,
         figsize=(16, 9),
         sharex=True, sharey=True)
     mu_res = (1 + g2) / (2 * alpha0)
-    for rets_curr, ax, q0 in zip(rets, axs.flat, q0s):
-        for c, ret in zip(['k', 'r', 'b', 'g'], rets_curr):
-            svec = ret.y[ :3]
-            phi_inertial = np.unwrap(np.arctan2(svec[1], svec[0]))
-            phirot = phi_inertial + (1 + g2) * ret.t / 2
-            ax.scatter(phirot % (2 * np.pi), svec[2], s=2, c=c, alpha=0.3)
-            ax.plot(phirot[0] % (2 * np.pi), svec[2, 0], '%so' % c, ms=10)
-            # ax.plot(0, mu_res, 'bx', ms=10)
-            # ax.plot(np.pi, mu_res, 'bx', ms=10)
-            ax.axhline(mu_res, c='k', ls='--', lw=2)
 
-            eta = 1 / alpha0
-            q_cs2 = roots(I1, eta)[1]
-            ax.axhline(np.cos(q_cs2), c='k', ls='-.', lw=2)
-    plt.tight_layout()
-    fig.subplots_adjust(hspace=0.02, wspace=0.02)
-    plt.savefig(fn, dpi=200)
+    def get_phirot_mu(svec, freq, t):
+        # phi_inertial = np.unwrap(np.arctan2(svec[1], svec[0]))
+        # phirot = phi_inertial + freq * t
+        # return svec[2], (phirot % (2 * np.pi))
+
+        lx = np.sin(I1) * np.cos(-t) + np.sin(I2) * np.cos(-g2 * t + phi_args)
+        ly = np.sin(I1) * np.sin(-t) + np.sin(I2) * np.sin(-g2 * t + phi_args)
+        lz = np.sqrt(1 - lx**2 - ly**2)
+        lvec = np.array([lx, ly, lz])
+        phi_lvec = np.arctan2(ly, lx) # convention
+
+        mu_sl = ts_dot(lvec, svec)
+        yhat = np.array([
+            np.cos(phi_lvec + np.pi / 2),
+            np.sin(phi_lvec + np.pi / 2),
+            np.zeros_like(phi_lvec),
+        ])
+        xhat = ts_cross(yhat, lvec)
+        phi_sl = np.arctan2(
+            ts_dot(yhat, svec),
+            ts_dot(xhat, svec),
+        )
+        return mu_sl, (phi_sl + freq * t) % (2 * np.pi)
+
+    # plot again but w/ different resonant angle
+    for idx, (freq_str, freq) in enumerate(zip(
+        [r'0', r'(g_2 - g_1)', r'(g_2 - g_1) / 2', r'(g_1 - g_2)3/2'],
+        [0, g2 - 1, (g2 - 1) / 2, 3 * (g2 - 1) / 2]
+    )):
+        fig, axs = plt.subplots(
+            nrow, ncol,
+            figsize=(16, 9),
+            sharex=True, sharey=True)
+        for rets_curr, ax, q0 in zip(rets, axs.flat, q0s):
+            for c, ret in zip(['k', 'r', 'b', 'g'], rets_curr):
+                svec = ret.y[ :3]
+                idxs = np.where(ret.t > plot_mult * tf)[0]
+                mu_sl, phirot = get_phirot_mu(svec, freq, ret.t)
+                ax.scatter(phirot[idxs], mu_sl[idxs], s=2, c=c,
+                           alpha=0.3)
+                ax.plot(phirot[0], mu_sl[0], '%so' % c, ms=10)
+                # ax.plot(0, mu_res, 'bx', ms=10)
+                # ax.plot(np.pi, mu_res, 'bx', ms=10)
+                ax.axhline(mu_res, c='k', ls='--', lw=2)
+
+                eta = 1 / alpha0
+                q_cs2 = roots(I1, eta)[1]
+                ax.axhline(np.cos(q_cs2), c='k', ls='-.', lw=2)
+        axs[-1][0].set_xlabel(r'$\phi_{\rm sl} + t%s$' % freq_str)
+        axs[-1][0].set_ylabel(r'$\cos \theta_{\rm sl}$')
+        plt.tight_layout()
+        fig.subplots_adjust(hspace=0.02, wspace=0.02)
+        plt.savefig(fn + '_mode{}'.format(idx), dpi=200)
+        plt.close()
+
+def testo():
+    ''' plots of dot{I}, dot{W} cos/sin I '''
+    t = np.linspace(0, 10, 10000)
+    g2 = 5
+    phi_args = 0
+    I1= np.radians(10)
+    I2 = np.radians(1)
+
+    lx = np.sin(I1) * np.cos(-t) + np.sin(I2) * np.cos(-g2 * t + phi_args)
+    ly = np.sin(I1) * np.sin(-t) + np.sin(I2) * np.sin(-g2 * t + phi_args)
+    lz = np.sqrt(1 - lx**2 - ly**2)
+    lvec = np.array([lx, ly, lz])
+
+    I = np.arccos(lz)
+    W = np.unwrap(np.arctan2(ly, lx))
+
+    dIdt = np.diff(I) / np.diff(t)
+    dWdt = np.diff(W) / np.diff(t)
+
+    fig, (ax1, ax2) = plt.subplots(
+        2, 1,
+        figsize=(8, 8),
+        sharex=True)
+    ax1.plot(t[1: ], dIdt)
+    ax2.plot(t[1: ], dWdt * np.cos(I[1: ]))
+    ax2.plot(t[1: ], dWdt * np.sin(I[1: ]))
+    plt.savefig('/tmp/foo', dpi=200)
+    plt.close()
 
 if __name__ == '__main__':
+    # testo()
+
     os.makedirs(TIDE_FLDR, exist_ok=True)
     # disp_run_ex(I2=np.radians(1), g2=2, tf=1000,
     #             fn='%sdisp_1' % TIDE_FLDR, dq=0, plot=True)
@@ -754,34 +977,43 @@ if __name__ == '__main__':
     #             fn='%sdisp_zero_long' % TIDE_FLDR, dq=0, plot=True,
     #             q0=np.pi / 2 + np.radians(15), phi0 = 2 * np.pi - 1)
 
-    # plot_outcomes(I2=np.radians(0), g2=00, tf=5000, eps_tide=2e-3,
-    #               fn='{}outcomes00'.format(TIDE_FLDR))
-    # plot_outcomes(I2=np.radians(1), g2=0.1, tf=5000, eps_tide=2e-3,
-    #               fn='{}outcomes01'.format(TIDE_FLDR))
-    # plot_outcomes(I2=np.radians(1), g2=1.5, tf=5000, eps_tide=2e-3,
-    #               fn='{}outcomes15'.format(TIDE_FLDR))
-    # plot_outcomes(I2=np.radians(1), g2=2.0, tf=5000, eps_tide=2e-3,
-    #               fn='{}outcomes20'.format(TIDE_FLDR))
-    # plot_outcomes(I2=np.radians(1), g2=2.5, tf=5000, eps_tide=2e-3,
-    #               fn='{}outcomes25'.format(TIDE_FLDR))
-    # plot_outcomes(I2=np.radians(1), g2=3.0, tf=5000, eps_tide=2e-3,
-    #               fn='{}outcomes30'.format(TIDE_FLDR))
-    # plot_outcomes(I2=np.radians(1), g2=3.5, tf=5000, eps_tide=2e-3,
-    #               fn='{}outcomes35'.format(TIDE_FLDR))
-    # plot_outcomes(I2=np.radians(1), g2=10, tf=5000, eps_tide=2e-3,
-    #               fn='{}outcomes010'.format(TIDE_FLDR))
-    # plot_outcomes(I2=np.radians(1), g2=15, tf=5000, eps_tide=2e-3,
-    #               fn='{}outcomes015'.format(TIDE_FLDR))
+    # plot_cum(plot_ind=False)
 
-    # disp_run_ex(I2=np.radians(1), g2=10, tf=5000, eps_tide=2e-3,
-    #             fn='%sdisp_10_res' % TIDE_FLDR, q0=np.radians(55), plot=True,
-    #             rot_mult=9/2)
-    # disp_run_ex(I2=np.radians(20), g2=20, tf=5000, eps_tide=2e-3,
-    #             fn='%sdisp_20_large' % TIDE_FLDR, q0=np.radians(55), plot=True)
-    # disp_run_ex(I2=np.radians(1), g2=10, alpha0=15, tf=5000, eps_tide=2e-3,
-    #             fn='%sdisp_10_res2' % TIDE_FLDR, q0=np.radians(68), plot=True,
-    #             rot_mult=9/2)
+    disp_run_ex(I2=np.radians(1), g2=10, tf=3000, eps_tide=4e-3,
+                fn='%sdisp_10_res' % TIDE_FLDR, q0=np.radians(55), plot=True,
+                rot_mult=9/2, plot_mixed=True)
+    disp_run_ex(I2=np.radians(1), g2=10, tf=3000, eps_tide=4e-3,
+                fn='%sdisp_10_cs2' % TIDE_FLDR, q0=np.radians(90), plot=True,
+                rot_mult=0, plot_mode1cs2=True)
+    disp_run_ex(I2=np.radians(1), g2=10, tf=3000, eps_tide=4e-3,
+                fn='%sdisp_10_cs1' % TIDE_FLDR, q0=np.radians(10), plot=True,
+                rot_mult=9, plot_mode2cs2=True)
+    disp_run_ex(I2=np.radians(1), g2=7, tf=3000, eps_tide=4e-3,
+                fn='%sdisp_7_res' % TIDE_FLDR, q0=np.radians(66), plot=True,
+                rot_mult=3, plot_mixed=True)
+    disp_run_ex(I2=np.radians(1), g2=15, tf=3000, eps_tide=4e-3,
+                fn='%sdisp_15_res' % TIDE_FLDR, q0=np.radians(36), plot=True,
+                rot_mult=7, plot_mixed=True)
 
-    mm_phase_portrait(fn='3paramtide/mm')
-    mm_phase_portrait(fn='3paramtide/mm_g2_7', g2=7)
-    mm_phase_portrait(fn='3paramtide/mm_I2_2', g2=7, I2=np.radians(2))
+    disp_run_ex(I2=np.radians(1), g2=10, alpha0=15, tf=3000, eps_tide=4e-3,
+                fn='%sdisp_10_res2' % TIDE_FLDR, q0=np.radians(68), plot=True,
+                rot_mult=9/2, plot_mixed=True)
+    disp_run_ex(I2=np.radians(1), g2=10, alpha0=12, tf=3000, eps_tide=4e-3,
+                fn='%sdisp_10_res3' % TIDE_FLDR, q0=np.radians(68), plot=True,
+                rot_mult=9/2, plot_mixed=True)
+    disp_run_ex(I2=np.radians(1.5), g2=10, tf=3000, eps_tide=4e-3,
+                fn='%sdisp_10_res4' % TIDE_FLDR, q0=np.radians(55), plot=True,
+                rot_mult=9/2, plot_mixed=True)
+
+    # mm_phase_portrait(fn='3paramtide/mm')
+    # mm_phase_portrait(fn='3paramtide/mm_I22', I2=np.radians(2))
+    # mm_phase_portrait(fn='3paramtide/mm_g2_7', g2=7)
+    # mm_phase_portrait(fn='3paramtide/mm_I2_2', g2=7, I2=np.radians(2))
+    # mm_phase_portrait(fn='3paramtide/mm_tide', eps_tide=5e-3, tf=1000,
+    #                   plot_mult=0.99)
+    # mm_phase_portrait(fn='3paramtide/mm_I22_tide', eps_tide=5e-3, tf=1000,
+    #                   plot_mult=0.99, I2=np.radians(2))
+    # mm_phase_portrait(fn='3paramtide/mm_g2_7_tide', eps_tide=5e-3, tf=1000,
+    #                   plot_mult=0.99, g2=7)
+    # mm_phase_portrait(fn='3paramtide/mm_I2_2_tide', eps_tide=5e-3, tf=1000,
+    #                   plot_mult=0.99, g2=7, I2=np.radians(2))

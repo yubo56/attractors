@@ -192,7 +192,7 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
     # set up axes
     left, width = 0.22, 0.53
     bottom, height = 0.12, 0.76
-    spacing = 0.05
+    spacing = 0.08
     rect_scatter = [left, bottom, width, height]
     rect_histy = [left + width + spacing, bottom,
                   0.98 - (left + width + spacing), height]
@@ -274,15 +274,11 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
         mu_vals =  np.linspace(-0.99, 0.99, n_mu)
         p_caps = get_num_caps(I, s_c, cross_dat, mu_vals)
         tot_probs = np.sum(p_caps / n_phi, axis=1)
-        if s_c < 0.1:
-            fig, (ax1, ax2) = plt.subplots(
-                2, 1,
-                figsize=(6, 6),
-                gridspec_kw={'height_ratios': [2, 1]},
-                sharex=True)
-        else:
-            fig = plt.figure(figsize=(6, 4))
-            ax1 = plt.gca()
+        fig, (ax1, ax2) = plt.subplots(
+            2, 1,
+            figsize=(6, 6),
+            gridspec_kw={'height_ratios': [2, 1]},
+            sharex=True)
         ax1.plot(mu_vals, tot_probs, 'b', alpha=0.8, lw=3.5)
 
         # try anal prob
@@ -298,23 +294,24 @@ def plot_eq_dists(I, s_c, s0, IC_eq1, IC_eq2):
         ax1.text(1, 1, r'$\eta_{\rm sync} = %s$' % s_c_text,
                  ha='right', va='top', fontsize=16)
 
-        if s_c < 0.1:
-            ax1.plot(mu_vals, tot_probs_al, 'g--', alpha=0.8, lw=1.0)
-            for mu, crosses in zip(mu_vals, s_crosses):
-                cross_idx = np.where(crosses > 0)[0]
-                all_crosses = crosses[cross_idx]
-                ax2.plot(np.full_like(crosses[cross_idx], mu),
-                         s_c / all_crosses,
-                         'bo', alpha=0.8, markersize=0.8)
+        ax1.plot(mu_vals, tot_probs_al, 'g--', alpha=0.8, lw=1.0)
+        for mu, crosses in zip(mu_vals, s_crosses):
+            cross_idx = np.where(crosses > 0)[0]
+            all_crosses = crosses[cross_idx]
+            ax2.plot(np.full_like(crosses[cross_idx], mu),
+                     s_c / all_crosses,
+                     'bo', alpha=0.8, markersize=0.8)
 
-            ax2.set_ylabel(r'$\eta_{\rm cross}$')
-            ax2.set_xlabel(r'$\cos \theta_{\rm i}$')
-            ax2.axhline(s_c, c='k', ls='--', lw=1.5)
-            plt.tight_layout()
-            fig.subplots_adjust(hspace=0.03)
-        else:
-            ax1.set_xlabel(r'$\cos \theta_{\rm i}$')
-            plt.tight_layout()
+        ax2.set_ylabel(r'$\eta_{\rm cross}$')
+        ax2.set_xlabel(r'$\cos \theta_{\rm i}$')
+        ax2.axhline(s_c, c='k', ls='--', lw=1.5)
+        ax2.text(1.0, s_c * 1.05, r'$\eta_{\rm sync}$', ha='right', va='bottom',
+                 fontsize=14)
+        ax2.axhline(s_c / s0, c='k', ls='--', lw=1.5)
+        ax2.text(1.0, s_c / s0 * 1.05, r'$\eta_{\rm i} = \eta_{\rm sync} / 10$',
+                 ha='right', va='bottom', fontsize=14)
+        plt.tight_layout()
+        fig.subplots_adjust(hspace=0.03)
         plt.savefig('5pc_fits%s_%d.png' % (s_c_str(s_c), np.degrees(I)), dpi=400)
         plt.close()
 
@@ -424,7 +421,7 @@ def run():
         # 0.65,
         # 0.6,
         # 0.55,
-        0.5,
+        # 0.5,
         # 0.45,
         # 0.4,
         # 0.35,
@@ -432,7 +429,7 @@ def run():
         # 0.25,
         # 0.1,
         # 0.03,
-        0.01,
+        # 0.01,
     ]
     s_c_vals_5 = [
         # 0.7,
@@ -455,7 +452,7 @@ def run():
         # 0.25,
         # 0.1,
         # 0.03,
-        0.01,
+        # 0.01,
     ]
     eps = 1e-3
     s0 = 10
@@ -605,10 +602,70 @@ def plot_anal_cs_equils(I=np.radians(20), s_c=0.2):
     plt.savefig('5anal_cs_equils', dpi=300)
     plt.close()
 
+def plot_tces(Is):
+    '''
+    plot probabilities of ending up in tCS2 and the obliquities of the two
+    '''
+    fig, (ax1, ax2) = plt.subplots(
+        2, 1, figsize=(7, 6),
+        sharex=True)
+
+    # calculate locations of equilibria in ~continuous way
+    for ax, I in zip([ax1, ax2], Is):
+        s_c_crit = get_etac(I) # etac = s_c_crit / (s = 1)
+        s_c_cont = np.concatenate((
+            np.linspace(0.006, s_c_crit * 0.8, 30),
+            np.linspace(s_c_crit * 0.8, s_c_crit * 0.99, 30),
+            np.linspace(s_c_crit * 1.01, 2, 30)
+        ))
+
+        ax.axvline(s_c_crit, c='k', lw=1.0, ls='--')
+        cs1_equil_mu = -np.ones_like(s_c_cont) # -1 = does not exist
+        cs2_equil_mu = np.zeros_like(s_c_cont)
+        for idx, s_c in enumerate(s_c_cont):
+            cs1_crit_mu, cs2_crit_mu = get_crit_mus(I, s_c)
+            cs2_equil_mu[idx] = cs2_crit_mu
+            if cs1_crit_mu is not None:
+                cs1_equil_mu[idx] = cs1_crit_mu
+
+        cs1_idxs = np.where(cs1_equil_mu > -1)[0]
+        ax.plot(np.array(s_c_cont)[cs1_idxs],
+                 np.degrees(np.arccos(cs1_equil_mu[cs1_idxs])),
+                 'darkorange', label='tCE1', lw=2)
+        ax.plot(s_c_cont, np.degrees(np.arccos(cs2_equil_mu)),
+                 'tab:green', label='tCE2', lw=2)
+        ax.set_ylabel(r'$\theta$')
+
+        # eta_arr = (s_c_cont * np.sin(I) + np.sqrt(
+        #         s_c_cont**2 * np.sin(I)**2
+        #         + 8 * np.cos(I) * s_c_cont)) / (4 * np.cos(I))
+        # tce2_anal = np.degrees(np.arccos(
+        #     eta_arr * np.cos(I) / (1 + eta_arr * np.sin(I))
+        #     ))
+        eta_arr = np.sqrt(s_c_cont / (2 * np.cos(I)))
+        tce2_anal = np.degrees(np.arccos(
+            np.sqrt(s_c_cont * np.cos(I) / 2)
+            ))
+        idxs = np.where(s_c_cont < s_c_crit)[0]
+        ax.plot(s_c_cont[idxs], tce2_anal[idxs], 'b--', lw=1.5)
+        ax.set_ylim(0, 90)
+        ax.set_yticks([0, 45, 90])
+        ax.set_yticklabels(['0', '45', '90'])
+        ax.legend(fontsize=14, loc='center left', ncol=1)
+        ax.text(1.95, 85, r'$I = %d^\circ$' % np.degrees(I),
+                ha='right', va='top')
+
+    ax2.set_xlabel(r'$\eta_{\rm sync}$')
+    plt.tight_layout()
+    fig.subplots_adjust(hspace=0.1)
+    plt.savefig('5tces', dpi=300)
+    plt.close()
+
 if __name__ == '__main__':
-    run()
+    # run()
     plot_all_cumprobs()
-    plot_anal_cs_equils()
+    # plot_anal_cs_equils()
+    # plot_tces(np.radians([20, 5]))
 
     # bunch of debugging cases...
     # seems to be the "top edge too close to 1 case", cannot integrate well
@@ -621,3 +678,4 @@ if __name__ == '__main__':
     # args, mu, phi, s, _ = solve_with_events5(I, s_c, eps, mu0, phi0, s0, TF)
     # t_cross, _ = get_sep_hop(*args)
     # print(mu[-1])
+

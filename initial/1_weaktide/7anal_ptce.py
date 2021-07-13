@@ -29,7 +29,7 @@ s_c_vals = {
         0.25,
         0.1,
         0.03,
-        # 0.01,
+        0.01,
     ],
     5: [
         0.7,
@@ -111,5 +111,5 @@ def pcaps_compare():
     plt.close()
 
 if __name__ == '__main__':
-    # plot_anal()
+    plot_anal()
     pcaps_compare()

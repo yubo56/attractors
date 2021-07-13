@@ -118,12 +118,15 @@ def plot_cs_phi(I=np.radians(5)):
     plt.semilogx(etas, fix_d(cs_vals[2]), 'tab:blue', lw=LW)
     plt.semilogx(etas_four, fix_d(cs_vals[3]), 'tab:purple', lw=LW)
     fs = 16
-    plt.text(etas_four[0] * 1.1, fix_d(cs_vals[0])[0] + 5, r'CS1 ($\phi = 0$)',
+    plt.text(etas_four[0] * 1.1, fix_d(cs_vals[0])[0] + 8,
+             r'CS1 ($\phi = 0$; stable)',
              fontsize=fs, color='darkorange', va='bottom')
     plt.text(etas_four[0] * 1.1, fix_d(cs_vals[3])[0], r'CS4 ($\phi = 0$)',
              fontsize=fs, color='tab:purple', va='bottom')
-    plt.text(etas[-1] / 1.1, fix_d(cs_vals[1])[-1] + 8, r'CS2 ($\phi = \pi$)',
-             fontsize=fs, ha='right', color='tab:green', va='bottom')
+    plt.text(etas[-1] / 1.1, fix_d(cs_vals[1])[-1] + 5,
+             r'CS2 ($\phi = \pi$; stable)',
+             fontsize=fs, ha='right', color='tab:green', va='bottom',
+             rotation=-15)
     plt.text(etas[-1] / 1.1, fix_d(cs_vals[2])[-1] + 5, r'CS3 ($\phi = 0$)',
              fontsize=fs, ha='right', color='tab:blue', va='bottom')
     plt.xlabel(r'$\eta$', fontsize=22)
@@ -217,7 +220,7 @@ def plot_eigens_phi(I=np.radians(5)):
         ax.text(np.max(etas), 0 + 0.05 * ax.get_ylim()[0],
                 r'$\Delta \phi_{\rm cs} = %d^\circ$' % shift_deg,
                 ha='right', va='top', fontsize=16)
-        ax.set_ylabel(r'$\lambda_0^2/ (1 + \eta^2)$')
+        ax.set_ylabel(r'$\lambda_0^2/ (g^2 + \alpha^2)$')
     axs[2].set_xlabel(r'$\eta$')
     axs[2].set_xlim([min(etas), max(etas)])
 
@@ -490,5 +493,5 @@ if __name__ == '__main__':
     # plot_nonad_diagram()
 
     # plot_cs_phi(np.radians(20))
-    # plot_eigens_phi(np.radians(20))
-    plot_3vec_new()
+    plot_eigens_phi(np.radians(20))
+    # plot_3vec_new()

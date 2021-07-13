@@ -133,11 +133,11 @@ def run_for_tide(tide=1e-3,
         # plot_point(plt.gca(), q, '%so' % c, markersize=8)
     for idx, c in enumerate(colors[ :2]):
         plt.plot(0, -10, c=c, marker='o', ls='',
-                 markersize=5, label='CS%d' % (idx + 1))
+                 markersize=5, label='CS%d' % (idx + 1), zorder=2)
     plt.ylim([-1, 1])
     plt.legend(fontsize=16, loc='center left', bbox_to_anchor=(1, 0.5))
-    plt.ylabel(r'$\cos \theta_0$')
-    plt.xlabel(r'$\phi_0$ (deg)')
+    plt.ylabel(r'$\cos \theta_{\rm i}$')
+    plt.xlabel(r'$\phi_{\rm i}$ (deg)')
     plt.xticks([0, np.pi, 2 * np.pi],
                ['0', r'$180$', r'$360$'])
     plt.text(np.pi, np.cos(qs[1]), 'II', backgroundcolor=(1, 1, 1, 0.9),
@@ -156,7 +156,7 @@ def run_for_tide(tide=1e-3,
                 levels=[H(I, eta, np.cos(qs[3]), phis[3])],
                 colors=['k'],
                 linewidths=3,
-                linestyles='solid')
+                linestyles='solid', zorder=3)
 
     plt.tight_layout()
     plt.savefig('3stats%s.png' % prefix, dpi=400)
