@@ -750,10 +750,18 @@ def plot_cum(plot_ind=True):
              fn='{}outcomes30'.format(TIDE_FLDR), num_pts=3000),
         dict(I2=np.radians(1), g2=3.5, tf=5000, eps_tide=2e-3,
              fn='{}outcomes35'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(1), g2=5, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes05'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(1), g2=7, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes07'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(1), g2=8, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes08'.format(TIDE_FLDR), num_pts=3000),
         dict(I2=np.radians(1), g2=10, tf=5000, eps_tide=2e-3,
              fn='{}outcomes010'.format(TIDE_FLDR), num_pts=3000),
         dict(I2=np.radians(2), g2=10, tf=5000, eps_tide=2e-3,
              fn='{}outcomes2_010'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(1), g2=12, tf=5000, eps_tide=2e-3,
+             fn='{}outcomes012'.format(TIDE_FLDR), num_pts=3000),
         dict(I2=np.radians(1), g2=15, tf=5000, eps_tide=2e-3,
              fn='{}outcomes015'.format(TIDE_FLDR), num_pts=3000),
 
@@ -769,19 +777,24 @@ def plot_cum(plot_ind=True):
              fn='{}3outcomes30'.format(TIDE_FLDR), num_pts=3000),
         dict(I2=np.radians(3), g2=3.5, tf=5000, eps_tide=2e-3,
              fn='{}3outcomes35'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(3), g2=5, tf=5000, eps_tide=2e-3,
+             fn='{}3outcomes05'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(3), g2=7, tf=5000, eps_tide=2e-3,
+             fn='{}3outcomes07'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(3), g2=8, tf=5000, eps_tide=2e-3,
+             fn='{}3outcomes08'.format(TIDE_FLDR), num_pts=3000),
         dict(I2=np.radians(3), g2=10, tf=5000, eps_tide=2e-3,
              fn='{}3outcomes010'.format(TIDE_FLDR), num_pts=3000),
+        dict(I2=np.radians(3), g2=12, tf=5000, eps_tide=2e-3,
+             fn='{}3outcomes012'.format(TIDE_FLDR), num_pts=3000),
         dict(I2=np.radians(3), g2=15, tf=5000, eps_tide=2e-3,
              fn='{}3outcomes015'.format(TIDE_FLDR), num_pts=3000),
     ]
-    fig, axs = plt.subplots(
-        2, 1,
-        figsize=(8, 8),
-        sharex=True)
-    ax1, ax2 = axs
     dat_by_I = defaultdict(list)
     for kwargs in kw_params:
         phi_is, q_is, q_fs = plot_outcomes(**kwargs, to_plot=plot_ind)
+        if plt is None:
+            continue
         I2 = kwargs.get('I2')
         g2 = kwargs.get('g2')
 
@@ -790,35 +803,71 @@ def plot_cum(plot_ind=True):
 
         q1_2 = np.degrees(np.arccos(find_cs(np.radians(10), eta1, +np.pi/2)))
         q1_1 = np.degrees(np.arccos(find_cs(np.radians(10), eta1, 0)))
+        q2_1 = np.degrees(np.arccos(find_cs(I2, eta2, 0)))
         q2_2 = np.degrees(np.arccos(find_cs(I2, eta2, +np.pi / 2)))
         mixed_mode = np.degrees(np.arccos((g2 + 1) / 20))
 
-        cs1_2_idx = np.where(np.abs(q_fs - q1_2) < 12)[0]
-        cs1_1_idx = np.where(np.abs(q_fs - q1_1) < 6)[0]
-        cs2_2_idx = np.where(np.abs(q_fs - q2_2) < 12)[0]
-        mixed_idx = np.where(np.abs(q_fs - mixed_mode) < 10)[0]
-        if eta2 < 0.7:
-            assert(len(np.intersect1d(cs1_2_idx, cs1_1_idx)) == 0)
-            dat_by_I[I2].append(
-                (eta2, len(cs1_2_idx), len(cs1_1_idx), 0, 0))
+        mixed_amp = np.degrees(I2) * 2
+
+        # This is so messy, but to get non-intersecting sets, many priorities
+        # have to be implemented... should probably have made something
+        # systematic
+        cs1_2_idx = np.where(np.abs(q_fs - q1_2) < 10)[0]
+        cs1_1_idx = np.where(np.logical_and(
+            np.abs(q_fs - q1_1) < 6, np.logical_and(
+                np.abs(q_fs - q1_1) < np.abs(q_fs - q2_1),
+                np.abs(q_fs - q1_1) < np.abs(q_fs - q2_2),
+            )
+        ))[0]
+        if eta2 > get_etac(I2):
+            cs2_1_idx = []
         else:
-            assert(len(np.intersect1d(cs1_2_idx, cs2_2_idx)) == 0)
-            assert(len(np.intersect1d(mixed_idx, cs2_2_idx)) == 0)
-            assert(len(np.intersect1d(mixed_idx, cs1_2_idx)) == 0)
-            dat_by_I[I2].append(
-                (eta2, len(cs1_2_idx), 0, len(cs2_2_idx), len(mixed_idx)))
+            cs2_1_idx = np.where(np.logical_and(
+                np.abs(q_fs - q2_1) < 6,
+                np.abs(q_fs - q1_1) > np.abs(q_fs - q2_1)
+            ))[0]
+        cs2_2_idx = np.where(np.logical_and(
+            np.logical_and(
+                np.abs(q_fs - q2_2) < 10,
+                np.abs(q_fs - q1_2) > 10, # M1-CS2 always has priority
+            ),
+            np.abs(q_fs - q1_1) > np.abs(q_fs - q2_2)
+        ))[0]
+        mixed_idx = np.where(np.logical_and(
+            np.abs(q_fs - mixed_mode) < mixed_amp,
+            np.abs(q_fs - q1_2) > 10
+        ))[0]
+
+        # print(q1_1, q1_2, q2_1, q2_2, eta2)
+        # printlencs1_1_idx, len(cs1_2_idx), len(cs2_1_idx), len(cs2_2_idx),
+        #       len(mixed_idx))
+        idxs = [cs1_1_idx, cs1_2_idx, cs2_1_idx, cs2_2_idx, mixed_idx]
+        for idx, idx_arr in enumerate(idxs):
+            for idx2, idx_arr2 in enumerate(idxs[idx + 1: ]):
+                assert len(np.intersect1d(idx_arr, idx_arr2)) == 0, \
+                    '{} and {} indicies overlap'.format(idx, idx + 1 + idx2)
+        dat_by_I[I2].append(
+            (eta2, len(cs1_2_idx), len(cs1_1_idx), len(cs2_1_idx),
+             len(cs2_2_idx), len(mixed_idx)))
+    if plt is None:
+        return
+    fig, axs = plt.subplots(
+        2, 1,
+        figsize=(8, 8),
+        sharex=True)
+    ax1, ax2 = axs
     for ax, I_val in zip(axs, [np.radians(1), np.radians(3)]):
         dat = np.array(dat_by_I[I_val]).T
         eta2s = dat[0]
         ax.set_ylim(0, 1)
         for d, c, label in zip(
-            dat[1:5],
-            ['k', 'tab:blue', 'tab:orange', 'tab:green'],
-            ['M1-CS2', 'M1-CS1', 'M2-CS2', 'Mixed'],
+            dat[1: ],
+            ['k', 'tab:olive', 'tab:blue', 'tab:orange', 'tab:green'],
+            ['M1-CS2', 'M1-CS1', 'M2-CS1', 'M2-CS2', 'Mixed'],
         ):
             ax.plot(eta2s, d / len(q_fs), marker='o', linestyle='',
-                    label=label, alpha=0.5, c=c, ms=5)
-        ax.plot(eta2s, 1 - np.sum(dat[1:5, :], axis=0) / len(q_fs), marker='o',
+                    label=label, alpha=0.7, c=c, ms=5)
+        ax.plot(eta2s, 1 - np.sum(dat[1: , :], axis=0) / len(q_fs), marker='o',
                 linestyle='', label='Other', alpha=0.5, c='tab:red', ms=5)
 
         xlim = ax.get_xlim()
@@ -827,13 +876,13 @@ def plot_cum(plot_ind=True):
                 r'$I_2 = %d^\circ$' % np.degrees(I_val),
                 ha='right', va='top')
         ax.legend(ncol=2, fontsize=14, loc='center left')
+        ax.axvline(get_etac(I_val), c='k', ls='--')
     ax1.set_ylabel(r'Prob')
     ax2.set_ylabel(r'Prob')
     ax2.set_xlabel(r'$\eta_2$')
     plt.tight_layout()
     plt.savefig('3outcomes', dpi=300)
     plt.close()
-
 
 def mm_phase_portrait(I2=np.radians(1), g2=10, fn='/tmp/foo', dq=0.05, tf=60,
                       alpha0=10, eps_tide=0, plot_mult=0):
@@ -977,33 +1026,33 @@ if __name__ == '__main__':
     #             fn='%sdisp_zero_long' % TIDE_FLDR, dq=0, plot=True,
     #             q0=np.pi / 2 + np.radians(15), phi0 = 2 * np.pi - 1)
 
-    # plot_cum(plot_ind=False)
+    plot_cum(plot_ind=True)
 
-    disp_run_ex(I2=np.radians(1), g2=10, tf=3000, eps_tide=4e-3,
-                fn='%sdisp_10_res' % TIDE_FLDR, q0=np.radians(55), plot=True,
-                rot_mult=9/2, plot_mixed=True)
-    disp_run_ex(I2=np.radians(1), g2=10, tf=3000, eps_tide=4e-3,
-                fn='%sdisp_10_cs2' % TIDE_FLDR, q0=np.radians(90), plot=True,
-                rot_mult=0, plot_mode1cs2=True)
-    disp_run_ex(I2=np.radians(1), g2=10, tf=3000, eps_tide=4e-3,
-                fn='%sdisp_10_cs1' % TIDE_FLDR, q0=np.radians(10), plot=True,
-                rot_mult=9, plot_mode2cs2=True)
-    disp_run_ex(I2=np.radians(1), g2=7, tf=3000, eps_tide=4e-3,
-                fn='%sdisp_7_res' % TIDE_FLDR, q0=np.radians(66), plot=True,
-                rot_mult=3, plot_mixed=True)
-    disp_run_ex(I2=np.radians(1), g2=15, tf=3000, eps_tide=4e-3,
-                fn='%sdisp_15_res' % TIDE_FLDR, q0=np.radians(36), plot=True,
-                rot_mult=7, plot_mixed=True)
+    # disp_run_ex(I2=np.radians(1), g2=10, tf=3000, eps_tide=4e-3,
+    #             fn='%sdisp_10_res' % TIDE_FLDR, q0=np.radians(55), plot=True,
+    #             rot_mult=9/2, plot_mixed=True)
+    # disp_run_ex(I2=np.radians(1), g2=10, tf=3000, eps_tide=4e-3,
+    #             fn='%sdisp_10_cs2' % TIDE_FLDR, q0=np.radians(90), plot=True,
+    #             rot_mult=0, plot_mode1cs2=True)
+    # disp_run_ex(I2=np.radians(1), g2=10, tf=3000, eps_tide=4e-3,
+    #             fn='%sdisp_10_cs1' % TIDE_FLDR, q0=np.radians(10), plot=True,
+    #             rot_mult=9, plot_mode2cs2=True)
+    # disp_run_ex(I2=np.radians(1), g2=7, tf=3000, eps_tide=4e-3,
+    #             fn='%sdisp_7_res' % TIDE_FLDR, q0=np.radians(66), plot=True,
+    #             rot_mult=3, plot_mixed=True)
+    # disp_run_ex(I2=np.radians(1), g2=15, tf=3000, eps_tide=4e-3,
+    #             fn='%sdisp_15_res' % TIDE_FLDR, q0=np.radians(36), plot=True,
+    #             rot_mult=7, plot_mixed=True)
 
-    disp_run_ex(I2=np.radians(1), g2=10, alpha0=15, tf=3000, eps_tide=4e-3,
-                fn='%sdisp_10_res2' % TIDE_FLDR, q0=np.radians(68), plot=True,
-                rot_mult=9/2, plot_mixed=True)
-    disp_run_ex(I2=np.radians(1), g2=10, alpha0=12, tf=3000, eps_tide=4e-3,
-                fn='%sdisp_10_res3' % TIDE_FLDR, q0=np.radians(68), plot=True,
-                rot_mult=9/2, plot_mixed=True)
-    disp_run_ex(I2=np.radians(1.5), g2=10, tf=3000, eps_tide=4e-3,
-                fn='%sdisp_10_res4' % TIDE_FLDR, q0=np.radians(55), plot=True,
-                rot_mult=9/2, plot_mixed=True)
+    # disp_run_ex(I2=np.radians(1), g2=10, alpha0=15, tf=3000, eps_tide=4e-3,
+    #             fn='%sdisp_10_res2' % TIDE_FLDR, q0=np.radians(68), plot=True,
+    #             rot_mult=9/2, plot_mixed=True)
+    # disp_run_ex(I2=np.radians(1), g2=10, alpha0=12, tf=3000, eps_tide=4e-3,
+    #             fn='%sdisp_10_res3' % TIDE_FLDR, q0=np.radians(68), plot=True,
+    #             rot_mult=9/2, plot_mixed=True)
+    # disp_run_ex(I2=np.radians(1.5), g2=10, tf=3000, eps_tide=4e-3,
+    #             fn='%sdisp_10_res4' % TIDE_FLDR, q0=np.radians(55), plot=True,
+    #             rot_mult=9/2, plot_mixed=True)
 
     # mm_phase_portrait(fn='3paramtide/mm')
     # mm_phase_portrait(fn='3paramtide/mm_I22', I2=np.radians(2))
